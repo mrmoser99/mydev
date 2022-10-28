@@ -26,8 +26,9 @@ public void execute(QueueableContext context) {
 
 	List<User> uList = [select profile.name from User where id in : oldOwner];
 	for (User u:uList) {
-		if (u.profile.name == 'Partner Admin')
+		if (u.profile.name == 'Partner Admin'){
 			dodUser.add(u.id);
+		}
 	}
 
 	List<OpportunityShare> oppShares = new List<OpportunityShare>();
