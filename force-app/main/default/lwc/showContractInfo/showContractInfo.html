@@ -1,0 +1,407 @@
+<!--This LWC Component is created to display the Contract Information retrieved from Infolease.
+Its real time information and not saved in Database
+Author - Geetha Bharadwaj
+Date - 2021/02/05-->
+
+<template>
+    <template if:true={loader}>
+        <div class="exampleHolder">
+    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+</div>
+</template>
+    <lightning-tabset>
+
+ 
+        <lightning-tab label="Contract Information">
+            <template if:true={data}>
+            <template for:each={data} for:item="dt">
+            <!--template iterator:dt={data} -->
+            <div key={dt.sourceSystemId}>  
+            <div class="slds-form__row" >
+               
+                <slot class="slds-grid slds-size_1-of-1">
+                    <div role="listitem" class="slds-form__item slds-no-space" force-recordlayoutitem_recordlayoutitem-host="">
+                        <div  class="slds-grid slds-size_1-of-1 label-stacked">
+                            <div  class="slds-form-element slds-hint-parent test-id__output-root slds-form-element_readonly slds-form-element_stacked">
+                                <div  class="test-id__field-label-container slds-form-element__label no-utility-icon">
+                                    <span  class="test-id__field-label">
+                                        Application Number
+                                    </span>
+                                </div>
+                                <div  class="slds-form-element__control">
+                                    <span  class="test-id__field-value slds-form-element__static slds-grow word-break-ie11 is-read-only">
+                                        <slot  name="outputField">
+                                            <slot slot="outputField">
+                                               {dt.applicationNumber}
+                                            </slot>
+                                        </slot><slot ></slot>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </slot>
+            </div>
+            <div class="slds-form__row">
+                <slot class="slds-grid slds-size_1-of-1">
+                    <div role="listitem" class="slds-form__item slds-no-space">
+                        <div  class="slds-grid slds-size_1-of-1 label-stacked">
+                            <div  class="slds-form-element slds-hint-parent test-id__output-root slds-form-element_readonly slds-form-element_stacked">
+                                <div  class="test-id__field-label-container slds-form-element__label no-utility-icon">
+                                    <span  class="test-id__field-label">
+                                        Customer name on contract
+                                    </span>
+                                </div>
+                                <div class="slds-form-element__control">
+                                    <span class="test-id__field-value slds-form-element__static slds-grow word-break-ie11 is-read-only">
+                                        <slot name="outputField">
+                                            <slot slot="outputField">
+                                               
+                                                {dt.customerName}
+                                              
+                                            </slot>
+                                        </slot>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="listitem" class="slds-form__item slds-no-space" force-recordlayoutitem_recordlayoutitem-host="">
+                        <div  class="slds-grid slds-size_1-of-1 label-stacked">
+                            <div  class="slds-form-element slds-hint-parent test-id__output-root slds-form-element_readonly slds-form-element_stacked">
+                                <div  class="test-id__field-label-container slds-form-element__label no-utility-icon">
+                                    <span  class="test-id__field-label">
+                                        Total due amount
+                                    </span>
+                                </div>
+                                <div  class="slds-form-element__control">
+                                    <span  class="test-id__field-value slds-form-element__static slds-grow word-break-ie11 is-read-only">
+                                        <slot  name="outputField">
+                                            <slot slot="outputField">
+                                                {dt.totalDueAmount}
+                                            </slot>
+                                        </slot><slot ></slot>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </slot>
+            </div>
+            <div class="slds-form__row">
+                <slot class="slds-grid slds-size_1-of-1">
+                    <div role="listitem" class="slds-form__item slds-no-space">
+                        <div  class="slds-grid slds-size_1-of-1 label-stacked">
+                            <div  class="slds-form-element slds-hint-parent test-id__output-root slds-form-element_readonly slds-form-element_stacked">
+                                <div  class="test-id__field-label-container slds-form-element__label no-utility-icon">
+                                    <span  class="test-id__field-label">
+                                        Total past due amount
+                                    </span>
+                                </div>
+                                <div class="slds-form-element__control">
+                                    <span class="test-id__field-value slds-form-element__static slds-grow word-break-ie11 is-read-only">
+                                        <slot name="outputField">
+                                            <slot slot="outputField">
+                                                {dt.totalPastDueAmount}
+                                            </slot>
+                                        </slot>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="listitem" class="slds-form__item slds-no-space" force-recordlayoutitem_recordlayoutitem-host="">
+                        <div  class="slds-grid slds-size_1-of-1 label-stacked">
+                            <div  class="slds-form-element slds-hint-parent test-id__output-root slds-form-element_readonly slds-form-element_stacked">
+                                <div  class="test-id__field-label-container slds-form-element__label no-utility-icon">
+                                    <span  class="test-id__field-label">
+                                        Deliquency status code
+                                    </span>
+                                </div>
+                                <div  class="slds-form-element__control">
+                                    <span  class="test-id__field-value slds-form-element__static slds-grow word-break-ie11 is-read-only">
+                                        <slot  name="outputField">
+                                            <slot slot="outputField">
+                                                {dt.delinquencyStatus}
+                                            </slot>
+                                        </slot><slot ></slot>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </slot>
+            </div>
+            <div class="slds-form__row">
+                <slot class="slds-grid slds-size_1-of-1">
+                    <div role="listitem" class="slds-form__item slds-no-space">
+                        <div  class="slds-grid slds-size_1-of-1 label-stacked">
+                            <div  class="slds-form-element slds-hint-parent test-id__output-root slds-form-element_readonly slds-form-element_stacked">
+                                <div  class="test-id__field-label-container slds-form-element__label no-utility-icon">
+                                    <span  class="test-id__field-label">
+                                        Number of times delinquent
+                                    </span>
+                                </div>
+                                <div class="slds-form-element__control">
+                                    <span class="test-id__field-value slds-form-element__static slds-grow word-break-ie11 is-read-only">
+                                        <slot name="outputField">
+                                            <slot slot="outputField">
+                                                {dt.timesDelinquent}
+                                            </slot>
+                                        </slot>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="listitem" class="slds-form__item slds-no-space" force-recordlayoutitem_recordlayoutitem-host="">
+                        <div  class="slds-grid slds-size_1-of-1 label-stacked">
+                            <div  class="slds-form-element slds-hint-parent test-id__output-root slds-form-element_readonly slds-form-element_stacked">
+                                <div  class="test-id__field-label-container slds-form-element__label no-utility-icon">
+                                    <span  class="test-id__field-label">
+                                        Rental payment amount
+                                    </span>
+                                </div>
+                                <div  class="slds-form-element__control">
+                                    <span  class="test-id__field-value slds-form-element__static slds-grow word-break-ie11 is-read-only">
+                                        <slot  name="outputField">
+                                            <slot slot="outputField">
+                                                {dt.paymentAmount}
+                                            </slot>
+                                        </slot><slot ></slot>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </slot>
+            </div>
+
+            <div class="slds-form__row">
+                <slot class="slds-grid slds-size_1-of-1">
+                    <div role="listitem" class="slds-form__item slds-no-space">
+                        <div  class="slds-grid slds-size_1-of-1 label-stacked">
+                            <div  class="slds-form-element slds-hint-parent test-id__output-root slds-form-element_readonly slds-form-element_stacked">
+                                <div  class="test-id__field-label-container slds-form-element__label no-utility-icon">
+                                    <span  class="test-id__field-label">
+                                        Lead days
+                                    </span>
+                                </div>
+                                <div class="slds-form-element__control">
+                                    <span class="test-id__field-value slds-form-element__static slds-grow word-break-ie11 is-read-only">
+                                        <slot name="outputField">
+                                            <slot slot="outputField">
+                                                {dt.leadDays}
+                                            </slot>
+                                        </slot>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="listitem" class="slds-form__item slds-no-space" force-recordlayoutitem_recordlayoutitem-host="">
+                        <div  class="slds-grid slds-size_1-of-1 label-stacked">
+                            <div  class="slds-form-element slds-hint-parent test-id__output-root slds-form-element_readonly slds-form-element_stacked">
+                                <div  class="test-id__field-label-container slds-form-element__label no-utility-icon">
+                                    <span  class="test-id__field-label">
+                                        Term in months
+                                    </span>
+                                </div>
+                                <div  class="slds-form-element__control">
+                                    <span  class="test-id__field-value slds-form-element__static slds-grow word-break-ie11 is-read-only">
+                                        <slot  name="outputField">
+                                            <slot slot="outputField">
+                                                {dt.termInMonths}
+                                            </slot>
+                                        </slot><slot ></slot>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </slot>
+            </div>
+            <div class="slds-form__row">
+                <slot class="slds-grid slds-size_1-of-1">
+                    <div role="listitem" class="slds-form__item slds-no-space">
+                        <div  class="slds-grid slds-size_1-of-1 label-stacked">
+                            <div  class="slds-form-element slds-hint-parent test-id__output-root slds-form-element_readonly slds-form-element_stacked">
+                                <div  class="test-id__field-label-container slds-form-element__label no-utility-icon">
+                                    <span  class="test-id__field-label">
+                                        Renewal terms in months
+                                    </span>
+                                </div>
+                                <div class="slds-form-element__control">
+                                    <span class="test-id__field-value slds-form-element__static slds-grow word-break-ie11 is-read-only">
+                                        <slot name="outputField">
+                                            <slot slot="outputField">
+                                                {dt.renewalterminMonths}
+                                            </slot>
+                                        </slot>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="listitem" class="slds-form__item slds-no-space" force-recordlayoutitem_recordlayoutitem-host="">
+                        <div  class="slds-grid slds-size_1-of-1 label-stacked">
+                            <div  class="slds-form-element slds-hint-parent test-id__output-root slds-form-element_readonly slds-form-element_stacked">
+                                <div  class="test-id__field-label-container slds-form-element__label no-utility-icon">
+                                    <span  class="test-id__field-label">
+                                        Termination date
+                                    </span>
+                                </div>
+                                <div  class="slds-form-element__control">
+                                    <span  class="test-id__field-value slds-form-element__static slds-grow word-break-ie11 is-read-only">
+                                        <slot  name="outputField">
+                                            <slot slot="outputField">
+                                                {dt.terminationDate}
+                                            </slot>
+                                        </slot><slot ></slot>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </slot>
+            </div>
+        </div>
+        </template>
+    </template>
+        </lightning-tab>
+        <lightning-tab label="Customer Information">
+            <template for:each={data} for:item="dt">
+            <div class="slds-form__row" key={dt.sourceSystemId}>
+                <slot class="slds-grid slds-size_1-of-1">
+                    <div role="listitem" class="slds-form__item slds-no-space">
+                        <div  class="slds-grid slds-size_1-of-1 label-stacked">
+                            <div  class="slds-form-element slds-hint-parent test-id__output-root slds-form-element_readonly slds-form-element_stacked">
+                                <div  class="test-id__field-label-container slds-form-element__label no-utility-icon">
+                                    <span  class="test-id__field-label">
+                                        Name
+                                    </span>
+                                </div>
+                                <div class="slds-form-element__control">
+                                    <span class="test-id__field-value slds-form-element__static slds-grow word-break-ie11 is-read-only">
+                                        <slot name="outputField">
+                                            <slot slot="outputField">
+                                                {dt.contactName}
+                                            </slot>
+                                        </slot>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="listitem" class="slds-form__item slds-no-space" force-recordlayoutitem_recordlayoutitem-host="">
+                        <div  class="slds-grid slds-size_1-of-1 label-stacked">
+                            <div  class="slds-form-element slds-hint-parent test-id__output-root slds-form-element_readonly slds-form-element_stacked">
+                                <div  class="test-id__field-label-container slds-form-element__label no-utility-icon">
+                                    <span  class="test-id__field-label">
+                                        Credit account number
+                                    </span>
+                                </div>
+                                <div  class="slds-form-element__control">
+                                    <span  class="test-id__field-value slds-form-element__static slds-grow word-break-ie11 is-read-only">
+                                        <slot  name="outputField">
+                                            <slot slot="outputField">
+                                                {dt.sourceSystemId}
+                                            </slot>
+                                        </slot><slot ></slot>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                </slot>
+                <!---->
+                <slot class="slds-grid slds-size_1-of-1">
+                    <div role="listitem" class="slds-form__item slds-no-space">
+                        <div  class="slds-grid slds-size_1-of-1 label-stacked">
+                            <div  class="slds-form-element slds-hint-parent test-id__output-root slds-form-element_readonly slds-form-element_stacked">
+                                <div  class="test-id__field-label-container slds-form-element__label no-utility-icon">
+                                    <span  class="test-id__field-label">
+                                        Phone number
+                                    </span>
+                                </div>
+                                <div class="slds-form-element__control">
+                                    <span class="test-id__field-value slds-form-element__static slds-grow word-break-ie11 is-read-only">
+                                        <slot name="outputField">
+                                            <slot slot="outputField">
+                                                {dt.phoneNumber}
+                                            </slot>
+                                        </slot>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </slot>
+                </div>
+        </template>
+        </lightning-tab>
+
+        <lightning-tab label="Billing Cycle">  
+                <template for:each={data} for:item="dt">                
+                        <table key={dt.sourceSystemId}>
+                <tbody>
+                    
+                    <tr>
+                        <td>January</td>
+                        <td><input type="checkbox" checked={dt.jan} disabled></td>
+                    </tr>
+                    <tr>
+                        <td>February</td>
+                        <td><input type="checkbox" checked={dt.feb} disabled></td>
+                    </tr>
+                    <tr>
+                        <td>March</td>
+                        <td><input type="checkbox" checked={dt.mar} disabled></td>
+                    </tr>
+                    <tr>
+                        <td>April</td>
+                        <td><input type="checkbox" checked={dt.apr} disabled></td>
+                    </tr>
+                    <tr>
+                        <td>May</td>
+                        <td><input type="checkbox" checked={dt.may} disabled></td>
+                    </tr>
+                    <tr>
+                        <td>June</td>
+                        <td><input type="checkbox" checked={dt.jun} disabled></td>
+                    </tr>
+                    <tr>
+                        <td>July</td>
+                        <td><input type="checkbox" checked={dt.jul} disabled></td>
+                    </tr>
+                    <tr>
+                        <td>August</td>
+                        <td><input type="checkbox" checked={dt.aug} disabled></td>
+                    </tr>
+                    <tr>
+                        <td>September</td>
+                        <td><input type="checkbox" checked={dt.sep} disabled></td>
+                    </tr>
+                    <tr>
+                        <td>October</td>
+                        <td><input type="checkbox" checked={dt.oct} disabled></td>
+                    </tr>
+                    <tr>
+                        <td>November</td>
+                        <td><input type="checkbox" checked={dt.nov} disabled></td>
+                    </tr>
+                    <tr>
+                        <td>December</td>
+                        <td><input type="checkbox" checked={dt.dec} disabled></td>
+                    </tr>
+
+               
+                  </tbody>
+                </table>
+               
+        </template>
+        </lightning-tab>
+    </lightning-tabset>
+
+    
+ </template>

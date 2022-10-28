@@ -1,0 +1,107 @@
+<template>
+    <c-pop-up-notification-cmp></c-pop-up-notification-cmp>
+    <div class="slds-p-horizontal_large slds-p-vertical_small white-bg slds-is-relative">         
+        <div class="spinner">
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" variant="brand" size="medium">
+                </lightning-spinner>
+            </template>
+        </div> 
+
+      <div class="subheading2 brand-color-text slds-p-bottom_x-small">{labels.Invoice}</div>
+        <div class="subheading2 brand-color-text slds-p-bottom_x-small">{labels.InvoiceHeading2}</div> 
+        <div class="slds-grid slds-wrap slds-gutters_xxx-small search-bar slds-p-bottom_small slds-size_1-of-3">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2">             
+                <div class="slds-p-bottom_x-small">{labels.Choose_Invoice_Type}</div>
+                <lightning-combobox
+                    class="picklist-invoice-type"
+                    value={invoiceTypeVal}
+                    options={invoiceTypeOptions}
+                    onchange={handleInvoiceTypeChange} 
+                    placeholder = 'Select an Option'
+                    variant="label-hidden" ></lightning-combobox>
+            </div>        
+        </div>
+        <!--EDI section-->
+        <div class="slds-grid slds-wrap slds-gutters_xxx-small search-bar slds-p-bottom_small" if:true={showEdiSection}>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-4">             
+                <div class="slds-p-bottom_x-small slds-p-right_x-small">{labels.Peppol_ID}</div>
+                <lightning-input class="input-pepolId" type="text" variant="label-hidden" value={invoiceScreenFields.pepolId} required></lightning-input>
+            </div>
+            <div class="slds-col slds-size_5-of-6 slds-medium-size_1-of-3 slds-large-size_1-of-4" style="display: none;">
+                <div class="slds-p-bottom_x-small slds-p-right_x-small">{labels.References} 
+                    <lightning-helptext content={labels.Reference_Help_text}></lightning-helptext>
+                </div>
+                <lightning-input class="input-ediReference" type="text" variant="label-hidden" value={invoiceScreenFields.ediReference}></lightning-input>
+            </div>            
+        </div>
+
+        <!--PDF section-->
+        <div class="slds-grid slds-wrap slds-gutters_xxx-small search-bar slds-p-bottom_small" if:true={showPdfSection}>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-4">             
+                <div class="slds-p-bottom_x-small slds-p-right_x-small">{labels.E_mail_Invoice}</div>
+                <lightning-input class="input-pdfEmail" type="email" variant="label-hidden" value={invoiceScreenFields.pdfEmail} required></lightning-input>
+            </div>
+            <div class="slds-col slds-size_5-of-6 slds-medium-size_1-of-3 slds-large-size_1-of-4" style="display: none;">
+                <div class="slds-p-bottom_x-small slds-p-right_x-small">{labels.References} 
+                    <lightning-helptext content={labels.Reference_Help_text}></lightning-helptext>
+                </div>
+                <lightning-input class="input-pdfReference" type="text" variant="label-hidden" value={invoiceScreenFields.pdfReference}></lightning-input>
+            </div>       
+        </div>
+
+        <!--Letter/Paper section-->
+        <div class="slds-grid slds-wrap slds-gutters_xxx-small search-bar slds-p-bottom_small" if:true={showLetterSection}>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-4">             
+                <div class="slds-p-bottom_x-small slds-p-right_x-small">{labels.C_O_Name}</div>
+                <lightning-input class="input-letterCoName" type="text" variant="label-hidden" value={invoiceScreenFields.letterCoName}></lightning-input>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap slds-gutters_xxx-small search-bar slds-p-bottom_small" if:true={showLetterSection}>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-4">               
+                <div class="slds-p-bottom_x-small slds-p-right_x-small">{labels.Address_Box}</div>
+                <lightning-input class="input-letterAdres" type="text" variant="label-hidden" value={invoiceScreenFields.letterAdresBox} required></lightning-input>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap slds-gutters_xxx-small search-bar slds-p-bottom_small" if:true={showLetterSection}>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-4">               
+                <div class="slds-p-bottom_x-small slds-p-right_x-small">{labels.Postal_Number}</div>
+                <lightning-input class="input-letterPoNum slds-size_2-of-3" type="text" variant="label-hidden" value={invoiceScreenFields.letterPoNum} required></lightning-input>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap slds-gutters_xxx-small search-bar slds-p-bottom_small" if:true={showLetterSection}>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-4">               
+                <div class="slds-p-bottom_x-small slds-p-right_x-small">{labels.City}</div>
+                <lightning-input class="input-letterCity slds-size_2-of-3" type="text" variant="label-hidden" value={invoiceScreenFields.letterCity} required></lightning-input>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap slds-gutters_xxx-small search-bar slds-p-bottom_small" if:true={showLetterSection}>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-4">               
+                <div class="slds-p-bottom_x-small slds-p-right_x-small">{labels.Country}</div>
+                <lightning-combobox
+                    class="picklist-letterCountry"
+                    value={invoiceScreenFields.letterCountry}
+                    options={letterCountryOptions}
+                    onchange={handleCountryChange} 
+                    placeholder = 'Select an Option'
+                    variant="label-hidden" required></lightning-combobox>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap slds-gutters_xxx-small search-bar slds-p-bottom_small" if:true={showLetterSection} style="display: none;">
+            <div class="slds-col slds-size_5-of-6 slds-medium-size_1-of-3 slds-large-size_1-of-4">
+                <div class="slds-p-bottom_x-small slds-p-right_x-small">{labels.References} 
+                    <lightning-helptext content={labels.Reference_Help_text}></lightning-helptext>
+                </div>
+                <lightning-input class="input-letterReference"  type="text" variant="label-hidden" value={invoiceScreenFields.letterReference}></lightning-input>
+            </div>            
+        </div> 
+
+        <!--Buttons at footer-->
+        <div class="slds-clearfix">     
+            <div class="slds-float_right">
+                <button class="slds-button slds-p-horizontal_small slds-button_neutral" onclick={handlePreviousStep}>{labels.Previous_Step}</button>           
+                <button style="color:white;background:#009A00;" class="slds-button slds-p-horizontal_small" onclick={handleNextStep}>{labels.save_user}</button>
+            </div>    
+        </div> 
+    </div>
+</template>

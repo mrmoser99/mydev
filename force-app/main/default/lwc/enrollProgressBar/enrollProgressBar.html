@@ -1,0 +1,36 @@
+<template>
+    <div class="progressBackgroundCss">
+        <div class="divBackground">
+            <div>
+                <lightning-progress-indicator type="base" current-step={selectedStep}>
+                    <lightning-progress-step label={label.ENROL_PRO_BAR_REVIEW_SPEC}
+                        value={label.ENROL_PRO_BAR_REVIEW_SPEC}>
+                    </lightning-progress-step>
+                    <lightning-progress-step label={label.ENROL_PRO_BAR_ASSET_DETAIL}
+                        value={label.ENROL_PRO_BAR_ASSET_DETAIL}>
+                    </lightning-progress-step>
+                    <lightning-progress-step label={label.ENROL_PRO_BAR_CUST_BILLING}
+                        value={label.ENROL_PRO_BAR_CUST_BILLING}>
+                    </lightning-progress-step>
+                    <lightning-progress-step label={label.ENROL_PRO_BAR_REQ_DOC} value={label.ENROL_PRO_BAR_REQ_DOC}>
+                    </lightning-progress-step>
+                    <lightning-progress-step label={label.ENROL_PRO_BAR_SUBMIT_DOC}
+                        value={label.ENROL_PRO_BAR_SUBMIT_DOC}>
+                    </lightning-progress-step>
+                    <lightning-progress-step label={label.ENROL_PRO_BAR_COMPLETE_FUNDING}
+                        value={label.ENROL_PRO_BAR_COMPLETE_FUNDING} class="slds-hide">
+                    </lightning-progress-step>
+
+
+                </lightning-progress-indicator>
+            </div>
+            <div style=" margin-left: 2%;padding-top: 1%;" class="slds-grid slds-gutters">
+                <template for:each={stepsList} for:item="steps">
+                    <lightning-layout-item size="2" key={steps}>
+                        <div><span>{steps}</span></div>
+                    </lightning-layout-item>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>

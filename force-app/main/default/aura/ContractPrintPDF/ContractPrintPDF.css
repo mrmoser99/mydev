@@ -1,0 +1,11 @@
+@media print {
+    .THIS.divToPrint {
+        background-color: white;
+        border:none;
+    }
+}
+
+.THIS .slds-border_bottom{
+    border-bottom-width: 3px;
+    border-bottom-color: black;
+}

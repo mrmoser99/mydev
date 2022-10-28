@@ -1,0 +1,56 @@
+<template>
+    <c-pop-up-notification-cmp></c-pop-up-notification-cmp>
+
+    <div class="slds-grid slds-wrap slds-p-horizontal_large slds-p-top_large white-bg slds-border_bottom">
+        <div>
+            <div class="subheading1 brand-color-text" style="border-top: 2px solid #0099FF;">{oppname}</div>
+            <p if:true={partnerInfo} class="xxs-text slds-p-top_xx-small">Partner: <b>{partnerInfo.name}</b></p>
+            <p if:true={partnerInfo} class="xxs-text" style="line-height: 10px;">Partner user: <b>{partnerInfo.user}</b>
+            </p>
+        </div>
+        <div class="slds-col_bump-left slds-m-right_xx-small">
+            <lightning-button-menu class="progressive-bar-btn-menu" slot="actions" icon-name="utility:settings"
+                disabled={disableQuoteSettingMenu}>
+                <lightning-menu-item style={showHideCopy} label={labels.Copy_Quote} value="CopyQuote"
+                    onclick={handleCopyQuote}></lightning-menu-item>
+            </lightning-button-menu>
+        </div>
+        <div class="slds-m-right_xx-small brand-border-color">
+            <lightning-combobox style="color:#0099FF" slot="actions" value={value} options={_restquotename}
+                onchange={handleChangeQuoteDropdwn} variant="label-hidden" disabled={isDsabled}>
+            </lightning-combobox>
+        </div>
+        <div class="slds-m-right_xx-small">
+            <button class="slds-button slds-p-horizontal_small slds-button_neutral" disabled={disableNewButton}
+                onclick={handleNewVersion}>
+                <p>+&#8195;{labels.New_Version}</p>
+            </button>
+        </div>
+        <div style="width: 100%;" class="slds-m-top_x-large slds-m-bottom_medium">
+            <div class="progress-indicator slds-grid slds-align_absolute-center"
+                style="width: 86%; text-align: center; font-size: 1.1rem;">
+                <div class="slds-col slds-size_1-of-5">
+                    <span>{labels.Calculation}</span>
+                </div>
+                <div class="slds-col slds-size_1-of-5">
+                    <span>{labels.Customer}</span>
+                </div>
+                <div class="slds-col slds-size_1-of-5">
+                    <span>{labels.Documents}</span>
+                </div>
+                <div class="slds-col slds-size_1-of-5">
+                    <span>{labels.E_Sign}</span>
+                </div>
+                <div class="slds-col slds-size_1-of-5">
+                    <span>{labels.Review}</span>
+                </div>
+            </div>
+            <lightning-progress-indicator current-step={lastAvaliableScreen} type="base" variant="base">
+                <template for:each={stages} for:item="stage">
+                    <lightning-progress-step key={stage} value={stage} onclick={handleProgressStepClick}>
+                    </lightning-progress-step>
+                </template>
+            </lightning-progress-indicator>
+        </div>
+    </div>
+</template>

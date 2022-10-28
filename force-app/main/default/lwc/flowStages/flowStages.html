@@ -1,0 +1,61 @@
+<template>
+    <footer class='modal-footer slds-modal__footer lwc-flow-footer'>
+        <div class="spinner">
+            <template if:true={showSpinner}>
+                <lightning-spinner alternative-text="Loading" variant="brand" size="medium">
+                </lightning-spinner>
+            </template>
+        </div>
+        <lightning-layout class="actionButtonBar slds-gutters_x-small slds-grid_align-end slds-grid_vertical-align-center">
+                <div class="slds-col">
+                    <span class="subheading1"> {totalFinanceAmount}  </span>         
+                    <span class="slds-col slds-size_6-of-12" >{labels.financed_Amount}</span>      
+                </div>
+                <div class="slds-col">
+                    <span class="subheading1"> {totalrentalprice} </span>     
+                    <span class="slds-col slds-size_6-of-12">{labels.rent_per_month} {frequencyLabel}</span>   
+                </div>
+               <!-- <div if:true={isPurchaseOptionApplicable} class="slds-col">
+                    <span class="subheading1"> {totalPurchaseOptionAmount} </span>     
+                    <span class="slds-col slds-size_6-of-12">{labels.Total_Purchase_Option_Amount}</span>   
+                </div>
+                <div if:true={isdownpayment} class="slds-col">
+                    <span class="subheading1"> {downpayment} </span>     
+                    <span class="slds-col slds-size_6-of-12">{labels.Downpayment}</span>   
+                </div>-->
+                <div class="slds-col">
+                    <span><lightning-button-icon onclick={openModal} icon-name="utility:up"  variant="border-filled" alternative-text="modalbtn"></lightning-button-icon>                       
+                    </span>
+                </div>
+                <div class="slds-col" if:false={isDisabledButton}>
+                    <span><button class="primaryButton footerBtnCls " onclick={handleNextStep} style="min-width: 12.5rem; slds-p-vertical_large"><p>→&#8195;{buttonLabel}</p></button></span>
+                </div>
+                <div class="slds-col" if:true={isDisabledButton}>
+                    <span><button disabled={isDisabledButton} class="primaryButton footerBtnCls" onclick={handleNextStep} style="min-width: 12.5rem; background-color: rgb(217 219 221); slds-p-vertical_large" title={disabledButtonTitle}><p>→&#8195;{buttonLabel}</p></button></span>
+                </div>
+        </lightning-layout>
+    </footer>
+
+    <!-- The Modal -->
+    <div data-id="myModal" class="modalhide">
+        <!-- Modal content -->
+        <div class="modal-content" data-id="modalContent">
+            <div class="modal-header">
+                <div class="subheading3 slds-m-left_medium">{labels.summary}
+                    <span class="close slds-m-left_medium" data-id="crosssign" style="position: relative; right: 4%;float: right;font-size: 145%;" onclick={closemodal}>&times;</span>             
+                </div>
+            </div>
+            <div class="modal-body slds-p-bottom_medium">                
+                <div style="border-bottom: 1px solid white;" class="slds-p-top_x-small">{labels.total_Financed_Amount}<p class="modalText">{totalFinanceAmount}</p></div>
+                <div style="border-bottom: 1px solid white;" class="slds-p-top_x-small">{labels.accumulated_Service}<p class="modalText">{offerCurrency}&nbsp;{totalAccumulatedService}</p></div>
+                <div style="border-bottom: 1px solid white;" class="slds-p-top_x-small">{labels.Insurance_Per} {frequencyLabel}<p class="modalText">{offerCurrency}&nbsp;{insurancePerFrqncy}</p></div>
+                <div style="border-bottom: 1px solid white;" class="slds-p-top_x-small">{labels.rent_per_month} {frequencyLabel} <p class="modalText">{totalrentalprice}</p></div>            
+                <div style="border-bottom: 1px solid white;" class="slds-p-top_x-small">{labels.reference_Rate}<p class="modalText">{finalBaseRate}%</p></div>
+                <div if:true={isPurchaseOptionApplicable} style="border-bottom: 1px solid white;" class="slds-p-top_x-small">{labels.Total_Purchase_Option_Amount}<p class="modalText">{totalPurchaseOptionAmount}</p></div>
+                <div if:true={isdownpayment} style="border-bottom: 1px solid white;" class="slds-p-top_x-small">{labels.Downpayment}<p class="modalText">{downpayment}</p></div>   
+                <div class="slds-p-bottom_xx-large"></div>                   
+            </div>
+                
+        </div>     
+    </div>
+</template>

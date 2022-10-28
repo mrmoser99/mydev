@@ -1,0 +1,10 @@
+.green-btn {
+    color:          white;
+    background:     #009A00;
+}
+
+.green-btn[disabled] {
+    background:     #e9eaec;
+    color:          #606060;
+    border-color:   #c4c6ca;
+}

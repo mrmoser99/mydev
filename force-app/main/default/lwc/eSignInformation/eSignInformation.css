@@ -1,0 +1,70 @@
+.slds-button:focus {
+    outline: 0;
+    box-shadow: none;
+}
+
+div.signed {
+    background-color: #CCEBCC;
+    --lwc-colorTextIconDefault: #009A00;
+}
+
+div.unsigned, div.cancelled {
+    background-color: #F1F1F1;
+    --lwc-colorTextIconDefault: #999999;
+}
+
+div.signed .status {
+    color: #009A00;
+}
+
+div.unsigned .status, div.cancelled .status {
+    color: #999999;
+}
+
+.email, .signer-name {
+    color: #333333;
+}
+
+div.e-sign-info:last-child {
+    margin-bottom: 0;
+}
+
+div.e-sign-info {
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+}
+
+div.document-type:first-child div.slds-p-top_large {
+    padding-top: 0;
+}
+
+.signer-name, .ssn, .email {
+    overflow-wrap: anywhere;
+}
+
+.e-sign-info .signer-name, .e-sign-info .ssn, .e-sign-info .date-time {
+    display: none;
+}
+
+.expanded-view .signer-name, .expanded-view .ssn, .expanded-view .date-time {
+    display: block;
+}
+
+.modal p {
+    text-align: center;
+}
+
+.slds-modal {
+    width: 400px;
+    margin: 0 auto;
+}
+
+.slds-button {
+    width: 60px;
+}
+
+@media (min-width: 48em) {
+    .slds-modal__container {
+        width: auto;
+    }
+}

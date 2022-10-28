@@ -1,0 +1,188 @@
+<template>
+    <div if:true={isLoading}>
+        <div class="exampleHolder">
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </div>
+    </div>
+    <div>
+        <!--Use template if:true to display/hide popup based on isModalOpen value-->
+        <template if:true={newAddressModal}>
+            <!-- Modal/Popup Box LWC starts here -->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box LWC body starts here -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"
+                            style="margin-bottom: 15px;">Add New Address</h2>
+                        <p style="margin-bottom: 10px;"><b>{EndUserAccountName}</b></p>
+                        <div>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col" style="min-width: 50%;">
+                                  <div><lightning-input type="text" label="Address Line 1" required="true" onchange={handleStreetOneChange}></lightning-input></div>
+                                  <div><lightning-input type="text" label="City" required="true" onchange={handleCityChange}></lightning-input></div>
+                                  <div><lightning-input type="text" label="Zip Code" required="true" onchange={handleZipChange}></lightning-input></div>
+                                </div>
+                                <div class="slds-col" style="min-width: 50%; height: 310px;">
+                                    <div><lightning-input type="text" label="Address Line 2" onchange={handleStreetTwoChange}></lightning-input></div>
+                                    <div>
+                                        <c-reusable-custom-dropdown-with-search-lwc bold-label="true"
+                                            error-message="Enter a valid state" auto-complete-off="off" options={statelist}
+                                            value={state} field-label="State" placeholder="Enter State" onchange={handleStateChange}>
+                                        </c-reusable-custom-dropdown-with-search-lwc>
+                                    </div>
+                                    <!--<div><lightning-input type="text" label="Country" required="true" onchange={handleCountryChange} ></lightning-input></div>-->
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                    <!-- Modal/Popup Box LWC footer starts here -->
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={modalClose} title="Close">Close</button>
+                        <button class="slds-button slds-button_brand" onclick={modalAddAddress} title="Add Address">Add Address</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </div>
+    <lightning-layout>
+            <lightning-layout-item>
+                <div class="body-top slds-p-around_medium slds-m-right_medium">
+                    <lightning-layout multiple-rows=true>
+                        <lightning-layout-item size=12>
+                            <div class="specification-header">
+                                <h1 class="slds-text-heading_large">
+                                    Complete Asset Details
+                                </h1>
+                                <p class="contentMargin">You may enter serial numbers for each of your assets, change the asset location for any asset which has a different location than the customer’s default address and/or mark some or all of the assets as tax exempt.</p>
+                            </div>
+                            <!-- Commenting this section as it is not approved for the sprint 12. -->
+                            <!--
+                            <div class="specification-header">
+                                <h1 class="slds-text-heading_medium">
+                                    Are the assets below replacing existing assets?
+                                </h1>
+                                <p class="contentMargin">Veribage coming</p>
+                            </div>
+                        
+                            <div>
+                                <lightning-input type="text" label="Existing Contract Number" placeholder="Existing Contract Number" disabled={editMode}></lightning-input>
+                            </div>
+                            -->
+                        </lightning-layout-item>
+            
+                        <lightning-layout-item >
+
+                            <div class="slds-p-around_x-small">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered boderClass">
+                                    <thead>
+                                        <tr class="">
+                                            <th class="slds-size_1-of-12" scope="col" style="border-bottom: 3px solid #0099ff;">
+                                                <div class="slds-truncate" title="Asset #">Asset #</div>
+                                            </th>
+                                            <th class="slds-size_1-of-12" scope="col" style="border-bottom: 3px solid #0099ff;">
+                                                <div class="slds-truncate" title="Make/Model">Make/Model</div>
+                                            </th>
+                                            <!--
+                                            <th class="slds-size_1-of-12" scope="col" style="border-bottom: 3px solid #0099ff;">
+                                                <div class="slds-truncate" title="Model">Model</div>
+                                            </th>
+                                            -->
+                                            <th class="slds-size_2-of-12" scope="col" style="border-bottom: 3px solid #0099ff;">
+                                                <div class="slds-truncate" title="Serial  Number ">Serial  Number </div>
+                                            </th>
+                                            <th class="slds-size_2-of-12" scope="col" style="border-bottom: 3px solid #0099ff;">
+                                                <div class="slds-truncate" title="Asset Location">Asset Location</div>
+                                            </th>
+                                            <th class="slds-size_2-of-12" scope="col" style="border-bottom: 3px solid #0099ff;">
+                                                <div class="slds-truncate" title="Delivery Date">Delivery Date</div>
+                                            </th>
+                                            <th class="slds-size_2-of-12" scope="col" style="border-bottom: 3px solid #0099ff;">
+                                                <div class="slds-truncate" title="Service Fee">Service Fee</div>
+                                            </th>
+                                            <th class="slds-size_1-of-12" scope="col" style="border-bottom: 3px solid #0099ff;">
+                                                <div class="slds-truncate" title="Tax Exempt">Tax Exempt</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each = {assetsList} for:item = "asset" for:index="indexVar">
+                                            <tr key={asset.key} class="slds-hint-parent" >
+                                                <td class="slds-size_1-of-12" scope="col">
+                                                    <div  title="Asset #">{asset.assets}</div>
+                                                </td>
+                                                <td class="slds-size_1-of-12" scope="col">
+                                                    <div  title="Make/Model">{asset.name}</div>
+                                                </td>
+                                                <td class="slds-size_2-of-12" scope="col">
+                                                    <div title="Serial Number">
+                                                         <lightning-input  name={asset.id} placeholder="Enter serial..."  value={asset.serialNumber} variant="label-hidden" onchange={handleSerialNumberChange} disabled={editMode}></lightning-input>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-size_2-of-12" scope="col">
+                                                    <div title="Asset Location" style="width: 100%;">
+                                                        <lightning-combobox
+                                                            variant="label-hidden"
+                                                            name={asset.key}
+                                                            label="Asset Location"
+                                                            value={asset.assetLocation}
+                                                            placeholder="Select Asset Location"
+                                                            options={assetLocationOptions}
+                                                            onchange={handleAssetLocationChange} 
+                                                            disabled={editMode}></lightning-combobox>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-size_2-of-12" scope="col">
+                                                    <div title="Delivery Date">
+                                                        <lightning-input variant="label-hidden" 
+                                                            data-id={asset.id} value={asset.deliveryDate}
+                                                            type="date" date-style="short"  name={asset.id} label="Delivery Date"
+                                                            placeholder="Enter Date"
+                                                            onchange={handleDeliveryDateChange} 
+                                                            disabled={editMode}></lightning-input>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-size_2-of-12" scope="col">
+                                                    <div title="Service Fee">
+                                                        <lightning-input placeholder="Enter fee"
+                                                             name={asset.id}
+                                                             type="number"
+                                                             value={asset.serviceFee}
+                                                             variant="label-hidden"
+                                                             onchange={handleServiceFeeChange}
+                                                             disabled={editMode}
+                                                             formatter="currency"
+                                                             step=".01">
+                                                        </lightning-input>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-size_1-of-12" scope="col">
+                                                    <div title="Tax Exempt">
+                                                        <lightning-input type="checkbox" name={asset.id}  label="Tax Exempt" checked={asset.taxExempt} disabled={editMode} onchange={handleTaxExemptChange}></lightning-input>
+                                                    </div>
+                                                </td>
+                                                
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </lightning-layout-item>
+            
+                        <!--<lightning-layout-item>
+                            <div class="specification-header">
+                                <h1 class="slds-text-heading_medium">
+                                    Tax Exemption Form
+                                </h1>
+                                <p class="contentMargin">As you have marked one or more assets as tax exempt in the table above, you must provide a tax exemption form later in the enrolment process. Please confirm that you currenlty have or are able to obtain this form.</p>
+                            </div>
+                            <div>
+                                <lightning-input type="checkbox" label="I can provide a tax exemption form for the assets that I have marked as ‘Tax Exempt’ above." name="I can provide a tax exemption form for the assets that I have marked as ‘Tax Exempt’ above." disabled={editMode}></lightning-input>
+                            </div>
+                        </lightning-layout-item>-->
+                    </lightning-layout>
+                </div>
+            </lightning-layout-item>
+    </lightning-layout>
+</template>

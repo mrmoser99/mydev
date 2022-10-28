@@ -1,0 +1,39 @@
+<template>
+    <div class="slds-m-top_xx-large">
+        <div if:true={displayCalculationParams} class="slds-grid slds-wrap">
+            <template for:each={data} for:item="table" for:index="index">
+                <div if:true={table.data} key={table.fieldName} class={table.class}>
+                    <table> 
+                        <thead>
+                            <tr>
+                                <th colspan={table.colspan}>
+                                    <div class="slds-truncate slds-p-around_xx-small slds-align_absolute-center">
+                                        {table.tableName}
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={table.data} for:item="row" for:index="index">
+                                <tr class="inputRows" key={row.fieldName}>
+                                    <template for:each={table.columns} for:item="column">
+                                        <td key={column.fieldName} class="slds-p-horizontal_small" style={table.tdStyles}>
+                                            <c-grid-cell-handler                                 
+                                                cell-key={column.fieldName} 
+                                                cell-mode={column.display}
+                                                cell-type={column.source}
+                                                grid-row-data={row}
+                                                cell-label ={column.label}
+                                                table-name={tableName}
+                                            ></c-grid-cell-handler>                             
+                                        </td>
+                                    </template>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template> 
+        </div>
+    </div>
+</template>

@@ -1,0 +1,92 @@
+<apex:page showHeader="false" controller="OpportunityGraphController"> 
+    <style type="text/css">
+        .reportTitle, .analyticsEmbeddedReportChart .lightning .reportFooter, .analyticsEmbeddedChart .spacer {
+            display:        none;
+        }
+        .analyticsEmbeddedReportChart.width_large {
+            width:          100%;
+        }
+        .analyticsEmbeddedChart {
+            height:         250px;
+        }
+        .chart {
+            pointer-events: none;
+        }
+        .slds-is-relative {
+            height:         290px;
+        }
+        .subheading2 {
+            font-size: 			22px;
+            line-height: 		26px;
+            font-weight: 		500;
+            font-family:       'Effra';
+        }
+        .bold-font-weight {
+            font-weight: 		700;
+        }
+        .brand-color-text {
+            color: 		#0099FF;
+            
+        } 
+        @font-face {
+            font-family: "Effra";
+            src: url("/sfsites/c/resource/effraBd") format('truetype');;
+            font-weight: 700;
+            font-style: normal;
+        }
+    </style>
+
+    <apex:slds />
+
+    <div class="slds-scope slds-p-horizontal_large slds-p-top_large" style="background-color: #ffffff">
+        <div class="slds-m-bottom_small subheading2 bold-font-weight brand-color-text">Pipeline</div>
+        <div class="slds-is-relative">
+            <div class="slds-grid slds-size_1-of-1 chart">
+                <div class="slds-size_1-of-1 slds-p-vertical_medium">
+                    <analytics:reportChart developerName="{!reportApiName}" 
+                            size="large" 
+                            showRefreshButton="false"
+                            hideOnError="true"
+                            cacheResults="false"/>
+                </div>
+            </div>
+            <!-- custom spinner that overlaps the standard loader -->
+            <div id="spinner">
+                <div class="slds-spinner_container slds-is-absolute" style="background-color: rgba(255, 255, 255, 1);">
+                    <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                        <span class="slds-assistive-text">Loading</span>
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        function hideSpinner() {
+            // get standard loader
+            let loader = document.querySelector('.hideLoading')
+            if (loader != null) {
+                // check whether the standard loader is displayed or not (style={display: none;})
+                let displayStyle = getComputedStyle(loader).display;
+                // if graph is already loaded, standard loader is not be displayed
+                if (displayStyle === 'none') {
+                    // get custom spinner
+                    let spinner = document.getElementById('spinner');
+                    // remove custom spinner
+                    spinner.remove();
+                } else {
+                    // execute the function until graph is loaded
+                    setTimeout(hideSpinner, 100);
+                }
+            } else {
+                // execute the function until graph is loaded
+                setTimeout(hideSpinner, 100);
+            }
+        }
+
+        hideSpinner();
+    </script>
+</apex:page>

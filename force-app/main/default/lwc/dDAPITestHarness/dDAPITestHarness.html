@@ -1,0 +1,242 @@
+<template>
+    <div class="slds-var-m-around_small">
+        <lightning-card title="DD Test Harness v1.4" icon-name="action:quote">
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-size_2-of-6">
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="site" label="Site" value={site} placeholder="Select Site"
+                                options={sitelist} onchange={handleChangeSite}>
+                            </lightning-combobox>
+
+                            Selected value is: {site}
+                        </div>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="Salesrep" label="SalesRep" value={salesrepid}
+                                placeholder="Select Salesrep" options={salesreplist} onchange={handleChangeSalesRep}>
+                            </lightning-combobox>
+
+                            Selected value is: {salesrepid}
+                        </div>
+                    </lightning-layout>
+                </div>
+                <div class="slds-col slds-size_1-of-6">
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="program" label="Program" value={program}
+                                placeholder="Select Program" options={programlist} onchange={handleChange}>
+                            </lightning-combobox>
+
+                            Selected value is: {program}
+                        </div>
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="make" label="Make" value={make} placeholder="Select Make"
+                                options={makelist} onchange={handleChange2}>
+                            </lightning-combobox>
+                            Selected value is: {make} + {makelabel}
+                        </div>
+
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="assettype" label="Asset Type" value={assetType}
+                                placeholder="Select Asset Type" options={assettypelist} onchange={handleChange3}>
+                            </lightning-combobox>
+                            Selected value is: {assettypeid}
+                        </div>
+
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="model" label="Model" value={asset} placeholder=" Select Model"
+                                options={modellist} onchange={handleChange4}>
+                            </lightning-combobox>
+                            Selected value is: {searchAssetId} + {modellabel}
+                        </div>
+
+                    </lightning-layout>
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="model" label="Accessory" value={accessory}
+                                placeholder=" Select Accessory" options={accessorylist} onchange={handleChangeAcc}>
+                            </lightning-combobox>
+                            Selected value is: {accessoryId}
+                        </div>
+
+                    </lightning-layout>
+                </div>
+
+                <div class="slds-col slds-size_1-of-6">
+
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="mast" label="Mast Type" value={mast} placeholder=" Select Mast"
+                                options={mastlist} onchange={handleChange5}>
+                            </lightning-combobox>
+                            Selected value is: {mast}
+                        </div>
+
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="hours" label="Hours" value={hours} placeholder=" Select Hours"
+                                options={hourlist} onchange={handleChange6}>
+                            </lightning-combobox>
+                            Selected value is: {hours}
+                        </div>
+
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="environment" label="Operating Environment" value={environment}
+                                placeholder=" Select Environment" options={environmentlist} onchange={handleChange7}>
+                            </lightning-combobox>
+                            Selected value is: {environment}
+                        </div>
+
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="battery" label="Battery" value={battery}
+                                placeholder=" Select Battery" options={batterylist} onchange={handleChange8}>
+                            </lightning-combobox>
+                            Selected value is: {battery}
+                        </div>
+
+                    </lightning-layout>
+                </div>
+
+                <div class="slds-col slds-size_1-of-6">
+
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="financetype" label="Finance Type" value={financetype}
+                                placeholder=" Select Finance Type" options={financetypelist} onchange={handleChange11}>
+                            </lightning-combobox>
+                            Selected value is: {financetype}
+                        </div>
+
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="rate" label="Rate Type" value={financialproduct}
+                                placeholder=" Select Rate Type" options={financialproductlist}
+                                onchange={handleChange13}>
+                            </lightning-combobox>
+                            Selected value is: {financialproduct}
+                        </div>
+
+                    </lightning-layout>
+
+
+
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="term" label="Finance Term/Month" value={term}
+                                placeholder=" Select Term" options={termlist} onchange={handleChange9}>
+                            </lightning-combobox>
+                            Selected value is: {term}
+                        </div>
+
+                    </lightning-layout>
+
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="frequency" label="Payment Frequency" value={frequency}
+                                placeholder=" Select Payment Frequency" options={frequencylist}
+                                onchange={handleChange12}>
+                            </lightning-combobox>
+                            Selected value is: {frequency}
+                        </div>
+
+                    </lightning-layout>
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="subsidy" label="Subsidy" value={subsidyId}
+                                placeholder=" Select Subsidy" options={subsidylist} onchange={handleChangeSub}>
+                            </lightning-combobox>
+                            Selected value is: {subsidyId}
+                        </div>
+
+                    </lightning-layout>
+
+                </div>
+
+                <div class="slds-col slds-size_1-of-6">
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <lightning-combobox name="advance" label="Advance Payments" value={advance}
+                                placeholder=" Select Advance Payment" options={advancelist} onchange={handleChange10}>
+                            </lightning-combobox>
+                            Selected value is: {advance}
+                        </div>
+
+                    </lightning-layout>
+
+
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <!-- Brand variant: Identifies the primary action in a group of buttons -->
+                            <lightning-button variant="brand" label="Calc Pricing" title="Primary action"
+                                onclick={calcPricing} class="slds-var-m-around_small">
+                            </lightning-button>
+                            Monthly price is : {monthlyprice}
+
+                        </div>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <!-- Brand variant: Identifies the primary action in a group of buttons -->
+                            <lightning-button variant="brand" label="Submit for Credit" title="Primary action"
+                                onclick={submitCredit} class="slds-var-m-around_small">
+                            </lightning-button>
+                            <br />
+                            Credit Response is: {creditresponse}
+
+                        </div>
+
+                    </lightning-layout>
+                    <lightning-layout>
+                        <div class="slds-var-m-around_small">
+                            <!-- Brand variant: Identifies the primary action in a group of buttons -->
+                            <lightning-button variant="brand" label="PreQaul" title="Primary action"
+                                onclick={submitCreditPreQual} class="slds-var-m-around_small">
+                            </lightning-button>
+                            <br />
+                            Credit Response is: {creditresponsepq}
+
+                        </div>
+
+                    </lightning-layout>
+
+
+                </div>
+                <div class="slds-col slds-size_1-of-6"></div>
+            </div>
+        </lightning-card>
+
+    </div>
+
+    <div class="slds-var-m-around_small">
+        <div if:true={loading}>
+            <lightning-spinner alternative-text="Loading..." variant="brand"></lightning-spinner>
+        </div>
+    </div>
+
+    <div>
+        <c-customer-quick-search onprogressvaluechange={handleProgress} record-id="00604000005cdSOAAY">
+        </c-customer-quick-search>
+    </div>
+
+</template>

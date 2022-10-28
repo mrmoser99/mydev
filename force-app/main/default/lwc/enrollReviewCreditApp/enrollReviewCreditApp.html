@@ -1,0 +1,215 @@
+<template>
+    <div if:true={loading} class="slds-var-m-around_small">
+        <div >
+            <lightning-spinner alternative-text="Loading..." variant="brand"></lightning-spinner>
+        </div>
+    </div>
+    <lightning-layout>
+            <lightning-layout-item>
+                <div class="body-top slds-p-around_medium slds-m-right_medium">
+                    <lightning-layout multiple-rows=true>
+                        <lightning-layout-item size=12>
+                            <div class="specification-header">
+                                <h1 class="slds-text-heading_large">
+                                    {label.ENROL_REVIEW_SPECS}
+                                </h1>
+                                <p class="contentMargin">{label.ENROL_REVIEW_FINANCE_ASSETS}</p>
+                                <p class="requiredField">* {label.ENROL_REVIEW_REQUIRED}</p>
+                            </div>
+                        </lightning-layout-item>
+            
+            
+                        <!--Specific sections-->
+                        <lightning-layout-item size=12>
+                            <lightning-accordion allow-multiple-sections-open
+                                onsectiontoggle={handleSectionToggle}
+                                class="slds-border_top slds-m-top_small"
+                                active-section-name={activeSections}>
+                                <!-- Finance section -->
+                                <lightning-accordion-section name="Financing Structure"
+                                    label={label.ENROL_REVIEW_FIN_STRUCTURE}>
+                                    <div class="financeBody">
+                                        <lightning-layout multiple-rows>
+                                            <lightning-layout-item size=6
+                                                class="marginBottom slds-p-right_small">
+                                                <lightning-input class="validate" name="financeType"
+                                                    label={label.ENROL_REVIEW_LEASE_TYPE} value={financeType}
+                                                    field-level-help="" disabled={modeVisible}>
+                                                </lightning-input>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=6>
+                                                <lightning-input class="validate" name="financeTerm"
+                                                    label={label.ENROL_REVIEW_FIN_TERM} value={financeTerm}
+                                                    field-level-help="" disabled={modeVisible}>
+                                                </lightning-input>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=6
+                                                class="marginBottom slds-p-right_small">
+                                                <lightning-input class="validate" name="rateType"
+                                                    label={label.ENROL_REVIEW_RATE_TYPE} value={rateType} field-level-help=""
+                                                    disabled={modeVisible}>
+                                                </lightning-input>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=6>
+                                                <lightning-input class="validate" name="paymentFrequency"
+                                                    label={label.ENROL_REVIEW_PAYMENT_FREQ} value={paymentFrequency}
+                                                    field-level-help="" disabled={modeVisible}>
+                                                </lightning-input>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=6
+                                                class="marginBottom slds-p-right_small">
+                                                <lightning-input name="advPayments"
+                                                    label={label.ENROL_REVIEW_ADV_PAY_OPTIONAL} value={advPayments}
+                                                    field-level-help="" disabled={modeVisible}>
+                                                </lightning-input>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=6>
+                                                <lightning-input name="totalPrice" label={label.ENROL_REVIEW_TOTAL_PRICE}
+                                                    type="string" value={totalPrice} disabled={modeVisible}>
+                                                </lightning-input>
+            
+            
+                                            </lightning-layout-item>
+                                        </lightning-layout>
+                                    </div>
+            
+                                </lightning-accordion-section>
+            
+                                <!-- Assets section -->
+                                <template if:false={loading}>
+                                    <template for:each={assets} for:item="assetItem">
+                                        <lightning-accordion-section name={assetItem.sectionName}
+                                            label={assetItem.assetHeading} key={assetItem.assetNo}>
+                                            <div class="financeBody">
+                                                <lightning-layout multiple-rows>
+                                                    <lightning-layout-item size=6
+                                                        class="marginBottom slds-p-right_small">
+                                                        <lightning-input name={assetItem.assetNo}
+                                                            label={label.ENROL_REVIEW_MAKE} value={assetItem.makeValue}
+                                                            field-level-help="" disabled={modeVisible}>
+                                                        </lightning-input>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item size=6>
+                                                        <lightning-input name={assetItem.assetNo}
+                                                            label={label.ENROL_REVIEW_ASSET_ITA_CLASS}
+                                                            value={assetItem.assetTypeValue}
+                                                            field-level-help="" disabled={modeVisible}>
+                                                        </lightning-input>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item size=6
+                                                        class="marginBottom slds-p-right_small">
+                                                        <lightning-input name={assetItem.assetNo}
+                                                            label={label.ENROL_REVIEW_ASSET_MODEL} value={assetItem.modelValue}
+                                                            field-level-help="" disabled={modeVisible}>
+                                                        </lightning-input>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item size=6>
+                                                        <lightning-input name={assetItem.assetNo}
+                                                            label={label.ENROL_REVIEW_MAST_TYPE}
+                                                            value={assetItem.mastTypeValue}
+                                                            field-level-help="" disabled={modeVisible}>
+                                                        </lightning-input>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item size=6
+                                                        class="marginBottom slds-p-right_small">
+                                                        <lightning-input name={assetItem.assetNo}
+                                                            label={label.ENROL_REVIEW_OS_ENVIRONMENT}
+                                                            value={assetItem.assetOperatingEnvironmentValue}
+                                                            field-level-help="" disabled={modeVisible}>
+                                                        </lightning-input>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item size=6>
+                                                        <lightning-input name={assetItem.assetNo}
+                                                            label={label.ENROL_REVIEW_ANNUAL_HRS}
+                                                            value={assetItem.annualHoursValue}
+                                                            field-level-help="" disabled={modeVisible}>
+                                                        </lightning-input>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item size=6
+                                                        class="marginBottom slds-p-right_small">
+                                                        <lightning-input name={assetItem.assetNo}
+                                                            label={label.ENROL_REVIEW_BATTERY_INCLUDED}
+                                                            value={assetItem.batteryIncludedValue}
+                                                            field-level-help="" disabled={modeVisible}>
+                                                        </lightning-input>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item size=6>
+                                                        <lightning-input name={assetItem.assetNo}
+                                                            label={label.ENROL_REVIEW_NO_UNITS}
+                                                            value={assetItem.numberOfUnitsValue}
+                                                            field-level-help="" disabled={modeVisible}>
+                                                        </lightning-input>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item size=6
+                                                        class="marginBottom slds-p-right_small">
+                                                        <lightning-input name={assetItem.assetNo}
+                                                            label={label.ENROL_REVIEW_UNIT_SALES_PRICE}
+                                                            value={assetItem.unitSalesPriceValue}
+                                                            type="string" disabled={modeVisible}>
+                                                        </lightning-input>
+            
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item size=6>
+                                                        <lightning-input name={assetItem.assetNo}
+                                                            label={label.ENROL_REVIEW_SUBSIDY} value={assetItem.subsidyValue}
+                                                            field-level-help="" disabled={modeVisible}>
+                                                        </lightning-input>
+                                                    </lightning-layout-item>
+                                                </lightning-layout>
+                                            </div>
+                                        </lightning-accordion-section>
+                                    </template>
+                                </template>
+            
+                                <!-- Accessories Section -->
+                                <template if:false={loading}>
+                                    <template for:each={accessories} for:item="accessoryItem">
+                                        <lightning-accordion-section name={accessoryItem.accessoryHeading}
+                                            label={accessoryItem.accessoryHeading}
+                                            key={accessoryItem.accessoryNo}>
+                                            <div class="financeBody">
+                                                <lightning-layout multiple-rows>
+                                                    <lightning-layout-item size=6
+                                                        class="marginBottom slds-p-right_small">
+                                                        <lightning-input name={accessoryItem.accessoryNo}
+                                                            label={label.ENROL_REVIEW_RELATED_ASSET}
+                                                            value={accessoryItem.relatedAssetValue}
+                                                            field-level-help="" disabled={modeVisible}>
+                                                        </lightning-input>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item size=6>
+                                                        <lightning-input name={accessoryItem.accessoryNo}
+                                                            label={label.ENROL_REVIEW_ACCESSORY}
+                                                            value={accessoryItem.accessoryValue}
+                                                            field-level-help="" disabled={modeVisible}>
+                                                        </lightning-input>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item size=6
+                                                        class="marginBottom slds-p-right_small">
+                                                        <lightning-input name={accessoryItem.accessoryNo}
+                                                            label={label.ENROL_REVIEW_SALES_PRICE} type="string"
+                                                            value={accessoryItem.unitSalesPriceValue}
+                                                            field-level-help="" disabled={modeVisible}>
+                                                        </lightning-input>
+            
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item size=6>
+                                                        <lightning-input name={accessoryItem.accessoryNo}
+                                                            label={label.ENROL_REVIEW_NO_UNITS}
+                                                            value={accessoryItem.numberofUnitsValue}
+                                                            field-level-help="" disabled={modeVisible}>
+                                                        </lightning-input>
+                                                    </lightning-layout-item>
+                                                </lightning-layout>
+                                            </div>
+                                        </lightning-accordion-section>
+                                    </template>
+                                </template>
+                            </lightning-accordion>
+                        </lightning-layout-item>
+                        
+                    </lightning-layout>
+                </div>
+            </lightning-layout-item>
+    </lightning-layout>
+</template>

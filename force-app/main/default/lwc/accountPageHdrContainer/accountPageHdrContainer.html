@@ -1,0 +1,41 @@
+<template>
+    <lightning-layout multiple-rows=true horizontal-align="spread">
+            <lightning-layout-item size=12 class="slds-box_border account-header">
+                <div class="Header slds-p-around_medium">
+                    <lightning-layout>
+                        <lightning-layout-item size=8>
+                            <label>Account</label>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout>
+                        <lightning-layout-item size=8>
+                            <h1 class="slds-text-heading_large">
+                               <b>{name}</b>
+                            </h1>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout class="slds-p-around_medium" horizontal-align="left">
+                        <lightning-layout-item class="header-field-section" flexibility="auto">
+                            <div class="display-field">
+                                <label><b>Account Number</b></label>
+                                <span>{accountNumber}</span>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="header-field-section" flexibility="auto">
+                            <div class="display-field">
+                                <label><b>Industry</b></label>
+                                <span>{industry}</span>
+                            </div>
+                        </lightning-layout-item>
+                        <template if:true={renderCreditCheckButton}>
+                            <lightning-layout-item class="header-field-section" flexibility="auto">
+                                <div class="display-field">
+                                    <lightning-button variant="brand" label="Start Credit Check" onclick={navigateToCreditCheck}></lightning-button>
+                                </div>
+                            </lightning-layout-item>
+                        </template>
+                    </lightning-layout>
+                </div>
+            </lightning-layout-item>
+    </lightning-layout>
+</template>

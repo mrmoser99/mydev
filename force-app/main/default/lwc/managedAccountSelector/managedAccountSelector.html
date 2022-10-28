@@ -1,0 +1,17 @@
+<template>
+    <lightning-combobox
+            name="account"
+            label="Select Account"
+            placeholder="Select Account"
+            options={accountOptions}
+            onchange={handleAccountChange}
+            required
+            class="slds-m-bottom_medium">
+    </lightning-combobox>
+    <hr class="slds-m-vertical_small" style="margin-left: -0.75rem; margin-right: -0.75rem;">
+    <div class="slds-clearfix">
+        <div class="slds-float_right">
+            <lightning-button variant="brand" label="Next" title="Next" onclick={handleNextBtn} class="slds-m-left_x-small" disabled={isDisabled}></lightning-button>
+        </div>
+    </div>
+</template>

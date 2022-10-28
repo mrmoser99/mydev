@@ -1,0 +1,77 @@
+<template>
+    <div data-id="amlMainDiv" class={mainDivClass}>
+        <c-pop-up-notification-cmp></c-pop-up-notification-cmp>       
+        <template if:true={isLoading}>          
+            <c-lightning-loader spinner-text={spinnerText}></c-lightning-loader>           
+        </template>
+  
+        <div if:true={showAmlScreen}>
+            <div class="subheading2 brand-color-text slds-p-bottom_small">{labels.h1_aml}</div>
+
+            <div class="slds-p-bottom_x-small">
+                <i>
+                    {labels.h2_aml}
+                </i>
+            </div>
+
+            <div class='normal-text slds-p-bottom_x-small'>{labels.h3_aml}</div>    
+
+            <div class="slds-p-bottom_medium">
+                <lightning-radio-group
+                    name = "EsingRadio"
+                    lable = "Esign Radio"
+                    options={options}
+                    value={radioValue}
+                    type = "radio"
+                    onchange={handleRadioButtonChange}>
+                    
+                </lightning-radio-group> 
+            </div>
+            <template if:true={showTable}>
+                <table> 
+                    <thead>
+                        <td>
+                            <div class="slds-truncate slds-p-bottom_x-small">{labels.full_name}</div>
+                        </td>                       
+                        <td>
+                            <div class="slds-truncate slds-p-bottom_x-small">{labels.ssn}</div>
+                        </td>                                 
+                    </thead>
+                    <tbody>                     
+                        <template for:each={esignData} for:item="row" for:index="index">  
+                            <tr key={row.uid}>
+                                <td>                                  
+                                    <lightning-input data-id={index} placeholder={labels.full_name} onchange={handleNameChange} class="input-name slds-m-bottom_small" type="text" variant="label-hidden" value={row.NameValue}></lightning-input>
+                                </td>
+                                <td>                                  
+                                    <lightning-input data-id={index} placeholder="xxxxxxxx-xxxx" onchange={handleSSNChange} class="input-name slds-m-bottom_small" type="text" variant="label-hidden" value={row.MaskSSNValue}></lightning-input>
+                                </td>
+                                <td if:false={row.isHideDelButton} style="width: 40px; vertical-align: top;">                              
+                                    <lightning-button-icon data-id={index}  
+                                                            class="slds-m-left_x-small"
+                                                            variant="border" 
+                                                            alternative-text={labels.Delete} 
+                                                            onclick={handleDeleteRow}
+                                                            icon-name="utility:delete" 
+                                                            size="medium" 
+                                                            title={labels.Delete}>
+                                    </lightning-button-icon>                           
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>           
+            </template>
+            <div class="slds-clearfix" >
+                <div class="slds-float_left" if:true={showTable}>
+                    <lightning-button label={labels.Add} title={labels.Add} onclick={handleAddRecords}></lightning-button>
+                </div>
+            
+                <div class="slds-float_right">
+                    <button style="color:white;background:#009A00;" class="slds-button slds-p-horizontal_small" onclick={handleSendAML}  >{labels.save_user}</button>
+                    
+                </div>   
+            </div>           
+        </div>                  
+    </div>
+</template>

@@ -1,0 +1,8 @@
+.down {
+    --lwc-colorTextIconDefault: #0099FF;
+}
+
+.slds-button:focus {
+    outline: 0;
+    box-shadow: none;
+}

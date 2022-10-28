@@ -1,0 +1,52 @@
+<!--
+ - Created by ShiqiSun on 11/18/2021.
+ -->
+
+<!-- assetcreation -->
+<template>
+    <div if:true={loading}>
+        <lightning-spinner alternative-text="Loading..." variant="brand"></lightning-spinner>
+    </div>
+    <div class="accessoryBody">
+        <lightning-layout multiple-rows>
+            <lightning-layout-item size=6 class="slds-p-right_small">
+                <lightning-combobox name="relatedAssetTotal" label="Related Asset"
+                                    value={accessory.relatedAssetTotal} 
+                                    options={relatedAssetPicklist} onchange={handleRelatedAssetChange}
+                                    field-level-help="test">
+                </lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item size=6>
+                <lightning-combobox name="accessoryPicklistValue" label="Accessory"
+                                    value={accessory.accessoryPicklistValue}
+                                    options={accessoryPicklist} onchange={handleAccessoryChange}
+                                    disabled={isAccessoryPicklistActive}
+                                    field-level-help="test">
+                </lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item size=6 class="slds-p-right_small">
+                <lightning-input type="number"
+                                 name="noOfUnits"
+                                 label="Number of Units"
+                                 value={accessory.noOfUnits}
+                                 onchange={handleChange}>
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size=6>
+                <lightning-input type="text"
+                                 name="unitSalesPrice"
+                                 data-id="unitSalesPrice"
+                                 label="Unit Sales Price"
+                                 value={accessory.unitSalesPrice}
+                                 onchange={handleChangeSalesPrice}
+                                 onblur={formatCurrencyForInput}
+                                 field-level-help='test'>
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size=12>
+                <lightning-button variant="base" label="+ Add Accessory" title="+ Add Accessory" onclick={handleAddAccessory}></lightning-button>
+                <lightning-button class="delete-button" variant="base" label="- Delete Accessory" title="- Delete Asset" onclick={handleDeleteAccessory}></lightning-button> <!-- if:false={accessory.isFirst} -->
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>
+</template>

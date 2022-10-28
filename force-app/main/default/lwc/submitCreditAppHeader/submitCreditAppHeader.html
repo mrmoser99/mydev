@@ -1,0 +1,196 @@
+<!--
+ - Author: Kritika Sharma, Traction on Demand
+ - Date: 09/02/2022.
+ -->
+<template>
+    <lightning-layout multiple-rows=true horizontal-align="spread">
+        <!-- Credit Application Header Before Save -->
+        <lightning-layout-item size=12 class="slds-box_border quote-header" if:true={displayQuoteHeaderModel}>
+            <div class="Header slds-p-around_medium">
+                <lightning-layout>
+                    <lightning-layout-item size=8>
+                        <h1 class="slds-text-heading_large">
+                            Let's Submit a Credit Application
+                        </h1>
+                    </lightning-layout-item>
+                    <lightning-layout-item size=4>
+                        <lightning-button class="slds-float_right" variant="brand-outline" label="Save"
+                            onclick={handleClick}></lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout class="slds-p-around_medium" horizontal-align="space">
+                    <lightning-layout-item padding="around-small" flexibility="auto">
+                        <lightning-input name="ApplicationNumber" label="Application Number" required=true
+                            value="500-123456" disabled="true" field-level-help="Application Number">
+                        </lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" flexibility="auto">
+                        <lightning-combobox class="startSalesrep" name="Sales Rep" label="Sales Rep"
+                            value={salesRepName} options={salesrepOptions} disabled="true" required="true"
+                            field-level-help="Sales Rep">
+                        </lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" flexibility="auto">
+                        <lightning-input type="text" value={nickName} label="Nick Name" disabled="true"
+                            field-level-help="Nick Name"></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" flexibility="auto">
+                        <lightning-combobox class="startLocation" name="Location" label="Location" value={locationName}
+                            options={lacationOptions} disabled="true" required="true" field-level-help="Location">
+                        </lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" flexibility="auto">
+                        <lightning-input type="text" value="Draft" label="Status" disabled="true">
+                        </lightning-input>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </lightning-layout-item>
+
+        <!-- Credit Application Header After Save -->
+        <lightning-layout-item size=12 class="slds-box_border quote-header" if:true={displayQuoteHeaderViewModel}>
+            <div class="Header slds-p-around_medium">
+                <lightning-layout>
+                    <lightning-layout-item size=8>
+                        <h1 class="slds-text-heading_large">
+                            Let's Submit a Credit Application
+                        </h1>
+                    </lightning-layout-item>
+                    <lightning-layout-item size=4>
+                        <lightning-button class="slds-float_right" variant="brand-outline" label="Back"
+                            onclick={handleBack}></lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout class="slds-p-around_medium" horizontal-align="space">
+                    <lightning-layout-item padding="around-small" flexibility="auto">
+                        <div class="displayfield">
+                            <label>Application Number</label>
+                            <span><b>500-123456</b></span>
+                            <!--<lightning-output-field field-name=""></lightning-output-field>-->
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" flexibility="auto">
+                        <div class="displayfield">
+                            <label>Sales Rep</label>
+                            <span><b>{salesRepName}</b></span>
+                            <!--<lightning-output-field field-name=""></lightning-output-field>-->
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" flexibility="auto">
+                        <div class="displayfield">
+                            <label>Nickname</label>
+                            <span><b>{nickName}</b></span>
+                            <!--  <lightning-output-field field-name=""></lightning-output-field> -->
+                        </div>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item padding="around-small" flexibility="auto">
+                        <div class="displayfield">
+                            <label>Location</label>
+                            <span><b>{locationName}</b></span>
+                            <!--  <lightning-output-field field-name=""></lightning-output-field> -->
+                        </div>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item padding="around-small" flexibility="auto">
+                        <div class="displayfield">
+                            <label>Status</label>
+                            <span><b>Draft</b></span>
+                            <!-- <lightning-output-field field-name=""></lightning-output-field> -->
+                        </div>
+                    </lightning-layout-item>
+
+                </lightning-layout>
+            </div>
+        </lightning-layout-item>
+
+        <!-- Tab Section : Share Your Specs with Us-->
+        <template if:true={displayQuoteHeaderModel}>
+            <!--Specification, Assets and Accessory-->
+            <lightning-layout-item size=8 class="slds-m-top_medium">
+                <div class="bodyTop slds-p-around_medium slds-m-right_medium">
+                    <lightning-layout multiple-rows=true>
+                        <lightning-layout-item size=12>
+                            <div class="specification-header">
+                                <h1 class="slds-text-heading_medium marginBottom">
+                                    <template if:true={displayQuoteHeaderModel}>
+                                        Share Your Specs With Us
+                                    </template>
+                                </h1>
+                                <p style="margin-bottom: 15px;">Review and complete the information below to help with
+                                    the credit approval process. Don't forget to check the box
+                                    that confirms that your customer has approved the credit application</p>
+                                <p style="color:red; margin-bottom:15px;">* fields are required</p>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size=12>
+                            <lightning-accordion allow-multiple-sections-open class="slds-border_top slds-m-top_small"
+                                active-section-name={}>
+                                <!-- Financing section -->
+                                <lightning-accordion-section name="Financing Structure" label="Financing Structure">
+                                    <div class="financeBody">
+                                        <lightning-layout multiple-rows>
+                                            <lightning-layout-item size=6 class="slds-p-right_small">
+                                                <lightning-combobox name="rateType" label="Rate Type" value=""
+                                                    options="" disabled="" field-level-help="Rate Type" required>
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=6>
+                                                <lightning-combobox name="financeTerm"
+                                                    label="Finance Term (Select Multiple)" value="" disabled=""
+                                                    field-level-help="Finance Term" required>
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=6 class="slds-p-right_small">
+                                                <lightning-combobox name="financeType" label="Finance Type" value=""
+                                                    field-level-help="Finance Type" required>
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=6>
+                                                <lightning-combobox name="paymentFrequency" label="Payment Frequency"
+                                                    value="" field-level-help="Payment Frequency" required>
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=6 class="slds-p-right_small">
+                                                <lightning-combobox name="advPayments" label="Advanced Payments"
+                                                    value="" field-level-help="Advanced Payments">
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=6 class="slds-p-right_small">
+                                                <lightning-combobox name="totalPrice" label="Total Price" value=""
+                                                    field-level-help="Total Price">
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+                                        </lightning-layout>
+                                    </div>
+                                </lightning-accordion-section>
+                            </lightning-accordion>
+
+                            <!-- Assets section -->
+                            <!--
+                            <template if:false={loading}>
+                                <template for:each={assets} for:item="assetItem">
+                                    <lightning-accordion-section name={assetItem.sectionName} label={assetItem.assetHeading}
+                                                                 key={assetItem.assetNo}>
+                                        <c-assetcreation asset={assetItem}
+                                                         program-id={program}
+                                                         oncreateasset={handleAddAsset}
+                                                         ondeleteasset={handleDeleteAsset}
+                                                         onupdateasset={handleUpdateAsset}
+                                        ></c-assetcreation>
+                                    </lightning-accordion-section>
+                                </template>
+                            </template>
+                            -->
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+            </lightning-layout-item>
+        </template>
+
+        <!-- Related List : Summary Section -->
+
+        <!-- Back, Save & Submit Credit Button -->
+    </lightning-layout>
+
+</template>

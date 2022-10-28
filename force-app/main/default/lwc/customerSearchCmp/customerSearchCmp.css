@@ -1,0 +1,9 @@
+.search-bar {
+    display         : flex;
+    align-items     : flex-end;
+}
+
+.conditions {
+    background-color: #0099ff;
+    color: #ffffff;
+}

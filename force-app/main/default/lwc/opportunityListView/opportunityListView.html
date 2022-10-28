@@ -1,0 +1,100 @@
+<template>
+    <div class="slds-var-m-top_medium slds-card slds-var-p-vertical_small slds-var-p-horizontal_large">
+    <lightning-card>
+        <div class="slds-grid slds-gutters slds-float_right">
+            <template if:true={creditCheckEnabled}>
+                <div class="slds-float_right">
+                    <lightning-button variant="brand" label="Credit Check" title="Credit Check" onclick={navigateToCreditCheck} class="slds-text-body_regular slds-float_right"></lightning-button>
+                </div>
+            </template>
+        </div>
+
+        <h1 class="slds-text-heading_large slds-p-bottom_medium"> 
+            Your Credit Applications
+         <!--
+             // Create New Application button    
+             <div class="slds-grid slds-gutters">
+                <div class="slds-float_right">
+                    <lightning-button variant="brand" label="Create New Application" title="Create New Application" onclick={handleClick} class="slds-text-body_regular slds-float_right"></lightning-button>
+                    <c-submit-credit-application-form if:true={showHandleClick}></c-submit-credit-application-form>
+                </div>
+            </div>
+        -->
+            <div class="slds-text-body_regular">
+                {itemCount} items; Updated&nbsp;  
+                <lightning-relative-date-time value={now}></lightning-relative-date-time>
+            </div>
+        </h1>
+        <div class="slds-card__header slds-grid">
+            <div class="slds-text-body_regular">
+               View the Status of your existing credit applications and take the steps to complete the deal.
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_9-of-12 ">
+                <lightning-layout>
+                    <lightning-layout-item padding="around-small size=3">
+                        <div class="slds-var-p-around_small ">
+                            <lightning-combobox class="slds-var-m-right_small" name="applicationDate" label="Submitted" value={applicationDate}
+                                                placeholder="All Time"
+                                                options={applicationDatePickListValues}
+                                                onchange={handleChangeDate}>
+                            </lightning-combobox>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small size=3">
+                        <div class="slds-var-p-around_small ">
+                            <lightning-combobox name="partnerStatus" label="Status" value={partnerStatus}
+                                                placeholder="Search partner Status"
+                                                options={partnerStatusPickListValues}
+                                                onchange={handleChangeStatus}>
+                            </lightning-combobox>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small size=3">
+                        <div class="slds-var-p-around_small ">
+                            <lightning-input type="text" name="salesRep" label="Sales Rep"
+                                autocomplete="nope" class="input"></lightning-input>
+                           <!-- <c-reusable-custom-dropdown-with-search-lwc field-required-off="true"  bold-label="false" auto-complete-off="nope" options={saleRapOptions} error-message="Enter a valid sales rep" value={saleRapValue} field-label="Sales Rep" placeholder="Enter Sales Rep" onchange={onSalesRepChange} >
+                            </c-reusable-custom-dropdown-with-search-lwc>
+                            <div style="color:rgb(234, 0, 30)">
+                                {errorMsg}
+                            </div>-->
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+            <div class="slds-col slds-size_3-of-12">
+                <lightning-layout>
+                    <lightning-layout-item padding="around-small size=6">
+                        <div class="slds-var-p-around_small " onkeyup={handleKeyUp}>
+                            <lightning-input type="search" name="allfieldSearch"
+                                             label=""
+                                             placeholder="Search this list..."
+                                             onchange={resetList}>
+                            </lightning-input>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </div>
+        <div class="slds-box" style="height: 500px;">
+            <lightning-datatable
+                    data={opportunities}
+                    columns={columns}
+                    key-field="Id"
+                    onloadmore={loadMoreData}
+                    load-more-offset=20
+                    enable-infinite-loading={enableInfiniteLoading}
+                    sorted-by={sortBy}
+                    sorted-direction={sortDirection}
+                    onsort={updateColumnSorting}
+                    hide-checkbox-column="true"
+                    column-widths-mode="auto"                    
+                    onrowaction={handleRowAction}>
+            </lightning-datatable>
+            {loadMoreStatus}
+        </div>
+    </lightning-card>
+    </div>
+</template>

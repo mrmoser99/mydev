@@ -1,0 +1,74 @@
+<template>
+    <div class="slds-p-around_large white-bg slds-border_bottom slds-is-relative">
+        <div if:true={data}>
+            <template if:false={loaded}>
+                <div class="slds-m-vertical_medium">
+                    <lightning-spinner  alternative-text="Loading" 
+                                        variant="brand" 
+                                        class="slds-m-vertical_medium">
+                    </lightning-spinner>
+                </div>
+            </template>
+            <template if:true={loaded}>
+                <template for:each={data} for:item="documents">
+                    <div key={documents.type} class="document-type">
+                        <div class="bold-font-weight slds-p-bottom_small slds-p-top_large">{documents.type}</div>
+                        <template for:each={documents.documents} for:item="eSignInfo">
+                            <div key={eSignInfo.id} data-id={eSignInfo.id} class={eSignInfo.class} onclick={handleExpandedView}>
+                                <div class="slds-grid slds-grid_vertical-align-center slds-p-vertical_xx-small slds-p-horizontal_x-small">
+                                    <div class="slds-p-right_large slds-p-left_small">
+                                        <lightning-icon icon-name={eSignInfo.iconName} 
+                                                        alternative-text={eSignInfo.iconName} 
+                                                        title={eSignInfo.iconName}>
+                                        </lightning-icon>
+                                    </div>
+                                    <div class="status slds-col slds-size_1-of-4 slds-p-right_small">
+                                        <span class="subheading3 medium-font-weight">
+                                            {eSignInfo.status}
+                                        </span>
+                                        <div class="xxs-text date-time">
+                                            <lightning-formatted-date-time  value={eSignInfo.dateTime} 
+                                                                            hour12="false"
+                                                                            year="numeric"
+                                                                            month="2-digit"
+                                                                            day="2-digit"
+                                                                            hour="2-digit"
+                                                                            minute="2-digit">
+                                            </lightning-formatted-date-time>
+                                        </div>
+                                    </div>
+                                    <div if:true={eSignInfo.signerName} class="signer-name slds-col slds-size_1-of-6 bold-font-weight slds-p-right_small">{eSignInfo.signerName}</div>
+                                    <div if:true={eSignInfo.ssn} class="ssn slds-col slds-size_1-of-6 slds-p-right_small">{eSignInfo.ssn}</div>
+                                    <div class="email slds-col slds-size_1-of-4 bold-font-weight slds-p-right_small">{eSignInfo.email}</div>
+                                    <div if:true={eSignInfo.closeButton} class="slds-col_bump-left">
+                                        <button class="slds-button slds-button_icon slds-button_icon-bare"> 
+                                            <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </template>
+        </div>
+        <div if:false={data}>{labels.No_Result}</div>
+    </div>
+    <div if:true={showModalToCancel}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container modal">
+              <header class="slds-modal__header">
+                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Cancel Order</h2>
+              </header>
+              <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <p>{labels.Message_Cancel_Order}</p>
+              </div>
+              <footer class="slds-modal__footer">
+                <button class="slds-button slds-button_neutral" onclick={closeModal}>{labels.Back}</button>
+                <button class="slds-button slds-button_brand" onclick={confirmCancelletion}>{labels.Yes}</button>
+              </footer>
+            </div>
+          </section>
+          <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+</template>

@@ -1,0 +1,8 @@
+tr td:first-child {
+    padding-right: 0.5rem;
+}
+
+.aml-form {
+    max-width: 1440px;
+    margin: 2rem auto;
+}

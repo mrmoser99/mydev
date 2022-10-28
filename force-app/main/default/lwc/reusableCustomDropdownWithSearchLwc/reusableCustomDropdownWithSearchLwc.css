@@ -1,0 +1,9 @@
+.dummyClass{color:black;}
+.borderClass {
+  border: 2px solid rgb(234, 0, 30);
+  border-radius: 0.25rem;
+}
+.borderClassRemove {
+  border: 0px solid rgb(234, 0, 30);
+  border-radius: 0.25rem;
+}

@@ -1,0 +1,40 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" controller="AccountTeamsController" access="global" >
+    <aura:attribute name="accountteammembers" type="AccountTeamMember[]" />
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="recordId" type="Id"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.getList}" />
+    <aura:handler event="force:refreshView" action="{!c.getList}" />             
+    <!-- HEADING AREA -->
+<div class="slds-p-around_none">
+   <div class="slds-page-header" style="background-color:white">
+  <div class="slds-page-header__row ">
+    <div class=" slds-page-header__col-title " >
+      <div class="slds-media">
+        <div class="slds-media__figure">
+              <lightning:icon iconName="standard:account" alternativeText="Account image"/>            
+        </div>
+        <div class="slds-media__body " >
+          <div class="slds-page-header__name">
+            <div class="slds-page-header__name-title" >
+                  <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate compact " title="Account Team">Account Team</h1>
+            </div>
+          </div>          
+        </div>
+      </div>
+    </div>
+      <lightning:button label="Add" onclick="{!c.newMember}" />
+      <lightning:buttonIcon iconName="utility:refresh" variant="bare" onclick="{! c.refreshView }" alternativeText="Refresh" class="slds-box"/>      
+    </div>
+    </div>
+  <div class="slds-border--top " >
+    <lightning:datatable title="Account Teams"
+                         	data="{! v.accountteammembers }"
+                             columns="{! v.columns }"
+                             keyField="id"
+                             hideCheckboxColumn="true"
+                             onrowaction="{!c.handleRowAction }"
+                             hideTableHeader="false"/>
+</div>
+    </div>
+</aura:component>

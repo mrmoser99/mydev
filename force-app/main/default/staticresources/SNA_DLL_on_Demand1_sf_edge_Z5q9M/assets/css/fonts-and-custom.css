@@ -1,0 +1,294 @@
+/* Template */
+body {
+    background-color: #E6E6E6 !important;
+}
+div.body {
+    background-color: #E6E6E6 !important;
+}
+h1 {
+    font-size: 26px !important;
+	line-height: 24px !important;
+}
+li.subMenuItem a, .uiMenuItem a {
+    background-color: #ffffff !important;
+}
+
+/* Enroll Path Button Override */
+button.slds-progress__marker {
+    cursor: default !important;
+}
+
+/* General */
+.slds-grid
+{
+    padding:3px;    
+}
+
+.uiTabset--default .tabs__item.active>a {
+    font-weight:bolder;
+    color:black;
+}
+
+.slds-section__title-action {
+    font-weight:bold;
+}
+
+.uiTabBar .tabs__nav {
+    padding-left: 10px;
+}
+  
+.isPageWidthFixed-true {
+    /* Not 100% width but rather the same width as the header and footer */
+    /* width:100% !important; */
+}
+
+
+/*Footer implementation*/
+.siteforceThemeLayoutStarter{
+    min-height:100vh!important;
+}
+
+.footer{
+    position:absolute!important;
+    width:100%!important;
+}
+
+/* Welcome Screen */
+body.comm-page-custom-ddwelcomescreen .header {
+    display: none !important;
+}
+body.comm-page-custom-ddwelcomescreen .footer {
+    display: none !important;
+}
+body.comm-page-custom-ddwelcomescreen .body{
+    width:100% !important;
+}
+body.comm-page-custom-ddwelcomescreen .footerBack[c-ddFooter_ddFooter] {
+    left: 0 !important;
+}
+
+/* Homepage */
+c-d-o-d-home-page-quick-actions {
+    display: 	block;
+    margin: 	40px 0px 60px 0px !important;
+}
+
+/*ContractPrintPDF*/
+body.comm-page-custom-contractprintpdf .header {
+    display: none !important;
+}
+body.comm-page-custom-contractprintpdf .footer {
+    display: none !important;
+}
+
+/* Footer Override */
+.footerWidth[c-ddContentFooter_ddContentFooter] {
+    width: 	1200px !important;
+}
+
+/* Fonts */
+@font-face {
+    font-family: 'EffraBold';
+    src: url(../resource/EffraFontBold/Effra-Bold.ttf) format('truetype');    
+}
+
+@font-face {
+    font-family: 'EffraRegular';
+    src: url(../resource/EffraRegular/Effra-Regular.ttf) format('truetype');    
+}
+
+@font-face {
+    font-family: 'sfuiRegular';
+    src: url(../resource/sfui_font/SFui/SF-UI-Text-Regular.otf) format('opentype');    
+}
+.comm-navigation {  
+    font-family:'EffraRegular';
+    font-size:15px;
+}
+/*Label font change to EffraRegular- Global CSS change */
+.slds-form-element__label
+{
+   font-family:'EffraRegular';    
+    font-size:14px;
+    font-weight:800;
+    line-height:15px;
+}
+
+/*-------------------*/
+
+/*-------------------*/
+
+/*Portfolio page*/
+.comm-page-custom-portfolio-view .slds-table_header-fixed_container > div > table thead > tr > th {
+        border-bottom: solid 2px #0099FF!important;
+}
+
+.comm-page-custom-portfolio-view .slds-resizable__divider {
+    display:none!important;
+}
+.comm-page-custom-portfolio-view .slds-th__action-button {
+    display:none!important;
+}
+
+.comm-page-custom-portfolio-view .slds-input {
+   /* height:40px!important;*/
+    border-radius:0px 0px 0px 0px!important;
+}
+
+
+/*Application Page*/
+.comm-page-list-006 .slds-table_header-fixed_container > div > table thead > tr > th {
+        border-bottom: solid 2px #0099FF!important;
+}
+
+.comm-page-list-006 .slds-resizable__divider {
+    display:none!important;
+}
+.comm-page-list-006 .slds-th__action-button {
+    display:none!important;
+}
+
+.comm-page-list-006 .slds-input {
+   /* height:40px!important;*/
+    border-radius:0px 0px 0px 0px!important;
+}
+
+/* QuoteListView page*/
+.comm-page-custom-quote-list-view .slds-table_header-fixed_container > div > table thead > tr > th {
+        border-bottom: solid 2px #0099FF!important;
+}
+
+.comm-page-custom-quote-list-view .slds-resizable__divider {
+    display:none!important;
+}
+.comm-page-custom-quote-list-view .slds-th__action-button {
+    display:none!important;
+}
+
+.comm-page-custom-quote-list-view .slds-input {
+  /*  height:40px!important;*/
+    border-radius:0px 0px 0px 0px!important;
+} 
+
+
+/*home page*/
+.comm-page-home .slds-table_header-fixed_container > div > table thead > tr > th {
+        border-bottom: solid 2px #0099FF!important;
+}
+
+.comm-page-home .slds-resizable__divider {
+    display:none!important;
+}
+.comm-page-home .slds-th__action-button {
+    display:none!important;
+}
+
+.comm-page-home .slds-input {
+    /*height:40px!important;*/
+    border-radius:0px 0px 0px 0px!important;
+}
+
+
+tr:nth-child(even){
+    background-color:#FAFAF9!important;
+}
+
+/* New Quote Page*/
+
+
+.comm-page-custom-new-quote .slds-table_header-fixed_container:before {
+        border-bottom: solid 2px #0099FF!important;
+}
+
+.comm-page-custom-new-quote .slds-resizable__divider {
+    display:none!important;
+}
+.comm-page-custom-new-quote .slds-th__action-button {
+    display:none!important;
+}
+
+.comm-page-custom-new-quote .slds-input {
+    height:40px!important;
+    border-radius:0px 0px 0px 0px!important;
+}
+
+.comm-page-custom-new-quote .slds-combobox__form-element > button:not(.buttonSize) {
+    border-radius: 0px 0px 0px 0px!important;
+    height:40px!important;
+    align-items:center!important;
+}
+
+.comm-page-custom-new-quote lightning-button .slds-button{
+    border-radius:0px !important;
+    height:40px!important;
+}
+
+/*RecordBanner*/
+.forceHighlightsPanel {
+    background-color:White;
+}
+/*Hiding Icon on Record Banner next to Object Name */
+.profilePicWrapper
+{
+    display:none;
+}
+/*Application # in Record Banner e.g Contract # */
+.slds-page-header__title
+{
+    font-family:"EffraRegular";
+    font-weight:bold;
+    font-size:30px;
+}
+/* Hiding Follow button on record banner */
+span[title='Follow'], .slds-button .slds-icon-utility-add {display: none}
+span[title='Following'], .slds-button .slds-icon-utility-check {display: none}
+span[title='Unfollow'], .slds-button .slds-icon-utility-close {display: none}
+
+/* hiding asset related tab icon */
+span[force-recordAvatar_recordAvatar]
+{
+    display:none;
+}
+
+
+/*Quote page*/
+.comm-page-custom-new-quote .slds-tabs_default__nav{
+    background:white;
+}
+
+/*Not to display follow button:Portfolio detail*/
+.slds-button.slds-button--neutral.not-selected.slds-not-selected {display:none}
+.slds-button.slds-button--neutral.is-selected.slds-is-selected {display:none}
+
+/*Fixing body size for all pages so footer can stick on the bottom  */
+.body {
+	min-height:83.7vh!important;
+}
+
+/*Fixing padding issue of child component in Price Quote LWC page.*/
+.comm-page-custom-new-quote [c-customerQuickSearch_customerQuickSearch-host] > div{
+    padding:0;
+}
+
+/* Customer information section on Credit application page container*/
+.comm-page-custom-credit-application [c-customerQuickSearch_customerQuickSearch-host] .slds-col.slds-size_6-of-12 {
+    width: 25%;
+}
+.comm-page-custom-credit-application [c-customerQuickSearch_customerQuickSearch-host] {
+    border-style: none;
+}
+.comm-page-custom-credit-application [c-customerQuickSearch_customerQuickSearch-host] h1 {
+    display:none;
+}
+.comm-page-custom-credit-application [c-customerQuickSearch_customerQuickSearch-host] > div{
+    border-style:none;
+    /*height: 300px;*/
+}
+/*Progress Bar CSS changes for Enrolment component */
+.comm-page-custom-enroll-screen [c-enroll-header] .slds-progress{
+    max-width: 90% !important;
+}
+.comm-content-header c-enroll-progress-bar .slds-progress {
+    max-width : 90%!important;
+}
+:root { --dxp-c-section-columns-max-width: 1440px; }

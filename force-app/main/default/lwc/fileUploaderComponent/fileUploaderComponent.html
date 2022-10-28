@@ -1,0 +1,20 @@
+<template>
+    <lightning-card>
+        <div if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading..." variant="brand">
+            </lightning-spinner>
+        </div>
+
+
+
+        <div class="slds-align_absolute-center">
+            <div class="slds-p-around_medium lgc-bg">
+                <lightning-input type="file" onchange={handleFilesChange} multiple>
+                </lightning-input>
+
+            </div>
+        </div>
+
+
+    </lightning-card>
+</template>

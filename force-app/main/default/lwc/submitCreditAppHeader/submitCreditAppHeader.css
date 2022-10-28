@@ -1,0 +1,33 @@
+/*
+ * Author: Kritika Sharma, Traction on Demand
+ * Date: 14/02/2022.
+ */
+
+ .headerMarginLeft {
+     margin-left: 15px;
+ }
+
+.backButtonMarginRight {
+     margin-right: 15px;
+}
+
+ .quote-header{
+    border-bottom:none!important;
+}
+
+.displayfield{
+    display:grid;
+}
+
+.marginBottom{
+    margin-bottom: 15px;
+}
+.Header{
+    background: white!important;
+    height:212px;
+  }
+  .bodyTop{
+    background:white!important;
+    border:1px solid #D4D4D4;
+    border-left:0px!important;
+  }

@@ -1,0 +1,61 @@
+<template>
+    <div class="white-bg slds-border_bottom slds-is-relative">
+        <div class="slds-p-horizontal_large slds-p-top_small">
+            <button class="slds-button slds-align_absolute-center slds-p-around_xx-small" onclick={handleShowSignatories}>
+                {labels.Show_authorized_signatories}&nbsp;
+                <lightning-icon icon-name="utility:down" 
+                                size="xx-small" 
+                                class="down">
+                </lightning-icon>
+            </button>
+        </div>
+        <div if:true={showSignatories} class="slds-p-around_large">
+            <div if:true={data}>
+                <template if:false={loaded}>
+                    <div class="slds-m-vertical_medium">
+                        <lightning-spinner  alternative-text="Loading" 
+                                            variant="brand" 
+                                            class="slds-m-vertical_medium">
+                        </lightning-spinner>
+                    </div>
+                </template>
+                <template if:true={loaded}>
+                    <table class="slds-cell-wrap"> 
+                        <thead>
+                            <tr>
+                                <template for:each={columns} for:item="column">
+                                    <th key={column.fieldName} class="slds-p-right_x-small">
+                                        <div class="slds-truncate" >{column.label}</div>
+                                    </th>
+                                </template>                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={data} for:item="row" for:index="index">
+                                <tr class="inputRows" key={row.recordId}>
+                                    <template for:each={columns} for:item="column">
+                                        <td key={column.fieldName} class={column.class}>
+                                            <c-grid-cell-handler                                
+                                                cell-key={column.fieldName} 
+                                                cell-mode={column.display}
+                                                cell-type={column.source}              
+                                                object-key={column.objKey}
+                                                grid-row-data={row}                                                                       
+                                            ></c-grid-cell-handler>
+                                        </td>
+                                    </template>                          
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </template>
+                <div class="slds-p-top_small">
+                    <p>
+                        <span class="bold-font-weight">{labels.Company_Signing_Information}:&nbsp;</span> {signingInfo}
+                    </p>
+                </div>
+            </div>
+            <div class="slds-align_absolute-center" if:false={data}>{labels.No_Auth_Signatories}</div>
+        </div>
+    </div>  
+</template>

@@ -1,0 +1,38 @@
+/**
+ * @description       : CSS class for Customer Quick Search
+ * @author            : Kritika Sharma (Traction on Demand)
+ * @group             : 
+ * @last modified on  : 15-03-2022
+ * @last modified by  : Kritika Sharma
+**/
+.marginTop{
+     margin-top: 20px;
+}
+.errorMsgColor {
+     color: red;
+}
+.marginLeft {
+     margin-left: 3%;
+}
+.padding{
+     padding: 2%;
+}
+.fontWeight{
+     font-weight: bold;
+}
+.article {
+     border-style:  none !important;
+}
+.slds-box {
+     border:        0px !important;
+     padding:       0px !important;
+}
+.slds-card {
+     border:        0px !important;
+     margin-top:   0px !important;
+     padding:       0px !important;
+}
+.slds-card__body {
+     margin-top:   0px !important;
+     padding-top:   0px !important;
+}

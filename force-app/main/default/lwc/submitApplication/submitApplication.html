@@ -1,0 +1,48 @@
+<template>
+    <div class="slds-var-m-top_medium slds-card slds-var-p-vertical_small slds-var-p-horizontal_large">
+        <lightning-card>
+            <div class="slds-grid slds-gutters slds-m-bottom_xx-large">
+                <div class="slds-col slds-size_1-of-2">
+                    <h1 slot="title" class="slds-text-heading_large">
+                        Let's Submit a Credit Application
+                    </h1>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-button variant="brand-outline" label="Save" title="Save" style="float:right;">
+                    </lightning-button>
+                </div>
+            </div>
+
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-5">
+                    <lightning-helptext content="Application Number"
+                        style="position: absolute; margin-left: 117px; margin-bottom: -17px;"></lightning-helptext>
+                    <lightning-input type="text" value="500-123456" label="Customer Number" disabled="true">
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-5">
+                    <lightning-helptext content="Sales Rep"
+                        style="position: absolute; margin-left: 72px; margin-bottom: -17px;"></lightning-helptext>
+                    <lightning-combobox name="Sales Rep" label="Sales Rep" value="Kelsea Jones" options="Kelsea Jones"
+                        disabled="true" required="true"></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-5">
+                    <lightning-helptext content="Nick Name"
+                        style="position: absolute; margin-left: 70px; margin-bottom: -17px;"></lightning-helptext>
+                    <lightning-input type="text" value="FY 21 ABC Warehouse Deal" label="Nick Name" disabled="true">
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-5">
+                    <lightning-helptext content="Location"
+                        style="position: absolute; margin-left: 70px; margin-bottom: -17px;"></lightning-helptext>
+                    <lightning-combobox name="Sales Rep" label="Location" value="Site A" options="Site A"
+                        disabled="true" required="true"></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-5">
+                    <lightning-input type="text" value="Draft" label="Status" disabled="true">
+                    </lightning-input>
+                </div>
+            </div>
+        </lightning-card>
+    </div>
+</template>

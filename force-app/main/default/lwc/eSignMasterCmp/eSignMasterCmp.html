@@ -1,0 +1,8 @@
+<template>
+    <c-e-sign-top-section quote-id={quoteId} opportunity-id={opportunityId} onrefresh={refreshESignInformation} 
+        onshownotification={handleNotificationPopup} primary-product={primaryProduct}  documents={documents} current-quote-stage={currentQuoteStage}></c-e-sign-top-section>
+    <c-e-sign-authorized-signatories quote-id={quoteId} opportunity-id={opportunityId} 
+        onshownotification={handleNotificationPopup}></c-e-sign-authorized-signatories>
+    <c-e-sign-information quote-id={quoteId} onshownotification={handleNotificationPopup} current-quote-stage={currentQuoteStage}></c-e-sign-information>
+    <c-e-sign-documents quote-id={quoteId} documents={documents} loaded={loaded} onshownotification={handleNotificationPopup}></c-e-sign-documents>
+</template>

@@ -1,0 +1,20 @@
+<template>
+    <div>
+        <div class="slds-var-m-top_medium slds-card slds-var-p-vertical_small slds-var-p-horizontal_large">
+            <lightning-card>
+                <div class="slds-box" style="height: 500px;">
+                    <lightning-datatable 
+                        key-field="Id" 
+                        data={contracts} 
+                        columns={columns}
+                        hide-checkbox-column="true" 
+                        enable-infinite-loading={enableInfiniteLoading}
+                        onloadmore={loadMoreData}
+                        load-more-offest="20">
+                    </lightning-datatable>
+                    {loadMoreStatus}
+                </div>
+            </lightning-card>
+        </div>
+    </div>
+</template>

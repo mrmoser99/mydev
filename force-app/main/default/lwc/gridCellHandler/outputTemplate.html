@@ -1,0 +1,12 @@
+<template>
+        <template if:false={showUrlCol}> 
+            <p class="slds-p-vertical_small">{otvalue}</p>
+        </template>
+        <template if:true={showUrlCol}>
+            <p class="slds-p-vertical_small">
+                <a href={endUrl} target="_self">
+                    {otvalue}
+                </a>
+            </p>
+       </template>
+</template>

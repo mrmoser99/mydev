@@ -1,0 +1,80 @@
+/**
+ * @description       : Entitlement (Enroll in Financing) : Header Section. 
+ * @author            : Kritika Sharma : Traction on Demand
+ * @group             : Kritika Sharma & Surbhi Goyal :  Traction on Demand
+ * @last modified on  : 11-05-2022
+ * @last modified by  : Kritika Sharma
+**/
+.topSpace {
+  margin-top: 2%;
+}
+ul:not(.browser-default) li {
+  
+    list-style-type: disc;
+}
+.indentbullets {
+  margin-left: 50px;
+
+}
+.Header{
+  background:     white !important;
+}
+.body-top{
+  background:white!important;
+  border-bottom:1px solid #D4D4D4!important;
+  border-left:0px!important;
+  border-right:0px!important;
+  border-top:0px!important;
+}
+.tab-class{
+  border-top:none!important;
+  border-radius:0px!important;
+}
+.quote-header{
+  border-bottom:none!important;
+}
+.header-field-section{
+  padding:      20px 20px 20px 0px;
+}
+.tab-background{
+  background:#dddbda!important;
+  margin-right:-1px;
+}
+.slds-tabs_default__nav{
+  background:white!important
+}
+.proposal-container{
+  background: white;
+  height:1000px;
+}
+.no-padding{
+  padding:0px!important;
+}
+.body-bottom{
+  background:white!important;
+  border-bottom:1px solid #D4D4D4;
+  border-left: 1px solid #D4D4D4;
+  border-right: 1px solid #D4D4D4;
+}
+.display-field{
+  display:grid;
+}
+label.slds-form-element__label {
+  font-weight: bolder!important;
+  color: black!important;
+}
+.buttonUperBorder {
+  padding-bottom: 8%;
+  padding-top: 1%;
+  background-color: white;
+}
+.marginOnBtn{
+  margin-left: 10px;
+  margin-right: 12px;
+}
+.backgroundColor {
+  background: #E6E6E6;
+}
+.hideActionButton{
+    opacity: 0; 
+}

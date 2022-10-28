@@ -1,0 +1,72 @@
+<template>  
+    <div class="slds-is-relative">
+        <div class="slds-grid slds-wrap slds-p-around_large white-bg">
+            <c-pop-up-notification-cmp></c-pop-up-notification-cmp>
+    
+            <hr class="slds-size_3-of-6 slds-m-top_small slds-p-bottom_x-small brand-border-color">
+    
+            <div class="slds-size_1-of-1">
+                <div class="subheading1 bold-font-weight brand-color-text slds-p-bottom_small">{label.calculator}</div>
+    
+                <lightning-input data-id="amountInputField" 
+                                    type="number" 
+                                    name="amountinput"                              
+                                    onchange={handleAmountChange} 
+                                    class="extra-small-text slds-m-bottom_small" 
+                                    min="0" 
+                                    value={amountInput}>
+                </lightning-input>
+    
+                <div>
+                    <template for:each={radioptions} for:item="item">                  
+                        <fieldset key={item.value} style="display: block; float: left;">
+                            <div class="slds-form-element__control">
+                                <span class="slds-radio"> 
+                                    <template if:true={item.isSelected}>
+                                        <input class="radio-class" checked name="radiogroup" id={item.value} type="radio" value={item.value} onchange={handleRadioSelected}/>
+                                    </template>
+                                    <template if:false={item.isSelected}>
+                                            <input class="radio-class" name="radiogroup" id={item.value} type="radio" value={item.value} onchange={handleRadioSelected}/>
+                                        </template>
+                                    <label class="slds-radio__label" for={item.value}>
+                                        <span class="slds-radio_faux"></span>
+                                        <span class="slds-form-element__label">{item.label}</span>
+                                    </label>
+                                </span>
+                            </div>
+                        </fieldset>
+                    </template><br/><br/>              
+                </div>
+                <div class="spinner">
+                    <template if:true={isLoading}>
+                        <lightning-spinner alternative-text="Loading" variant="brand" size="medium">
+                        </lightning-spinner>
+                    </template>
+                </div>
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label" for="slider-id-01">
+                        <span class="slds-slider-label">
+                            <span class="slds-slider-label__label extra-small-text">{label.term}</span>                     
+                        </span>
+                    </label>
+                    <div class="slds-grid slds-grid_align-spread slds-wrap slds-m-bottom_small extra-small-text">                  
+                        <template for:each={termOptions} for:item="term">                          
+                            <div key={term} class="slds-col slds-p-around_none">{term}</div>
+                        </template>
+                    </div>
+
+                    <div class="slds-form-element__control">
+                        <div class="slds-slider">
+                            <input type="range" id="slider-id-01" class="slds-slider__range" min={minNum} max={maxNum} step={stepNum} onchange={handleTermChange} value={termValue} />                    
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <div class="slds-p-around_large grey-20-bg">
+            <h3 class="normal-font-weight">{currencyVal}{financeOrRentalAmountFormat}</h3>
+            <div style="margin-top: -3%;" class="slds-m-bottom_small normal-font-weight">{financeOrPaymentText}</div>
+            <button disabled={isDisabledButton} onclick={createNewDeal} class={newDealBtnClassName}>→&#8195;{label.new_Deal}</button>         
+        </div> 
+    </div>   
+</template>

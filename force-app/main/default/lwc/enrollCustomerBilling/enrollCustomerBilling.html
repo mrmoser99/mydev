@@ -1,0 +1,284 @@
+<template>
+    
+    <lightning-layout>
+            <lightning-layout-item>
+                <div class="body-top slds-p-around_medium slds-m-right_medium">
+                    <lightning-layout multiple-rows=true>
+                        <lightning-layout-item size=12>
+                            <div class="specification-header">
+                                <h1 class="slds-text-heading_large">
+                                    {label.ENROLL_CUST_BILNG_DETAILS}
+                                </h1>
+                                <p class="contentMargin">{label.ENROLL_CUST_BILNG_CONTENT}</p>
+                                <p class="requiredField">* {label.ENROL_REVIEW_REQUIRED}</p>
+                            </div>
+                            <div class="specification-header">
+                                <h1 class="slds-text-heading_medium" style="margin-bottom: 10px;">
+                                   {label.ENROLL_CUST_BILNG_INFO}
+                                </h1>
+                                <!-- <p class="contentMargin">{label.ENROLL_CUST_BILNG_CONTENT1}</p> -->
+                            </div>
+                            <div>
+                                <lightning-radio-group 
+                                    variant="label-hidden" 
+                                    options={customerBillingInfoOptions}
+                                    value={customerBillingInfoValue}
+                                    onchange={handleCustomerBillingChange} 
+                                    type="radio"
+                                    disabled={editMode}>
+                                </lightning-radio-group>
+                            </div>
+                        </lightning-layout-item>
+            
+                        <lightning-layout-item>
+                            <div if:true={billingAddress}>
+                                <div class="slds-p-around_medium lgc-bg">
+                                   <p style="font-weight: bold;font-size: 16px;">Customer Billing Contact</p>
+                                   
+                                </div>
+                               <div>
+                                    <!--<lightning-record-edit-form
+                                        record-id={customerId}
+                                        object-api-name={objectName}>-->
+                                        <div class="slds-theme_default slds-grid slds-wrap">
+                                            <div class="slds-col slds-size_12-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">{label.ENROLL_CUST_BILNG_CUST_NAME}</label>
+                                                <lightning-input variant="label-hidden" disabled="true" > </lightning-input>-->
+                                                <lightning-input name="customerAccountName" value={BillingContactName} onchange={handleOnChangeContactData} label={label.ENROLL_CUST_BILNG_CUST_NAME} required="true" disabled="true"></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">First Name</label>
+                                                <lightning-input-field variant="label-hidden" field-name="Primary_Contact__c" disabled={editMode}> </lightning-input-field>-->
+                                                <lightning-input name="firstName" value={contactData.firstName} onchange={handleOnChangeContactData} label="First Name" required="true" disabled={editMode}></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">Last Name</label>
+                                                <lightning-input-field variant="label-hidden" field-name="Primary_Contact__c" disabled={editMode}> </lightning-input-field>-->
+                                                <lightning-input name="lastName" value={contactData.lastName} onchange={handleOnChangeContactData} label="Last Name" required="true" disabled={editMode}></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">Phone Number</label>
+                                                <lightning-input-field variant="label-hidden" field-name="Phone" disabled={editMode}> </lightning-input-field>-->
+                                                <lightning-input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="phone" value={contactData.phone} onchange={handleOnChangeContactData} label="Phone Number" required="true" disabled={editMode}></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">Email</label>
+                                                <lightning-input-field type="text" variant="label-hidden" field-name="Email__c" disabled={editMode}></lightning-input-field>-->
+                                                <lightning-input type="email" name="email" value={contactData.email} onchange={handleOnChangeContactData} label="Email" required="true" disabled={editMode}></lightning-input>
+                                            </div>
+                                        </div>
+                                    <!--</lightning-record-edit-form>-->
+                                    <div class="slds-p-around_medium lgc-bg">
+                                        <p style="font-weight: bold;font-size: 16px;">Customer Billing Address</p>  
+                                    </div>
+                                    <!--<lightning-record-edit-form
+                                        record-id={customerId}
+                                        object-api-name={objectName}>-->
+                                        <div class="slds-theme_default slds-grid slds-wrap">
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">Address Line 1</label>
+                                                <lightning-input-field variant="label-hidden"  field-name="BillingStreet" disabled="true" > </lightning-input-field>-->
+                                                <lightning-input name="addressLineOne" value={accountData.addressLineOne} onchange={handleOnChangeAccountData} label="Address Line 1" required="true" disabled="true"></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>-->
+                                                <!--<label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">Address Line 2</label>
+                                                <lightning-input-field variant="label-hidden"  field-name="BillingStreet" disabled="true" > </lightning-input-field>-->
+                                                <lightning-input name="addressLineTwo" value={accountData.addressLineTwo} onchange={handleOnChangeAccountData} label="Address Line 2" disabled="true"></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">City</label>
+                                                <lightning-input-field variant="label-hidden"  field-name="BillingCity" disabled="true" > </lightning-input-field>-->
+                                                <lightning-input name="city" value={accountData.city} onchange={handleOnChangeAccountData} label="City" required="true" disabled="true"></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">State</label>
+                                                <lightning-input-field variant="label-hidden"  field-name="BillingState" disabled="true" > </lightning-input-field>-->
+                                                <lightning-input name="state" value={accountData.state} onchange={handleOnChangeAccountData} label="State" required="true" disabled="true"></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">Country</label>
+                                                <lightning-input-field variant="label-hidden"  field-name="BillingCountry" disabled="true" > </lightning-input-field>-->
+                                                <lightning-input name="country" value={accountData.country} onchange={handleOnChangeAccountData} label="Country" required="true" disabled="true"></lightning-input>
+                                            </div>
+                                             <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">ZIP Code</label>
+                                                <lightning-input-field variant="label-hidden"  field-name="BillingPostalCode" disabled="true" > </lightning-input-field>-->
+                                                <lightning-input name="ZIPCode" value={accountData.ZIPCode} onchange={handleOnChangeAccountData} label="ZIP Code" required="true" disabled="true"></lightning-input>
+                                            </div>
+                                        </div>
+                                    <!--</lightning-record-edit-form>-->
+                                </div>
+                                <div style="margin-top:4%">
+                                    <lightning-input type="checkbox" label={label.ENROLL_CUST_BILNG_CONFIRM_CHECK} name={label.ENROLL_CUST_BILNG_CONFIRM_CHECK} onchange={toggleAddressConfirmed} value={addressConfirmed} required="true" disabled={editMode}></lightning-input>
+        
+                                </div>
+                                <!-- This section is not required in current realese -->
+                                <!--<div style="margin-top:4%" class="specification-header">
+                                    <h1 class="slds-text-heading_medium">
+                                        Reference Purchase Order Number
+                                    </h1>
+                                    <p class="contentMargin">Veribage coming</p>
+                                </div>
+                                <div>
+                                     <lightning-input type="text" label="Purchase Order Number" placeholder="Enter purchase order number" disabled={editMode}></lightning-input>
+                                </div>
+                                <div style="margin-top:4%" class="specification-header">
+                                    <h1 class="slds-text-heading_medium">
+                                        Invoice Consolidition
+                                    </h1>
+                                    <p class="contentMargin">Veribage coming</p>
+                                </div>
+                                <div>
+                                     <lightning-input type="text" label="Existing Contract Number" placeholder="Enter contract number" disabled={editMode}></lightning-input>
+                                </div>-->
+                            </div>
+                            <div if:false={billingAddress}>
+                                <div class="slds-p-around_medium lgc-bg">
+                                   <p style="font-weight: bold;font-size: 16px;">Customer Billing Contact</p>
+                                </div>
+                                <div>
+                                    <!--<lightning-record-edit-form
+                                        record-id={customerId}
+                                        object-api-name={objectName}>-->
+                                        <div class="slds-theme_default slds-grid slds-wrap">
+                                            <div class="slds-col slds-size_12-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">{label.ENROLL_CUST_BILNG_CUST_NAME}</label>
+                                                <lightning-input variant="label-hidden" disabled="true" > </lightning-input>-->
+                                                <lightning-input name="customerAccountName" value={BillingContactName} onchange={handleOnChangeContactData} label={label.ENROLL_CUST_BILNG_CUST_NAME} required="true" disabled="true"></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">First Name</label>
+                                                <lightning-input-field variant="label-hidden" field-name="Primary_Contact__c" disabled={editMode}> </lightning-input-field>-->
+                                                <lightning-input name="firstName" value={contactData.firstName} onchange={handleOnChangeContactData} label="First Name" required="true" disabled={editMode}></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">Last Name</label>
+                                                <lightning-input-field variant="label-hidden" field-name="Primary_Contact__c" disabled={editMode}> </lightning-input-field>-->
+                                                <lightning-input name="lastName" value={contactData.lastName} onchange={handleOnChangeContactData} label="Last Name" required="true" disabled={editMode}></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">Phone Number</label>
+                                                <lightning-input-field variant="label-hidden" field-name="Phone" disabled={editMode}> </lightning-input-field>-->
+                                                <lightning-input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="phone" placeholder="Enter phone number 000-000-0000" value={contactData.phone} onchange={handleOnChangeContactData} label="Phone Number" required="true" disabled={editMode}></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">Email</label>
+                                                <lightning-input-field type="text" variant="label-hidden" field-name="Email__c" disabled={editMode}></lightning-input-field>-->
+                                                <lightning-input type="email" name="email" value={contactData.email} onchange={handleOnChangeContactData} label="Email" required="true" disabled={editMode}></lightning-input>
+                                            </div>
+                                        </div>
+                                    <!--</lightning-record-edit-form>-->
+                                    <div class="slds-p-around_medium lgc-bg">
+                                        <p style="font-weight: bold;font-size: 16px;">Customer Billing Address</p>  
+                                    </div>
+                                    <!--<lightning-record-edit-form
+                                        record-id={customerId}
+                                        object-api-name={objectName}>-->
+                                        <div class="slds-theme_default slds-grid slds-wrap">
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">Address Line 1</label>
+                                                <lightning-input-field variant="label-hidden"  field-name="BillingStreet" disabled="true" > </lightning-input-field>-->
+                                                <lightning-input name="addressLineOne" value={newAccountData.addressLineOne} onchange={handleOnChangeNewAccountData} label="Address Line 1" required="true" disabled={editMode}></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>-->
+                                                <!--<label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">Address Line 2</label>
+                                                <lightning-input-field variant="label-hidden"  field-name="BillingStreet" disabled="true" > </lightning-input-field>-->
+                                                <lightning-input name="addressLineTwo" value={newAccountData.addressLineTwo} onchange={handleOnChangeNewAccountData} label="Address Line 2" disabled={editMode}></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">City</label>
+                                                <lightning-input-field variant="label-hidden"  field-name="BillingCity" disabled="true" > </lightning-input-field>-->
+                                                <lightning-input name="city" value={newAccountData.city} onchange={handleOnChangeNewAccountData} label="City" required="true" disabled={editMode}></lightning-input>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">State</label>
+                                                <lightning-input-field variant="label-hidden"  field-name="BillingState" disabled="true" > </lightning-input-field>-->
+                                                <!--<lightning-input name="state" value={newAccountData.state} onchange={handleOnChangeNewAccountData} label="State" required="true" disabled={editMode}></lightning-input>-->
+                                                <c-reusable-custom-dropdown-with-search-lwc bold-label="true"
+                                                    error-message="Enter a valid state" auto-complete-off="off" options={statelist}
+                                                    value={newAccountData.state} field-label="State" placeholder="Enter State" onchange={handleStateChange}>
+                                                </c-reusable-custom-dropdown-with-search-lwc>
+                                            </div>
+                                            <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">Country</label>
+                                                <lightning-input-field variant="label-hidden"  field-name="BillingCountry" disabled="true" > </lightning-input-field>-->
+                                                <lightning-input name="country" value={newAccountData.country} onchange={handleOnChangeNewAccountData} label="Country" required="true" disabled={editMode}></lightning-input>
+                                            </div>
+                                             <div class="slds-col slds-size_6-of-12 paddingWithGrid">
+                                                <!--<abbr title="required" class="slds-required">* </abbr>
+                                                <label class="slds-form-element__label requiredField"
+                                                    for="form-element-04">ZIP Code</label>
+                                                <lightning-input-field variant="label-hidden"  field-name="BillingPostalCode" disabled="true" > </lightning-input-field>-->
+                                                <lightning-input name="ZIPCode" value={newAccountData.ZIPCode} maxlength="5" onchange={handleOnChangeNewAccountData} label="ZIP Code" required="true" disabled={editMode}></lightning-input>
+                                            </div>
+                                        </div>
+                                    <!--</lightning-record-edit-form>-->
+                                </div>
+                                <div style="margin-top:4%">
+                                    <lightning-input type="checkbox" label={label.ENROLL_CUST_BILNG_CONFIRM_CHECK} name={label.ENROLL_CUST_BILNG_CONFIRM_CHECK} onchange={toggleAddressConfirmed} value={addressConfirmed} required="true" disabled={editMode}></lightning-input>
+        
+                                </div>
+                                <div style="margin-top:4%">
+                                    <lightning-button variant="brand" label={label.ENROLL_CUST_BILNG_SAVE_ADDRS} title={label.ENROLL_CUST_BILNG_SAVE_ADDRS} onclick={handleSaveAddress} disabled={editMode}></lightning-button>
+
+                                </div>
+                                <!--<div style="margin-top:4%" class="specification-header">
+                                    <h1 class="slds-text-heading_medium">
+                                        Services & Fees
+                                    </h1>
+                                    <p class="contentMargin">Specify additional services or fees you would like to appear on your customer’s bill by adding them below.</p>
+                                </div>
+                                <div>
+                                    <a>+ Add Service / Fee</a>
+                                </div>-->
+                            </div>
+                        </lightning-layout-item>
+            
+                        
+                    </lightning-layout>
+                </div>
+            </lightning-layout-item>
+    </lightning-layout>
+</template>

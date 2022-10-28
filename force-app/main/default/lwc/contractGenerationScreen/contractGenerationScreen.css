@@ -1,0 +1,7 @@
+.contract-banner{
+    background: rgb(0, 153, 255);color:white
+}
+
+:host {
+    --slds-c-accordion-section-spacing-inline-start: none;
+}

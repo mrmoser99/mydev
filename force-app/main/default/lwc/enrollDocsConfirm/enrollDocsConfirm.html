@@ -1,0 +1,137 @@
+<template>
+    <template if:true={loading} class="slds-var-m-around_small">
+        <div>
+            <lightning-spinner alternative-text="Loading..." variant="brand"></lightning-spinner>
+        </div>
+    </template>
+    <lightning-layout>
+        <lightning-layout-item>
+            <div class="body-top slds-p-around_medium slds-m-right_medium">
+                <lightning-layout multiple-rows=true>
+                    <lightning-layout-item size=12>
+                        <div class="specification-header">
+                            <h1 class="slds-text-heading_large">
+                                Process Funding
+                            </h1>
+                            <br />
+                            <div class="specification-header">
+                                <p class="contentMargin">Submitted Date: {fundingDate}</p>
+                            </div>
+                            <br />
+                            <p class="contentMargin">We will notify you when your funding has been confirmed and
+                                processed. This typically takes 2-3 business days from the submit date.
+                            </p>
+                        </div>
+
+                    </lightning-layout-item>
+                </lightning-layout>
+                <br />
+                <lightning-layout multiple-rows=true>
+                    <lightning-layout-item size=12>
+                        <h1 class="slds-text-body_small">
+                            Go to Your Portfolio
+                        </h1>
+                        <p class="contentMargin">Manage this transaction, track payments and view relavant documetns in
+                            the contract related to this application. It may take 1-2 days from the confirmation date
+                            for the contract to appear in your portfolio.
+                        </p>
+                    </lightning-layout-item>
+                    <lightning-button variant="brand-outline" label="Go To Portfolio" icon-name="standard:picklist_type"
+                        onclick={navigate}>
+                    </lightning-button>
+                </lightning-layout>
+                <br />
+                <lightning-layout multiple-rows=true>
+                    <lightning-layout-item size=12>
+                        <h1 class="slds-text-body_small">
+                            Customer Information
+                        </h1>
+                    </lightning-layout-item>
+                </lightning-layout>
+
+                <lightning-record-view-form record-id='{customerId}' object-api-name={objectName}>
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-size_1-of-3">
+                            <label class="slds-form-element__label" for="form-element-01">Customer Name</label>
+                            <lightning-output-field variant="label-hidden" field-name="Name">
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-size_1-of-3">
+                            <label class="slds-form-element__label" for="form-element-02">Primary
+                                Contact</label>
+                            <lightning-output-field variant="label-hidden" field-name="Primary_Contact_Name__c">
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-size_1-of-3">
+                            <label class="slds-form-element__label" for="form-element-03">Phone</label>
+                            <lightning-output-field variant="label-hidden" field-name="Phone">
+                            </lightning-output-field>
+                        </div>
+                    </div>
+
+                    <div class="slds-grid  slds-wrap">
+                        <div class="slds-size_1-of-3">
+                            <label class="slds-form-element__label" for="form-element-05">Customer
+                                Address</label>
+                            <lightning-output-field variant="label-hidden" field-name="BillingAddress">
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-size_1-of-3">
+                            <label class="slds-form-element__label" for="form-element-04">Email</label>
+                            <lightning-output-field variant="label-hidden" field-name="Email__c">
+                            </lightning-output-field>
+                        </div>
+                        <div class="slds-size_1-of-3">
+                            <label class="slds-form-element__label" for="form-element-05">Tax
+                                Number
+                                (EIN)
+                            </label>
+                            <lightning-output-field variant="label-hidden" field-name="Tax_ID__c">
+                            </lightning-output-field>
+                        </div>
+                    </div>
+                </lightning-record-view-form>
+
+                <lightning-layout multiple-rows=true>
+                    <lightning-layout-item>
+                        <div class="specification-header">
+                            <h1 class="slds-text-heading_large">
+                                My Documents
+                            </h1>
+
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <div style="color:blue;" if:false={filesToShow2}>You have not uploaded any documents.</div>
+                <br />
+                <div if:true={filesToShow2}>
+                    <template for:each={filesList2} for:item="file2">
+                        <div key={file2.value} class="slds-box">
+
+                            <div class="slds-grid slds-wrap">
+                                <div
+                                    class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+                                    <p><strong></strong>{file2.label}</p>
+                                </div>
+
+                                <div
+                                    class=" slds-align_absolute-center slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+
+                                    <lightning-button variant="base" label="" icon-name="action:download"
+                                        class="slds-m-left_x-small" onclick={download} value={file2.url}>
+                                    </lightning-button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </template>
+                    <lightning-button variant="base" label="Download Document Package" icon-name="action:download"
+                        class="slds-m-left_x-small" onclick={downloadPackage}>
+                    </lightning-button>
+                </div>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+
+
+</template>

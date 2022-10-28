@@ -1,0 +1,182 @@
+<template>
+    <template if:true={loader}>
+        <lightning-spinner alternative-text="Loading" size="medium">
+            
+        </lightning-spinner>
+   </template>
+    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+        
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <template if:true={showCustomerForm}>
+                    <lightning-layout multiple-rows="true">
+                        <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                           <h2> <b> Cross Corporate Guarantee </b></h2>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                           
+                         </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                            <div class="custom-box">
+                              <lightning-input autocomplete="abc" class="validate" type="text" name={legalEntityName} label="Legal Entity Name" placeholder="Enter legal entity name" value={Customer.Name} onchange={onCustNamechange} required="true" > </lightning-input> 
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                            <div class="custom-box">
+                               <lightning-input autocomplete="abc" class="validate" type="tel"  pattern="[- +()0-9]+" message-when-pattern-mismatch="Enter a valid phone number" name={phone} label="Phone" maxlength="12" minlength="12" required="true" placeholder="Enter a Phone Number 000-000-0000" value={Customer.Phone} onchange={onPhonechange} > </lightning-input>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                            <div class="custom-box">
+                               <lightning-input autocomplete="abc" class="validate" type="email" name={email} label="Email" placeholder="Enter an Email" value={Customer.Email__c} onchange={onEmailchange} > </lightning-input>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                            <div class="custom-box">
+                               <lightning-input autocomplete="abc" class="validate" type="text" name={addressLine1} label="Address Line1"  value={Customer.BillingStreet} onchange={onAdd1change} required="true" placeholder="Enter an Address"> </lightning-input>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                            <div class="custom-box">
+                               <lightning-input autocomplete="abc" class="validate" type="text" name={addressLine2} label="Address Line2" value={billingAddressLine2} onchange={onAdd2change} placeholder="Enter an Address"> </lightning-input>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                            <div class="custom-box">
+                               <lightning-input autocomplete="abc" class="validate" type="text" name={city} label="City"  value={Customer.BillingCity} onchange={onCitychange} required="true" placeholder="Enter City"> </lightning-input>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                            <div class="custom-box">
+                                <!--   <lightning-input class="validate" type="text" name={state} label="State"  value={Customer.Name} onchange={onchange} required="true" > </lightning-input> -->
+                                <!--<lightning-combobox  autocomplete="abc" class="validate" name="state" label="State" value={Customer.BillingState} options={stateOptions} onchange={onStatechange} required style="height:13px;" type="text"></lightning-combobox>-->
+                                <c-reusable-custom-dropdown-with-search-lwc  bold-label="false" auto-complete-off="abc" options={stateOptions} error-message="Enter a valid state" value={Customer.BillingState} field-label="State" placeholder="Enter State" onchange={onStatechange} >
+                                </c-reusable-custom-dropdown-with-search-lwc>
+                                <div style="color:rgb(234, 0, 30)">
+                                    {errorMsg}
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                            <div class="custom-box">
+                               <lightning-input autocomplete="abc" class="validate" type="text" name={zipcode} label="Zipcode" pattern="[- +()0-9]+" message-when-pattern-mismatch="Enter a valid zip code"  value={Customer.BillingPostalCode} maxlength="5" minlength="5" onchange={onPostalCodechange} required="true" placeholder="Enter ZipCode"> </lightning-input>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                            <div class="custom-box">
+                             <!--  <lightning-input class="validate" type="text" name={country} label="Country"  value={Customer.BillingCountry} onchange={onchange} required="true" > </lightning-input> -->
+                             <lightning-combobox autocomplete="abc" name="country" class="validate" label="Country" value={Customer.BillingCountry} options={statuslist} onchange={onCountrychange} required></lightning-combobox>
+                            </div>
+                        </lightning-layout-item>
+                       
+                        <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                            <div class="custom-box">
+                               <lightning-input autocomplete="abc" class="validate" type="text" name={TaxEIN} label="Tax Number(EIN)"  value={Customer.Tax_ID__c} onchange={onTaxIDchange} maxlength="10" minlength="10" pattern="[- +()0-9]+" message-when-pattern-mismatch="Enter a valid Tax Number" placeholder="Enter Tax Number"> </lightning-input>
+                            </div>
+                        </lightning-layout-item>
+                   
+                    </lightning-layout>
+                    </template>
+                    <template if:true={isValidated}>
+                        <lightning-layout multiple-rows="true">
+                            <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                              <label class="boldLabelCss">Legal Entity Name</label><br>
+                                <lightning-formatted-text value={Customer.Name} ></lightning-formatted-text>
+                            </lightning-layout-item>
+                            
+                           
+        
+                               <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                                 <label class="boldLabelCss">Phone</label><br/>
+                                 <div if:true={phoneFilled}>
+                                    <span>(+1)</span><lightning-formatted-text value={Customer.Phone} ></lightning-formatted-text>
+                                 </div>
+                               
+                               </lightning-layout-item>
+        
+                              
+                               
+                               <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                                    <label class="boldLabelCss">Email</label><br/>
+                                      <lightning-formatted-text value={Customer.Email__c} ></lightning-formatted-text>
+                                    
+                                  </lightning-layout-item>
+           
+                                  <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                                    <label class="boldLabelCss">Tax Number(EIN)</label><br/>
+                                      <lightning-formatted-text value={Customer.Tax_ID__c} ></lightning-formatted-text>
+                                      
+                                  </lightning-layout-item>
+                                    
+                                  <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                                  <b> <label class="slds-float_left boldLabelCss">Address Suggestion</label> </b>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
+                                    
+                                </lightning-layout-item>
+                                <template if:true={isSuccess}>
+                                  <lightning-layout-item address padding="around-small" size="4" small-device-size="12" medium-device-size="4" large-device-size="4">
+                                    <!-- API Returned -->
+                                    <lightning-input  type="radio" class="redioButtonCss" variant="label-hidden"   name="select" label="Suggested Address" onchange={handleRadioClick} value={selected} checked="true"> 
+           
+                                    </lightning-input> 
+                                    <legend class=" boldLabelCss" style="font-weight: bold;margin-top: -11%;margin-left: 15%;">Suggested Address</legend>
+                                </b></br>
+                           
+                                {respAdd1} </br>
+                                {respCounty}</br>
+                                {respCity}</br>
+                                {respState} &nbsp;
+                                {respPostalCode} </br>
+                                {respCountry}
+                            
+     
+                               </lightning-layout-item>
+                            </template>
+                            <template if:false={isSuccess}>
+                            <lightning-layout-item address padding="around-small" size="4" small-device-size="12" medium-device-size="4" large-device-size="4">
+                                <!-- API Returned -->
+                                <lightning-input type="radio" class="redioButtonCss" variant="label-hidden"  name="select" label="Suggested Address" onchange={handleRadioClick} value={selected} checked="true"> 
+       
+                                </lightning-input>
+                                <legend class=" boldLabelCss" style="font-weight: bold;margin-top: -11%;margin-left: 15%;">Suggested Address</legend>
+                            </b></br>
+                       
+                           <p>No Address Returned! </p>
+  
+                           </lightning-layout-item>
+                        </template>
+                            <lightning-layout-item address padding="around-small" size="4" small-device-size="12" medium-device-size="4" large-device-size="4">
+                            <lightning-input  type="radio" class="redioButtonCss" variant="label-hidden" name="select"  label="User Entered Address" onchange={handleRadioClick} value={selected}></lightning-input>
+                            <legend class=" boldLabelCss" style="font-weight: bold;margin-top: -11%;margin-left: 15%;">User Entered Address</legend>
+                        </b></br>
+                            {Customer.BillingStreet} &nbsp; {billingAddressLine2}</br>
+                            {Customer.BillingCity}</br>
+                            {Customer.BillingState}  &nbsp;
+                            {Customer.BillingPostalCode} </br>
+                            {Customer.BillingCountry} </br>
+                           
+                            </lightning-layout-item>
+                           
+                       </lightning-layout>
+        
+                    </template>
+            </div>
+            <!-- Modal/Popup Box LWC footer starts here -->
+        <footer class="slds-modal__footer">
+            <template   if:true={showCustomerForm}>
+                <lightning-button variant="neutral" label="Cancel" title="Cancel" onclick={handlecancel} ></lightning-button>&nbsp;
+                    <lightning-button variant="brand" label="Next" title="Validate Address" onclick={handleValidateAddress} ></lightning-button> 
+                        </template>
+                        <template if:true={isValidated}>
+                            
+                                <lightning-button variant="brand" label="Add New Customer" title="Add New Customer" onclick={handleCustomerCreate}  ></lightning-button> &nbsp; 
+                                <lightning-button variant="neutral" label="Cancel" title="Cancel" onclick={handlecancel}  ></lightning-button>  &nbsp; 
+                            <lightning-button variant="neutral" label="Back" title="Back" onclick={handleBack} class="slds-float_left"></lightning-button> 
+                            
+        </template>
+               </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+</template>

@@ -1,0 +1,17 @@
+<template>
+     <lightning-input 
+        variant="label-hidden" 
+        type={cellType}
+        name={cellKey} 
+        label={cellKey}
+        onchange={handleChange}
+        value={value}  
+        max = {maxValue} 
+        onkeypress = {keychange}
+        max-length = {maxLength}        
+        onblur={handleInputBlur}  
+        message-when-value-missing="Please enter a value"
+        disabled={inputDisableFlag}
+        >
+    </lightning-input>
+</template>

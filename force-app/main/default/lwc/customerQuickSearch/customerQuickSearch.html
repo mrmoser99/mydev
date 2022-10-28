@@ -1,0 +1,173 @@
+<!-- sldsValidatorIgnore -->
+<!-- 
+
+Change Log:
+
+04/28/2022 - MRM - Added wait circle when searching
+
+-->
+<template>
+
+    <template if:false={showCustomer}>
+        <template if:true={showQuickSearch}>
+
+            <div class="slds-var-m-top_medium slds-card">
+                <lightning-card>
+
+                    <div if:true={errorMsg} style="margin-left: 3%;">
+                        <p style="color: red;">{errorMsg}</p>
+                    </div>
+
+                    <div class="">
+                        <div class="slds-text-body_regular">
+                            Input the customer's legal company name. We'll search our database to gather their
+                            information for you. This will make the credit application process faster when you're
+                            ready.
+                        </div>
+                    </div>
+
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_1-of-4">
+                            <legend class="slds-form-element__legend slds-form-element__label"
+                                style="font-weight: bold;"><span class="slds-required">*</span>Customer Name</legend>
+                            <lightning-input class="validate" variant="label-hidden" type="text"
+                                value={strSearchAccName} label="Customer Name" onchange={handleAccountName}
+                                required="true" placeholder="Enter a name..." autocomplete="mrm">
+                            </lightning-input>
+                        </div>
+                        <div class="slds-size_2.1-of-4">
+                            <!--<lightning-combobox name="State" label="State" value={state}
+                                placeholder=" Select State" options={statelist} onchange={handleState}
+                                oninput={handleOptionChange} required="true">
+                            </lightning-combobox>-->
+                            <!--State display in searchable drop down formate-->
+                            <!--Start-->
+                            <c-reusable-custom-dropdown-with-search-lwc bold-label="true"
+                                error-message="Enter a valid state" auto-complete-off="off" options={statelist}
+                                value={state} field-label="State" placeholder="Enter State" onchange={handleState}>
+                            </c-reusable-custom-dropdown-with-search-lwc>
+                            <!--End-->
+                            <!--Display error according state wrong and null value-->
+                            <!--Start-->
+                            <div style="color:rgb(234, 0, 30)">
+                                {errorStateMsg}
+                            </div>
+                            <!--End-->
+                        </div>
+                        <div class="slds-col slds-size_2.1-of-4">
+                            <legend class="slds-form-element__legend slds-form-element__label"
+                                style="font-weight: bold;">City</legend>
+                            <lightning-input type="text" variant="label-hidden" label="City" value={city}
+                                onchange={handleCity} placeholder="Enter a City..." autocomplete="mrm">
+                            </lightning-input>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-4" style="margin-top:21px;">
+                            <lightning-button label="Search" variant="brand" onclick={handleClick}>
+                            </lightning-button>
+                        </div>
+                    </div>
+
+                    <template if:false={showDataTable}>
+                        <div class="slds-var-m-around_small">
+
+                            <div if:true={isLoading}>
+                                <lightning-spinner alternative-text="Loading..." variant="brand">
+                                </lightning-spinner>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template if:true={showDataTable}>
+
+                        <div class="slds-var-m-around_small">
+
+                            <div if:true={isLoading}>
+                                <lightning-spinner alternative-text="Loading..." variant="brand">
+                                </lightning-spinner>
+                            </div>
+                        </div>
+
+                        <div class="slds-box" style="height: 475px;">
+                            <lightning-datatable key-field="Id" data={searchDataContract} columns={columns}
+                                resize-column-disabled max-row-selection="1" onrowselection={getSelectedRecord}>>
+                            </lightning-datatable>
+                        </div>
+                       
+                        <div class="slds-grid">
+                            <lightning-layout>
+                                <lightning-layout-item>
+                                    <div class="slds-var-m-around_small">
+                                        <lightning-button label="Cancel" onclick={handleCancel}>
+                                        </lightning-button>
+                                    </div>
+                                </lightning-layout-item>
+                                <lightning-layout-item>
+                                    <div class="slds-var-m-around_small">
+                                        <lightning-button label="Select Customer" variant="brand" class="slds-m-left_x-small" onclick={selectCustomer}>
+                                        </lightning-button>
+                                    </div>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </div>
+                    </template>
+                    <div>Can't find your customer? <span><a onclick={addCustomer}>Add New Customer</a></span> </div>
+
+                </lightning-card>
+            </div>
+        </template>
+
+        <template if:true={isModalOpen}>
+            <div class="slds-box" style="height: 600px;">
+                <!--<c-sample-address onnotify={handleNotify} ismodalopen={init}></c-sample-address>-->
+                <c-address-standardization oncancelevent={closeModalpopup} recordid={recordId}>
+                </c-address-standardization>
+            </div>
+        </template>
+
+    </template>
+
+    <template if:true={showCustomer}>
+
+            <lightning-record-view-form record-id={customerId} object-api-name={objectName}>
+                <div class="slds-box slds-theme_default">
+                    <div>
+                        <label class="slds-form-element__label" style="font-weight: bold;"
+                            for="form-element-01">Customer
+                            Name</label>
+                        <lightning-output-field variant="label-hidden" field-name="Name">
+                        </lightning-output-field>
+                    </div>
+                    <div>
+                        <label class="slds-form-element__label" style="font-weight: bold;" for="form-element-02">Primary
+                            Contact</label>
+                        <lightning-output-field variant="label-hidden" field-name="Primary_Contact_Name__c">
+                        </lightning-output-field>
+                    </div>
+                    <div>
+                        <label class="slds-form-element__label" style="font-weight: bold;"
+                            for="form-element-03">Phone</label>
+                        <lightning-output-field variant="label-hidden" field-name="Phone">
+                        </lightning-output-field>
+                    </div>
+                    <div>
+                        <label class="slds-form-element__label" style="font-weight: bold;"
+                            for="form-element-04">Email</label>
+                        <lightning-output-field variant="label-hidden" field-name="Email__c">
+                        </lightning-output-field>
+                    </div>
+                    <div>
+                        <label class="slds-form-element__label" style="font-weight: bold;"
+                            for="form-element-05">Customer
+                            Address</label>
+                        <lightning-output-field variant="label-hidden" field-name="BillingAddress">
+                        </lightning-output-field>
+                    </div>
+                </div>
+            </lightning-record-view-form>
+            <p style="color: #33ccff;font-weight: bold;cursor: pointer;" class="slds-var-m-around_small"
+                onclick={changeCustomer}>
+                Change Customer
+            </p>
+    </template>
+</template>

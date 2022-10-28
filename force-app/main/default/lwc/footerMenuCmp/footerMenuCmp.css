@@ -1,0 +1,20 @@
+.footer-menu {
+    bottom:             0;
+    left:               0;
+}
+
+.footer-menu li {
+    list-style:         none;
+    background-color:    #000000;
+}
+
+.footer-menu li a{
+    color:            #ffffff;
+    text-decoration:    none;
+}
+
+.footer-menu ul{
+    display:            flex;
+    justify-content:    center;
+    padding:            0;
+}

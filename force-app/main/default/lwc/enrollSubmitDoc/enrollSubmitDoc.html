@@ -1,0 +1,151 @@
+<template>
+
+    <lightning-layout>
+        <lightning-layout-item>
+            <div class="body-top slds-p-around_medium slds-m-right_medium">
+                <lightning-layout multiple-rows=true>
+                    <lightning-layout-item size=12>
+                        <div class="specification-header">
+                            <h1 class="slds-text-heading_large">
+                                {label.SUBMIT_DOC_TITLE}
+                            </h1>
+                            <p class="contentMargin">{label.SUBMIT_DOC_TITLE_DESC}</p>
+                        </div>
+                        <div class="specification-header">
+                            <h2 class="slds-text-heading_large">
+                                {label.DOWNLOAD_DOC_DLL}
+                            </h2>
+                            <p class="contentMargin">{label.DOWNLOAD_DOC_DLL_DESC}</p>
+
+                            <div>
+
+                                <div style="color:blue;" if:false={filesToShow}>There are no documents available for
+                                    download. Please check back later!</div>
+                                <br />
+                                <div if:true={filesToShow}>
+                                    <template for:each={filesList} for:item="file">
+                                        <div key={file.value} class="slds-box">
+                                            <div class="slds-grid slds-wrap">
+                                                <div
+                                                    class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+                                                    <p><strong></strong>{file.label}</p>
+                                                </div>
+                                                <div
+                                                    class=" slds-align_absolute-center slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+
+                                                    <lightning-button variant="base" label=""
+                                                        icon-name="action:download" class="slds-m-left_x-small"
+                                                        onclick={download} value={file.url}>
+                                                    </lightning-button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </template>
+                                    <br />
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <lightning-button variant="base" label="Download Document Package" icon-name="action:download"
+                            class="slds-m-left_x-small" onclick={downloadPackage}>
+                        </lightning-button>
+                        <br />
+
+                        <div class="specification-header">
+                            <br />
+                            <h2 class="slds-text-heading_large">
+                                {label.UPLOAD_DOC}
+                            </h2>
+                            <p class="contentMargin">{label.UPLOAD_DOC_DESC}</p>
+
+                            <c-file-uploader-component record-id={oppId} onrefreshlist={refreshPage}>
+                            </c-file-uploader-component>
+
+
+
+                            <div>
+                                <!--Use template if:true to display/hide popup based on isModalOpen value-->
+                                <template if:true={isModalOpen}>
+                                    <!-- Modal/Popup Box LWC starts here -->
+                                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01"
+                                        aria-modal="true" aria-describedby="modal-content-id-1"
+                                        class="slds-modal slds-fade-in-open">
+                                        <div class="slds-modal__container">
+                                            <!-- Modal/Popup Box LWC body starts here -->
+                                            <div class="slds-modal__content slds-p-around_medium"
+                                                id="modal-content-id-1">
+                                                <h2 id="modal-heading-01"
+                                                    class="slds-text-heading_medium slds-hyphenate"
+                                                    style="margin-bottom: 15px;">Are you sure you want to delete?</h2>
+
+                                            </div>
+                                            <!-- Modal/Popup Box LWC footer starts here -->
+                                            <footer class="slds-modal__footer">
+                                                <button class="slds-button slds-button_neutral" onclick={closeModal}
+                                                    title="No">No</button>
+                                                <button class="slds-button slds-button_brand" onclick={deleteDocument}
+                                                    title="Yes">Yes</button>
+                                            </footer>
+                                        </div>
+                                    </section>
+                                    <div class="slds-backdrop slds-backdrop_open"></div>
+                                </template>
+                            </div>
+
+
+                        </div>
+                        <br />
+                        <div class="slds-var-m-around_small">
+                            <div if:true={isLoading}>
+                                <lightning-spinner alternative-text="Loading..." variant="brand">
+                                </lightning-spinner>
+                            </div>
+                        </div>
+                        <div class="specification-header">
+                            <h2 class="slds-text-heading_large">
+                                {label.UPLOADED_DOC}
+                            </h2>
+                            <p class="contentMargin">{label.UPLOADED_DOCS_DESC}</p>
+                        </div>
+
+                        <div style="color:blue;" if:false={filesToShow2}>You have not uploaded any documents.</div>
+                        <br />
+                        <div if:true={filesToShow2}>
+                            <template for:each={filesList2} for:item="file2">
+                                <div key={file2.value} class="slds-box">
+
+                                    <div class="slds-grid slds-wrap">
+                                        <div
+                                            class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+                                            <p><strong></strong>{file2.label}</p>
+                                        </div>
+
+                                        <div
+                                            class=" slds-align_absolute-center slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+
+                                            <lightning-icon class="red-icon" icon-name="action:delete" size="x-small"
+                                                onclick={deleteDoc} value={file2.value} variant="bare">
+                                            </lightning-icon>
+
+                                            <lightning-button variant="base" label="" icon-name="action:download"
+                                                class="slds-m-left_x-small" onclick={download} value={file2.url}>
+                                            </lightning-button>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </template>
+                        </div>
+                        <br />
+
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

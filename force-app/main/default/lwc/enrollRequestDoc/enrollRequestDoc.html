@@ -1,0 +1,318 @@
+<template>
+
+    <lightning-layout>
+        <lightning-layout-item>
+            <div class="body-top slds-p-around_medium slds-m-right_medium">
+                <lightning-layout multiple-rows=true>
+                    <lightning-layout-item size=12>
+                        <div class="specification-header">
+                            <h1 class="slds-text-heading_large">
+                                {label.ENROLL_REQ_DOC}
+                            </h1>
+                            <p class="contentMargin">{label.ENROLL_REQ_DOC_CONTENT}</p>
+                            <p class="requiredField">* {label.ENROL_REVIEW_REQUIRED}</p>
+                        </div>
+                        <div class="specification-header">
+                            <!--<h1 class="slds-text-heading_medium">-->
+                            <p class="contentMargin" style="font-weight: bold;font-size: 16px;">
+                                {label.ENROLL_REQ_DOC_DELIVERY_PREFERENCE}</p>
+                            <!--</h1>-->
+                        </div>
+                        <div>
+                            <lightning-radio-group variant="label-hidden" options={documentTypeOptions}
+                                value={documentTypeValue} onchange={handleDocumentTypeChange} type="radio">
+                            </lightning-radio-group>
+                        </div>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item>
+                        <div style="margin-top:15px;" if:true={docSignType}>
+                            <div>
+                                <p style="font-weight: bold;font-size: 16px;">{label.ENROLL_REQ_DOC_SIGNER}</p>
+                                <p class="contentMargin">{label.ENROLL_REQ_DOC_CONTENT1}</p>
+                            </div>
+
+                            <template if:false={loading}>
+                                <template for:each={contactDetail} for:item="con" for:index="indexVar">
+                                    <div key={con.uboID}>
+                                        <p style="font-weight: bold;font-size: 16px;">{con.ownerHeading}</p>
+                                    </div>
+                                    <div key={con.uboID}>
+                                        <div class="slds-theme_default slds-grid slds-wrap">
+                                            <lightning-layout multiple-rows>
+                                                <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor"><span
+                                                            class="slds-required">*</span>{label.ENROLL_REQ_DOC_FIRST_NAME}</label>
+                                                    <lightning-input name={con.ownerNo} variant="label-hidden"
+                                                        value={con.firstName} onchange={handlePersonalFirstNameChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor">{label.ENROLL_REQ_DOC_MIDDLE}</label>
+                                                    <lightning-input name={con.ownerNo} variant="label-hidden"
+                                                        value={con.middleName} onchange={handleMiddleNameChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+
+                                                <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor"><span
+                                                            class="slds-required">*</span>{label.ENROLL_REQ_DOC_LAST_NAME}</label>
+                                                    <lightning-input variant="label-hidden" name={con.ownerNo}
+                                                        value={con.lastName} onchange={handleLastNameChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+
+                                                <lightning-layout-item size=6 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor"><span
+                                                            class="slds-required">*</span>{label.ENROLL_REQ_DOC_SIGNERS_TITLE}</label>
+                                                    <lightning-input name={con.ownerNo} variant="label-hidden"
+                                                        value={con.titleValue} onchange={handleTitlePicklistChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+
+                                                <lightning-layout-item size=6 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor"><span
+                                                            class="slds-required">*</span>{label.ENROLL_REQ_DOC_SIGNERS_EMAIL}</label>
+                                                    <lightning-input type="email" name={con.ownerNo} variant="label-hidden"
+                                                        value={con.emailValue} onchange={handleEmailChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+                                            </lightning-layout>
+                                        </div>
+                                    </div>
+                                    <div class="slds-float_right" key={con.uboID}>
+                                        <a onclick={deleteSigner} name={con.uboID} style="color: red;">-
+                                            {label.ENROLL_REQ_DOC_DELETE}</a>
+                                    </div>
+                                </template>
+                            </template>
+                            <div>
+                                <a onclick={addSigner}>+ {label.ENROLL_REQ_DOC_ADD}</a>
+                            </div>
+                            <!--Reviewer Section -->
+                            <div style="margin-top: 15px;">
+                                <p style="font-weight: bold;font-size: 16px;">{label.ENROLL_REQ_DOC_REVIEWRS}</p>
+                                <p class="contentMargin">{label.ENROLL_REQ_DOC_CONTENT2}</p>
+                            </div>
+                            <template if:false={loading}>
+                                <template for:each={reviewDetail} for:item="review" for:index="indexVar">
+                                    <div key={review.uboID}>
+                                        <p style="font-weight: bold;font-size: 16px;">{review.ownerHeading}</p>
+                                    </div>
+                                    <div key={review.uboID}>
+                                        <div class="slds-theme_default slds-grid slds-wrap">
+                                            <lightning-layout multiple-rows>
+                                                <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor"><span
+                                                            class="slds-required">*</span>{label.ENROLL_REQ_DOC_REVIERS_FIRST_NAME}</label>
+                                                    <lightning-input name={review.ownerNo} variant="label-hidden"
+                                                        value={review.firstName}
+                                                        onchange={handleReviewerFirstNameChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+
+                                                <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor">{label.ENROLL_REQ_DOC_MIDDLE}</label>
+                                                    <lightning-input name={review.ownerNo} variant="label-hidden"
+                                                        value={review.middleName}
+                                                        onchange={handleReviewerMiddleNameChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+
+                                                <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor"><span
+                                                            class="slds-required">*</span>{label.ENROLL_REQ_DOC_REVIERS_LAST_NAME}</label>
+                                                    <lightning-input name={review.ownerNo} variant="label-hidden"
+                                                        value={review.lastName} onchange={handleReviewerLastNameChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+
+                                                <lightning-layout-item size=6 class="marginBottom slds-p-right_small">
+                                                    <label
+                                                        class="labelColor">{label.ENROLL_REQ_DOC_REVIERS_TITLE}</label>
+                                                    <lightning-input name={review.ownerNo} variant="label-hidden"
+                                                        value={review.titleValue} onchange={handleReviewerTitleChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+
+                                                <lightning-layout-item size=6 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor"><span class="slds-required">*</span>
+                                                        {label.ENROLL_REQ_DOC_REVIERS_EMAIL}</label>
+                                                    <lightning-input type="email" name={review.ownerNo} variant="label-hidden"
+                                                        value={review.emailValue} onchange={handleReviewerEmailChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+                                            </lightning-layout>
+                                        </div>
+                                    </div>
+                                    <div class="slds-float_right" key={review.uboID}>
+                                        <a onclick={deleteReviewer} name={review.uboID} style="color: red;">-
+                                            {label.ENROLL_REQ_DOC_REVIERS_DELETE}</a>
+                                    </div>
+                                </template>
+                            </template>
+                            <div>
+                                <a onclick={addReviewer}>+ {label.ENROLL_REQ_DOC_REVIERS_ADD}</a>
+                            </div>
+                            <!--
+                                <div style="margin-top:4%" class="specification-header">
+                                    <h1 class="slds-text-heading_medium">
+                                        {label.ENROLL_REQ_DOC_SEPERATE}
+                                    </h1>
+                                    <p class="contentMargin">{label.ENROLL_REQ_DOC_CONTENT3}</p>
+                                </div>
+                                
+                                <div style="margin-top:4%">
+                                    <lightning-input type="checkbox" label={label.ENROLL_REQ_DOC_ACCEPT_CHECK} name={label.ENROLL_REQ_DOC_ACCEPT_CHECK}  ></lightning-input>
+        
+                                </div>
+                                -->
+                        </div>
+                        <div if:false={docSignType}>
+                            <div style="margin-top:4%" class="specification-header">
+                                <h1 class="slds-text-heading_medium">
+                                    {label.ENROLL_REQ_DOC_SIGNERS}
+                                </h1>
+                                <p class="contentMargin">{label.ENROLL_REQ_DOC_SIGNERS_CONTENT}</p>
+                            </div>
+                            <template if:false={loading}>
+                                <template for:each={contactDetailOptionTwo} for:item="con" for:index="indexVar">
+                                    <div key={con.uboID}>
+                                        <p style="font-weight: bold;font-size: 16px;">{con.ownerHeading}</p>
+                                    </div>
+                                    <div key={con.uboID}>
+                                        <div class="slds-theme_default slds-grid slds-wrap">
+                                            <lightning-layout multiple-rows>
+                                                <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor"><span
+                                                            class="slds-required">*</span>{label.ENROLL_REQ_DOC_FIRST_NAME}</label>
+                                                    <lightning-input name={con.ownerNo} variant="label-hidden"
+                                                        value={con.firstName} onchange={handleOptionTwoFirstName}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor">{label.ENROLL_REQ_DOC_MIDDLE}</label>
+                                                    <lightning-input name={con.ownerNo} variant="label-hidden"
+                                                        value={con.middleName} onchange={handleOptionTwoMidName}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+
+                                                <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor"><span
+                                                            class="slds-required">*</span>{label.ENROLL_REQ_DOC_LAST_NAME}</label>
+                                                    <lightning-input variant="label-hidden" name={con.ownerNo}
+                                                        value={con.lastName} onchange={handleOptionTwoLastName}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+
+                                                <lightning-layout-item size=6 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor"><span
+                                                            class="slds-required">*</span>{label.ENROLL_REQ_DOC_SIGNERS_TITLE}</label>
+                                                    <lightning-input name={con.ownerNo} variant="label-hidden"
+                                                        value={con.titleValue} onchange={handleOptionTwoTitle}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+
+                                                <lightning-layout-item size=6 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor"><span
+                                                            class="slds-required">*</span>{label.ENROLL_REQ_DOC_SIGNERS_EMAIL}</label>
+                                                    <lightning-input type="email" name={con.ownerNo} variant="label-hidden"
+                                                        value={con.emailValue} onchange={handleOptionTwoEmail}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+                                            </lightning-layout>
+                                        </div>
+                                    </div>
+                                    <div class="slds-float_right" key={con.uboID}>
+                                        <a onclick={deleteSigner} name={con.uboID} style="color: red;">-
+                                            {label.ENROLL_REQ_DOC_DELETE}</a>
+                                    </div>
+                                </template>
+                            </template>
+                            <div>
+                                <a onclick={addSignerOptionTwo}>+ {label.ENROLL_REQ_DOC_ADD}</a>
+                            </div>
+                            <!--Reviewer Section -->
+                            <div style="margin-top: 15px;">
+                                <p style="font-weight: bold;font-size: 16px;">{label.ENROLL_REQ_DOC_REVIEWRS}</p>
+                                <p class="contentMargin">{label.ENROLL_REQ_DOC_CONTENT2}</p>
+                            </div>
+                            <template if:false={loading}>
+                                <template for:each={reviewDetail} for:item="review" for:index="indexVar">
+                                    <div key={review.uboID}>
+                                        <p style="font-weight: bold;font-size: 16px;">{review.ownerHeading}</p>
+                                    </div>
+                                    <div key={review.uboID}>
+                                        <div class="slds-theme_default slds-grid slds-wrap">
+                                            <lightning-layout multiple-rows>
+                                                <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor"><span
+                                                            class="slds-required">*</span>{label.ENROLL_REQ_DOC_REVIERS_FIRST_NAME}</label>
+                                                    <lightning-input name={review.ownerNo} variant="label-hidden"
+                                                        value={review.firstName}
+                                                        onchange={handleReviewerFirstNameChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+
+                                                <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor">{label.ENROLL_REQ_DOC_MIDDLE}</label>
+                                                    <lightning-input name={review.ownerNo} variant="label-hidden"
+                                                        value={review.middleName}
+                                                        onchange={handleReviewerMiddleNameChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+
+                                                <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor"><span
+                                                            class="slds-required">*</span>{label.ENROLL_REQ_DOC_REVIERS_LAST_NAME}</label>
+                                                    <lightning-input name={review.ownerNo} variant="label-hidden"
+                                                        value={review.lastName} onchange={handleReviewerLastNameChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+
+                                                <lightning-layout-item size=6 class="marginBottom slds-p-right_small">
+                                                    <label
+                                                        class="labelColor">{label.ENROLL_REQ_DOC_REVIERS_TITLE}</label>
+                                                    <lightning-input name={review.ownerNo} variant="label-hidden"
+                                                        value={review.titleValue} onchange={handleReviewerTitleChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+
+                                                <lightning-layout-item size=6 class="marginBottom slds-p-right_small">
+                                                    <label class="labelColor"><span class="slds-required">*</span>
+                                                        {label.ENROLL_REQ_DOC_REVIERS_EMAIL}</label>
+                                                    <lightning-input type="email" name={review.ownerNo} variant="label-hidden"
+                                                        value={review.emailValue} onchange={handleReviewerEmailChange}>
+                                                    </lightning-input>
+                                                </lightning-layout-item>
+                                            </lightning-layout>
+                                        </div>
+                                    </div>
+                                    <div class="slds-float_right" key={review.uboID}>
+                                        <a onclick={deleteReviewer} name={review.uboID} style="color: red;">-
+                                            {label.ENROLL_REQ_DOC_REVIERS_DELETE}</a>
+                                    </div>
+                                </template>
+                            </template>
+                            <div>
+                                <a onclick={addReviewer}>+ {label.ENROLL_REQ_DOC_REVIERS_ADD}</a>
+                            </div>
+                            <!--
+                                <div style="margin-top:4%" class="specification-header">
+                                    <h1 class="slds-text-heading_medium">
+                                        {label.ENROLL_REQ_DOC_SEPERATE}
+                                    </h1>
+                                    <p class="contentMargin">{label.ENROLL_REQ_DOC_CONTENT3}</p>
+                                </div>
+                                <div style="margin-top:4%">
+                                    <lightning-input type="checkbox" label={label.ENROLL_REQ_DOC_ACCEPT_CHECK} name={label.ENROLL_REQ_DOC_ACCEPT_CHECK}  ></lightning-input>
+                                </div>
+                                -->
+                        </div>
+
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

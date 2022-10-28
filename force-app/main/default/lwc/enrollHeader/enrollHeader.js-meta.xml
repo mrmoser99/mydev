@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>54.0</apiVersion>
+    <description>Let's Enroll in Financing</description>
+    <isExposed>true</isExposed>
+    <masterLabel>Let's Enroll in Financing</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+     <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property label="Section Title" name="sectionTitle" type="String" default="Let's Enroll in Financing" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,113 @@
+<template>
+    <div class="slds-p-horizontal_large slds-p-vertical_small white-bg slds-is-relative">    
+
+        <div class="slds-m-bottom_small slds-grid slds-wrap slds-gutters_xxx-small search-bar contract-banner">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-4"> 
+                {customerInfo.companyId}
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-4"> 
+                {customerInfo.companyName}
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-4"> 
+                {customerInfo.companyAddress}
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-4"> 
+                {customerInfo.companyZipCode}
+            </div>
+        </div> 
+        
+        <div class="spinner">
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" variant="brand" size="medium">
+                </lightning-spinner>
+            </template>
+        </div>
+
+        <template if:true={approvedCondition}>
+            <div class="subheading2 brand-color-text slds-p-bottom_small">{labels.Accepted_with_Condition}</div>
+            <div class="slds-text-body_medium slds-p-bottom_xx-small">{approvedConditionSen}</div>
+            <ul class="slds-list_dotted slds-p-bottom_xx-small">
+            <template for:each={approvedWithCondition} for:item="eachapprovedWithCondition"> 
+               <li key = {eachapprovedWithCondition}> {eachapprovedWithCondition} </li> 
+            </template> 
+            </ul>
+        </template>
+
+        <div class="subheading2 brand-color-text slds-p-bottom_x-small">{customerInfo.companyName} {labels.Contact_Person}</div>
+        <div class="slds-grid slds-wrap slds-gutters_xxx-small search-bar slds-p-bottom_small">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-4">             
+                <div class="slds-p-bottom_medium slds-p-right_x-small">{labels.Contact_Screen_Name}*</div>
+                <lightning-input class="input-name" type="text" variant="label-hidden" value={customerInfo.contactName} required disabled={isDisabled}></lightning-input>
+            </div>
+            <div class="slds-col slds-size_5-of-6 slds-medium-size_1-of-3 slds-large-size_1-of-4">
+                <div class="slds-p-bottom_medium slds-p-right_x-small">{labels.Contact_Screen_Email}*</div>
+                <lightning-input class="input-email" type="email" variant="label-hidden" value={customerInfo.contactEmail} required disabled={isDisabled}></lightning-input>
+            </div> 
+            <div class="slds-col slds-size_5-of-6 slds-medium-size_1-of-3 slds-large-size_1-of-4">
+                <div class="slds-p-bottom_medium slds-p-right_x-small">{labels.Contact_Screen_PhoneNumber}</div>
+                <lightning-input class="input-phone" value={customerInfo.contactPhoneNumber} type="text" variant="label-hidden" disabled={isDisabled} maxlength="10" onkeypress={checkIsNumber}></lightning-input>
+            </div>              
+        </div>
+        <div class="subheading2 brand-color-text slds-p-bottom_x-small">{labels.Delivery_Address}</div>
+        <div class="slds-grid slds-wrap slds-gutters_xxx-small search-bar slds-p-bottom_small">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-4">             
+                <div class="slds-p-bottom_medium slds-p-right_x-small">{labels.Contact_Street}</div>
+                <lightning-input class="input-street" type="text" variant="label-hidden" value={customerInfo.contactStreet} disabled={isDisabled}></lightning-input>
+            </div>       
+            <div class="slds-col slds-size_5-of-6 slds-medium-size_1-of-3 slds-large-size_1-of-4">
+                <div class="slds-p-bottom_medium slds-p-right_x-small">{labels.Contact_ZIP_Code}</div>
+                <lightning-input class="input-zip-code" type="text" variant="label-hidden" value={customerInfo.contactZipCode} disabled={isDisabled}></lightning-input>
+            </div>
+            <div class="slds-col slds-size_5-of-6 slds-medium-size_1-of-3 slds-large-size_1-of-4">
+                <div class="slds-p-bottom_medium slds-p-right_x-small">{labels.Contact_Screen_City}</div>
+                <lightning-input class="input-city" type="text" variant="label-hidden" value={customerInfo.contactCity} disabled={isDisabled}></lightning-input>
+            </div>                     
+        </div>
+        <div class="subheading2 brand-color-text slds-p-bottom_x-small"  style="display: none;">{labels.Contact_Screen_Reference}
+            <lightning-helptext content={labels.Reference_Help_text}></lightning-helptext>
+        </div>
+        <div class="slds-grid slds-wrap slds-gutters_xxx-small search-bar slds-p-bottom_small" style="display: none;"> 
+            <div class="slds-col slds-size_5-of-6 slds-medium-size_1-of-3 slds-large-size_1-of-4"> {labels.Contact_Screen_Reference}
+                <lightning-input  class="input-reference" type="text" variant="label-hidden" value={customerInfo.contactRefernce} disabled={isDisabled}></lightning-input>
+            </div>  
+        </div>
+
+        <div if:true={isSpecialTnCExist}>
+            <div class="subheading2 brand-color-text slds-p-bottom_x-small">{labels.Speical_TnC}</div>
+            <div class="slds-grid slds-wrap slds-gutters_xxx-small slds-p-bottom_small">
+                <div>
+                    <template for:each={specialTermsCondtion} for:item="item">
+                        <div key={item.recordId} class="slds-p-right_x-small">
+                            <lightning-input 	
+                                checked={item.isChecked} 
+                                type="checkbox" 
+                                disabled={item.isCheckboxDisabled} 
+                                label={item.Name}
+                                name="checkboxinput"
+                                value={item.recordId}
+                                onchange={changeSpecialTnC} ></lightning-input>
+                        </div>
+                    </template> 
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <lightning-accordion allow-multiple-sections-open onsectiontoggle={handleInsuranceSectionToggle}>             
+                <lightning-accordion-section name="Insurance_A" label={labels.Insurance} class="subheading2">
+                    <lightning-radio-group
+                        name = "ContractRadio"
+                        options={insuranceDiplayOptions}
+                        value={insuranceRadioValue}
+                        type = "radio"
+                        onchange={handleInsurncRadioChange}
+                        style="line-height: 2;" 
+                        disabled={isDisabled}>                      
+                    </lightning-radio-group>             
+                </lightning-accordion-section>
+            </lightning-accordion>
+        </div>
+          
+        <br/>
+    </div>
+</template>

@@ -1,0 +1,77 @@
+<template>
+
+    <template if:false={showCustomer}>
+        <template if:true={showQuickSearch}>
+
+            <div class="slds-var-m-top_medium slds-card">
+                <lightning-card>
+
+                    <div if:true={errorMsg} style="margin-left: 3%;">
+                        <p style="color: red;">{errorMsg}</p>
+                    </div>
+
+                    <div class="">
+                        <div class="slds-text-body_regular">
+                            Please provide business information for the Corporate Guarantor, including mutual owners and industry type to
+                            verify proper consideration.<br><br>
+                        </div>
+                    </div>
+
+                   
+                 
+                 
+                    <div><a onclick={addCustomer}>Add Cross Corporate Guarantee</a></span> </div>
+
+                </lightning-card>
+            </div>
+        </template>
+
+        <template if:true={isModalOpen}>
+            <div class="slds-box" style = "height: 600px;">
+                <!--<c-sample-address onnotify={handleNotify} ismodalopen={init}></c-sample-address>-->
+                <c-cross-corporate-address oncancelevent={closeModalpopup} recordid={recordId}>
+                </c-cross-corporate-address>
+            </div>
+        </template>
+
+    </template>
+
+    <template if:true={showCustomer}>
+
+                <div class="slds-box slds-theme_default">
+                    <div>
+                          <b> <lightning-formatted-text value={Customer.Name}></lightning-formatted-text> </b>
+                    </div>
+                   
+                    <div>
+                            <lightning-formatted-text value={Customer.Phone}></lightning-formatted-text>
+                    </div> 
+                    
+                    <div>
+                        <lightning-formatted-text value={Customer.Email__c}></lightning-formatted-text>
+                    </div> <br>
+                   
+                    <div>
+                         <lightning-formatted-text value={Customer.BillingStreet}></lightning-formatted-text> <br>
+                         <lightning-formatted-text value={Customer.BillingCity}></lightning-formatted-text>,
+                         <lightning-formatted-text value={Customer.BillingState}></lightning-formatted-text>&nbsp;<lightning-formatted-text value={Customer.BillingPostalCode}></lightning-formatted-text> <br>
+                         <template if:true = {Customer.BillingCounty__c}>
+                            <lightning-formatted-text value={Customer.BillingCounty__c}></lightning-formatted-text> <br>
+                         </template>
+                         <lightning-formatted-text value={Customer.BillingCountry}></lightning-formatted-text> 
+                        </div> 
+                </div>
+
+                <div>
+                    <br> <label class="slds-form-element__label" style="font-weight: bold;"
+                        for="form-element-05">EIN : </label>
+                     <lightning-formatted-text value={Customer.Tax_ID__c}></lightning-formatted-text>
+                    
+            </div>
+
+            <p style="color: #33ccff;font-weight: bold;cursor: pointer;" class="slds-var-m-around_small"
+                onclick={changeCustomer}>
+                Change Customer
+            </p>
+    </template>
+</template>

@@ -1,0 +1,15 @@
+@isTest
+global class GetContractGenerateResponseMockCallout implements HttpCalloutMock{
+     global HTTPResponse respond(HTTPRequest req){
+        
+        HttpResponse res = new HttpResponse();
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody('{    "ProviderResponse": {        "Account": {            "Contact": [                {                    "contactName": "RAUL GUDINIO",                    "contactType": "",                    "contactdata": "52459840"                }            ],            "Site": [                {                    "name": "TORONTO SCHOOL OF BUSINESS (OSHAWA) INC.",                    "siteLocation": {                        "line1": "419 KING STREET WEST",                        "line2": "",                        "line3": "",                        "city": "OSHAWA",                        "provinceOrState": "ON",                        "postalOrZipCode": "L1J 9Z9",                        "country": ""                    },                    "siteUsage": "customer"                },                {                    "name": "TORONTO SCHOOL OF BUSINESS (OSHAWA) INC.",                    "siteLocation": {                        "line1": "419 KING STREET WEST",                        "line2": "",                        "line3": "",                        "city": "OSHAWA",                        "provinceOrState": "ON",                        "postalOrZipCode": "L1J 9Z9",                        "country": ""                    },                    "siteUsage": "billing"                }            ],            "doingBusinessAs": "",            "entityType": "customer",            "sourceSystemId": "84"        },        "Contract": {            "asset": [                {                    "assetNumber": 186,                    "assetSerialNumber": "MI918295",                    "equipmentDescription": "TOSHIBA COPIER",                    "modelNumber": "6560"                }            ],            "billingCycle": {                "january": true,                "february": true,                "march": true,                "april": true,                "may": true,                "june": true,                "july": true,                "august": true,                "september": true,                "october": true,                "november": true,                "december": true            },            "customerName": "TORONTO SCHOOL OF BUSINESS (OSHAWA) INC.",            "delinquencyStatus": "181",            "leadDays": "15",            "opportunityId": "84",            "paymentAmount": "785",            "renewalterminMonths": "0",            "termInMonths": "66",            "terminationDate": "2005-10-01T23:59:59",            "timesDelinquent": "11",            "totalDueAmount": "0",            "totalPastDueAmount": "0"        }    }}');
+       
+        res.setStatusCode(200);
+        return res;
+        
+        
+    }
+
+}

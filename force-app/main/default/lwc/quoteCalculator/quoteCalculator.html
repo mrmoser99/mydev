@@ -1,0 +1,162 @@
+<template>
+    <div class="slds-is-relative slds-m-bottom_xx-large slds-p-bottom_medium container">
+
+    <c-pop-up-notification-cmp></c-pop-up-notification-cmp>
+
+    <template if:true={flagIndicatingDataHasBeenLoadedInVariables}>
+        <c-progressive-bar stages={stages}    
+            current-quote-stage={curntQuoteStage}
+            oppname ={opptyName}  
+            show-synced-quote={showSyncedQuote}
+            latestqtnme={latestQuoteName} 
+            onclicknewversion={handleNewVersionBtn}
+            onchangequotename={handleQuoteChange}
+            restquotename={restQuotetNameLastStr} 
+            onchangeprogrestep={handleProgressStep}
+            oncopyquoteevent={handleCopyQuoteProcess}
+            current-screen={currentScreen} 
+            show-review-screen={isDocumentQstnExist}
+            partner-info={partnerInfo}
+            >      
+        </c-progressive-bar>
+
+        <template if:true={selCalculationScreen}>
+            <!--Offer-->
+            <c-table-ui-control 
+                section-name={labels.Options_deal_Page}
+                columns={leasecols} 
+                rows={offerData}
+                gridcolmet={leasegridColumnMeta}
+                showadddelbtn={offerShowAddDelButton}
+                offercurrency={offercurrency}
+                onofferchangefromtable={handleChangeOfferOnQuote}
+                onsavequotelst={handleQuoteCreation}    
+                offriddstr ={offerStr}  
+                current-user-locale={userLocale}
+                table-name='Offers'
+                quote-status={curntQuoteStage}
+                header-icon-name='utility:description'
+                is-disabled={isDisabled}
+                selected-user-id={selectedUserId}
+                class='offerTable'>
+            >
+            </c-table-ui-control>
+            
+            <div class="slds-is-relative slds-grid slds-wrap">
+                <div class={calculationTableClasses}>
+                    
+                    <div class="spinner">
+                        <template if:true={isLoading}>
+                            <lightning-spinner alternative-text="Loading" variant="brand" size="medium">
+                            </lightning-spinner>
+                        </template>
+                    </div>
+
+                    <!--Product-->
+                    <c-table-ui-control 
+                        section-name={labels.Products_Deal_Page} 
+                        columns={cols} 
+                        rows={data}
+                        gridcolmet={gridColumnMeta}
+                        showadddelbtn={productShowAddDelButton}
+                        btnname={labels.Add_Product}
+                        offercurrency={offercurrency}
+                        ongettotalprice={handleTotalPrice}
+                        onsavequotelst ={handleQuoteCreation}
+                        offriddstr ={offerStr} 
+                        current-user-locale={userLocale}
+                        table-name='Product'
+                        quote-status={curntQuoteStage}
+                        header-icon-name='utility:products'
+                        is-disabled={isDisabled}>
+                    </c-table-ui-control>
+
+                    <!--Services-->
+                    <template if:false={hideServiceSection}>
+                        <c-table-ui-control 
+                            section-name={labels.Maintenance}  
+                            columns={serviceCols} 
+                            rows={servicedata}
+                            gridcolmet={servicegridColumnMeta}
+                            showadddelbtn={serviceShowAddDelButton}
+                            btnname={labels.Add_Maintenance} 
+                            offercurrency={offercurrency}
+                            onsavequotelst ={handleQuoteCreation}
+                            offriddstr ={offerStr} 
+                            current-user-locale={userLocale}
+                            table-name={labels.Maintenance}  
+                            quote-status={curntQuoteStage}
+                            section-wise-css=''
+                            header-icon-name='utility:product_service_campaign'
+                            is-disabled={isDisabled}>
+                        </c-table-ui-control>
+                    </template>
+                </div>
+
+                <div if:true={isInternalDLLMember} style="position: absolute; right: 20px; z-index: 1; padding-top: 10px;">
+                    <lightning-button  
+                        variant="brand" 
+                        label="Calculation params" 
+                        title="Calculation params" 
+                        value="Calculation params" 
+                        onclick={handleCalculationParams}
+                        icon-name="utility:close"
+                        icon-position="right"
+                        class="calculationParams">
+                    </lightning-button>
+                </div>
+
+                <div if:true={showCalculationDetails} class="slds-is-relative slds-col slds-size_2-of-5 slds-p-right_medium slds-p-bottom_medium">
+                    <div class="spinner">
+                        <template if:true={showSpinnerOnFooter}>
+                            <lightning-spinner alternative-text="Loading" variant="brand" size="medium">
+                            </lightning-spinner>
+                        </template>
+                    </div>
+                    <c-calculation-params calculation-params={calculationParams}></c-calculation-params>
+                </div>
+            </div>
+        </template>
+    </template>
+
+    <template if:true={selCusScreen}>
+        <c-customer-search-cmp  current-stage={curntQuoteStage} quote-id={quoteId} 
+                                onshownotification={handleNotification} valid-to={validTo}
+                                valid-from={validFrom} oncustomerselect={handleAssesmentButton}
+                                disabled-due-to-unavailible-product={disabledDueToUnavailibleProduct}>
+        </c-customer-search-cmp>
+    </template>
+
+    <template if:true={selDocsScreen}>
+        <c-contract-generation-screen customer-data={customerData} 
+            quote-id={quoteId} 
+            current-stage={curntQuoteStage}
+            is-disabled={disableContGenFields}>
+        </c-contract-generation-screen>
+    </template>
+    <!--E-Sign section-->
+    <template if:true={selEsignScreen}>
+        <c-e-sign-master-cmp quote-id={quoteId} current-quote-stage={curntQuoteStage} opportunity-id={opportunityId} onshownotification={handleNotification}
+        primary-product={primaryProduct}
+        ></c-e-sign-master-cmp>
+    </template>
+    <!--Review/Chedklist screen-->
+    <template if:true={selReviewScreen}>
+        <c-review-screen-cmp quote-id={quoteId}></c-review-screen-cmp>
+    </template>
+
+    <template if:true={showCreditCheck}>
+        <c-modal-cmp title={modalTitle} subtitle={modalSubtitle}></c-modal-cmp>
+    </template>
+
+    <c-flow-stages offer-currency={offercurrency} total-finance-amount={totalFinanceAmount} insurance-per-frqncy={insurancePerFrqncy} 
+        onnextstep={handleNextStep} totalrentalprice={finalRentalVal} offer-data={changeOffrData} view-rent-per-month={viewRentPerMonth} 
+        total-accumulated-service={totalAccServ} current-screen={currentScreen} show-spinner={showSpinnerOnFooter}
+        final-base-rate={baseRate} current-quote-stage={curntQuoteStage} enable-review-button={isDocumentQstnExist} enable-select-customer-button={enableSelectCustomerButton}
+        enable-assessment-button={enableAssessmentButton} disabled-due-to-unavailible-product={disabledDueToUnavailibleProduct}
+        is-purchase-option-applicable={isPurchaseOptionApplicableForQuote} total-purchase-option-amount={totalPurchaseOptionAmount}
+        downpayment={downpayment} isdownpayment={isdownpayment}>
+    </c-flow-stages>
+    <c-comet-d channel={channelName} onmessage={messageReceived}></c-comet-d>
+    </div>   
+</template>

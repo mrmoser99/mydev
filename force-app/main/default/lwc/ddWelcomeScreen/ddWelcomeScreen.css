@@ -1,0 +1,478 @@
+.dllTopLogo {
+		padding-left: 2%;
+		padding-top: 1%;
+		margin-top: 5%;
+		margin-left: 5%;
+}
+.textMargin  {
+		margin-left: 20%;
+}
+.blueBackground {
+		background-color: #0099FF;
+		width:100%;
+		height:80%;
+		position: fixed; 
+		top: 0; 
+		left: 0; 
+		min-width: 100%;
+		min-height: 100%;
+}
+
+.slds-grid {
+		padding: 0px !important;
+}
+
+.mainScreen {
+
+}
+
+.mainText span {
+		font-size: 1rem;
+		line-height: 110%;
+		font-family: 'EffraBold';
+		font-style: normal;
+}
+
+.secondText {
+		font-size: .5rem;
+		font-family: 'EffraRegular';
+		margin-top: 4%;
+}
+.signInCSS {
+		background-color: white;
+		color: #0099FF;
+		font-family: 'EffraBold';
+		border-radius: 2px;
+		display: inline-flex;
+}
+
+/*Right Side CSS*/
+
+.DarkBlueBg_Position {
+		max-width: 100%;
+		right: 0%;
+		max-height: 100%;
+		position: absolute;
+}
+
+.desktop_Position{
+		position: absolute;
+		right: 0%;
+		top: 15%;
+		max-width: 90%;
+		max-height: 60%;
+}
+
+.quote_Position{
+		position: absolute;
+		top: 17%;
+		right: 0%;
+		max-width: 80%;
+		max-height: 44%;
+}
+
+.phone_Position{
+		position: absolute;
+		right: 20%;
+		top: 47%;
+		max-width: 30%;
+		max-height: 30%;
+}
+
+.progress_Bar{
+		position: absolute;
+		right: 3%;
+		top: 80%;
+		max-width: 32%;
+		max-height: 32%;
+}
+
+
+
+.contactBtmMargin {
+		margin-top: 13px;
+}
+
+.contactLink span {
+		color: white;
+}
+
+.contactLink a {
+		color: white;
+		text-decoration: underline;
+}
+
+
+@media screen and (min-width: 300px) and (max-width: 600px){
+		.phone_Position{
+				position: absolute;
+				right: 22%;
+				top: 52%;
+				max-width: 30%;
+				max-height: 30%;
+
+		}
+		.progress_Bar{
+				position: absolute;
+				right: 3%;
+				top: 90%;
+				max-width: 32%;
+				max-height: 32%;
+		}
+}
+@media screen and (min-width: 600px) and (max-width: 1000px){
+		.phone_Position{
+				position: absolute;
+				right: 22%;
+				top: 48%;
+				max-width: 30%;
+				max-height: 30%;
+
+		}
+		.progress_Bar{
+				position: absolute;
+				right: 3%;
+				top: 85%;
+				max-width: 32%;
+				max-height: 32%;
+		}
+}
+@media screen and (min-width: 1000px) and (max-width: 1300px){
+		.phone_Position{
+				position: absolute;
+				right: 22%;
+				top: 45%;
+				max-width: 30%;
+				max-height: 30%;
+
+		}
+		.progress_Bar{
+				position: absolute;
+				right: 3%;
+				top: 80%;
+				max-width: 32%;
+				max-height: 32%;
+		}
+}
+@media screen and (min-width: 1300px) and (max-width: 1450px){
+		.phone_Position{
+				position: absolute;
+				right: 20%;
+				top: 45%;
+				max-width: 30%;
+				max-height: 30%;
+
+		}
+		.progress_Bar{
+				position: absolute;
+				right: 3%;
+				top: 80%;
+				max-width: 32%;
+				max-height: 32%;
+		}
+}
+
+@media screen and (min-width: 1450px) and (max-width: 1600px){
+		.phone_Position{
+				position: absolute;
+				right: 20%;
+				top: 43%;
+				max-width: 30%;
+				max-height: 30%;
+
+		}
+		.progress_Bar{
+				position: absolute;
+				right: 3%;
+				top: 78%;
+				max-width: 32%;
+				max-height: 32%;
+		}
+}
+@media screen and (min-width: 1600px) and (max-width: 1700px){
+		.phone_Position{
+				position: absolute;
+				right: 18%;
+				top: 38%;
+				max-width: 30%;
+				max-height: 30%;
+
+		}
+		.progress_Bar{
+				position: absolute;
+				right: 3%;
+				top: 75%;
+				max-width: 32%;
+				max-height: 32%;
+		}
+}
+@media screen and (min-width: 1700px) and (max-width: 1800px){
+		.phone_Position{
+				position: absolute;
+				right: 17%;
+				top: 35%;
+				max-width: 30%;
+				max-height: 30%;
+
+		}
+		.progress_Bar{
+				position: absolute;
+				right: 3%;
+				top: 73%;
+				max-width: 32%;
+				max-height: 32%;
+		}
+}
+@media screen and (min-width: 1800px) and (max-width: 1900px){
+		.phone_Position{
+				position: absolute;
+				right: 15%;
+				top: 32%;
+				max-width: 30%;
+				max-height: 30%;
+
+		}
+		.progress_Bar{
+				position: absolute;
+				right: 3%;
+				top: 70%;
+				max-width: 32%;
+				max-height: 32%;
+		}
+}
+@media screen and (min-width: 1900px) and (max-width: 2100px){
+		.phone_Position{
+				position: absolute;
+				right: 16%;
+				top: 35%;
+				max-width: 30%;
+				max-height: 30%;
+
+		}
+		.progress_Bar{
+				position: absolute;
+				right: 2%;
+				top: 70%;
+				max-width: 32%;
+				max-height: 32%;
+		}
+}
+@media screen and (min-width: 2100px) and (max-width: 2300px){
+		.phone_Position{
+				position: absolute;
+				right: 12%;
+				top: 28%;
+				max-width: 30%;
+				max-height: 30%;
+
+		}
+		.progress_Bar{
+				position: absolute;
+				right: 2%;
+				top: 54%;
+				max-width: 32%;
+				max-height: 32%;
+		}
+}
+@media screen and (min-width: 2300px) and (max-width: 4000px){
+		.phone_Position{
+				position: absolute;
+				right: 10%;
+				top: 25%;
+				max-width: 30%;
+				max-height: 30%;
+
+		}
+		.progress_Bar{
+				position: absolute;
+				right: 1%;
+				top: 45%;
+				max-width: 32%;
+				max-height: 32%;
+		}
+		.quote_Position{
+				position: absolute;
+				top: 16%;
+				right: 0%;
+				max-width: 80%;
+				max-height: 44%;
+
+		}
+}
+@media screen and (min-width: 4000px) {
+		.phone_Position{
+				position: absolute;
+				right: 6%;
+				top: 22%;
+				max-width: 30%;
+				max-height: 30%;
+
+		}
+		.progress_Bar{
+				position: absolute;
+				right: 0%;
+				top: 35%;
+				max-width: 32%;
+				max-height: 32%;
+		}
+		.quote_Position{
+				position: absolute;
+				top: 15.5%;
+				right: 0%;
+				max-width: 80%;
+				max-height: 44%;
+
+		}
+}
+
+
+@media screen and (min-width: 1300px) {
+		.mainText span {
+				font-size: calc(28px + 6 * ((100vw - 1300px) / 680));
+				line-height: 110%;
+				font-family: 'EffraBold';
+				font-style: normal;
+		}
+
+		.secondText {
+				font-size: calc(12px + 6 * ((100vw - 1300px) / 680));
+				font-family: 'EffraRegular';
+				margin-top: 4%;
+		}
+		.signInCSS {
+				background-color: white;
+				color: #0099FF;
+				padding: 15px 60px;
+				font-family: 'EffraBold';
+				border-radius: 4px;
+				margin-top: 0px;
+				display:inline-flex;
+		}
+		.contactLink a {
+				color: white;
+				text-decoration: underline;
+				font-size:100%;
+		}
+
+}
+
+@media screen and (max-width: 1300px) and (min-width: 1150px) {
+		.mainText span {
+				font-size: calc(28px + 6 * ((100vw - 1150px) / 680));
+				line-height: 110%;
+				font-family: 'EffraBold';
+				font-style: normal;
+		}
+
+		.secondText {
+				font-size: calc(12px + 6 * ((100vw - 1150px) / 680));
+				font-family: 'EffraRegular';
+				margin-top: 4%;
+		}
+		.signInCSS {
+				background-color: white;
+				color: #0099FF;
+				padding: 10px 40px;
+				font-family: 'EffraBold';
+				border-radius: 3px;
+				margin-top: 0px;
+				display:inline-flex;
+		}
+		.contactLink a {
+				color: white;
+				text-decoration: underline;
+				font-size:80%;
+		}
+
+
+}
+@media screen and (min-width: 1000px) and (max-width: 1150px) {
+		.mainText span {
+				font-size: calc(28px + 6 * ((100vw - 1000px) / 680));
+				line-height: 110%;
+				font-family: 'EffraBold';
+				font-style: normal;
+		}
+
+		.secondText {
+				font-size: calc(12px + 6 * ((100vw - 1000px) / 680));
+				font-family: 'EffraRegular';
+				margin-top: 4%;
+		}
+		.signInCSS {
+				background-color: white;
+				color: #0099FF;
+				padding: 10px 40px;
+				font-family: 'EffraBold';
+				border-radius: 3px;
+				margin-top: 0px;
+				display:inline-flex;
+		}
+		.contactLink a {
+				color: white;
+				text-decoration: underline;
+				font-size:80%;
+		}
+
+
+}
+@media screen and (min-width: 800px) and (max-width: 1000px) {
+		.mainText span {
+				font-size: calc(28px + 6 * ((100vw - 800px) / 680));
+				line-height: 110%;
+				font-family: 'EffraBold';
+				font-style: normal;
+		}
+
+		.secondText {
+				font-size: calc(12px + 6 * ((100vw - 800px) / 680));
+				font-family: 'EffraRegular';
+				margin-top: 4%;
+		}
+		.signInCSS {
+				background-color: white;
+				color: #0099FF;
+				padding: 8px 38px;
+				font-family: 'EffraBold';
+				border-radius: 3px;
+				margin-top: 0px;
+				display:inline-flex;
+		}
+		.contactLink a {
+				color: white;
+				text-decoration: underline;
+				font-size:80%;
+		}
+
+
+}
+@media screen and (min-width: 400px) and (max-width: 800px) {
+		.mainText span {
+				font-size: calc(18px + 6 * ((100vw - 400px) / 680));
+				line-height: 110%;
+				font-family: 'EffraBold';
+				font-style: normal;
+		}
+
+		.secondText {
+				font-size: calc(8px + 6 * ((100vw - 400px) / 680));
+				font-family: 'EffraRegular';
+				margin-top: 4%;
+		}
+		.signInCSS {
+				background-color: white;
+				color: #0099FF;
+				padding: 8px 38px;
+				font-family: 'EffraBold';
+				border-radius: 3px;
+				margin-top: 0px;
+				display:inline-flex;
+		}
+		.contactLink a {
+				color: white;
+				text-decoration: underline;
+				font-size:80%;
+		}
+
+
+}

@@ -1,0 +1,298 @@
+<!--Change Log
+
+    08/30/2022 - MRM added request funding button
+
+
+
+-->
+<template>
+    <div class="slds-var-m-around_small">
+        <div if:true={loading}>
+            <lightning-spinner alternative-text="Loading..." variant="brand"></lightning-spinner>
+        </div>
+    </div>
+    <div>
+        <!--Use template if:true to display/hide popup based on isModalOpen value-->
+        <template if:true={isModalOpen}>
+            <!-- Modal/Popup Box LWC starts here -->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box LWC body starts here -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"
+                            style="margin-bottom: 15px;">Are you sure you want to save the changes?</h2>
+                        <p>If you click yes, any changes you made will be saved.
+                        </p>
+                    </div>
+                    <!-- Modal/Popup Box LWC footer starts here -->
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeModal} title="No">No</button>
+                        <button class="slds-button slds-button_brand" onclick={submitDetails} title="Yes">Yes</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </div>
+    <lightning-layout class="backgroundColor" multiple-rows=true horizontal-align="spread">
+
+        <!-- header section -->
+        <lightning-layout-item size=12 class="slds-box_border quote-header">
+            <div class="Header slds-p-around_medium">
+                <lightning-layout>
+                    <lightning-layout-item size=8>
+                        <h1 class="slds-text-heading_large">
+                            {sectionTitle}
+                        </h1>
+                    </lightning-layout-item>
+                    <lightning-layout-item size=4>
+                        <!--<div if:true={reviewSpecs}>
+                            <lightning-button class="slds-float_right" variant="brand-outline" label={headerActionBtn} onclick={onActionBtnClick}></lightning-button>
+                        </div>-->
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout class="slds-p-around_medium" horizontal-align="left">
+                    <lightning-layout-item class="header-field-section" flexibility="auto">
+                        <div class="display-field">
+                            <label>{label.ENROLL_CUST_NAME}</label>
+                            <span><b>{customerName}</b></span>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="header-field-section" flexibility="auto">
+                        <div class="display-field">
+                            <label>{label.ENROLL_APP_NUM}</label>
+                            <span><b>{applicationNumber}</b></span>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="header-field-section" flexibility="auto">
+                        <div class="display-field">
+                            <label>{label.ENROLL_NICKNAME}</label>
+                            <span><b>{nickname}</b></span>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="header-field-section" flexibility="auto">
+                        <div class="display-field">
+                            <label>{label.ENROLL_QUOTE_NO}</label>
+                            <span><b>{quoteNumber}</b></span>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="header-field-section" flexibility="auto">
+                        <div class="display-field">
+                            <label>{label.ENROLL_STATUS}</label>
+                            <span><b>{status}</b></span>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </lightning-layout-item>
+        <!--Progress Bar Section-->
+        <lightning-layout-item size=12>
+            <c-enroll-progress-bar>
+            </c-enroll-progress-bar>
+        </lightning-layout-item>
+        <!-- Tab Section -->
+        <lightning-layout-item if:false={completeAssetDetails} size=12 class="tab-class slds-box_border topSpace">
+            <lightning-layout multiple-rows=true class="no-padding">
+                <lightning-layout-item size=8>
+                    <div style="background-color:white;margin-right: 1%;">
+                        <div if:true={reviewSpecs}>
+                            <c-enroll-review-credit-app opp-id={oppId} mode-visible={editModeVar}>
+                            </c-enroll-review-credit-app>
+                        </div>
+
+                        <div if:true={reviewCustomerBilling}>
+                            <c-enroll-customer-billing opp-id={oppId} edit-mode={editModeVar}>
+                            </c-enroll-customer-billing>
+                        </div>
+                        <div if:true={requestDocuments}>
+                            <c-enroll-request-doc opp-id={oppId} edit-mode={editModeVar}>
+                            </c-enroll-request-doc>
+                        </div>
+                        <div if:true={submitDocuments}>
+                            <c-enroll-submit-doc opp-id={oppId} edit-mode={editModeVar}>
+                            </c-enroll-submit-doc>
+
+                        </div>
+
+                        <div if:true={completeFunding}>
+
+                            <div if:true={booked}>
+                                <c-enroll-docs-confirm opp-id={oppId} edit-mode={editModeVar}>
+                                </c-enroll-docs-confirm>
+                            </div>
+                            <div if:false={booked}>
+                                <c-enroll-complete-funding opp-id={oppId} edit-mode={editModeVar}>
+                                </c-enroll-complete-funding>
+                            </div>
+                        </div>
+
+
+                        <!-- Bottom Section for progress bar action (Back and Continue Buttons)  -->
+                        <div if:true={editModeVar}>
+                            <div class="buttonUperBorder">
+                                <span if:false={completeFunding}>
+                                    <lightning-button class="slds-float_right marginOnBtn" variant="brand"
+                                        label="Continue" onclick={handleOnContinue}>
+                                    </lightning-button>
+                                </span>
+                                <span if:false={reviewSpecs}>
+                                    <lightning-button class="slds-float_right" variant="brand-outline" label="Back"
+                                        onclick={handleOnBack}>
+                                    </lightning-button>
+                                </span>
+
+                            </div>
+                        </div>
+                        <!-- Bottom Section after click on Edit Button  -->
+                        <div if:false={completeFunding}>
+                            <div if:false={editModeVar}>
+
+                                <div class="buttonUperBorder">
+                                    <lightning-button class="slds-float_left marginOnBtn" variant="brand-outline"
+                                        label="Cancel" onclick={handleOnCancel}>
+                                    </lightning-button>
+                                    <lightning-button class="slds-float_left" variant="brand" label="Save"
+                                        onclick={handleOnSave}>
+                                    </lightning-button>
+
+                                    <template if:false={submitDocuments}>
+                                        <lightning-button class="slds-float_right marginOnBtn" variant="brand"
+                                            label="Continue" onclick={handleOnContinue}>
+                                        </lightning-button>
+                                    </template>
+                                    <template if:true={submitDocuments}>
+                                        <lightning-button class="slds-float_right marginOnBtn" variant="brand"
+                                            label="Request Funding" onclick={handleRequestFundingShow}>
+                                        </lightning-button>
+                                    </template>
+
+
+                                    <template if:true={isReviewDoc}>
+                                        <lightning-button class="slds-float_right" style="margin-left: 10px;"
+                                            variant="brand" label="Request Documents" onclick={handleOnSendEmail}>
+                                        </lightning-button>
+                                    </template>
+
+                                    <lightning-button class="slds-float_right" variant="brand-outline" label="Back"
+                                        onclick={handleOnBack}>
+                                    </lightning-button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </lightning-layout-item>
+                <!-- Summary Section -->
+                <lightning-layout-item size=4 class="summarySection">
+                    <c-enroll-summary>
+                    </c-enroll-summary>
+                </lightning-layout-item>
+            </lightning-layout>
+        </lightning-layout-item>
+        <lightning-layout-item if:true={completeAssetDetails} size=12 class="tab-class slds-box_border topSpace">
+            <c-enroll-assets opp-id={oppId} edit-mode={editModeVar}>
+            </c-enroll-assets>
+            <!-- Bottom Section for progress bar action (Back and Continue Buttons)  -->
+            <div style="margin-top: -0.5%;" class="slds-m-right_medium" if:true={editModeVar}>
+                <div class="buttonUperBorder">
+                    <span if:false={completeFunding}>
+                        <lightning-button class="slds-float_right marginOnBtn" variant="brand" label="Continue"
+                            onclick={handleOnContinue}>
+                        </lightning-button>
+
+                    </span>
+                    <span if:false={reviewSpecs}>
+                        <lightning-button class="slds-float_right" variant="brand-outline" label="Back"
+                            onclick={handleOnBack}>
+                        </lightning-button>
+                    </span>
+
+                </div>
+            </div>
+            <!-- Bottom Section after click on Edit Button  -->
+            <div style="margin-top: -0.5%;" class="slds-m-right_medium" if:false={editModeVar}>
+                <div if:true={reviewSpecs}>
+                    <div class="buttonUperBorder">
+                        <lightning-button class="slds-float_left marginOnBtn" variant="brand-outline" label="cancel"
+                            onclick={handleOnCancel}>
+                        </lightning-button>
+
+
+                        <lightning-button class="slds-float_right marginOnBtn" variant="brand" label="Continue"
+                            onclick={handleOnContinue}>
+                        </lightning-button>
+                        <lightning-button class="slds-float_right" variant="brand" label="Save" onclick={handleOnSave}>
+                        </lightning-button>
+                    </div>
+                </div>
+                <div if:false={reviewSpecs}>
+                    <div class="buttonUperBorder">
+                        <lightning-button class="slds-float_left marginOnBtn" variant="brand-outline" label="cancel"
+                            onclick={handleOnCancel}>
+                        </lightning-button>
+                        <lightning-button class="slds-float_left" variant="brand" label="Save" onclick={handleOnSave}>
+                        </lightning-button>
+
+
+                        <lightning-button class="slds-float_right marginOnBtn" variant="brand" label="Continue"
+                            onclick={handleOnContinue}>
+                        </lightning-button>
+
+
+
+
+                        <lightning-button class="slds-float_right" variant="brand-outline" label="Back"
+                            onclick={handleOnBack}>
+                        </lightning-button>
+                    </div>
+                </div>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+
+    <div>
+        <!--Use template if:true to display/hide popup based on isModalOpen value-->
+        <template if:true={submitDocumentsConfirm}>
+            <!-- Modal/Popup Box LWC starts here -->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true"
+                aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box LWC body starts here -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                        <h2 id="modal-heading-03" class="slds-p-around_small slds-text-heading_medium slds-hyphenate">
+                            Have you uploaded all
+                            required docs?
+                        </h2>
+                        <p class="slds-p-around_small">We'll best be able to process your request if you include the
+                            following required documents:
+                        </p>
+
+                        <div class="indentbullets">
+                            <ul>
+                                <li><b>Signed Lease Agreement</b></li>
+                                <li><b>Signed Delivery Document</b></li>
+                                <li><b>Invoice</b></li>
+                            </ul>
+
+                        </div>
+
+                        <p class="slds-p-around_small">Your funding may be delayed if you submit without uploading all
+                            of these.</p>
+
+                        <div>
+
+                            <lightning-button class="slds-float_right slds-p-around_x-small" variant="brand"
+                                onclick={handleRequestFunding} label="Yes, submit now"></lightning-button>
+                            <lightning-button class="slds-float_right slds-p-around_x-small" variant="brand-outline"
+                                onclick={closeConfirm} label="No, go back">
+                            </lightning-button>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </div>
+
+</template>

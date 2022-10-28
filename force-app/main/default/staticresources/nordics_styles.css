@@ -1,0 +1,520 @@
+/* BACKGROUND IMAGE */
+
+.siteforceThemeLayoutStarter .body::before {
+    background: 		url(https://life.force.com/partners/sfsites/c/resource/DLLimage) center / cover no-repeat;
+    bottom: 			0;
+    content: 			'';
+    left: 				0; 
+    position: 			fixed;
+    right: 				0;
+    top: 				0; 
+    z-index: 			-1;
+}
+
+/* BACKGROUND IMAGE */
+
+/* HEADERS */
+
+.siteforceThemeLayoutStarter h1, c-quote-calculator-container h1 {
+    font-size: 			54px;
+    line-height: 		56px;
+    font-weight: 		700;
+}
+
+.siteforceThemeLayoutStarter h2, c-quote-calculator-container h2 {
+    font-size: 			50px;
+    line-height: 		52px;
+    font-weight: 		700;
+}
+
+/**.siteforceThemeLayoutStarter h3, c-quote-calculator-container h3 {
+    font-size: 			40px;
+    line-height: 		48px;
+    font-weight: 		700;
+}**/
+
+/* HEADERS */
+
+/* SUBHEADINGS */
+
+.subheading1 {
+    font-size: 			30px;
+    line-height: 		34px;
+    font-weight: 		400;
+}
+
+.subheading2 {
+    font-size: 			22px;
+    line-height: 		26px;
+    font-weight: 		500;
+}
+
+.subheading3 {
+    font-size: 			20px;
+    line-height: 		26px;
+    font-weight: 		500;
+}
+
+c-table-ui-control .subheading2 svg {
+    fill: 				#0099FF !important;
+}
+
+/* SUBHEADINGS */
+
+
+/* TEXT */
+
+.normal-text {
+    font-size: 			18px;
+    line-height: 		22px;
+    font-weight: 		400;
+}
+
+.small-text {
+    font-size: 			16px;
+    line-height: 		22px;
+    font-weight: 		400;
+}
+
+.extra-small-text {
+    font-size: 			14px;
+    line-height: 		22px;
+    font-weight: 		400;
+}
+
+.xxs-text {
+    font-size: 			12px;
+    line-height: 		22px;
+    font-weight: 		400;
+}
+
+/* TEXT */
+
+/* FONT WEIGHT */
+
+.bold-font-weight {
+    font-weight: 		700;
+}
+
+.medium-font-weight {
+    font-weight: 		500;
+}
+
+.normal-font-weight {
+    font-weight: 		400;
+}
+
+.thin-font-weight {
+    font-weight: 		300;
+}
+
+/* FONT WEIGHT */
+
+/* TEXT COLOR */
+
+.white-text {
+    color: 				#ffffff;
+}
+
+.brand-color-text {
+    color: 				#0099FF;
+}
+
+.tr-border {
+    border-bottom: 		1px solid #CCCCCC; 
+    border-top: 		1px solid #CCCCCC;
+}
+
+/* TEXT COLOR */
+
+/* FONTS */
+
+@font-face {
+    font-family: "Effra";
+    src: url("https://life.force.com/partners/sfsites/c/resource/effraLt") format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Effra";
+    src: url("https://life.force.com/partners/sfsites/c/resource/effraRg") format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Effra";
+    src: url("https://life.force.com/partners/sfsites/c/resource/effraMd") format('truetype');;
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Effra";
+    src: url("https://life.force.com/partners/sfsites/c/resource/effraBd") format('truetype');;
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* FONTS */
+
+/* SEPARATORS AND BORDERS */
+
+.siteforceThemeLayoutStarter hr, c-quote-calculator-container hr {
+    margin: 0;
+    border-top: 2px solid #ffffff;
+}
+
+.brand-border-color {
+    border-color: #0099FF;
+}
+
+/* SEPARATORS AND BORDERS */
+
+/* BACKGROUND-COLOR */
+
+.white-bg {
+    background-color: #ffffff;
+}
+
+.grey-20-bg {
+    background-color: #E5E5E5;
+}
+
+.brand-bg {
+    background-color: #0099FF;
+}
+
+/* BACKGROUND-COLOR */
+
+/* BUTTONS */
+
+.primaryButton {
+	background-color:	#0099ff;
+	display:			inline-block;
+	cursor:				pointer;
+	color:				#ffffff;
+	padding: 			8px 16px;
+    min-width: 			180px;
+    text-decoration:	none;
+    border: 			none;
+}
+.primaryButton:hover {
+	background-color:	#0069cc;
+}
+.primaryButton:active {
+    background-color:	#005B99;
+}
+
+/* BUTTONS */
+
+/* SCHEME OVERRIDING */
+
+.siteforceThemeLayoutStarter {
+    font-size: 14px !important;
+}
+
+.siteforceContentArea {
+    margin: 			4rem 2rem 2rem !important;
+}
+
+div.siteforceSldsOneColLayout.siteforceContentArea, div.siteforceDynamicLayout.siteforceContentArea {
+     margin: 			1rem 2rem 2rem !important;
+}
+
+.siteforceThemeLayoutStarter .themeSearch {
+    display: 			none !important;
+}
+
+/* for Pipeline list view */
+
+.siteforceThemeLayoutStarter .forceListViewManager {
+    padding: 			1rem;
+    max-height: 		85vh !important;
+}
+
+.siteforceThemeLayoutStarter .forceListViewManager .uiScroller {
+    height: 			inherit !important;
+}
+
+.siteforceThemeLayoutStarter .forceListViewManager .runtime_sales_pipelineboardPipelineViewColumnHeader .stageHeader {
+    line-height: 		1.5;
+}
+
+.siteforceThemeLayoutStarter .forceListViewManager force-list-view-manager-status-info, .forceListViewManager .slds-page-header__name-switcher, .siteforceThemeLayoutStarter .forceListViewManager .test-lvmForceActionsContainer, 
+.siteforceThemeLayoutStarter .forceListViewSettingsMenu, .siteforceThemeLayoutStarter .forceListViewManager .runtime_sales_pipelineboardPipelineViewCardStencil .showActionsButton, 
+.siteforceThemeLayoutStarter .forceListViewManager .runtime_sales_pipelineboardPipelineViewCardStencil .alertIcon, .siteforceThemeLayoutStarter .forceListViewSettingsMenu, .fieldsAndGuidanceButton {
+    display: 			none;
+}
+
+.siteforceThemeLayoutStarter .forceListViewManager .forceListViewPicker {
+    pointer-events: 	none;
+    position:			absolute;
+}
+
+.siteforceThemeLayoutStarter .forceListViewManager .forceListViewPicker h1 .selectedListView {
+    font-size: 			22px;
+    font-weight: 		700;
+    color: 				#0099FF;
+}
+
+.siteforceThemeLayoutStarter .forceListViewManager .forceListViewManagerGrid .emptyContent {
+    top: 				100px;
+}
+
+.siteforceThemeLayoutStarter .runtime_sales_pipelineboardPipelineView .maskContainer .pipelineViewMessage:not(.hidden) {
+    justify-content: 	normal !important;
+    margin-top: 		100px;
+}
+
+.siteforceThemeLayoutStarter .forceListViewManager .runtime_sales_pipelineboardPipelineView .container .pipelineColumn:first-of-type .pipelineHeader, 
+.siteforceThemeLayoutStarter .forceListViewManager .runtime_sales_pipelineboardPipelineView .container .pipelineColumn:last-of-type .pipelineHeader {
+    border-radius: 		0;
+}
+
+.siteforceThemeLayoutStarter table.forceRecordLayout td:last-child, .siteforceThemeLayoutStarter table.forceRecordLayout th:last-child {
+    display: 			none;
+}
+
+.siteforceThemeLayoutStarter .runtime_sales_pipelineboardPipelineViewColumnHeader .uiTooltip.tooltip-trigger {
+    pointer-events: 	none;
+}
+
+.siteforceThemeLayoutStarter .uiDraggable {
+    -webkit-user-drag:	none !important;
+  	-khtml-user-drag: 	none !important;
+  	-moz-user-drag: 	none !important;
+  	-o-user-drag: 		none !important;
+  	cursor: 			auto !important;
+}
+
+.siteforceThemeLayoutStarter .slds-popover_tooltip[force-listviewmanagersearchbar_listviewmanagersearchbar] {
+    display: 			none;
+}
+
+/* for Pipeline list view */
+
+/* SCHEME OVERRIDING */
+
+/* SLDS STYLE OVERRIDING*/
+
+/* Add line wrapping in table headers */
+
+c-table-ui-control th .slds-truncate {
+    white-space:        normal;
+}
+
+/* Add line wrapping in table headers */
+
+.slds-modal__content .slds-button:focus, c-flow-stages .slds-button:focus {
+    outline: 			0px;
+    box-shadow:			none;
+}
+
+.slds-form-element .slds-checkbox [type="checkbox"]:checked + .slds-checkbox__label .slds-checkbox_faux {
+    background-color: 	#0099ff;
+}
+
+.slds-checkbox [type="checkbox"][disabled] + .slds-checkbox__label .slds-checkbox_faux, .slds-form-element .slds-checkbox [type="checkbox"][disabled]:checked + .slds-checkbox__label .slds-checkbox_faux {
+    background-color: 	#e9eaec;
+}
+
+.slds-checkbox [type="checkbox"]:checked + .slds-checkbox__label .slds-checkbox_faux::after {
+    border-bottom: 		2px solid #ffffff;
+    border-left: 		2px solid #ffffff;
+}
+
+.greenCheckbox .slds-form-element .slds-checkbox [type="checkbox"][disabled]:checked + .slds-checkbox__label .slds-checkbox_faux {
+    background-color: 	#009A00;
+}
+
+.greenCheckbox .slds-checkbox [type=checkbox][disabled]:checked+.slds-checkbox__label .slds-checkbox_faux {
+    border-color: 	    #009A00;
+}
+
+.greenCheckbox .slds-checkbox [type="checkbox"][disabled]:checked + .slds-checkbox__label .slds-checkbox_faux::after {
+    border-bottom: 		2px solid #ffffff;
+    border-left: 		2px solid #ffffff;
+}
+
+.redCheckbox .slds-form-element .slds-checkbox [type="checkbox"][disabled] + .slds-checkbox__label .slds-checkbox_faux {
+    background-color: 	#9A151C;
+}
+
+.redCheckbox .slds-checkbox [type=checkbox][disabled]+.slds-checkbox__label .slds-checkbox_faux {
+    border-color: 	    #9A151C;
+}
+
+.slds-checkbox [type="checkbox"][disabled]:checked + .slds-checkbox__label .slds-checkbox_faux::after {
+    border-bottom: 		2px solid #969492;
+    border-left: 		2px solid #969492;
+}
+
+.slds-has-inline-listbox, .slds-has-object-switcher {
+    border-radius: 		0 !important;
+}
+
+.slds-progress .slds-button:focus {
+    outline:            none;
+    box-shadow:         none;
+    color:              #0099ff;
+}
+
+.slds-progress__item.slds-is-active .slds-progress__marker:focus {
+    box-shadow:         none;
+}
+
+.slds-form-element__label, .slds-checkbox .slds-checkbox__label .slds-form-element__label {
+    font-size: 			14px;
+    line-height: 		22px;
+    font-weight: 		400;
+}
+
+.slds-radio .slds-form-element__label {
+    font-size: 			14px;
+    line-height: 		22px;
+    font-weight: 		400;
+}
+
+.login-form .slds-form-element__label {
+    color:              #ffffff;
+}
+
+.slds-progress__marker:hover {
+    background-color: 	#ffffff;
+    border-color: 		#1589ee;
+}
+
+.userProfileMenu .slds-avatar__initials {
+    cursor: 			pointer;
+    text-shadow: 		none;
+}
+
+.slds-has-error .slds-form-element__help {
+    position: 			absolute;
+}
+
+.modal .slds-modal__header {
+    border-bottom-width:        1px;
+    border-top-right-radius:    0;
+    border-top-left-radius:     0;
+}
+
+.modal .slds-modal__footer {
+    border-top-width:           1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius:  0;
+}
+
+.progressive-bar-btn-menu .slds-button[disabled], .progressive-bar-btn-menu .slds-button:disabled {
+    background-color:	#e9eaec;
+    border-color:   	#c4c6ca;
+    color:          	#606060;
+}
+
+.progressive-bar-btn-menu .slds-button_icon-more[disabled] .slds-button__icon, .progressive-bar-btn-menu .slds-button--icon-more[disabled] {
+    fill:               #606060;
+}
+
+.slds-input[disabled], .slds-button[disabled] {
+    cursor: 			not-allowed;
+}
+
+lightning-button[c-esigntopsection_esigntopsection] {
+    pointer-events: 	auto !important;
+}
+
+/* remove border radius from buttons, input-fields, drop-down menu */
+
+c-quote-calculator-container .slds-card, .siteforceThemeLayoutStarter .slds-card{
+    border: 			none;
+    border-bottom: 		1px solid #d4d4d4;
+    border-radius: 		0;
+}
+
+c-quote-calculator-container input, c-quote-calculator-container button, .siteforceThemeLayoutStarter input, .siteforceThemeLayoutStarter button {
+    border-radius:		0 !important;
+    outline: 			none;
+}
+
+c-quote-calculator-container lightning-progress-indicator button, .siteforceThemeLayoutStarter lightning-progress-indicator button {
+    border-radius:		50% !important;
+}
+
+c-quote-calculator-container .slds-dropdown, .siteforceThemeLayoutStarter .slds-dropdown {
+    border-radius: 		0;
+}
+
+/* remove border radius from buttons, input-fields, drop-down menu */
+
+/* SLDS STYLE OVERRIDING */
+
+/* PORTFOLIO TABLE */
+
+c-portfolio-table .dt-outer-container {
+    border-top:         1px solid #cfcfcf;
+}
+
+c-portfolio-table .slds-form-element__label {
+    font-size: 			12px;
+    font-weight: 		700;
+}
+
+/* PORTFOLIO TABLE */
+
+/* DEAL APP PAGE */
+
+c-quote-calculator-container {
+    color:            #666666;
+}
+
+c-calculation-params th div {
+    background-color: #0099FF;
+    color:            #ffffff;
+    font-weight:        700;
+}
+
+c-calculation-params td p {
+    padding-top:        5px !important;
+    padding-bottom:     5px !important;
+}
+
+c-calculation-params tr:nth-child(2n+1) td {
+    background-color: #CCEBFF;
+}
+
+c-calculation-params tr:nth-child(2n) td{
+    background-color: #F1F1F1;
+}
+
+c-calculation-params table {
+    border-spacing: 3px;
+    border-collapse: separate;
+}
+
+c-quote-calculator-container div.container {
+    background-color:  #ffffff;
+    padding-bottom:     0;
+}
+
+@media (max-width: 1400px) {
+    c-quote-calculator-container {
+       zoom:            90%;
+    }
+}
+
+/* DEAL APP PAGE */
+
+c-quote-calculator .offerTable table {
+    table-layout:       fixed;
+}
+
+/* INTERNAL SF HOME PAGE */
+
+.flexipageComponent c-my-opportunties .white-bg {
+    border-radius:      4px;
+    margin-top:         0;
+}
+
+/* INTERNAL SF HOME PAGE */

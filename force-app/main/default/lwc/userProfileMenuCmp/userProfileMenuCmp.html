@@ -1,0 +1,26 @@
+<template>
+    <div class="slds-clearfix">
+        <div class="userProfileMenu slds-dropdown-trigger slds-dropdown-trigger_click slds-m-around_x-small slds-float_right">
+            <lightning-avatar variant="circle" 
+                              src={userAvatar} 
+                              initials={userInitials} 
+                              class="slds-m-bottom_x-small"
+                              onclick={handleMenuDisplay}>
+            </lightning-avatar>
+            <div role="menu" aria-label="User Profile Menu" class="slds-dropdown slds-dropdown_right slds-dropdown__list">
+                <lightning-menu-item value="My Profile" 
+                                     label="My Profile"
+                                     class="slds-dropdown__item" 
+                                     role="presentation"
+                                     onclick={navigateToProfilePage}>
+                </lightning-menu-item>
+                <lightning-menu-item value="Log Out" 
+                                     label="Log Out"
+                                     class="slds-dropdown__item logOut" 
+                                     role="presentation"
+                                     onclick={logOut}>
+                </lightning-menu-item>
+            </div>
+        </div>
+    </div>
+</template>

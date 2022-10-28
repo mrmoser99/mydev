@@ -1,0 +1,41 @@
+<template>
+    <div class="slds-p-around_large white-bg">
+        <div class="subheading2 bold-font-weight brand-color-text slds-m-bottom_large">{customLabel.MyOpportunities}</div>
+        
+        <template if:false={noOpptyFound}>
+            <table class="slds-m-bottom_large slds-cell-wrap table1"> 
+                <thead>
+                    <tr>
+                        <template for:each={oppColumns} for:item="column">
+                            <th key={column.fieldName} class={column.class}>
+                                <div class="slds-truncate slds-p-bottom_small table-th">{column.Translatedlabel}</div>
+                            </th>
+                        </template>                
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={oppData} for:item="row" for:index="index">
+                        <tr class="tr-border" key={row.uid}>
+                            <template for:each={oppColumns} for:item="column">
+                                <td key={column.fieldName} class={column.class}>
+                                    <c-grid-cell-handler                                
+                                        cell-key={column.fieldName} 
+                                        cell-mode={column.display}
+                                        cell-type={column.source}              
+                                        object-key={column.objKey}
+                                        grid-row-data = {row}                                                                            
+                                    ></c-grid-cell-handler>
+                                </td>
+                            </template>                      
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+            <!--View All link-->
+            <span>          
+                <a href={viewAllUrl} target="_self">{customLabel.view_All}</a>
+            </span>
+        </template>
+        <template if:true={noOpptyFound}>{customLabel.No_Opp_found}</template>
+    </div>
+</template>

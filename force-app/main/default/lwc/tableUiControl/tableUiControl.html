@@ -1,0 +1,80 @@
+<template>
+        <div class="slds-p-horizontal_large slds-p-vertical_small white-bg slds-border_bottom">
+            <div style="display: flex;" class="subheading2 brand-color-text slds-p-bottom_x-small"> <lightning-icon icon-name={headerIconName} size="small" alternative-text="Offer" class="slds-p-right_x-small"></lightning-icon> <span>{sectionName}</span></div>
+            <div class={sectionWiseCss} >
+                    <div if:true={isLoaded} class="slds-is-relative">
+                            <lightning-spinner
+                                alternative-text="Loading..." variant="brand">
+                            </lightning-spinner>
+                        </div>
+                <table> 
+                    <thead>
+                        <tr>
+                            <template for:each={_columns} for:item="column">
+                                <th if:false={column.isHidden} key={column.fieldName}><div class="slds-truncate" style="font-weight: bold;" >{column.Translatedlabel}</div></th>
+                            </template>
+                            <th if:true={showadddelbtn} scope="col" class="">
+                                <div class="slds-truncate"></div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={_data} for:item="row" for:index="index">
+                                <tr class="inputRows" key={row.uid}>
+                                <template for:each={_columns} for:item="column">
+                                    <td if:false={column.isHidden} key={column.fieldName} style={column.paddingCss} class="slds-p-top_x-small">
+                                        <c-grid-cell-handler
+                                            selected-user-id={selectedUserId}                                   
+                                            cell-key={column.fieldName} 
+                                            cell-mode={column.display}
+                                            cell-type={column.source}
+                                            cell-icon={column.icon}
+                                            picklist-field-name={column.schema}
+                                            object-key={column.objKey}
+                                            grid-column-meta={_gridColMet}
+                                            grid-row-data = {row}
+                                            oninputchange={handleInputChange}
+                                            onofferchange = {handleofferchange}
+                                            onofferfieldchange = {handleOfferFieldsChange}
+                                            cell-label ={column.label}
+                                            gridofferid={offriddstr}
+                                            userlocale={currentUserLocale}
+                                            table-name={tableName}
+                                            quote-status={quoteStatus}
+                                            is-disabled={isDisabled}
+                                        ></c-grid-cell-handler>                             
+                                    </td>
+                                </template> <!--Delete button-->
+                                <td if:true={showadddelbtn} class="slds-p-top_x-small" style="width: 32px;">
+                                    <template if:false={row.isDelBtnHide}>
+                                    <lightning-button-icon value={index} 
+                                        variant="border" 
+                                        alternative-text="delete" 
+                                        onclick={deleteSelectedRow}
+                                        icon-name="utility:delete" 
+                                        size="medium" 
+                                        title={sectionName} 
+                                        
+                                    ></lightning-button-icon>
+                                </template>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                    <tfoot>
+                        <tr> <!--Add button-->
+                            <td if:true={showadddelbtn} class="slds-p-vertical_x-small">
+                                <lightning-button 
+                                    name="add"
+                                    label={btnname}
+                                    onclick={handleRowAddition}
+                                    icon-name="utility:add"
+                                    title={sectionName}
+                                ></lightning-button>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>                  
+            </div>
+        </div>            
+</template>

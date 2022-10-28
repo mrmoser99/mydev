@@ -1,0 +1,66 @@
+<!--DLL on Demand - WelcomeScreen Footer used in Welcome Page
+//PBI:632924 version1: Geetha Bharadwaj -->
+<template>
+		<div class="blueBackground ">
+				<div class="mainScreen">
+						<!--	<div class="slds-m-bottom_xx-large"></div> -->
+						<div class="slds-grid slds-gutters content" >
+								<div class="slds-col slds-size_1-of-2" style="height: 100%;max-height: 80%;">
+										<div class="dllTopLogo">
+												<img class="footerLogo" style="max-width: 30%;max-height: 30%;" src={dlllogo} />   
+										</div>
+										<div style="padding-left: 30%"><!-- change from Michael Currie to lessen the dead space in the center of the welcome screen -->
+										<div class="slds-align_absolute-left slds-text-color_inverse slds-m-top_xx-large marginBottom marginTop textMargin">
+												<div class="slds-text-align_left mainText">
+														<span>Welcome to a</span><br>
+														<span>financing platform </span><br>
+														<span>designed to help </span><br>
+														<span>you grow.</span>
+												</div>
+										</div>
+										<div class="slds-align_absolute-left slds-text-color_inverse slds-m-top_xx-small marginBottom marginTop textMargin">
+												<div class="slds-text-align_left secondText">
+														Let us help manage your pipeline, close<br>
+														more deals, and keep your customers happy<br>
+														-anytime and anywhere. Because offering<br>
+														financing shouldn't be complicated.
+												</div>
+										</div>
+										<div class="slds-align_absolute-left slds-m-top_medium marginTopBtn textMargin">
+												<a href="/dllondemand/s/" class="signInCSS">Sign In </a>
+										</div>
+										<div class="slds-align_absolute-left slds-m-top_x-small contactBtmMargin contactLink textMargin">
+												<span class="contactus"> <a href="https://www.dllgroup.com/us/en-us/contact-us">contact us</a></span>
+										</div>
+												</div>
+								</div>
+								<div class="slds-col slds-size_1-of-2">
+										<div >
+												<img class="DarkBlueBg_Position" src={dllDarkBlueBg} />
+										</div>
+
+										<div>
+												<img class="desktop_Position" src={dllDesktop} />
+										</div>
+
+										<div >
+												<img class="quote_Position" src={dllQuote} />
+										</div>
+
+										<div>
+												<img class="phone_Position" src={dllPhone} />
+										</div>
+
+										<div>
+												<img class="progress_Bar" src={dllbar} />
+										</div>
+								</div>	
+
+						</div>
+				</div>
+				<div>
+						<c-dd-footer class="dynamicDateValue" dynamic-footer={dynamicFooter} date-range-string={dynamicDateRange}></c-dd-footer>
+
+				</div>
+		</div>
+</template>

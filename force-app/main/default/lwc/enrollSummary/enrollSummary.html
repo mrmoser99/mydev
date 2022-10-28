@@ -1,0 +1,74 @@
+<template>
+    <lightning-layout>
+        <lightning-layout-item class="summarySection">
+            <div class="summary slds-p-around_medium">
+                <lightning-layout multiple-rows=true>
+                    <lightning-layout-item class="labelpadding" size=12>
+                        <h1 class="slds-text-heading_large">
+                            {label.ENROLL_SUMMARY}
+                        </h1>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{label.ENROLL_SUMMARY_FIN_AMT}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{financedAmount}</span>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{label.ENROLL_SUMMARY_FIN_NO_ASSETS}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{numberOfAsset}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{label.ENROLL_SUMMARY_FIN_TERM}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{term}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{label.ENROLL_SUMMARY_FIN_RATE}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{interestRate}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{label.ENROLL_SUMMARY_FIN_EQUIPMENT}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{equipmentPayment}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{label.ENROLL_SUMMARY_FIN_FEE}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{serviceFee}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{label.ENROLL_SUMMARY_FIN_CONTRACT_PAY}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{totalContractPayment}</span>
+                    </lightning-layout-item>
+                    <!--
+                        
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{label.ENROLL_SUMMARY_FIN_TOTAL_PRICE}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{totalPriceSummary}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{label.ENROLL_SUMMARY_FIN_APPROVED_FOR}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="labelpadding" size="6">
+                        <span>{approvedFor}</span>
+                    </lightning-layout-item>
+
+                    -->
+                </lightning-layout>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

@@ -1,0 +1,111 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global" controller="ContractPrintPDFController">
+    <aura:attribute name ="recordId" type="string" />
+    <aura:attribute name ="Contract" type="Contract__c" />
+    <aura:attribute name="data" type= "List" default="[]" />
+     <aura:attribute name="columns" type= "List" />
+    <aura:attribute name ="showprintbutton" type="boolean" default="true" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <article class="slds-card divToPrint">
+        <div class="slds-card__header slds-grid slds-align_absolute-center">
+           <h2 class="slds-card__header-title"> <b> Contract - {!v.Contract.Name}</b></h2>
+            <!--header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                      <span></span> 
+                    </h2>
+                </div>                  
+            </header-->
+           
+        </div>
+        
+        
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="slds-border_bottom" >
+                <br></br>
+            <p> <strong> Customer Information </strong> </p>
+            <div class="c-container">
+                <lightning:layout multipleRows="true">
+                    <lightning:layoutItem padding="around-small" size="6">
+                      <!--  <span class="slds-form-element__label"><b>Customer Name</b></span>
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element__static">{!v.Contract.End_User__r.Name}</div>
+                            </div> 
+                        <span class="slds-form-element__label"><b>Billing Address</b></span>
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element__static">{!v.Contract.End_User__r.BillingAddress.street}, {!v.Contract.End_User__r.BillingAddress.city}, {!v.Contract.End_User__r.BillingAddress.state}, {!v.Contract.End_User__r.BillingAddress.postalCode},{!v.Contract.End_User__r.BillingAddress.country}</div>
+                            </div>
+                         <span class="slds-form-element__label"><b>Lease Signer</b></span>
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element__static">{!v.Contract.Signer__c}</div>
+                            </div>-->
+                        <lightning:input name="Customer Name" label="Customer Name" value="{!v.Contract.End_User__r.Name}" disabled="true"/>
+                     	<lightning:input name="Billing Address" label="Billing Address" value="{!v.Contract.End_User__r.BillingAddress.street}" disabled="true"/>
+                    	<lightning:input name="Lease Signer" label="Lease Signer" value="{!v.Contract.Signer__c}" disabled="true"/>
+                    </lightning:layoutItem>
+                   
+                    <lightning:layoutItem padding="around-small" size="6">
+                        <lightning:input name="Account Number" label="Account Number" value="{!v.Contract.End_User__r.AccountNumber}" disabled="true"/>
+                        <lightning:input name="Equipment Location Address" label="Equipment Location Address" value="{!v.Contract.Assets__r[0].Asset_Install_Address_Line_1__c}" disabled="true"/>
+                    
+                   <!-- <span class="slds-form-element__label"><b>Account Number</b></span>
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element__static">{!v.Contract.End_User__r.AccountNumber}</div>
+                            </div>
+                        <span class="slds-form-element__label"><b>Equipment Location Address</b></span>
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element__static">{!v.Contract.Assets__r[0].Asset_Install_Address_Line_1__c}</div>
+                            </div>-->
+                    
+                    
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </div>
+            </div>
+             <div class="slds-border_bottom" >
+                 <br></br>
+            <p><strong>General Information</strong></p>
+            <div class="c-container">
+                <lightning:layout multipleRows="true">
+                    <lightning:layoutItem padding="around-small" size="6">
+                        <lightning:input name="Contract Origination Date" label="Contract Origination Date" value="{!v.Contract.Contract_Start_Date__c}" disabled="true"/>
+                    	<lightning:input name="Term" label="Term" value="{!v.Contract.Contract_Term_months__c}" disabled="true"/>
+                    	<lightning:input name="Purchase Option" label="Purchase Option" value="{!v.Contract.Purchase_Option__c}" disabled="true"/>
+                        <lightning:input name="Pre-tax equipment Payment" label="Pre-tax equipment Payment" value="{!v.Contract.Payment_Amount__c}" disabled="true"/>
+                    	<lightning:input name="Lease Status" label="Lease Status" value="{!v.Contract.Status_Text__c}" disabled="true"/>
+                    </lightning:layoutItem>
+                     <lightning:layoutItem padding="around-small" size="6">
+                        <lightning:input name="Contract Maturity Date" label="Contract Maturity Date" value="{!v.Contract.Maturity_Date__c}" disabled="true"/>
+                    	<lightning:input name="Remaining Payments" label="Remaining Payments" value="{!v.Contract.Payments_Remaining__c}" disabled="true"/>
+                    	<lightning:input name="Days Delinquent" label="Days Delinquent" value="{!v.Contract.Days_Deliquent__c}" disabled="true"/>
+                    	<lightning:input name="Service Payment" label="Service Payment" value="{!v.Contract.Service_Payment__c}" disabled="true"/>
+                    </lightning:layoutItem>
+                </lightning:layout>
+                 </div>
+                  </div>
+            <br> </br>
+                 <p><strong>Equipment Summary</strong></p>
+                <aura:if isTrue="{!v.data.length>0}">
+                <lightning:layout>
+                    
+                    <lightning:datatable keyField="id"
+                                       data="{!v.data}"  
+                                         columns="{!v.columns}"
+                                         hideCheckboxColumn="true"
+                                         class="slds-border_top slds-border_bottom"
+                                         />
+                   
+                </lightning:layout>
+                    </aura:if>
+           
+        </div>
+        <footer class="slds-card__footer">
+            <lightning:button variant="brand" class="slds-no-print"  
+                                      label="Print PDF"
+                                      title="Print PDF" onclick="{!c.onPrint}" />
+            <lightning:button variant="neutral" class="slds-no-print"  
+                                      label="Close"
+                                      title="Close" onclick="{!c.onClose}" />
+  </footer>
+    </article>
+</aura:component>

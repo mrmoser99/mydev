@@ -1,0 +1,64 @@
+<template>
+    <div class="slds-p-horizontal_large slds-p-vertical_small white-bg slds-is-relative">    
+        <div class="subheading2 brand-color-text slds-p-bottom_x-small">{labels.Your_contract_is_ready_for_e_signature}</div>
+        <div class="slds-grid slds-wrap slds-gutters_x-large search-bar slds-p-bottom_small">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2">             
+                <div class="slds-p-bottom_medium">{labels.Document_Type}</div>
+                <lightning-combobox data-id="dataType"
+                    class="picklist-document-type"
+                    value={tempDocTypeValue}
+                    options={docTypeOptions}
+                    onchange={handleChangeDocType} 
+                    variant="label-hidden" 
+                    disabled={disableButtons}></lightning-combobox>
+            </div> 
+            <div class="spinner">
+                <template if:true={isLoading}>
+                    <lightning-spinner alternative-text="Loading" variant="brand" size="medium">
+                    </lightning-spinner>
+                </template>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2">
+                <table> 
+                    <thead>
+                        <tr> 
+                            <td>
+                                <div class="slds-truncate slds-p-bottom_medium">{labels.Email_For_Signing}</div>
+                            </td>                       
+                        </tr>         
+                    </thead>
+                    <tbody>                     
+                        <template for:each={emailRowRecords} for:item="row" for:index="index">  
+                            <tr key={row.uid}>
+                                <td>                                  
+                                    <lightning-input data-id={index} placeholder="namn@exempel.com" onchange={handleEmailChange} class="input-name slds-m-bottom_small" type="text" variant="label-hidden" value={row.emailValue} disabled={disableButtons}></lightning-input>
+                                </td>
+                                <td if:false={row.isHideDelButton} style="width: 40px; vertical-align: top;">                              
+                                    <lightning-button-icon data-id={index}  
+                                                            class="slds-m-left_x-small"
+                                                            variant="border" 
+                                                            alternative-text={labels.Delete} 
+                                                            onclick={handleDeleteRow}
+                                                            icon-name="utility:delete" 
+                                                            size="medium" 
+                                                            title={labels.Delete}>
+                                    </lightning-button-icon>                           
+                                </td>
+                            </tr>
+                        </template>
+                       
+                    </tbody>
+                </table>
+            </div>           
+        </div> 
+
+        <div class="slds-clearfix">
+            <div class="slds-float_left">
+                <lightning-button label={labels.Add} title={labels.Add} onclick={handleAddRecords} disabled={disableButtons}></lightning-button>
+            </div>  
+            <div class="slds-float_right">
+                <button class="slds-button slds-p-horizontal_small green-btn" title={labels.Send_For_Signature} onclick={handleSendSignature} disabled={disableButtons}>{labels.Send_For_Signature}</button>
+            </div>    
+        </div>                  
+    </div>
+</template>

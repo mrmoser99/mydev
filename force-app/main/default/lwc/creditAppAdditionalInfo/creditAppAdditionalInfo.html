@@ -1,0 +1,679 @@
+<template>
+    <div class="slds-col--padded comm-content-header comm-layout-column">
+    <div class="slds-var-m-around_small">
+        <div if:true={loading}>
+            <lightning-spinner alternative-text="Loading..." variant="brand"></lightning-spinner>
+        </div>
+    </div>
+    <div style="background-color: #FED8B1; padding: 5px; margin: 5px">
+        This website is currently under construction. We may update the content of this website from time to time. We
+        grant you access to this website as our valued partner for the sole purpose of obtaining your user experience
+        feedback. This website contains confidential features of DLL business tools. Please do not share any content of
+        this website with any third party without DLL’s prior express consent. The information presented on this Website
+        is made available solely for demonstration and testing purposes. Please do not submit credit application via
+        this website. DLL is not committed to financing any transaction you submit via this website. This website is
+        provided on an “As Is” and “As Available” basis, DLL hereby disclaims any warranties. All feedback, comments,
+        requests for technical support, and other communications relating to this website should be directed to Sophie
+        McLachlan at smclachlan@leasedirect.com
+    </div>
+    <div>
+        <!--Use template if:true to display/hide popup based on isModalOpen value-->
+        <template if:true={isModalOpen}>
+            <!-- Modal/Popup Box LWC starts here -->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box LWC body starts here -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"
+                            style="margin-bottom: 15px;">Are you sure you want to cancel?</h2>
+                        <p>If you click yes, any changes you made will be removed.
+                        </p>
+                    </div>
+                    <!-- Modal/Popup Box LWC footer starts here -->
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </div>
+
+
+
+    <lightning-layout multiple-rows=true horizontal-align="spread">
+        <!-- header section -->
+        <lightning-layout-item size=12 class="slds-box_border quote-header">
+            <div class="Header slds-p-around_medium">
+                <lightning-layout>
+                    <lightning-layout-item size=8>
+                        <h1 class="slds-text-heading_large">
+                            Let's Submit a Credit Application
+                        </h1>
+
+                    </lightning-layout-item>
+
+
+                    <lightning-layout-item size=4>
+                        <lightning-button class="slds-float_right" variant="brand-outline" label="Save"
+                            onclick={handleOnSave}></lightning-button>
+                    </lightning-layout-item>
+
+                </lightning-layout>
+                <lightning-layout class="slds-p-around_medium" horizontal-align="left">
+
+                    <lightning-layout-item class="header-field-section" flexibility="auto">
+                        <div class="display-field">
+                            <label>Application Number</label>
+                            <span><b>{applicationNameValue}</b></span>
+                        </div>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item class="header-field-section" flexibility="auto">
+                        <div class="display-field">
+                            <label>Location</label>
+                            <span><b>{locationValue}</b></span>
+                        </div>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item class="header-field-section" flexibility="auto">
+                        <div class="display-field">
+                            <label>Sales Rep</label>
+                            <span><b>{salesRepValue}</b></span>
+                        </div>
+                    </lightning-layout-item>
+                                     
+                    <lightning-layout-item class="header-field-section" flexibility="auto">
+                        <div class="display-field">
+                            <label>Status</label>
+                            <span><b>{statusValue}</b></span>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+    <div class="Header slds-p-around_medium tab-class slds-box_border topSpace slds-size_8-of-12">
+
+        <lightning-layout multiple-rows=true horizontal-align="spread">
+
+            <lightning-layout-item size=12>
+                <div class="slds-grid slds-wrap">
+                    <div class="title">
+                        <lightning-layout-item>
+                            <h1 class="slds-text-heading_large">
+                                A little more information, please.
+                            </h1>
+                        </lightning-layout-item>
+                    </div>
+                    <lightning-layout-item>
+                        <div class="paragraph">
+                            <p class="slds-text-heading_small">
+                                We need a bit more information to process this application. Please provide us with one
+                                of the following items by
+                                filling out the questions below. (Fields are required only for the item you wish to
+                                provide)
+                            </p>
+                            <div>
+                                <ul class="indentbullets">
+                                    <li>Personal Guarantee</li>
+                                    <li>Cross-Corporate Guarantee</li>
+                                    <li>Supporting Document 1</li>
+                                    <li>Supporting Document 2</li>
+                                </ul>
+
+                            </div>
+                        </div>
+
+                    </lightning-layout-item>
+
+
+                </div>
+                <div>
+                    <lightning-accordion allow-multiple-sections-open onsectiontoggle={handleSectionToggle}
+                                class="slds-border_top slds-m-top_small" active-section-name={openAccordionSections}>
+                        <lightning-accordion-section name="Personal Guarantee" class="slds-accordion__list-item" label="Personal Guarantee">
+                            <lightning-layout>
+                                <lightning-layout-item>
+                                    <p>Please provide personal information for a Principle of your customer's company.</p>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout multiple-rows>
+                                <lightning-layout-item size=6 class="slds-p-right_small">
+                                    <lightning-input type="text" name="First Name" label="First Name" required="true"
+                                        placeholder="Enter First Name">
+                                    </lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item size=6>
+                                    <lightning-input type="text" name="Middle Initial" label="Middle Initial"
+                                        required="true" placeholder="Enter Middle Initial">
+                                    </lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item size=6 class="slds-p-right_small">
+                                    <lightning-input type="text" name="Last Name" label="Last Name" required="true"
+                                        placeholder="Enter Last Name">
+                                    </lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item size=6>
+                                    <lightning-input type="text" name="Social Security Number (SSN)"
+                                        label="Social Security Number (SSN)" required="true" placeholder="Enter SSN">
+                                    </lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </lightning-accordion-section>
+                        <lightning-accordion-section name="Cross Corporate Guarantee" class="slds-accordion__list-item" label="Cross Corporate Guarantee">
+                            <lightning-layout>
+                                <lightning-layout-item size = "6">
+                                 
+                                <c-cross-corporate-guar>
+                                onprogressvaluechange={handleCreditAppRedirect}
+                                oncustomerinfoshow={handleCustomerInfoShow} record-id={oppId}>
+                                
+                            </c-cross-corporate-guar>
+                        </lightning-layout-item>
+                            </lightning-layout>
+
+                        </lightning-accordion-section>
+                        <lightning-accordion-section name="Supporting Documents" class="slds-accordion__list-item" label="Supporting Documents">
+                            <lightning-layout>
+
+                                <lightning-layout-item>
+                                    <p>Please upload any supporting documents, including: driver’s license, financial statements, etc.</p>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item>
+                                    <div class="slds-card__body">
+                                    <c-file-uploader-component record-id={oppId} onrefreshlist={refreshPage}></c-file-uploader-component>
+                                </div>
+                            </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item>
+                                    <div>
+                                        <p>Uploaded Documents</p>
+                                    </div>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout>
+                               
+                                <lightning-layout-item>
+                                    <div>
+                                        <!--Use template if:true to display/hide popup based on isModalOpen value-->
+                                        <template if:true={isModalOpen}>
+                                            <!-- Modal/Popup Box LWC starts here -->
+                                            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01"
+                                                aria-modal="true" aria-describedby="modal-content-id-1"
+                                                class="slds-modal slds-fade-in-open">
+                                                <div class="slds-modal__container">
+                                                    <!-- Modal/Popup Box LWC body starts here -->
+                                                    <div class="slds-modal__content slds-p-around_medium"
+                                                        id="modal-content-id-2">
+                                                        <h2 id="modal-heading-02"
+                                                            class="slds-text-heading_medium slds-hyphenate"
+                                                            style="margin-bottom: 15px;">Are you sure you want to delete?</h2>
+        
+                                                    </div>
+                                                    <!-- Modal/Popup Box LWC footer starts here -->
+                                                    <footer class="slds-modal__footer">
+                                                        <button class="slds-button slds-button_neutral" onclick={closeModal}
+                                                            title="No">No</button>
+                                                        <button class="slds-button slds-button_brand" onclick={deleteDocument}
+                                                            title="Yes">Yes</button>
+                                                    </footer>
+                                                </div>
+                                            </section>
+                                            <div class="slds-backdrop slds-backdrop_open"></div>
+                                        </template>
+                                        <div class="slds-var-m-around_small">
+                                            <div if:true={isLoading}>
+                                                <lightning-spinner alternative-text="Loading..." variant="brand">
+                                                </lightning-spinner>
+                                            </div>
+                                        </div>
+                                        <div style="color:blue;" if:false={filesToShow2}>You have not uploaded any documents.</div>
+                                        <br />
+                                        <div if:true={filesToShow2}>
+                                            <template for:each={filesList2} for:item="file2">
+                                                <div key={file2.value} class="slds-box">
+                
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+                                                            <p><strong></strong>{file2.label}</p>
+                                                        </div>
+                
+                                                        <div
+                                                            class=" slds-align_absolute-center slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+                
+                                                            <lightning-icon class="red-icon" icon-name="action:delete" size="x-small"
+                                                                onclick={deleteDoc} value={file2.value} variant="bare">
+                                                            </lightning-icon>
+                
+                                                            <lightning-button variant="base" label="" icon-name="action:download"
+                                                                class="slds-m-left_x-small" onclick={download} value={file2.url}>
+                                                            </lightning-button>
+                                                        </div>
+                
+                                                    </div>
+                                                </div>
+                
+                                            </template>
+                                        </div>
+                                    </div>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </lightning-accordion-section>
+                        <lightning-accordion-section name="Additonal Comments" label="Additonal Comments" class="slds-accordion__list-item">
+                            <lightning-layout>
+                                <lightning-layout-item>
+                                    <p>Please include any important comments about this application.</p>
+                                </lightning-layout-item>
+                            
+                            </lightning-layout>
+                            <lightning-layout>
+                                <lightning-layout-item size="12">
+                                    <lightning-textarea name="comments" label="Comments" placeholder="Enter comments..."></lightning-textarea>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </lightning-accordion-section>
+                    </lightning-accordion>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+
+
+
+    <lightning-layout-item size=12>
+        <lightning-accordion allow-multiple-sections-open
+            onsectiontoggle={handleSectionToggle}
+            class="slds-border_top slds-m-top_small"
+            active-section-name="Financing Structure">
+            <!-- Finance section -->
+            <lightning-accordion-section name="Financing Structure"
+                label="Financing Structure">
+                <template if:false={isCreditCheck}>
+                    <div class="financeBody">
+                        <lightning-layout multiple-rows>
+                            <lightning-layout-item size=6
+                                class="marginBottom slds-p-right_small">
+                                <label>Lease Type </label>
+                                <div>{financeType}</div>
+
+                            </lightning-layout-item>
+                            <lightning-layout-item size=6>
+                                <label>Finance Term</label>
+                                <div>{financeTerm}</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item size=6
+                                class="marginBottom slds-p-right_small">
+                                <label>Rate Type </label>
+                                <div>{rateType}</div>
+                            </lightning-layout-item>
+
+                            <lightning-layout-item size=6>
+                                <label>Payment Frequency</label>
+                                <div>{paymentFrequency}</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item size=6
+                                class="marginBottom slds-p-right_small">
+                                <label>Advanced Payments</label>
+                                <div>{advPayments}</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item size=6>
+                                <label>Total Price</label>
+                                <div>{totalPrice}</div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                </template>
+
+              
+
+            </lightning-accordion-section>
+
+             
+              <!-- Assets section -->
+             
+                <template if:false={loading}>
+                    <template for:each={assets} for:item="assetItem">
+                        <lightning-accordion-section name={assetItem.sectionName}
+                            label={assetItem.assetHeading} key={assetItem.assetNo}>
+                            <div class="financeBody">
+                                <lightning-layout multiple-rows>
+                                    <lightning-layout-item size=6
+                                        class="marginBottom slds-p-right_small">
+                                        <label>Make</label>
+                                        <div>{assetItem.makeValue}</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size=6>
+                                        <label>Asset Type / ITA Class</label>
+                                        <div>{assetItem.assetTypeValue}</div>
+
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size=6
+                                        class="marginBottom slds-p-right_small">
+                                        <label>Model </label>
+                                        <div>{assetItem.modelValue}</div>
+
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size=6>
+                                        <label>Mast Type</label>
+                                        <div>{assetItem.mastTypeValue}</div>
+
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size=6
+                                        class="marginBottom slds-p-right_small">
+                                        <label>Asset Operating Environment</label>
+                                        <div>{assetItem.assetOperatingEnvironmentValue}
+                                        </div>
+
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size=6
+                                        class="marginBottom slds-p-right_small">
+                                        <label>Annual Hours</label>
+                                        <div>{assetItem.annualHoursValue}</div>
+
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size=6
+                                        class="marginBottom slds-p-right_small">
+                                        <label>Battery Included </label>
+                                        <div>{assetItem.batteryIncludedValue}</div>
+
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size=6
+                                        class="marginBottom slds-p-right_small">
+                                        <label>Number of Units</label>
+                                        <div>{assetItem.numberOfUnitsValue}</div>
+
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size=6
+                                        class="slds-p-right_small">
+                                        <label>Unit Sales Price</label>
+                                        <div>{assetItem.unitSalesPriceValue}</div>
+
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size=6
+                                        class="slds-p-right_small">
+                                        <label>Subsidy</label>
+                                        <div>{assetItem.subsidyValue}</div>
+
+                                    </lightning-layout-item>
+
+                                </lightning-layout>
+                            </div>
+                        </lightning-accordion-section>
+                    </template>
+                </template>
+
+
+                <!-- Accessories Section -->
+              
+                    <template if:false={loading}>
+                        <template for:each={accessories} for:item="accessoryItem">
+                            <lightning-accordion-section name="Accessory Details"
+                                label={accessoryItem.accessoryHeading}
+                                key={accessoryItem.accessoryNo}>
+                                <div class="financeBody">
+                                    <lightning-layout multiple-rows>
+                                        <lightning-layout-item size=6
+                                            class="marginBottom slds-p-right_small">
+                                            <label>Related Asset </label>
+                                            <div>{accessoryItem.relatedAssetValue}</div>
+
+                                        </lightning-layout-item>
+                                        <lightning-layout-item size=6>
+                                            <label>Accessory</label>
+                                            <div>{accessoryItem.accessoryValue}</div>
+
+                                        </lightning-layout-item>
+                                        <lightning-layout-item size=6
+                                            class="slds-p-right_small">
+                                            <label>Unit Sales Price</label>
+                                            <div>{accessoryItem.unitSalesPriceValue}</div>
+
+                                        </lightning-layout-item>
+                                        <lightning-layout-item size=6>
+                                            <label>Number of Units </label>
+                                            <div>{accessoryItem.numberofUnitsValue}</div>
+
+                                        </lightning-layout-item>
+
+                                    </lightning-layout>
+                                </div>
+                            </lightning-accordion-section>
+                        </template>
+                    </template>
+               
+                   
+
+                     <!--Customer Information -->
+                     
+                     <lightning-accordion-section name="Customer Information"
+                     label="Customer Information">
+                     <div class="financeBody">
+                         <lightning-layout multiple-rows>
+                             <lightning-layout-item size=4
+                                 class="marginPaddingStylOnCustInfo slds-p-right_small">
+                                 <label class="fontStyle slds-form-element__label"
+                                     for="form-element-01">Customer
+                                     Name</label>
+                                 <div>{customer.name}</div>
+                             </lightning-layout-item>
+                             <lightning-layout-item size=4
+                                 class="marginPaddingStylOnCustInfo slds-p-right_small">
+                                 <label class="fontStyle slds-form-element__label"
+                                     for="form-element-02">Primary
+                                     Contact</label>
+                                 <div>{customer.contact}</div>
+                             </lightning-layout-item>
+                             <lightning-layout-item size=4>
+                                 <label class="fontStyle slds-form-element__label"
+                                     for="form-element-03">Phone</label>
+                                 <div class="fontColor">{customer.phone}</div>
+                             </lightning-layout-item>
+                             <lightning-layout-item size=4
+                                 class="marginPaddingStylOnCustInfo slds-p-right_small">
+                                 <label class="fontStyle slds-form-element__label"
+                                     for="form-element-05">Customer
+                                     Address</label>
+                                 <div class="fontColor">{customer.address}</div>
+                                 <div class="fontColor">{customer.BillingStreet}</div>
+                                 <div class="fontColor">{customer.BillingCity}</div>
+                                 <div class="fontColor">{customer.BillingCountry}</div>
+                                 <div class="fontColor">{customer.BillingPostalCode}</div>
+                                 <div class="fontColor">{customer.BillingCounty}</div>
+                             </lightning-layout-item>
+                             <lightning-layout-item size=4 class="slds-p-right_small">
+                                 <label class="fontStyle slds-form-element__label"
+                                     for="form-element-04">Email</label>
+                                 <div class="fontColor">{customer.email}</div>
+                             </lightning-layout-item>
+                             <lightning-layout-item size=4>
+                                 <label class="fontStyle slds-form-element__label"
+                                     for="form-element-04">Tax Number (EIN)</label>
+                                 <div>{customer.taxNumber}</div>
+                             </lightning-layout-item>
+
+                         </lightning-layout>
+                     </div>
+                 </lightning-accordion-section> 
+
+
+                  <!--Customer Story (Optional)-->
+                  <lightning-accordion-section name="Customer Story (Optional)"
+                  label="Customer Story (Optional)">
+                  <p class="contentMargin">Entering a customer story can help your
+                      customers get approved if they are initially declined. Provide us
+                      with any relevant information about the customer and their history
+                      that can help your customer get approved for credit.</p>
+                  <div class="financeBody">
+                      <lightning-layout multiple-rows>
+                          <lightning-layout-item size=6
+                              class="marginBottom slds-p-right_small">
+                              <label>Business Structure</label>
+                              <div>{customerStory.businessStructure}</div>
+
+                          </lightning-layout-item>
+                          <lightning-layout-item size=6>
+                              <label>Years In Business </label>
+                              <div>{customerStory.yearsInBusiness}</div>
+
+                          </lightning-layout-item>
+                          <lightning-layout-item size=12 class="slds-p-right_small">
+                              <label>Customer Story</label>
+                              <div>{customerStory.story}</div>
+
+                          </lightning-layout-item>
+
+                      </lightning-layout>
+                  </div>
+              </lightning-accordion-section>
+
+
+              <!-- Personal Guarantee -->
+             
+                <lightning-accordion-section name="personalGuarantee"
+                    label="Personal Guarantee (Optional)">
+                    <div>
+                        <lightning-layout multiple-rows=true>
+                            <lightning-layout-item size=6
+                                class="marginBottom slds-p-right_small">
+                                <label class="labelColor"><b>First Name</b></label>
+                               <!-- <div>{personalGuar.firstName}</div> -->
+                                <lightning-input name='personalGuaranteeFirstName'
+                                                                    variant="label-hidden"
+                                                                    placeholder=" Enter First Name"
+                                                                    value={personalGuar.firstName}
+                                                                    onchange={handlePersonalGuaranteeFirstNameChange}>
+                                                                </lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item size=6
+                                class="marginBottom slds-p-right_small">
+                                <label class="labelColor"><b>Middle Initial</b></label>
+                              <!--  <div>{personalGuar.middleInitial}</div> -->
+                              <lightning-input name='personalGuaranteeMiddleInitial'
+                              variant="label-hidden" maxlength="1"
+                              placeholder=" Enter Middle Initial"
+                              value={personalGuar.middleInitial}
+                              onchange={handlePersonalGuaranteeMiddleInitialChange}>
+                          </lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item size=6
+                                class="marginBottom slds-p-right_small">
+                                <label class="labelColor"><b>Last Name</b></label>
+                               <!-- <div>{personalGuar.lastName}</div> -->
+                               <lightning-input name='personalGuaranteeLastName'
+                               variant="label-hidden"
+                               placeholder=" Enter Last Name"
+                               value={personalGuar.lastName}
+                               onchange={handlePersonalGuaranteeLastNameChange}>
+                           </lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item size=6
+                                class="marginBottom slds-p-right_small">
+                                <label class="labelColor"><b>Social Security Number
+                                        (SSN)</b></label>
+                             <!--   <template if:true={isSSN}>
+                                    <div>{personalGuar.SocialSecurityNumberForMasking}
+                                    </div>
+                                </template>
+                                <template if:false={isSSN}>
+                                    <div>{personalGuar.SocialSecurityNumber}</div>
+                                </template> -->
+                                <lightning-input name='personalGuaranteeSSNEncrypted'
+                                data-id='personalGuaranteeSSNEncrypted'
+                                variant="label-hidden" placeholder=" Enter SSN"
+                                maxlength="11" onfocus={ssnOnFocus}
+                                onblur={ssnOnBlur}
+                                value={personalGuar.SocialSecurityNumberForMasking}
+                                onchange={handlePersonalGuaranteeSSNEncryptedChange}>
+                            </lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                </lightning-accordion-section>
+
+
+  <!--ownership info-->
+  <lightning-accordion-section name="qwnershipInformation"
+  label="Ownership Information (Optional)">
+  <div>
+      <lightning-layout multiple-rows=true>
+
+          <lightning-layout-item size=12>
+              <p class="marginBottom">Due to government regulations, we
+                  are required to obtain information referred to as
+                  Ultimate Beneficial Owner (UBO). Please input
+                  information for the primary owner(s) of the company, the
+                  individual in daily operational control, or the board of
+                  directors. If the home address is not known, please
+                  enter their business address. </p>
+          </lightning-layout-item>
+          <lightning-layout-item size=12>
+              <lightning-radio-group name="beneficialOwnerType" label=""
+                  options={owmnerShipOptions}
+                  value={customerStory.beneficialOwnerType} type="radio"
+                  disabled="true"></lightning-radio-group>
+
+              <!-- <lightning-checkbox-group name="beneficialOwnerType" label=""
+                      options={owmnerShipOptions} value={customerStory.beneficialOwnerType} disabled="true">
+                  </lightning-checkbox-group>-->
+
+          </lightning-layout-item>
+      </lightning-layout>
+
+  </div>
+</lightning-accordion-section>
+
+ <!-- Customer Approval-->
+ <lightning-accordion-section name="CustomerApproval"
+ label="Customer Approval">
+ <div class="commentsBody">
+     <lightning-layout multiple-rows=true>
+
+         <lightning-layout-item size=12>
+             <p>Please check the box below confirming that your customer
+                 has approved this application.</p>
+         </lightning-layout-item>
+         <lightning-layout-item size=12>
+             <h2 class="header contentMargin"><span
+                     class="slds-required">*</span>Customer Approval</h2>
+
+             <lightning-input data-id="acceptedCheckbox" type="checkbox"
+                 label="The customer has agreed to allow DLL to run a credit check on them as part of the application process."
+                 name="acceptedCheckbox" checked="true" disabled="true">
+             </lightning-input>
+         </lightning-layout-item>
+     </lightning-layout>
+
+ </div>
+</lightning-accordion-section>
+</lightning-accordion>
+
+<div>
+    <lightning-layout>
+        <lightning-layout-item size="1">
+            <lightning-button onclick={openModal} label="Cancel">
+            </lightning-button>
+        </lightning-layout-item>
+        <lightning-layout-item size="6">
+        </lightning-layout-item>
+        <lightning-layout-item size="2">
+            <lightning-button style="margin-left: 40px;" label="Save"
+                onclick={handleOnSave}></lightning-button>
+        </lightning-layout-item>
+
+        <lightning-layout-item size="3.5">
+            <lightning-button variant="brand" label="ReSubmit Credit Application"
+                onclick={handleSaveAndSubmit}></lightning-button>
+        </lightning-layout-item>
+    </lightning-layout>
+</div>
+
+
+</lightning-layout-item> 
+    </div>
+</div>
+
+
+
+</template>

@@ -1,0 +1,79 @@
+<template>
+    <div>
+        <div class="slds-var-m-top_medium slds-card slds-var-p-vertical_small slds-var-p-horizontal_large">
+            <lightning-card>
+                <h1 slot="title" class="slds-text-heading_large">
+                    All Financing Contracts
+                    <p class="slds-text-body_regular">{itemCount} items;
+                        updated last night </p>
+                </h1>
+                <div class="slds-card__header slds-grid">
+                    <div class="slds-text-body_regular">
+                        View and download your entire portfolio by financing contract. Click the contract number or
+                        customer
+                        name to view more relevant information.
+                    </div>
+                </div>
+
+                <div class="slds-grid" slot="actions">
+                    <div class="slds-col">
+                        <lightning-button variant="brand" title="Download Portfolio" label="Download Portfolio"
+                            sandbox="allow-downloads" onclick={handleDownload}>
+                        </lightning-button>
+                    </div>
+                </div>
+
+
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_9-of-12 ">
+                        <lightning-layout>
+                            <lightning-layout-item padding="around-small size=3">
+                                <div class="slds-var-p-around_small ">
+                                    <lightning-combobox name="createdate" label="Created Date" value={searchDate}
+                                        placeholder=" Select Date" options={datelist} onchange={handleChangeDate}>
+                                    </lightning-combobox>
+                                </div>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small size=3">
+                                <div class="slds-var-p-around_small ">
+                                    <lightning-combobox name="status" label="Status" value={searchStatus}
+                                        placeholder=" Select Status" options={statuslist} onchange={handleChangeStatus}>
+                                    </lightning-combobox>
+                                </div>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small size=3">
+                                <div class="slds-var-p-around_small ">
+                                    <lightning-input type="text" name="customerName" label="Sales Rep"
+                                        autocomplete="nope" class="input"></lightning-input>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                    <div class="slds-col slds-size_3-of-12">
+                        <lightning-layout>
+                            <lightning-layout-item padding="around-small size=6">
+                                <div class="slds-var-p-around_small ">
+                                    <span>
+                                        <lightning-input type="search" name="filter" label=""
+                                            placeholder="Search this list..." autocomplete="nope" class="text"
+                                            value={filter} onkeypress={handleFilter} onchange={resetList}>
+                                        </lightning-input>
+                                    </span>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                </div>
+
+                <div class="slds-box" style="height: 500px;">
+                    <lightning-datatable key-field="Id" data={portfoliolist} columns={columns}
+                        hide-checkbox-column="true" enable-infinite-loading={isLoading} onloadmore={loadMoreData}
+                        sorted-by={orderByField} column-widths-mode="auto" sorted-direction={orderByDirection} onsort={updateColumnSorting}
+                        load-more-offest="20">
+                    </lightning-datatable>
+                    {loadMoreStatus}
+                </div>
+            </lightning-card>
+        </div>
+    </div>
+</template>

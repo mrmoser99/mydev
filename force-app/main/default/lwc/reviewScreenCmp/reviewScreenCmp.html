@@ -1,0 +1,42 @@
+<template>
+    <c-pop-up-notification-cmp></c-pop-up-notification-cmp>
+    <div class="slds-p-horizontal_large slds-p-vertical_small white-bg slds-is-relative">  
+        <div class="spinner">
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" variant="brand" size="medium">
+                </lightning-spinner>
+            </template>
+        </div>             
+        <div class="slds-grid slds-wrap slds-gutters_x-large search-bar slds-p-bottom_small">            
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2">
+                <table> 
+                   
+                    <tbody>                     
+                        <template for:each={checklistQuestions} for:item="row" for:index="index">  
+                            <tr key={row.uid}>
+                                <td class="slds-truncate slds-p-bottom_x-large" style="vertical-align: top;">  
+                                    <span class={row.className}>
+                                        <lightning-input type="checkbox" name="input1" checked={row.checked} disabled></lightning-input>
+                                    </span>              
+                                </td>
+                                <td class="slds-truncate slds-p-bottom_x-large;"  style="white-space: normal;vertical-align: top;">
+                                    <span style={row.color}>{row.questionName}</span> <br/>                                 
+                                    <span class="slds-p-bottom_medium">{row.comment} </span> 
+                                </td>
+                                <td class="slds-truncate slds-p-bottom_x-large" if:true={row.showUploadBtn} style="vertical-align: top;">
+                                    <div style="margin-top: -28px;">
+                                        <c-lightning-file-upload ondispatchmsg={handleMessageFromUploadCmp} 
+                                            onsenddocuments={handleSendDoc} index-row={row.uid}>    
+                                        </c-lightning-file-upload>
+                                    </div>
+                                    
+                                </td>
+                                
+                             </tr>
+                        </template>                      
+                    </tbody>
+                </table>
+            </div>           
+        </div>                         
+    </div>
+</template>

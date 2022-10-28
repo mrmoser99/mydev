@@ -1,0 +1,18 @@
+<!-- 
+This component is used in visualforce email template to display contact records called through controller.
+Version 1.0 @author Ravisha Chugani @date 09-12-2021
+--> 
+
+<apex:component controller="NordicsEmailController" access="global">
+    <apex:attribute name="AccId" type="Id" description="Id of the account" assignTo="{!accountId}"/>        
+    <table>
+        <tr>
+            <th>Name</th>                    
+        </tr>
+        <apex:repeat value="{!ContactList}" var="con">
+            <tr>
+                <td>{!con.Name}</td>       
+            </tr>
+        </apex:repeat>         
+    </table>
+</apex:component>

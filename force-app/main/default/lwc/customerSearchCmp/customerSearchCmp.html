@@ -1,0 +1,138 @@
+<template>
+    <div class="slds-p-horizontal_large slds-p-vertical_small white-bg slds-is-relative">
+
+        <div if:true={isCustomerNotSelected}>
+
+            <div class="slds-grid slds-wrap slds-gutters_xxx-small search-bar slds-p-bottom_small">
+
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-4">
+                <div class="subheading2 brand-color-text slds-p-bottom_x-small">{labels.Search_by}</div>
+                    <lightning-combobox
+                            name={labels.Search_by}
+                            label={labels.Search_by}
+                            value={searchByValue}
+                            options={searchByOptions}
+                            variant="label-hidden"
+                            required
+                            onchange={handleChange}
+                            disabled={disabledDueToUnavailibleProduct}>
+                    </lightning-combobox>
+                </div>
+
+                <div class="slds-col slds-size_5-of-6 slds-medium-size_1-of-3 slds-large-size_1-of-4">
+                    <div class="subheading2 brand-color-text slds-p-bottom_x-small">{labels.Search}</div>
+                    <lightning-input class="search-input" type="text" label={labels.Search} variant="label-hidden" disabled={disabledDueToUnavailibleProduct}></lightning-input>
+                </div>
+
+                <div class="slds-col slds-size_1-of-6 slds-medium-size_1-of-3 slds-large-size_1-of-4">
+                    <lightning-button-icon 
+                            icon-name="utility:search"  
+                            variant="brand" 
+                            alternative-text={labels.Search} 
+                            title={labels.Search}
+                            class="primaryButton slds-p-around_none"
+                            style="min-width: 0;"
+                            onclick={handleSearch}
+                            disabled={disabledDueToUnavailibleProduct}>
+                    </lightning-button-icon>
+                </div>
+            </div>
+            <a href="https://www.allabolag.se/" target="_blank">{labels.CompanyIdHelp}</a>
+
+            <div if:true={showResults} class="results">
+                <template if:false={loaded}>
+                    <lightning-spinner alternative-text={labels.Loading} 
+                                       variant="brand" 
+                                       class="slds-m-vertical_medium">
+                    </lightning-spinner>
+                </template>
+                <template if:true={loaded}>
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-size_1-of-1">
+                            <div class="subheading2 brand-color-text slds-p-bottom_x-small slds-p-top_small">{labels.Results}</div>
+                        </div>
+                    </div>
+                
+                    <div if:false={noCustomersFound}>
+                        <table class="slds-cell-wrap"> 
+                            <thead>
+                                <tr>
+                                    <template for:each={customersColumns} for:item="column">
+                                        <th key={column.fieldName} class="slds-p-bottom_medium slds-p-right_x-small">
+                                            <div class="slds-truncate" >{column.label}</div>
+                                        </th>
+                                    </template>                
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={customersData} for:item="row" for:index="index">
+                                    <tr class="inputRows" key={row.recordId}>
+                                        <template for:each={customersColumns} for:item="column">
+                                            <td key={column.fieldName} class={column.class}>
+                                                <c-grid-cell-handler                                
+                                                    cell-key={column.fieldName} 
+                                                    cell-mode={column.display}
+                                                    cell-type={column.source}              
+                                                    object-key={column.objKey}
+                                                    grid-row-data={row} 
+                                                    onradiochange={handleCustomerSelect}                                                                          
+                                                ></c-grid-cell-handler>
+                                            </td>
+                                        </template>                          
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div if:true={noCustomersFound}>
+                        <div>{labels.No_results}</div> 
+                    </div>
+                </template>
+                
+            </div>
+        </div>
+
+        <div if:true={isCustomerSelected}>
+                <div class="slds-p-top_small">
+                    <div class="subheading2 brand-color-text slds-p-bottom_x-small">{labels.Selected_Customer}</div>
+                </div>
+
+                <table class="slds-cell-wrap"> 
+                    <thead>
+                        <tr>
+                            <template for:each={selectedCustomerColumns} for:item="column">
+                                <th key={column.fieldName} class="slds-p-bottom_medium slds-p-right_x-small">
+                                    <div class="slds-truncate" >{column.label}</div>
+                                </th>
+                            </template>                
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={selectedCustomerData} for:item="row" for:index="index">
+                            <tr class="inputRows" key={row.companyName}>
+                                <template for:each={selectedCustomerColumns} for:item="column">
+                                    <td key={column.fieldName} class={column.class}>
+                                        <c-grid-cell-handler                                
+                                            cell-key={column.fieldName} 
+                                            cell-mode={column.display}
+                                            cell-type={column.source}              
+                                            object-key={column.objKey}
+                                            grid-row-data={row} 
+                                            disabled-due-to-unavailible-product={disabledDueToUnavailibleProduct}                                                                    
+                                        ></c-grid-cell-handler>
+                                    </td>
+                                </template>                          
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            <div if:true={conditions} class="conditions slds-p-horizontal_small slds-p-vertical_xx-small slds-m-top_medium slds-m-bottom_x-small">
+                {labels.Approved_With_Conditions}: {conditions}
+            </div>  
+        </div>
+        
+    </div>
+    <c-pop-up-notification-cmp is-notification-static={isNotificationStatic}></c-pop-up-notification-cmp>
+    
+</template>

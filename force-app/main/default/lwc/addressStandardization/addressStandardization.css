@@ -1,0 +1,17 @@
+.header{
+    font-size: 25px;}
+    
+    .address{
+        font-size: 12px;
+        font-weight: bold;
+        color: black;
+    }
+    .slds-dropdown--length-5{
+        max-height: calc(((0.8125rem * 1.5) + 1rem) * 3) !important;
+     }
+     .boldLabelCss {
+        font-weight: bold;
+     }
+     .redioButtonCss {
+        width: 10%;
+     }

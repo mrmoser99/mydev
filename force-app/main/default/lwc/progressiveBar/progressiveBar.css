@@ -1,0 +1,55 @@
+hr.new4 {
+    border: 1px solid black;
+  }
+
+  .round-button-blueleft {
+    width: 0%;
+    height: 19px;
+    line-height: 73px;
+    border: 3px solid #0099FF;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 0 3px grey;
+    position: relative;
+    left: 2%;
+}
+.round-button-bluecenter {
+  width: 0%;
+  height: 19px;
+  line-height: 73px;
+  border: 3px solid grey;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 0 3px grey;
+  position: relative;
+  left: 49%;
+}
+.round-button-blueright {
+  width: 0%;
+  height: 19px;
+  line-height: 73px;
+  border: 3px solid grey;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 0 3px grey;
+  position: relative;
+  left: 92%;
+}
+.wrapper:after{
+  content:" ";
+  width: 94%;
+  height: 2px;
+  margin: -4px -4%;
+  vertical-align: super;
+  background-color:black;
+  display:inline-block;
+}
+
+button, lightning-button-menu {
+  --lwc-colorBackgroundButtonDefaultDisabled: #e9eaec;
+  --lwc-colorTextButtonDefaultDisabled: #606060;
+}
+
+button[disabled] {
+  border-color: #c4c6ca;
+}
