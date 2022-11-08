@@ -2,14 +2,15 @@
  * @description       : LWC component to Credit Application Page container. 
  * @author            : Kritika Sharma : Traction on Demand
  * @group             : Kritika Sharma & Surbhi Goyal :  Traction on Demand
- * @last modified on  : 19-05-2022
- * @last modified by  : Kritika Sharma
+ * @last modified on  : 11-07-2022
+ * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
  * @Changes Log        :
  * Date       - BUG/PBI    - Author                   - Description
  * 09/14/2022 - BUG 860568 - Fernando Nereu de Souza  - As a credit check I want to create an opportunity only when save or submit is selected 
  * 09/21/2022 - BUG 809443 - Lucas Silva              - Systematically drop anything other than numbers comma and decimal from the Dollar amount input
  * 09/22/2022 - BUG 855960 - Fernando Nereu de Souza  - Nothing should appear in the SSN box if no data was captured
  * 10/07/2022 - BUG 855965 - Lucas Silva              - The DOB appearing under the UBO section in "review" mode is not masked
+ * 11/02/2022 -              Mark Moser               - Fix performance of waiting for credit response
 **/
 import createNewOppForCreditCheck from '@salesforce/apex/CreditApplicationHeaderController.createNewOppForCreditCheck';
 import getRelatedPartyForOpp from '@salesforce/apex/CreditApplicationHeaderController.getRelatedPartyForOpp';
@@ -30,6 +31,8 @@ import {api, track, LightningElement, wire} from 'lwc';
 import {CurrentPageReference} from 'lightning/navigation';
 import {NavigationMixin} from 'lightning/navigation';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
+import { refreshApex } from '@salesforce/apex';
+
 
 // Custom Labels
 import CREDITAPP_CUSTOMERAPPROVAL_MESSAGE from '@salesforce/label/c.CREDITAPP_CUSTOMERAPPROVAL_MESSAGE';
@@ -55,6 +58,10 @@ import CREDITAPP_UBO_LASTNAME from '@salesforce/label/c.CREDITAPP_UBO_LASTNAME';
 import CREDITAPP_UBO_REQUIRED from '@salesforce/label/c.CREDITAPP_UBO_REQUIRED';
 import CREDITAPP_UBO_TITLE from '@salesforce/label/c.CREDITAPP_UBO_TITLE';
 import ENROLL_ENABLED from '@salesforce/label/c.ENROLL_ENABLED';
+//platform event import
+import { loadScript } from 'lightning/platformResourceLoader';
+import cometd from '@salesforce/resourceUrl/cometd';
+import getSessionId from '@salesforce/apex/GenericUtilityClass.getSessionId';
 
 export default class CreditApplicationPageContainer extends NavigationMixin(LightningElement){
     label = {
@@ -82,6 +89,13 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         CREDITAPP_UBO_TITLE,
         ENROLL_ENABLED
     };
+    
+    
+    //platform event
+    @api channel = '/event/Credit_Response__e';;
+    libInitialized = false;
+    sessionId;
+    error;
 
 
     //active section
@@ -159,6 +173,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     dateOfBirthPicklist;
     countryOfResidencePicklist;
     ownershipPercentagePicklist;
+    hasBeneficialOwner = 0;
 
     //Object model
     applicationNameValue;
@@ -342,8 +357,11 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     @wire(getUserSite, {userId: null})
     wiredgetUserSite({error, data}) {
         this.loading = true;
-        this.beneficialOwner = [];
-        this.beneficialOwnerType=null;
+        console.log('hasBeneficialOwner::'+ this.hasBeneficialOwner);
+        if(this.hasBeneficialOwner == 0) {
+            this.beneficialOwner = [];
+        }
+        this.beneficialOwnerType = null;
         //this.advance = '0';
         //this.frequency = 'monthly';
         console.log('in getUserSite');
@@ -425,12 +443,12 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                     ownershipPercentageValue:       data[i].Account_Ownership_Percentage__c,
                     uboID:                          data[i].Id
                 });
+                this.hasBeneficialOwner = ownerLen;
             }
-
-        } else if (error) {
+        }else if (error) {
             this.beneficialOwner = [];
-            console.log('FNS ERROR::'+ error);
         }
+        //setTimeout(() => {location.reload()}, 1000);      
     }
 
     @wire(getQuoteLineField, {opportunityId: '$oppId'})
@@ -522,7 +540,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     wiredgetQuoteRecord({ error, data }) {
 
         if (data) {
-
+            console.log('in get wired ');
             // Page Status
             console.log('Sub-stage: ' + data.Sub_Stage__c);
             this.statusValue = data.Sub_Stage__c;
@@ -663,12 +681,14 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 this.quoteNumberValue = '';
             }
 
-            if(this.assets[0].quoteId != null){
-                this.linkQuote = true;
-            } else {
-                this.linkQuote = false;
+            if(this.assets.length > 0 ) {
+                if(this.assets[0].quoteId != null){
+                    this.linkQuote = true;
+                } else {
+                    this.linkQuote = false;
+                }        
             }
-
+            
             if (data.Account) {
                 this.locationValue=data.Account.Name;
             }
@@ -733,6 +753,8 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     }
 
     connectedCallback(){
+
+     
 
         // All three of the following arrays have to maintain their exact order and count as they map to the same index in each array.
         var fieldOptions=['Rate_Type__c','Finance_Term_Month__c','Lease_Type__c','Payment_Frequency__c','Advance_Payments__c',
@@ -803,6 +825,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             });
            
         }
+        refreshApex(this.getContactField);
         
     }
 
@@ -991,7 +1014,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     //toggle for sections
     handleSectionToggle(event) {
         if (this.accordionSection >= 2) {
-            this.activeSections = ['Financing Structure','Beneficial Owner 1','Customer Information','Customer Story (Optional)','qwnershipInformation','Personal Guarantee (Optional)', 'CustomerApproval']; 
+            this.activeSections = ['Financing Structure','Beneficial Owner 1','Customer Information','Customer Story (Optional)','qwnershipInformation','Personal Guarantee (Optional)', 'CustomerApproval', 'Beneficial Owner 2', 'Beneficial Owner 3', 'Beneficial Owner 4']; 
             this.createOpportunity +=1;
             console.log("customerStoryId::"+this.customerStory.customerStoryId);
             console.log("this.oppId::"+this.oppId);
@@ -1392,6 +1415,11 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             this.loading=true;
             if (this.customerStory.customerStoryId) {
                 console.log('Has customerStoryId: ' + this.customerStory.customerStoryId);
+                if(typeof this.customerStory.amount != 'number') {
+                    if (this.customerStory.amount.substring(0,1) == "$") {
+                        this.customerStory.amount = this.removeInvalidPriceCharacters(this.customerStory.amount);
+                    }    
+                }
                 UpdateQuoteData({
                     customerStory: this.customerStory,
                     ownershipInfo: this.beneficialOwnerType,
@@ -1485,7 +1513,9 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
      * Then callSubmitCreditApp()
      */
     handleSaveAndSubmit() {
+
         console.log('customerInfoShow::'+this.customerInfoShow);
+        this.loading = true;
         var errorOccur = false;
 
         // View in display form
@@ -1499,6 +1529,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             });
             this.dispatchEvent(evt);
             errorOccur=true;
+             this.loading = false;
         } else if(this.customerInfoShow == false){
             // Immediate feedback
             const evt = new ShowToastEvent({
@@ -1759,6 +1790,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
 
     callPreQualSubmitCreditApp(prequalOpportunityId) {
         console.log('callPreQualSubmitCreditApp: ' + prequalOpportunityId);
+         
         submitPreQualCreditApp({'opportunityId' : prequalOpportunityId})
             .then(result => {
                 if(result) {
@@ -1767,9 +1799,10 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                     // CreditAppUtils returns a response code 200 if it successfully receives the call.
                     if(result == 'OK'){
                         this.isLoadedQuote = true;
+                         
+                        this.initializeCometD(this.channel,this.oppId);
 
-                        // Now we need to query Salesforce on an interval until the credit application status is updated.
-                        this.queryStatusInterval = setInterval(this.queryAppStatus.bind(this), CREDITAPP_INTERVAL);
+                         
 
                     } else{
                         this.loading = false;
@@ -1844,6 +1877,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     * */
     callSubmitCreditApp(quoteId){
         console.log('callSubmitCreditApp: ' + quoteId);
+        
         submitCreditApp({'quoteId': quoteId}).then(result =>{
             if(result) {
                 console.log('submitCreditApp: ' + result);
@@ -1851,9 +1885,10 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 // CreditAppUtils returns a response code 200 if it successfully receives the call.
                 if(result == 'OK'){
                     this.isLoadedQuote = true;
-
-                    // Now we need to query Salesforce on an interval until the credit application status is updated.
-                    this.queryStatusInterval = setInterval(this.queryAppStatus.bind(this), CREDITAPP_INTERVAL);
+                    
+                    this.initializeCometD(this.channel,this.oppId);
+                     
+                 
 
                 } else{
                     this.loading = false;
@@ -2306,4 +2341,90 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         });
         this.dispatchEvent(event);
     }
+
+
+    @wire(getSessionId)
+    wiredSessionId({ error, data }) {
+        if (data) {
+            this.sessionId = data;
+            this.error = undefined;
+            loadScript(this, cometd)
+            .then(() => {
+                console.log('initializing');
+                // dont' call here;  too early;  this.initializeCometD(this.channel,this.oppId);
+            });
+        } else if (error) {
+            this.error = error;
+            this.sessionId = undefined;
+            console.log('error is: ' + JSON.stringify(this.error));
+        }
+    }
+
+    // initialize CometD 
+    initializeCometD(channel,oppId) {
+         
+        if (this.libInitialized) {
+            return;
+        }
+        this.libInitialized = true;
+        var lwcThisContext = this;
+        var cometdlib = new window.org.cometd.CometD();
+        cometdlib.configure({
+            url: window.location.protocol + '//' + window.location.hostname + '/cometd/56.0/',
+            requestHeaders: { Authorization: 'OAuth ' + this.sessionId},
+            appendMessageTypeToURL : false,
+            logLevel: 'debug'
+        });
+        cometdlib.websocketEnabled = false;
+        cometdlib.handshake(function(status) {
+            if (status.successful) {
+                cometdlib.subscribe(channel, function(message){
+                    lwcThisContext.handlePlatformEvent(message);
+                });
+                
+            } else {
+                console.error('Error in handshaking: ' + JSON.stringify(status));
+            }
+        });
+    }
+
+    handlePlatformEvent(message){
+        console.log('in process event' + JSON.stringify(message));
+
+        if (message.data.payload.Opportunity__c == this.oppId){
+
+            if (message.data.payload.Succeeded__c == true){
+                const event = new ShowToastEvent({
+                    title: 'Success',
+                    message: 'Application Submitted Successfully!',
+                    variant: 'success',
+                    mode: 'sticky'
+                });
+                this.dispatchEvent(event);
+            }
+            else{
+                const event = new ShowToastEvent({
+                    title: 'Error',
+                    message: 'Application Submit Failed! - contact support - ' + message.data.payload.Error_Message__c ,
+                    variant: 'error',
+                    mode: 'sticky'
+                });
+                this.dispatchEvent(event);
+            }
+
+            this.opportunityDataReloaded += 1;
+            this.loading = false;
+            this.appEditMode = false;
+
+
+        }
+    }
+
+        
+    
+
+    
+    
+    
+
 }

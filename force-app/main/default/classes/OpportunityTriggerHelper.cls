@@ -243,6 +243,8 @@ private static void deleteOldTeamMembers(Map<Id, Opportunity> oldOppMap, Map<Id,
 @TestVisible
 private static void changeOppOwner(Map<Id, Opportunity> oldOppMap, Map<Id, Opportunity> newOppMap) {
 
+	Boolean callQ = false;
+
 	Map<ID,ID> oppOwnerMap = new Map<ID,ID>();
 	Set<ID> oldOwner = new Set<ID>();
 
@@ -260,11 +262,7 @@ private static void changeOppOwner(Map<Id, Opportunity> oldOppMap, Map<Id, Oppor
 		    ((oldOpp.Sales_Rep_ID_2__c != newOpp.Sales_Rep_ID_2__c) && newOpp.Sales_Rep_ID_2__c != null)) {
 			oppsWithChangedRep2.add(newOpp);
 		}
-		if (oldOpp.ownerId != newOpp.ownerId) {
-			system.debug('**** switching owner ******');
-			oppOwnerMap.put(oldOpp.id,oldOpp.ownerId);
-			oldOwner.add(oldOpp.ownerId);
-		}
+
 	}
 	if (!oppsWithChangedOwners.isEmpty()) {
 		Map<String, Id> salesRepIDMap = new Map<String, Id>();
@@ -292,6 +290,13 @@ private static void changeOppOwner(Map<Id, Opportunity> oldOppMap, Map<Id, Oppor
 							   OpportunityAccessLevel = 'Edit',
 							   TeamMemberRole = 'Sales Rep - '+ opp.Business_Unit_Description__c
 							   ));
+			}
+
+			if (oldOppMap.get(opp.Id).ownerId != opp.ownerId) {
+				system.debug('**** switching owner ******');
+				oppOwnerMap.put(opp.id,oldOppMap.get(opp.id).ownerId);
+				oldOwner.add(oldOppMap.get(opp.id).ownerid);
+				callQ = true;
 			}
 		}
 	}
@@ -328,7 +333,8 @@ private static void changeOppOwner(Map<Id, Opportunity> oldOppMap, Map<Id, Oppor
 		insert oppTeamMembers;
 	}
 
-	ID jobID = System.enqueueJob(new AsyncApexSharing( oppOwnerMap, oldOwner, oldOppMap));
+	if (callQ)
+		ID jobID = System.enqueueJob(new AsyncApexSharing( oppOwnerMap, oldOwner, oldOppMap));
 
 
 }

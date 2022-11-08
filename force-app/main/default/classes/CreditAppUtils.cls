@@ -10,6 +10,8 @@
  *  06/10/22 - MRM modifed preqaul api
  *  10/24/22 - MRM modified to update UNQ_Opportunity__c when appnumber comes back
  *  10/19/22 - MRM modified the exception logic to write to log and improve ease of debugging; works better
+ *  10/31/22 - MRM added Credit_Response__e platform event 
+ *  11/07/22 - MRM added credit response platform event 
  *******************************************************************************************************************/
 public without sharing class CreditAppUtils {
 
@@ -31,6 +33,7 @@ public static String submitCreditApp(String quoteId){
 	String jsonStr;
 	ReturnStatus r =new ReturnStatus();
 	String stack;
+	Quote q;
 
 	String recordTypeID = Schema.getGlobalDescribe().get('Error_Log__c').getDescribe().getRecordTypeInfosByName().get('Integration Error Log').getRecordTypeId();
 
@@ -51,7 +54,7 @@ public static String submitCreditApp(String quoteId){
 			return js;
 		}
 
-		Quote q = getQuote(quoteId);
+		q = getQuote(quoteId);
 
 		if (q.end_user__c == Null) {
 			error=true;
@@ -62,7 +65,7 @@ public static String submitCreditApp(String quoteId){
 
 		if (!Test.isRunningTest()) {
 			system.debug('here');
-			CustomerUtils.createExternalCustomer(q.end_user__c);
+			CustomerUtils.createExternalCustomer(q.end_user__c,q.opportunityId);
 			system.debug('her2e');
 		}
 
@@ -76,6 +79,7 @@ public static String submitCreditApp(String quoteId){
 		system.debug('r error is: ' + r.ErrorMsg);
 		system.debug('e: ' + e);
 		stack = e.getStackTraceString();
+		CreditAppUtils.triggerCreditResponse(q.opportunityId, false, r.ErrorMsg);
 	}
 	finally{
 
@@ -98,6 +102,8 @@ public static String submitCreditApp(String quoteId){
 @future(callout=true)
 public static void submitCreditAppFuture(String quoteId){
 
+
+	Opportunity o;
 
 	Boolean error=false;
 	String response;
@@ -163,7 +169,11 @@ public static void submitCreditAppFuture(String quoteId){
 
 		if (s.DLL_External_ID__c == null) {
 			error=true;
-			throw new AuraHandledException('TCA Party ID is required!');
+			
+			CreditAppUtils.triggerCreditResponse(q.opportunityId, false, 'No TCA Party Id');
+
+			//throw new AuraHandledException('TCA Party ID is required!');
+			
 		}
 
 
@@ -420,16 +430,17 @@ public static void submitCreditAppFuture(String quoteId){
 
 		system.debug('JSON is: ' + jsonStr);
 
-		r = CreditAppUtils.doCallout(jsonStr,'submitCreditAppFuture');
+		r = CreditAppUtils.doCallout(jsonStr,'submitCreditAppFuture',q.opportunityId);
 
 		if (r.status != 'OK') {
 			system.debug(r.errorMsg);
 			error=true;
+			CreditAppUtils.triggerCreditResponse(q.opportunityId, false, r.status);
 			//throw new AuraHandledException(r.errorMsg);
 		}
 
 		else{
-			Opportunity o = [select id from Opportunity where id = : q.OpportunityId];
+			o = [select id from Opportunity where id = : q.OpportunityId];
 
 			JSONSubmitCreditAppRequest creditResponse = (JSONSubmitCreditAppRequest) System.JSON.deserialize(r.responseBody,JSONSubmitCreditAppRequest.class);
 
@@ -458,14 +469,55 @@ public static void submitCreditAppFuture(String quoteId){
 
 			update o;
 
-		}
+			CreditAppUtils.triggerCreditResponse(o.id, true, 'OK');
+
+			/*
+			List<Credit_Response__e> crEvents = new List<Credit_Response__e>();
+			crEvents.add(new Credit_Response__e(Opportunity__c = o.id, Application_Number__c = o.application_number__c));
+
+			List<Database.SaveResult> results = EventBus.publish(crEvents);
+
+			for (Database.SaveResult sr : results) {
+    			if (sr.isSuccess()) {
+        			System.debug('Successfully published event.');
+    			} else {
+	        		for(Database.Error err : sr.getErrors()) {
+            			System.debug('Error returned: ' +
+	                        err.getStatusCode() +
+                        	' - ' +
+                        	err.getMessage());
+        			}
+				}
+			}
+			*/
+    	}       
 
 	}
 	catch (Exception e) {
+		/*
+		List<Credit_Response__e> crEvents = new List<Credit_Response__e>();
+		crEvents.add(new Credit_Response__e(Opportunity__c = o.id, Application_Number__c = 'failed'));
+
+		List<Database.SaveResult> results = EventBus.publish(crEvents);
+
+		for (Database.SaveResult sr : results) {
+    		if (sr.isSuccess()) {
+        		System.debug('Successfully published event.');
+    		} else {
+        		for(Database.Error err : sr.getErrors()) {
+        			System.debug('Error returned: ' +
+                    err.getStatusCode() +
+                    ' - ' +
+                    err.getMessage());
+        		}
+			}
+		}
+		*/
 		error=true;
 		system.debug('r error is: ' + r.ErrorMsg);
 		system.debug('e: ' + e);
 		stack = e.getStackTraceString();
+		CreditAppUtils.triggerCreditResponse(o.id, false, r.ErrorMsg);
 	}
 	finally{
 
@@ -541,7 +593,7 @@ public static String submitPreQualCreditApp(String opportunityId){
 		}
 
 		if (!Test.isRunningTest())
-			CustomerUtils.createExternalCustomer(o.end_user__c);
+			CustomerUtils.createExternalCustomer(o.end_user__c,o.id);
 
 		CreditAppUtils.submitPreQualCreditAppFuture(o.id);
 
@@ -553,6 +605,7 @@ public static String submitPreQualCreditApp(String opportunityId){
 		system.debug('r error is: ' + r.ErrorMsg);
 		system.debug('e: ' + e);
 		stack = e.getStackTraceString();
+		CreditAppUtils.triggerCreditResponse(o.id, false, r.ErrorMsg);
 	}
 	finally{
 
@@ -613,7 +666,7 @@ public static void submitPreQualCreditAppFuture(String opportunityId){
 		pricingQuote.url = URL.getSalesforceBaseUrl().toExternalForm() + '/' + o.id;
 
 		JSONSubmitCreditAppRequest.ExternalReferences externalReferences = new JSONSubmitCreditAppRequest.ExternalReferences();
-		externalReferences.pricingQuote = pricingQuote;
+		externalReferences.pricingQuote = pricingQuote; 
 
 		JSONSubmitCreditAppRequest.PrimaryPhoneNumber primaryPhoneNumber = new JSONSubmitCreditAppRequest.PrimaryPhoneNumber();
 		primaryPhoneNumber.phone_number = o.End_User_Phone__c;
@@ -768,7 +821,7 @@ public static void submitPreQualCreditAppFuture(String opportunityId){
 
 		system.debug('JSON is: ' + jsonStr);
 
-		r = CreditAppUtils.doCallout(jsonStr,'submitPreQualCreditAppFuture');
+		r = CreditAppUtils.doCallout(jsonStr,'submitPreQualCreditAppFuture',o.id);
 
 		if (r.status != 'OK') {
 			system.debug(r.errorMsg);
@@ -795,6 +848,8 @@ public static void submitPreQualCreditAppFuture(String opportunityId){
 
 			update o;
 
+			CreditAppUtils.triggerCreditResponse(o.Id, true, 'OK');
+
 		}
 
 	}
@@ -803,6 +858,7 @@ public static void submitPreQualCreditAppFuture(String opportunityId){
 		system.debug('r error is: ' + r.ErrorMsg);
 		system.debug('e: ' + e);
 		stack = e.getStackTraceString();
+		CreditAppUtils.triggerCreditResponse(o.Id, false, r.ErrorMsg);
 	}
 	finally{
 
@@ -838,7 +894,7 @@ public Integer responseCode;
  *  doCallOut
  *****************************************************************************************************************************************************/
 
-public static ReturnStatus doCallout(String JSON, String method){
+public static ReturnStatus doCallout(String JSON, String method, String opportunityId){
 
 
 	Boolean error=false;
@@ -868,8 +924,10 @@ public static ReturnStatus doCallout(String JSON, String method){
 
 		if (res1.getStatusCode() != 200) {
 			ErrorMsg = 'JSONSubmitCreditAppRequest: ' + res1.getStatus()  + '  ' + res1.getStatusCode() + res1.getBody();
+			String smallError = 'JSONSubmitCreditAppRequest: ' + res1.getStatus()  + '  ' + res1.getStatusCode();
 			error=true;
 			system.debug(ErrorMsg);
+			CreditAppUtils.triggerCreditResponse(opportunityId, false, smallError);
 		}
 
 	}
@@ -1049,6 +1107,77 @@ public static List<Quote_Line__c> getQuoteLines(ID quoteId){
 
 	return qlList;
 }
+
+/************************************************************************************************************************************************
+ * trigger platform event
+ *
+ * change log:
+ *
+ * 11/7/2022 - MRM Created
+ * 
+ *
+ *****************************************************************************************************************************************************/
+public static void triggerCreditResponse(ID opportunityId, Boolean success, String errorMessage){
+
+	List<Credit_Response__e> crEvents = new List<Credit_Response__e>();
+
+	crEvents.add(new Credit_Response__e(Opportunity__c = opportunityId, Succeeded__c = success, Error_Message__c = errorMessage));
+
+	List<Database.SaveResult> results = EventBus.publish(crEvents);
+	List<Error_Log__c> errorSuccessList = new List<Error_Log__c>();
+	List<Error_Log__c> errorFailList = new List<Error_Log__c>();
+	 
+	for (Database.SaveResult sr : results) {
+    	if (sr.isSuccess()) {
+			
+        	System.debug('Successfully published event.');
+			Error_Log__c el = new Error_Log__c();
+			el.callout_name__c = 'Trigger Credit Response';
+			String recordTypeID = Schema.getGlobalDescribe().get('Error_Log__c').getDescribe().getRecordTypeInfosByName().get('Integration Error Log').getRecordTypeId();
+
+			el.recordTypeId = recordTypeID;
+			el.Class_name__c = 'CreditAppUtils';
+			el.Exception_Message__c = errorMessage;
+			 
+			el.Method_Name__c = 'triggerCreditResponse';
+		 
+			el.status_code__c = 0;
+			
+			el.quote_id__c = opportunityId;
+			errorSuccessList.add(el);
+    	} 
+		else {
+			
+
+        	for(Database.Error err : sr.getErrors()) {
+
+				Error_Log__c el = new Error_Log__c();
+				el.callout_name__c = 'Trigger Credit Response';
+				String recordTypeID = Schema.getGlobalDescribe().get('Error_Log__c').getDescribe().getRecordTypeInfosByName().get('Integration Error Log').getRecordTypeId();
+
+				el.recordTypeId = recordTypeID;
+				el.Class_name__c = 'CreditAppUtils';
+			 
+				el.Method_Name__c = 'triggerCreditResponse';
+		 
+				el.status_code__c = 900;
+			
+				el.quote_id__c = opportunityId;
+
+				el.exception_message__c = err.getStatusCode() + ' ' + err.getMessage();
+            	
+				errorFailList.add(el);
+        	}
+			
+    	}
+	} 
+	
+	if (!errorFailList.isEmpty())
+		insert errorFailList;
+	if (!errorSuccessList.isEmpty())
+		insert errorSuccessList;
+}
+
 
 @future
 public static void saveErrorLog(String e) {

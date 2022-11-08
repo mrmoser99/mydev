@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+ * @group             : 
+ * @last modified on  : 11-07-2022
+ * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+**/
 @isTest
 private class TestCustomerUtils {
 
@@ -56,7 +63,7 @@ Static testmethod void test1(){
 
 	CustomerUtils.quickSearch('test ','king ','PA ');
 
-	CustomerUtils.createExternalCustomer(a.id);
+	CustomerUtils.createExternalCustomer(a.id,null);
 
 	CustomerUtils.coverTest();
 }

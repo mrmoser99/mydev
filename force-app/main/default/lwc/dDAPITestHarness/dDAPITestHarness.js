@@ -1,4 +1,4 @@
-import { LightningElement, wire } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 //apex 
@@ -20,6 +20,13 @@ import getSubsidies from '@salesforce/apex/PricingUtils.getSubsidies';
 import getSalesReps from '@salesforce/apex/PricingUtils.getSalesReps';
 import { getRecordNotifyChange } from 'lightning/uiRecordApi';
 import submitPreQualCreditApp from "@salesforce/apex/CreditAppUtils.submitPreQualCreditApp";
+import {subscribe,unsubscribe,onError,setDebugFlag,isEmpEnabled} from 'lightning/empApi';
+
+import { loadScript } from 'lightning/platformResourceLoader';
+import cometd from '@salesforce/resourceUrl/cometd';
+import getSessionId from '@salesforce/apex/GenericUtilityClass.getSessionId';
+ 
+
 
 
 
@@ -34,6 +41,8 @@ const columns = [
 export default class dDAPITestHarness extends LightningElement {
 
     termlist = [];
+
+    
 
     ratelist = [];
 
@@ -144,6 +153,147 @@ export default class dDAPITestHarness extends LightningElement {
         });
         this.dispatchEvent(event);
     }
+
+     
+
+    @api channelName = '/event/Credit_Response__e';
+    isSubscribeDisabled = false;
+    isUnsubscribeDisabled = !this.isSubscribeDisabled;
+    subscription = {};
+
+    @api channel = '/event/Credit_Response__e';;
+    libInitialized = false;
+    sessionId;
+    error;
+
+    @wire(getSessionId)
+    wiredSessionId({ error, data }) {
+        if (data) {
+            this.sessionId = data;
+            this.error = undefined;
+            loadScript(this, cometd)
+            .then(() => {
+                this.initializeCometD(this.channel);
+            });
+        } else if (error) {
+            this.error = error;
+            this.sessionId = undefined;
+            console.log('error is: ' + JSON.stringify(this.error));
+        }
+    }
+
+    // initialize CometD 
+    initializeCometD(channel) {
+        console.log('1');
+        if (this.libInitialized) {
+            console.log('2');
+            return;
+        }
+        this.libInitialized = true;
+        var lwcThisContext = this;
+        var cometdlib = new window.org.cometd.CometD();
+        cometdlib.configure({
+            url: window.location.protocol + '//' + window.location.hostname + '/cometd/56.0/',
+            requestHeaders: { Authorization: 'OAuth ' + this.sessionId},
+            appendMessageTypeToURL : false,
+            logLevel: 'debug'
+        });
+        cometdlib.websocketEnabled = false;
+        cometdlib.handshake(function(status) {
+            console.log('status is: ' + status);
+            if (status.successful) {
+                console.log('channel:' + channel)
+                cometdlib.subscribe(channel, function(message){
+                   
+                    console.log('New message is: ' + JSON.stringify(message));
+                });
+                
+            } else {
+                console.error('Error in handshaking: ' + JSON.stringify(status));
+            }
+        });
+    }
+
+    handleMessage(event){
+        console.log('hello msg');
+    }
+    
+    // Tracks changes to channelName text field
+    handleChannelName(event) {
+        
+        this.channelName = event.target.value;
+        console.log(this.channelName);
+    }
+
+    // Initializes the component
+    connectedCallback() {
+        // Register error listener
+        this.registerErrorListener();
+        console.log('dog1');
+        this.handleSubscribe();
+    }
+
+     // Handles unsubscribe button click
+    handleUnsubscribe() {
+        this.toggleSubscribeButton(false);
+
+        // Invoke unsubscribe method of empApi
+        unsubscribe(this.subscription, (response) => {
+            console.log('unsubscribe() response: ', JSON.stringify(response));
+            // Response is true for successful unsubscribe
+        });
+    }
+
+    // Handles subscribe button click
+    handleSubscribe() {
+
+     
+        
+        console.log('ugh');
+        // Callback invoked whenever a new event message is received
+        const messageCallback = (response) => {
+            console.log('New message received: ', JSON.stringify(response));
+            // Response contains the payload of the new message received
+            
+            //if (response.data.payload.Opportunity__c == '123456789'){
+            //    console.log('matched');
+            //}
+                
+        };
+        
+     
+
+        // Invoke subscribe method of empApi. Pass reference to messageCallback
+        subscribe(this.channelName, -1, messageCallback).then((response) => {
+            // Response contains the subscription information on subscribe call
+            console.log(
+                'Subscription request sent to: ',
+                JSON.stringify(response.channel)
+            );
+            this.subscription = response;
+            console.log('this sub:' + JSON.stringify(this.subscription));
+
+            this.toggleSubscribeButton(true);
+           
+        });
+    }
+
+   
+
+    toggleSubscribeButton(enableSubscribe) {
+        this.isSubscribeDisabled = enableSubscribe;
+        this.isUnsubscribeDisabled = !enableSubscribe;
+    }
+
+    registerErrorListener() {
+        // Invoke onError empApi method
+        onError((error) => {
+            console.log('Received error from server: ', JSON.stringify(error));
+            // Error contains the server-side error
+        });
+    }
+
+    
 
     //Wire methods
     /***********************************************************************************************************

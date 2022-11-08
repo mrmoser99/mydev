@@ -367,6 +367,7 @@ public with sharing class CreditApplicationHeaderController {
     public static Boolean saveRelatedPartyForOpp(String oppId, String firstName, String middleName, String lastName, String ssn) {
         Related_Party__c relatedPartyUpdate;
 		if (!String.isEmpty(firstName) && !String.isEmpty(lastName) && !String.isEmpty(ssn)) {
+            system.debug('inside if 370');
             try {
                 relatedPartyUpdate = [
                     SELECT
@@ -406,6 +407,64 @@ public with sharing class CreditApplicationHeaderController {
         return true;
     }
 
+    @AuraEnabled(cacheable=false)
+     public static Boolean saveRelatedPartyForOpp1(String oppId, String firstName, String middleName, String lastName, String ssn) {
+        Related_Party__c relatedPartyUpdate;
+         system.debug('string fn' +firstName +ssn);
+         ssn = ssn.replace('-','');
+          system.debug('string fn' +firstName +ssn);
+		if (!String.isEmpty(firstName) && !String.isEmpty(ssn)) {
+            system.debug('inside if cross');
+            try {
+                relatedPartyUpdate = [
+                    SELECT
+                    First_Name__c,
+                    Last_Name__c,
+                    Middle_Name__c,
+                    SSN_Encrypted__c,
+                    Opportunity__c,
+                    Type__c
+                    FROM Related_Party__c
+                    WHERE (Opportunity__c = :oppId) AND (Type__c = 'CrossCorporate')
+                    LIMIT 1
+                ];
+                if (String.isBlank(firstName) && String.isBlank(ssn)) {
+                    delete relatedPartyUpdate;
+                    return true;
+                }
+                relatedPartyUpdate.First_Name__c = firstName;
+               
+                relatedPartyUpdate.SSN_Encrypted__c = ssn;
+                relatedPartyUpdate.Name = firstName;
+                update relatedPartyUpdate;
+            } catch (Exception e) {
+                relatedPartyUpdate = new Related_Party__c();
+                relatedPartyUpdate.First_Name__c = firstName;
+               
+                relatedPartyUpdate.SSN_Encrypted__c = ssn;
+                relatedPartyUpdate.Opportunity__c = oppId;
+                relatedPartyUpdate.Name = firstName;
+                relatedPartyUpdate.Type__c = 'CrossCorporate';
+                insert relatedPartyUpdate;
+            }
+    	}
+
+        return true;
+    }
+    
+    //Method to save comments in Addinfo section
+    @AuraEnabled(cacheable=false)
+    public static boolean saveComments(String comments, Id oppId){
+        system.debug('savecomm ' +comments +oppId);
+        Opportunity o = new Opportunity();
+        o.id = oppId;
+        o.Resubmit_Comments__c = comments;
+        update o;
+        return true;
+        
+    }
+
+    
     @AuraEnabled(cacheable=false)
     public static String createNewOppForCreditCheck(String location, String amount) {
         Opportunity newOpp = new Opportunity();

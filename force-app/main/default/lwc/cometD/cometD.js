@@ -32,6 +32,9 @@ export default class CometD extends LightningElement {
         }
     }
 
+    sayHello(msg){
+        console.log('cometd says: ' + msg);
+    }
     // initialize CometD 
     initializeCometD() {
         if (this.libInitialized) {

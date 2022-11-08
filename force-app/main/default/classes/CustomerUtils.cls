@@ -10,6 +10,7 @@
  *  7/10/2022 - MRM fixed back button issue which was missing salesforceid
  *  7/11/2022 - MRM fixed duplicate accounts from being displayed/selected
  *  10/11/2022 - MRM removed enduser!= null for performance improvements
+ *  10/31/2022 - MRM - Added fillBuffer; This is run async at login to get the customer buffers loaded up; 
  *******************************************************************************************************************/
 public inherited sharing class CustomerUtils {
 
@@ -404,7 +405,7 @@ static List<Account> quickSearchDynamicAccts(String strAccName, String city, Str
 	                       and billingstate = : state
 	                                          and billingcity like : city + '%'
 	                                          order by name desc
-	                                          limit 1000
+	                                          limit 100  
 	];
 
 
@@ -472,7 +473,7 @@ static List<Account> quickSearchDynamicAccts(String strAccName, String city, Str
  * 2.  CustomerUtils.createCustomer('0017h00000aAKETAA4');
  *****************************************************************************************************************************************************/
 @AuraEnabled
-public static String createExternalCustomer(String accountId){
+public static String createExternalCustomer(String accountId, String opportunityId){
 
 	String ErrorMsg;
 	Boolean error=false;
@@ -521,6 +522,7 @@ public static String createExternalCustomer(String accountId){
 		}
 		catch (Exception e) {
 			system.debug('no tca part id found, time to add one.');
+
 		}
 
 		Account a = [SELECT BillingAddress
@@ -642,6 +644,7 @@ public static String createExternalCustomer(String accountId){
 		error=true;
 		//throw new AuraHandledException(ErrorMsg);
 		stack = e.getStackTraceString();
+		
 
 	}
 	finally{
@@ -662,7 +665,28 @@ public static String createExternalCustomer(String accountId){
 		if (!error)
 			e.status_code__c = 0;
 		else {
-			e.status_code__c = 900;
+			e.status_code__c = 900; 
+			CreditAppUtils.triggerCreditResponse(opportunityId, false, 'No TCA Party Id');
+			/*
+			
+			List<Credit_Response__e> crEvents = new List<Credit_Response__e>();
+			crEvents.add(new Credit_Response__e(Opportunity__c = 'oid', Application_Number__c = 'failed'));
+
+			List<Database.SaveResult> results = EventBus.publish(crEvents);
+
+			for (Database.SaveResult sr : results) {
+    			if (sr.isSuccess()) {
+        			System.debug('Successfully published event.');
+    			} else {
+        			for(Database.Error err : sr.getErrors()) {
+        				System.debug('Error returned: ' +
+                    	err.getStatusCode() +
+                   	 ' - ' +
+                    	err.getMessage());
+        			}
+				}
+			}
+			*/
 		}
 
 		PricingUtils.saveErrorLog(JSON.serialize(e));
@@ -683,6 +707,23 @@ public static void saveErrorLog(String e) {
 	Error_Log__c el = (Error_Log__c) JSON.deserialize(e, Error_Log__c.class);
 	system.debug('error log: ' + el);
 	insert el;
+}
+
+@AuraEnabled
+public static void fillBufferLWC(){
+	//having some intial load performanc issues for searching....addedit this to fire up the buffers and speed customer
+	//search; MRM 10/31/2022
+
+	CustomerUtils.fillBuffer();
+}
+
+@future
+public static void fillBuffer() {
+	
+	List<Account> b1 = [SELECT id, name FROM Account WHERE name like 'A%' and billingState = 'PA' ORDER BY name  limit 1];
+
+	List<Account> b2 = [SELECT id, name FROM Account WHERE name like '%A%'  and billingState = 'PA' ORDER BY name  limit 1];
+
 }
 
 //some extra lines to cover test of 75%

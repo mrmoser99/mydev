@@ -8,12 +8,14 @@ Change Log:
 
 import { LightningElement, api, wire, track} from 'lwc';
 import quickSearch from "@salesforce/apex/CustomerUtils.quickSearch";
+import fillBuffer from "@salesforce/apex/CustomerUtils.fillBufferLWC";
 //import searchCustomer from "@salesforce/apex/CustomerUtils.searchCustomer";
 import getCustomerId from "@salesforce/apex/CustomerUtils.getCustomerId";
 import updateCustomerId from "@salesforce/apex/CustomerUtilsWithoutSharing.updateCustomerId";
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import Email__c from '@salesforce/schema/Account.Email__c';
 import Primary_Contact_Name__c from '@salesforce/schema/Account.Primary_Contact_Name__c';
+import fillBufferLWC from '@salesforce/apex/CustomerUtils.fillBufferLWC';
 
 const columns = [
 
@@ -439,6 +441,12 @@ export default class CustomerQuickSearch extends LightningElement {
         this.dispatchEvent(selectedEvent);
     }
 
+    connectedCallback() {
 
+        console.log('FB');
+        fillBufferLWC();
+
+
+    }
 
 }
