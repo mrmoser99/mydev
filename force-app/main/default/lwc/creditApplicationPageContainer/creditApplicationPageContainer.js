@@ -2,7 +2,7 @@
  * @description       : LWC component to Credit Application Page container. 
  * @author            : Kritika Sharma : Traction on Demand
  * @group             : Kritika Sharma & Surbhi Goyal :  Traction on Demand
- * @last modified on  : 11-07-2022
+ * @last modified on  : 11-09-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
  * @Changes Log        :
  * Date       - BUG/PBI    - Author                   - Description
@@ -1392,15 +1392,16 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         }
 
         if(errorOccur==false){
-            this.loading = true;
-            // Immediate feedback
-            const evt = new ShowToastEvent({
+            this.loading = true; 
+            // Immediate feedback don't do this the customer will go insane
+            /*const evt = new ShowToastEvent({
                 title:      CREDITAPP_SAVING_TITLE,
                 message:    CREDITAPP_SAVING_MESSAGE,
                 variant:    'success',
                 duration:   5000
             });
             this.dispatchEvent(evt);
+            */
             this.loading = false;
             console.log('this.beneficialOwnerType on save:::'+this.beneficialOwnerType);
             var benifitOwnerRemoveBlank=[]
@@ -1443,13 +1444,15 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                                     ssn: this.personalGuar.SocialSecurityNumber.split('-').join('')
                                 }).then(result => {
                                     if (result) {
+                                        
                                         const evt = new ShowToastEvent({
                                             title: CREDITAPP_SAVED_TITLE,
-                                            message: CREDITAPP_SAVED_MESSAGE,
+                                            message: CREDITAPP_SAVED_MESSAGE ,
                                             variant: 'success',
                                             duration: 10000,
                                         });
                                         this.dispatchEvent(evt);
+                                         
                                         this.loading = false;
                                     } else {
                                         this.loading = false;
@@ -1485,13 +1488,15 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                                     // Change the wire parameter to trigger a reload of the UBO wire
                                     this.contactRolesReloaded += 1;
                                     if (result) {
+                                        /* don't do this, the customer will go insane
                                         const evt = new ShowToastEvent({
                                             title: CREDITAPP_SAVED_TITLE,
-                                            message: CREDITAPP_SAVED_MESSAGE,
+                                            message: CREDITAPP_SAVED_MESSAGE + '1',
                                             variant: 'success',
                                             duration: 10000,
                                         });
                                         this.dispatchEvent(evt);
+                                        */
                                         this.loading = false;
                                     } else {
                                         this.loading = false;
@@ -1958,69 +1963,8 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         });
     }
 
-    /*
-    * Query the application status for updates.
-    * */
-    queryAppStatus(){
-
-        /*
-        The opportunity counter is separate from the query counter since resetting the opportunity counter
-        will set the data reference back to the first time the opportunity was loaded.
-        */
-        this.opportunityDataReloaded += 1;
-        this.queryAppStatusCount += 1;
-        console.log('query status ' + this.queryAppStatusCount);
-
-        // Successful send to MOSAIC
-        if(this.statusValue == 'Application Submitted' && (this.applicationNameValue != '' && this.applicationNameValue != null)){
-
-            // Hide the loader
-            this.loading = false;
-
-            // Flip to the read-only page
-            this.appEditMode = false;
-
-            // Display a success message
-            const evt = new ShowToastEvent({
-                title: CREDITAPP_SUBMITTED_TITLE,
-                message: CREDITAPP_SUBMITTED_MESSAGE,
-                variant: 'success',
-                duration: 10000
-            });
-            this.dispatchEvent(evt);
-
-            // Stop the interval
-            clearInterval(this.queryStatusInterval);
-            this.queryAppStatusCount = 0;
-        }
-
-        // Unsuccessful send to MOSAIC
-        /*
-        What kinds of errors can the UI capture
-        */
-
-        // Timeout
-        if(this.queryAppStatusCount >= CREDITAPP_TIMEOUT){
-            // Hide the loader
-            this.loading = false;
-
-            // Stay on the edit page
-            this.appEditMode = true;
-
-            // Display a success message
-            const evt = new ShowToastEvent({
-                title: CREDITAPP_SUBMITTEDERROR_TITLE,
-                message: CREDITAPP_SUBMITTEDERROR_GENERAL,
-                variant: 'error',
-                duration: 10000
-            });
-            this.dispatchEvent(evt);
-
-            // Stop the interval
-            clearInterval(this.queryStatusInterval);
-            this.queryAppStatusCount = 0;
-        }
-    }
+    
+    
 
     // -------------------model pop-up on click of Submit Credit Application button---------------------//
     /**

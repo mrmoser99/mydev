@@ -435,7 +435,7 @@ public static void submitCreditAppFuture(String quoteId){
 		if (r.status != 'OK') {
 			system.debug(r.errorMsg);
 			error=true;
-			CreditAppUtils.triggerCreditResponse(q.opportunityId, false, r.status);
+			//CreditAppUtils.triggerCreditResponse(q.opportunityId, false, r.status);
 			//throw new AuraHandledException(r.errorMsg);
 		}
 
@@ -826,7 +826,7 @@ public static void submitPreQualCreditAppFuture(String opportunityId){
 		if (r.status != 'OK') {
 			system.debug(r.errorMsg);
 			error=true;
-			throw new AuraHandledException(r.errorMsg);
+			CreditAppUtils.triggerCreditResponse(o.Id, false, r.errorMsg);
 		}
 
 		else{
@@ -835,6 +835,7 @@ public static void submitPreQualCreditAppFuture(String opportunityId){
 
 			String appn = creditResponse.data.id;
 			o.application_number__c = appn.mid(appn.lastIndexOf('.')+1,12);
+			o.unq_opportunity__c = o.application_number__c;
 			o.stagename = 'Assessment';
 			if (creditResponse.data.status == 'assessment') {
 
@@ -854,11 +855,12 @@ public static void submitPreQualCreditAppFuture(String opportunityId){
 
 	}
 	catch (Exception e) {
-		error=true;
+		 
 		system.debug('r error is: ' + r.ErrorMsg);
 		system.debug('e: ' + e);
 		stack = e.getStackTraceString();
-		CreditAppUtils.triggerCreditResponse(o.Id, false, r.ErrorMsg);
+		if (!error)
+			CreditAppUtils.triggerCreditResponse(o.Id, false, r.ErrorMsg);
 	}
 	finally{
 
@@ -927,7 +929,7 @@ public static ReturnStatus doCallout(String JSON, String method, String opportun
 			String smallError = 'JSONSubmitCreditAppRequest: ' + res1.getStatus()  + '  ' + res1.getStatusCode();
 			error=true;
 			system.debug(ErrorMsg);
-			CreditAppUtils.triggerCreditResponse(opportunityId, false, smallError);
+			//CreditAppUtils.triggerCreditResponse(opportunityId, false, smallError);
 		}
 
 	}
@@ -1120,9 +1122,18 @@ public static List<Quote_Line__c> getQuoteLines(ID quoteId){
 public static void triggerCreditResponse(ID opportunityId, Boolean success, String errorMessage){
 
 	List<Credit_Response__e> crEvents = new List<Credit_Response__e>();
+	
+	String resizedString;
+	
+	if(errorMessage.Length() > 200){
+ 	   resizedString = errorMessage.left(200);
+	}
+	else {
+		resizedString = errorMessage;
+	}	
 
-	crEvents.add(new Credit_Response__e(Opportunity__c = opportunityId, Succeeded__c = success, Error_Message__c = errorMessage));
-
+	crEvents.add(new Credit_Response__e(Opportunity__c = opportunityId, Succeeded__c = success, Error_Message__c = resizedString));
+	
 	List<Database.SaveResult> results = EventBus.publish(crEvents);
 	List<Error_Log__c> errorSuccessList = new List<Error_Log__c>();
 	List<Error_Log__c> errorFailList = new List<Error_Log__c>();
