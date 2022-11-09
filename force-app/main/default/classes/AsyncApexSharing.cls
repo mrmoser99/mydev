@@ -1,13 +1,12 @@
 /*******************************************************************************************************************
- *   Async Apex Sharing - if the old owner was a partner admin then share this record with them.  interface changes
- *						the owner to the salesperson.  
- *
+ *   Async Apex Sharing
  *
  *	Change Log:
  *	10/29/2022 - MRM Created 
  *
  ********************************************************************************************************************/
 public without sharing class  AsyncApexSharing implements Queueable {
+
 
 Map<ID,ID> oppOwnerMap = new Map<ID,ID>();
 Set<ID> oldOwner = new Set<ID>();
@@ -18,6 +17,8 @@ public AsyncApexSharing(Map<ID,ID> oppOwnerMap, Set<ID> oldOwner,Map<Id, Opportu
 	this.oppOwnerMap = oppOwnerMap;
 	this.oldOwner = oldOwner;
 	this.oldOppMap = oldOppMap;
+
+	 
 }
 
 public void execute(QueueableContext context) {

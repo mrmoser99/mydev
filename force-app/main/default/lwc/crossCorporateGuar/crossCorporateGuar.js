@@ -14,6 +14,7 @@ import updateCustomerId from "@salesforce/apex/CustomerUtilsWithoutSharing.updat
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import Email__c from '@salesforce/schema/Account.Email__c';
 import Primary_Contact_Name__c from '@salesforce/schema/Account.Primary_Contact_Name__c';
+import getCrossRelatedPartyForOpp from '@salesforce/apex/CreditApplicationHeaderController.getCrossRelatedPartyForOpp';
 
 const columns = [
 
@@ -104,17 +105,31 @@ export default class CustomerQuickSearch extends LightningElement {
     item;
      
     errorMsg;
-    @track Customer;
+    @track Customer={
+        Name:'', 
+        Primary_Contact_Name__c:'',
+        Phone: '',  
+        Email__c: '',
+        BillingStreet: '',
+        BillingCity: '',
+        BillingCountry: '',
+        BillingPostalCode: '',
+        BillingCounty__c:'',
+        Tax_ID__c: '',
+        BillingState:''
+              
+    }; 
     isOpportunity;
     refreshExecute=0;
     hasRefreshed=false;
-    showCustomer=false;
+    @track showCustomer=false;
     showQuickSearch=true;
     showDataTable=false;
     objectName='Account';
-    isModalOpen=false;
+    @track isModalOpen=false;
     errorStateMsg='';
     showCounty = false;
+    
 
     /***********************************************************************************************************
     * getCustomerId
@@ -122,7 +137,7 @@ export default class CustomerQuickSearch extends LightningElement {
     @wire(getCustomerId,{ recordId: '$recordId', refreshExecute : '$refreshExecute'}) 
         wiredgetCustomerId({data, error}) {
 
-            this.customerInfoShowParent();
+          //  this.customerInfoShowParent();
           
             if (this.recordId != null){
 
@@ -146,8 +161,8 @@ export default class CustomerQuickSearch extends LightningElement {
             if (data) {
                  
                 this.customerId = data;
-                this.showCustomer=true;
-                this.customerInfoShowParent();
+              //  this.showCustomer=true;
+               // this.customerInfoShowParent();
             } else if (error) {  
                 this.customerId = null; 
                 this.showToast('Something went wrong', error.body.message, 'error');
@@ -155,6 +170,30 @@ export default class CustomerQuickSearch extends LightningElement {
                 return;
             }
             //this.isLoading = false;
+    }
+
+
+    connectedCallback(){
+            //code to retrieve cross corp guarantor from apex and disply onload
+            console.log('inside cross connected cb');
+            getCrossRelatedPartyForOpp({oppId: this.recordId})
+            .then(result => {
+                if(result){
+                    let resultParsed = JSON.parse(result);
+                    this.showCustomer = true;
+                    console.log('crossvalue' +JSON.stringify(result));
+                    console.log('crossvalue' +resultParsed.First_Name__c);
+                    this.Customer.Name = resultParsed.First_Name__c;
+                    this.Customer.Phone = resultParsed.Phone__c;
+                    this.Customer.Email__c = resultParsed.Email__c;
+                    this.Customer.BillingStreet = resultParsed.Address_Line__c;
+                    this.Customer.BillingCity = resultParsed.City__c;
+                    this.Customer.BillingState = resultParsed.State__c;
+                    this.Customer.BillingCounty__c = resultParsed.County__c;
+                    this.Customer.BillingCountry = resultParsed.Country_Code__c;
+                    this.Customer.Tax_ID__c = resultParsed.SSN_Encrypted__c;
+                }
+            })
     }
 
     showToast(title, message, variant) {
@@ -174,6 +213,7 @@ export default class CustomerQuickSearch extends LightningElement {
         this.Customer = event.detail;
         this.updateCustomer();
         if(this.Customer != '' && this.Customer != null){
+            console.log('inside closepopup guar' +JSON.stringify(this.Customer));
             this.showCustomer=true;
             this.customerInfoShowParent();
             //this.isLoading = false;
@@ -289,7 +329,7 @@ export default class CustomerQuickSearch extends LightningElement {
 
     changeCustomer(event) {
 
-        this.customerId = null;
+      /*  this.customerId = null;
         //this.updateCustomer();
         this.showCustomer = false;
         this.customerInfoShowParent();
@@ -300,7 +340,10 @@ export default class CustomerQuickSearch extends LightningElement {
         this.errorMsg = '';
         this.errorStateMsg='';
         this.showDataTable=false;
-        this.searchDataContract = [];
+        this.searchDataContract = []; */
+        console.log('inside changecust');
+        this.isModalOpen = true;
+        
         
     }
 
@@ -330,7 +373,7 @@ export default class CustomerQuickSearch extends LightningElement {
     }
 
     
-    selectCustomer(event){
+    /*selectCustomer(event){
 
         if(!this.customerId) {
             this.errorMsg = 'Please select a customer to continue!';
@@ -340,7 +383,7 @@ export default class CustomerQuickSearch extends LightningElement {
         this.updateCustomer();
         this.showCustomer=true;
         this.customerInfoShowParent();
-    }
+    }*/
 
     getSelectedRecord(event) {
 
@@ -434,8 +477,9 @@ export default class CustomerQuickSearch extends LightningElement {
     }
     
     customerInfoShowParent() {
+        console.log('inside guar ' +JSON.stringify(this.Customer));
         const selectedEvent = new CustomEvent('customerinfoshow',{
-            detail: this.showCustomer
+            detail: this.Customer
         });
         this.dispatchEvent(selectedEvent);
     }

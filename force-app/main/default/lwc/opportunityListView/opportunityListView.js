@@ -39,6 +39,9 @@ const columns = [
             target: '_self'
         }
     },
+    {label: 'Quote No.', fieldName: 'quoteNumberURL', type: 'url', sortable: true,
+     typeAttributes: {label: {fieldName: 'Opportunity_Number__c'}, target:'_self'}
+    },
     {label: 'Customer Name', fieldName: 'EndUserURL', type: 'url', sortable: true, 
      typeAttributes: {label: {fieldName: 'End_User_Company_Name__c'}, target: '_self'}
     },
@@ -169,6 +172,14 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
 
                 result.forEach((record) => {
                     let tempOpportunity = Object.assign({}, record);
+
+                    if(tempOpportunity.Nickname__c != 'Credit Check') {
+                        tempOpportunity.Opportunity_Number__c = tempOpportunity.Opportunity_Number__c;
+                        tempOpportunity.quoteNumberURL = window.location.origin + '/dllondemand/s/new-quote?oppid=' + tempOpportunity.Id;
+                    } else {
+                        tempOpportunity.Opportunity_Number__c = '';
+                        tempOpportunity.quoteNumberURL = '';
+                    }
 
                     //create temp variable ApplicationNumberUrl
                     /*if (tempOpportunity.Application_Number__c == undefined) {
@@ -410,7 +421,7 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
        this[NavigationMixin.Navigate]({
            type: 'standard__webPage',
            attributes: {
-               url: '/dllondemand/s/credit-check'
+               url: '/dllondemand/s/credit-check/'
            }
        });
    }

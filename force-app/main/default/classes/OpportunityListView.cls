@@ -37,36 +37,38 @@ public with sharing class OpportunityListView {
             // Handle field mapping for columns where the variable doesn't match the field name.
             if(sortBy == 'EndUserURL') {
                 sortByConvert = 'End_User_Company_Name__c';
+            }else if(sortBy == 'quoteNumberURL') {
+                sortByConvert = 'Opportunity_Number__c';            
             }else if(sortBy == 'ApplicationNumberUrl'){
 
                 // Double column sorting supports defaulting the application number to the nickname when it's empty.
                 sortByConvert = 'Application_Number__c, Nickname__c';
             } else {
                 sortByConvert = sortBy;
-            }
+            } 
                       
             list<Opportunity> oppList = new List<Opportunity>(); 
                      
             condition= getCondition(rowLimit,rowOffset,submittedDate,partnerStatus,searchAllValue);  
             if(String.isNotBlank(condition)){
                 if(String.isNotBlank(sortBy)){
-                    querySQL ='SELECT Id,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name '+
+                    querySQL ='SELECT Id,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name, Opportunity_Number__c '+
                 ' FROM Opportunity WHERE Sub_Stage__c not in :substagesEX and ' + condition + ' ORDER BY ' + sortByConvert  + ' ' + sortDirection + ' NULLS ' + nullSeq +
                 ' LIMIT ' + rowLimit + ' OFFSET ' + rowOffset;
                 }
                 else {
-                    querySQL ='SELECT Id,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name '+
+                    querySQL ='SELECT Id,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name, Opportunity_Number__c '+
                 ' FROM Opportunity WHERE Sub_Stage__c not in :substagesEX and ' + condition + ' LIMIT ' + rowLimit + ' OFFSET ' + rowOffset;
                 }
             } 
             else{
                 if(String.isNotBlank(sortBy)){
-                    querySQL = 'SELECT Id,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name '+
+                    querySQL = 'SELECT Id,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name, Opportunity_Number__c '+
                 ' FROM Opportunity WHERE Sub_Stage__c not in :substagesEX '+ ' ORDER BY ' + sortByConvert + ' ' + sortDirection + ' NULLS ' + nullSeq +
                 ' LIMIT ' + rowLimit + ' OFFSET ' + rowOffset;
                 }
                 else {
-                    querySQL = 'SELECT Id,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c '+
+                    querySQL = 'SELECT Id,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name, Opportunity_Number__c '+
                 ' FROM Opportunity WHERE Sub_Stage__c not in :substagesEX ' + ' LIMIT ' + rowLimit + ' OFFSET ' + rowOffset;
                 }
             }

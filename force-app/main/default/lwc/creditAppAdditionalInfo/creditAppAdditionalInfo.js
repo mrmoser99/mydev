@@ -1,6 +1,8 @@
 import createNewOppForCreditCheck from '@salesforce/apex/CreditApplicationHeaderController.createNewOppForCreditCheck';
 import getRelatedPartyForOpp from '@salesforce/apex/CreditApplicationHeaderController.getRelatedPartyForOpp';
 import saveRelatedPartyForOpp from '@salesforce/apex/CreditApplicationHeaderController.saveRelatedPartyForOpp';
+import saveRelatedPartyForOpp1 from '@salesforce/apex/CreditApplicationHeaderController.saveRelatedPartyForOpp1';
+import saveComments from '@salesforce/apex/CreditApplicationHeaderController.saveComments';
 import createPickListValues from '@salesforce/apex/CreditApplicationHeaderController.picklistValues';
 import getContactField from '@salesforce/apex/CreditApplicationHeaderController.getContactField';
 import getOpportunityField from '@salesforce/apex/CreditApplicationHeaderController.getOpportunityData';
@@ -88,14 +90,16 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
     @track customer = {}; 
     @track customerStory = {};
     @track beneficialOwnerType = [];
+    @track crossCustomer;
     
      // Personal Guarantor
-     personalGuar={
+    @track personalGuar={
         firstName:'',
         middleInitial:'',
         lastName:'',
         SocialSecurityNumber:'',
         SocialSecurityNumberForMasking:''
+       
     };
    
 
@@ -106,6 +110,10 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
     opportunityId;
     creationDate;
     errorResultSet;
+    @track comments = '';
+
+    //to showPersonal edit or readonly
+    @track showPersonalEdit = true;
 
     customerInfoShow;
 
@@ -187,7 +195,9 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
     }
 //Address validation
     handleCustomerInfoShow(event) {
-        this.customerInfoShow=event.detail;
+        console.log('insert event handler'+ JSON.stringify(event.detail));
+        this.crossCustomer=event.detail;
+        console.log('this.cust' +JSON.stringify(this.crossCustomer));
 
     }
 //Address validation
@@ -295,10 +305,10 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
 
     connectedCallback(){
         getOpportunityField ({opportunityId: this.oppId, loadCount: this.opportunityDataReloaded})
-          
+         
         .then(data=> 
         {
-               
+            console.log('thendata' +JSON.stringify(data));
             // Page Status
             console.log('Sub-stage: ' + data.Sub_Stage__c);
             console.log('pghere');
@@ -366,21 +376,18 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
 
             //customer story data
             this.customerStory={
+
                 businessStructure: data.Business_Structure__c,
                 yearsInBusiness: data.Years_in_Business__c,
                 story: data.Customer_Story__c,
                 customerStoryId: data.Id
             };
 
-            // Beneficial Owners
-            this.benefitOwner = data.Beneficial_Owner_Type__c;
-            this.customerStory.beneficialOwnerType = data.Beneficial_Owner_Type__c;
-
-           
-           
+          
+         
 
             //payment
-            this.payment={
+          /*  this.payment={
                 term:data.Term__c,
                 interestRate: (data.Interest_Rate__c != null && data.Interest_Rate__c != undefined && data.Interest_Rate__c != '') ? data.Interest_Rate__c.toFixed(2) : '',
                 residual:data.Residual_Amount__c,
@@ -435,24 +442,20 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
             const startSalesRep = this.template.querySelector('.startSalesrep');
             if (startSalesRep) {
                 startSalesRep.value = this.salesRepValue;
-            }
+            }*/
 
-            // Credit Check
-            if (data.Type === 'Credit Check') {
-                console.log('in data isCreditCheck');
-                this.isCreditCheck = true;
-                this.totalPrice = data.Amount;
-                this.salesRep = this.salesRepValue;
-                //this.applicationNameValue = data.Pre_Qualification_Application_Number__c;
-                if (data.Account) {
-                    this.location = data.Account.Originating_Site_ID__c;
-                }
-            } else {
-                this.isCreditCheck = false;
+        
+
+               
                 //this.loading = true;
                 getRelatedPartyForOpp({oppId: this.oppId})
                     .then(result => {
-                        this.activeSections = JSON.parse(JSON.stringify(this.activeSections));
+                        console.log('thenresult' +JSON.stringify(result));
+
+                        if(result){
+
+                        this.showPersonalEdit = false;
+                      //  this.activeSections = JSON.parse(JSON.stringify(this.activeSections));
                         let resultParsed = JSON.parse(result);
                         if (typeof resultParsed.First_Name__c !== 'undefined') {
                             this.personalGuar.firstName = resultParsed.First_Name__c;
@@ -476,13 +479,23 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
                         this.personalGuar = JSON.parse(JSON.stringify(this.personalGuar));
                         console.log('done PG loading');
                         //this.loading = false;
+                    }
                     }).catch(error => {
-                        this.activeSections = JSON.parse(JSON.stringify(this.activeSections));
+                      //  this.activeSections = JSON.parse(JSON.stringify(this.activeSections));
                         console.log('No personal guarentee found');
                         console.log(JSON.parse(JSON.stringify(error)));
                         //this.loading = false;
                     });
-            }
+
+
+                
+                   
+
+
+
+
+
+            
         }
         ).catch(error=>{
             console.log('error_infopage' +JSON.stringify(error));
@@ -574,21 +587,161 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
     }
 
 
+     // Save content show toast message and data store in js variable
+     handleOnSave(){
+       
+        this.loading = true;
+        var errorOccur=false;
+       
+            if ((this.personalGuar.firstName.length !== 0) || (this.personalGuar.lastName.length !== 0) || (this.personalGuar.middleInitial.length !== 0) || (this.personalGuar.SocialSecurityNumber.length !== 0)) {
+                if ((this.personalGuar.firstName.length === 0) || (this.personalGuar.lastName.length === 0)) {
+                    const evt = new ShowToastEvent({
+                        title:      CREDITAPP_SUBMITTEDERROR_TITLE,
+                        message:    'Please provide a complete name for your Personal Guarantee.',
+                        variant:    'error',
+                        duration:   20000
+                    });
+                    this.dispatchEvent(evt);
+                    this.loading = false;
+                    return;
+                }
+                if (this.personalGuar.SocialSecurityNumber.length !== 11) {
+                    const evt = new ShowToastEvent({
+                        title:      CREDITAPP_SUBMITTEDERROR_TITLE,
+                        message:    'Please provide an eleven character SSN for your Personal Guarantee.',
+                        variant:    'error',
+                        duration:   20000
+                    });
+                    this.dispatchEvent(evt);
+                    this.loading = false;
+                    return;
+                }
+                if ((this.personalGuar.SocialSecurityNumber[3] !== '-') || (this.personalGuar.SocialSecurityNumber[6] !== '-')) {
+                    const evt = new ShowToastEvent({
+                        title:      CREDITAPP_SUBMITTEDERROR_TITLE,
+                        message:    'Please use the - character to separate the SSN for your Personal Guarantee.',
+                        variant:    'error',
+                        duration:   20000
+                    });
+                    this.dispatchEvent(evt);
+                    this.loading = false;
+                    return;
+                }
+                for (let i = 0; i < this.personalGuar.SocialSecurityNumber.length; i++) {
+                    if ((i === 3) || (i === 6)) {
+                        continue;
+                    }
+                    if ((this.personalGuar.SocialSecurityNumber[i] > '9') || (this.personalGuar.SocialSecurityNumber[i] < '0')) {
+                        const evt = new ShowToastEvent({
+                            title:      CREDITAPP_SUBMITTEDERROR_TITLE,
+                            message:    'Please only provide numbers in the SSN for your Personal Guarantee.',
+                            variant:    'error',
+                            duration:   20000
+                        });
+                        this.dispatchEvent(evt);
+                        this.loading = false;
+                        return;
+                    }
+                }
+            }
+
+            //call apex method for Related party save
+            console.log('value of guar' +JSON.stringify(this.personalGuar));
+            saveRelatedPartyForOpp({
+                oppId: this.oppId, 
+                firstName: this.personalGuar.firstName, 
+                middleName: this.personalGuar.middleInitial, 
+                lastName: this.personalGuar.lastName, 
+                ssn: this.personalGuar.SocialSecurityNumber.split('-').join('')
+                
+            }).then(result => {
+              
+                if (result) {
+                    const evt = new ShowToastEvent({
+                        title: CREDITAPP_SAVED_TITLE,
+                        message: CREDITAPP_SAVED_MESSAGE,
+                        variant: 'success',
+                        duration: 10000,
+                    });
+                    this.dispatchEvent(evt);
+                    this.loading = false;
+                } else {
+                    this.loading = false;
+                }  
+
+ //save for cross corporate guarantor
+            console.log('customer in addinfo ' +JSON.stringify(this.crossCustomer));
+            saveRelatedPartyForOpp1({
+                oppId: this.oppId, 
+                firstName: this.crossCustomer.Name, 
+                middleName: '', 
+                lastName: '', 
+                ssn: this.crossCustomer.Tax_ID__c
+              
+            }).then(result => {
+              
+                if (result) {
+                    const evt = new ShowToastEvent({
+                        title: CREDITAPP_SAVED_TITLE,
+                        message: CREDITAPP_SAVED_MESSAGE,
+                        variant: 'success',
+                        duration: 10000,
+                    });
+                    this.dispatchEvent(evt);
+                    this.loading = false;
+                } else {
+                    this.loading = false;
+                }  
+            });
+
+
+                 //save Comments 
+         console.log('this.comm ' +JSON.stringify(this.comments));
+            saveComments({
+                oppId: this.oppId, 
+                comments: this.comments
+              
+            }).then(result => {
+                
+                if (result) {
+                   
+                    this.loading = false;
+                } else {
+                    this.loading = false;
+                }  
+            });
+        
+
+
+
+            });
+
+
+           
+    }
+
+
     handlePersonalGuaranteeFirstNameChange(event) {
+        
         this.personalGuar.firstName = event.detail.value;
+        console.log('1' +JSON.stringifythis.personalGuar);
+        
     }
 
     handlePersonalGuaranteeMiddleInitialChange(event) {
         this.personalGuar.middleInitial = event.detail.value;
+        console.log('2' +JSON.stringifythis.personalGuar);
     }
 
     handlePersonalGuaranteeLastNameChange(event) {
         this.personalGuar.lastName = event.detail.value;
+        console.log('3' +JSON.stringifythis.personalGuar);
     }
 
     handlePersonalGuaranteeSSNEncryptedChange(event) {
         this.personalGuar.SocialSecurityNumber = event.detail.value;
         this.personalGuar.SocialSecurityNumberForMasking = event.detail.value;
+        console.log('4' +JSON.stringifythis.personalGuar);
     }
 
  
@@ -694,4 +847,37 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
                 'Open sections: ' + openSections.join(', ');
         }
     }
+
+    //Resubmit comments
+    handleResubmitComm(event){
+        this.comments =event.target.value;
+    }
+
+    //CODE for ssn masking
+    ssnOnFocus(event) {
+        var dataIdVar = event.target.name;
+        this.template.querySelector(`[data-id="${dataIdVar}"]`).value = this.personalGuar.SocialSecurityNumber;
+    }
+
+    ssnOnBlur(event) {
+        var dataIdVar = event.target.name;
+
+        if(this.template.querySelector(`[data-id="${dataIdVar}"]`).value == '' || this.template.querySelector(`[data-id="${dataIdVar}"]`).value == null){
+            this.personalGuar.SocialSecurityNumber = '';
+        }
+
+        // Only display masking fields if a date had been selected.
+        if((typeof this.personalGuar.SocialSecurityNumber !== 'undefined') && (this.personalGuar.SocialSecurityNumber.length !== 0)){
+            this.template.querySelector(`[data-id="${dataIdVar}"]`).value = '***-**-****';
+        }
+    }
+
+    isSSN(){
+        if(this.personalGuar.SocialSecurityNumber.length !== 0){
+            isSSN = true;
+        } else {
+            isSSN = false;
+        }
+    }  
+
 }

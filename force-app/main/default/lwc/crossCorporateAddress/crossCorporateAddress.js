@@ -30,6 +30,22 @@ export default class AddressStandardization extends LightningElement {
         BillingState:''
               
     }; 
+
+    @api cusdata={
+        Name:accName, 
+        Primary_Contact_Name__c:'',
+        Phone: '',  
+        Email__c: '',
+        BillingStreet: billingstreet,
+        BillingCity: billingcity,
+        BillingCountry: 'US',
+        BillingPostalCode: billingPostalCode,
+        BillingCounty__c:'',
+        Tax_ID__c: '',
+        BillingState:''
+              
+    }; 
+
     @api showmodel;
     @api isModalOpen;
     @api recordID;
@@ -67,6 +83,11 @@ export default class AddressStandardization extends LightningElement {
 
  account ={};
  connectedCallback(){
+    if(this.cusdata){
+        this.Customer = this.cusdata;
+    }
+
+   
  getAllstates().then(result =>{
 if(result){
 this.data = result;

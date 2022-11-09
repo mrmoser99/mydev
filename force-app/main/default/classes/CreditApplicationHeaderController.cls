@@ -19,6 +19,8 @@ public with sharing class CreditApplicationHeaderController {
         oppRecord.Customer_Story__c=customerStory.get('story');
 
         if(customerStory.get('amount')!=null && customerStory.get('amount')!='') {
+            system.debug('FNS Amount::'+customerStory.get('amount'));
+            
             oppRecord.Amount = Decimal.valueOf(customerStory.get('amount'));
         }
         if(customerStory.get('salesRepId')!=null && customerStory.get('salesRepId')!='') {
@@ -144,7 +146,7 @@ public with sharing class CreditApplicationHeaderController {
     
     @AuraEnabled(cacheable=true)
     public static List<Contact> getContactField(Id opportunityId){
-
+		system.debug('In GetContact FIeld');
         system.debug('OpportunityContactRole: ' + opportunityId);
 
         List<OpportunityContactRole> contactRole = [
@@ -363,6 +365,36 @@ public with sharing class CreditApplicationHeaderController {
         }
     }
 
+    //Retrieve cross corporate guarantor for creditapp additional info feature
+     @AuraEnabled(cacheable=false)
+    public static String getCrossRelatedPartyForOpp(String oppId) {
+        system.debug('cross oppid here' +oppId);
+        try {
+            Related_Party__c relatedPartyReturn = [
+                SELECT 
+                First_Name__c,
+                Last_Name__c,
+                Middle_Name__c,
+                SSN_Encrypted__c,
+                Email__c,
+                Phone__c,
+                Address_Line__c,
+                County__c,
+                Country_Code__c,
+                City__c,
+                Postal_Code__c,
+                State__c
+                FROM Related_Party__c
+                WHERE (Opportunity__c = :oppId) AND (Type__c = 'CrossCorporate')
+                LIMIT 1];
+
+            return JSON.serialize(relatedPartyReturn);
+        } catch (QueryException e) {
+			return null;
+        }
+    }
+    
+    
     @AuraEnabled(cacheable=false)
     public static Boolean saveRelatedPartyForOpp(String oppId, String firstName, String middleName, String lastName, String ssn) {
         Related_Party__c relatedPartyUpdate;

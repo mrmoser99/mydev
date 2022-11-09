@@ -131,6 +131,51 @@
                     <lightning-accordion allow-multiple-sections-open onsectiontoggle={handleSectionToggle}
                                 class="slds-border_top slds-m-top_small" active-section-name={openAccordionSections}>
                         <lightning-accordion-section name="Personal Guarantee" class="slds-accordion__list-item" label="Personal Guarantee">
+                            
+                          <template  if:false={showPersonalEdit}>
+
+                          
+                            <!--Readonly section-->
+                            <div>
+                                <lightning-layout multiple-rows=true>
+                                    <lightning-layout-item size=6
+                                        class="marginBottom slds-p-right_small">
+                                        <label class="labelColor"><b>First Name</b></label>
+                                        <div>{personalGuar.firstName}</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size=6
+                                        class="marginBottom slds-p-right_small">
+                                        <label class="labelColor"><b>Middle Initial</b></label>
+                                        <div>{personalGuar.middleInitial}</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size=6
+                                        class="marginBottom slds-p-right_small">
+                                        <label class="labelColor"><b>Last Name</b></label>
+                                        <div>{personalGuar.lastName}</div>
+                                      
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size=6
+                                        class="marginBottom slds-p-right_small">
+                                        <label class="labelColor"><b>Social Security Number
+                                                (SSN)</b></label>
+                                        <template if:true={isSSN}>
+                                            <div>{personalGuar.SocialSecurityNumberForMasking}
+                                            </div>
+                                        </template>
+                                        <template if:false={isSSN}>
+                                            <div>{personalGuar.SocialSecurityNumber}</div>
+                                        </template> 
+                                       
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </div>
+                            
+                        </template>  
+                            
+                            
+                            
+                        <template  if:true={showPersonalEdit}> 
+                            <!--  Edit section-->
                             <lightning-layout>
                                 <lightning-layout-item>
                                     <p>Please provide personal information for a Principle of your customer's company.</p>
@@ -138,36 +183,62 @@
                             </lightning-layout>
                             <lightning-layout multiple-rows>
                                 <lightning-layout-item size=6 class="slds-p-right_small">
-                                    <lightning-input type="text" name="First Name" label="First Name" required="true"
-                                        placeholder="Enter First Name">
-                                    </lightning-input>
+                                    <label class="labelColor"><b>First Name</b></label>
+                                    <lightning-input autocomplete="abc" name='personalGuaranteeFirstName'
+                                                                    variant="label-hidden"
+                                                                    placeholder=" Enter First Name"
+                                                                    value={personalGuar.firstName}
+                    
+                                                                    onchange={handlePersonalGuaranteeFirstNameChange}>
+                                                                </lightning-input>
                                 </lightning-layout-item>
                                 <lightning-layout-item size=6>
-                                    <lightning-input type="text" name="Middle Initial" label="Middle Initial"
-                                        required="true" placeholder="Enter Middle Initial">
-                                    </lightning-input>
+                                    <label class="labelColor"><b>Middle Initial</b></label>
+                                    <lightning-input autocomplete="abc" name='personalGuaranteeMiddleInitial'
+                              variant="label-hidden" maxlength="1"
+                              placeholder=" Enter Middle Initial"
+                              
+                              value={personalGuar.middleInitial}
+                              onchange={handlePersonalGuaranteeMiddleInitialChange}>
+                          </lightning-input>
                                 </lightning-layout-item>
                                 <lightning-layout-item size=6 class="slds-p-right_small">
-                                    <lightning-input type="text" name="Last Name" label="Last Name" required="true"
-                                        placeholder="Enter Last Name">
-                                    </lightning-input>
+                                    <label class="labelColor"><b>Last Name</b></label>
+                                    <lightning-input autocomplete="abc" name='personalGuaranteeLastName'
+                                    variant="label-hidden"
+                                    placeholder=" Enter Last Name"
+                                    
+                                    value={personalGuar.lastName}
+                                    onchange={handlePersonalGuaranteeLastNameChange}>
+                                </lightning-input>
                                 </lightning-layout-item>
                                 <lightning-layout-item size=6>
-                                    <lightning-input type="text" name="Social Security Number (SSN)"
-                                        label="Social Security Number (SSN)" required="true" placeholder="Enter SSN">
-                                    </lightning-input>
+                                    <label class="labelColor"><b>Social Security Number
+                                        (SSN)</b></label>
+                                    <lightning-input autocomplete="abc" name='personalGuaranteeSSNEncrypted'
+                                data-id='personalGuaranteeSSNEncrypted'
+                                variant="label-hidden" placeholder=" Enter SSN"
+                                maxlength="11" onfocus={ssnOnFocus}  
+                                onblur={ssnOnBlur}
+                                value={personalGuar.SocialSecurityNumberForMasking}
+                                onchange={handlePersonalGuaranteeSSNEncryptedChange}>
+                            </lightning-input>
                                 </lightning-layout-item>
                             </lightning-layout>
+                        </template>
                         </lightning-accordion-section>
+
+
+                        <!--cross corporate section-->
+
                         <lightning-accordion-section name="Cross Corporate Guarantee" class="slds-accordion__list-item" label="Cross Corporate Guarantee">
                             <lightning-layout>
                                 <lightning-layout-item size = "6">
                                  
-                                <c-cross-corporate-guar>
+                                <c-cross-corporate-guar
                                 onprogressvaluechange={handleCreditAppRedirect}
-                                oncustomerinfoshow={handleCustomerInfoShow} record-id={oppId}>
-                                
-                            </c-cross-corporate-guar>
+                                oncustomerinfoshow={handleCustomerInfoShow} record-id={oppId}> 
+                                </c-cross-corporate-guar> 
                         </lightning-layout-item>
                             </lightning-layout>
 
@@ -271,7 +342,7 @@
                             </lightning-layout>
                             <lightning-layout>
                                 <lightning-layout-item size="12">
-                                    <lightning-textarea name="comments" label="Comments" placeholder="Enter comments..."></lightning-textarea>
+                                    <lightning-textarea name="comments" label="Comments" placeholder="Enter comments..." value={comments} onchange ={handleResubmitComm}></lightning-textarea>
                                 </lightning-layout-item>
                             </lightning-layout>
                         </lightning-accordion-section>
@@ -531,66 +602,42 @@
 
               <!-- Personal Guarantee -->
              
-                <lightning-accordion-section name="personalGuarantee"
+            <!--   <lightning-accordion-section name="personalGuarantee"
                     label="Personal Guarantee (Optional)">
                     <div>
                         <lightning-layout multiple-rows=true>
                             <lightning-layout-item size=6
                                 class="marginBottom slds-p-right_small">
                                 <label class="labelColor"><b>First Name</b></label>
-                               <!-- <div>{personalGuar.firstName}</div> -->
-                                <lightning-input name='personalGuaranteeFirstName'
-                                                                    variant="label-hidden"
-                                                                    placeholder=" Enter First Name"
-                                                                    value={personalGuar.firstName}
-                                                                    onchange={handlePersonalGuaranteeFirstNameChange}>
-                                                                </lightning-input>
+                                <div>{personalGuar.firstName}</div>
                             </lightning-layout-item>
                             <lightning-layout-item size=6
                                 class="marginBottom slds-p-right_small">
                                 <label class="labelColor"><b>Middle Initial</b></label>
-                              <!--  <div>{personalGuar.middleInitial}</div> -->
-                              <lightning-input name='personalGuaranteeMiddleInitial'
-                              variant="label-hidden" maxlength="1"
-                              placeholder=" Enter Middle Initial"
-                              value={personalGuar.middleInitial}
-                              onchange={handlePersonalGuaranteeMiddleInitialChange}>
-                          </lightning-input>
+                                <div>{personalGuar.middleInitial}</div>
                             </lightning-layout-item>
                             <lightning-layout-item size=6
                                 class="marginBottom slds-p-right_small">
                                 <label class="labelColor"><b>Last Name</b></label>
-                               <!-- <div>{personalGuar.lastName}</div> -->
-                               <lightning-input name='personalGuaranteeLastName'
-                               variant="label-hidden"
-                               placeholder=" Enter Last Name"
-                               value={personalGuar.lastName}
-                               onchange={handlePersonalGuaranteeLastNameChange}>
-                           </lightning-input>
+                                <div>{personalGuar.lastName}</div>
+                              
                             </lightning-layout-item>
                             <lightning-layout-item size=6
                                 class="marginBottom slds-p-right_small">
                                 <label class="labelColor"><b>Social Security Number
                                         (SSN)</b></label>
-                             <!--   <template if:true={isSSN}>
+                                <template if:true={isSSN}>
                                     <div>{personalGuar.SocialSecurityNumberForMasking}
                                     </div>
                                 </template>
                                 <template if:false={isSSN}>
                                     <div>{personalGuar.SocialSecurityNumber}</div>
-                                </template> -->
-                                <lightning-input name='personalGuaranteeSSNEncrypted'
-                                data-id='personalGuaranteeSSNEncrypted'
-                                variant="label-hidden" placeholder=" Enter SSN"
-                                maxlength="11" onfocus={ssnOnFocus}
-                                onblur={ssnOnBlur}
-                                value={personalGuar.SocialSecurityNumberForMasking}
-                                onchange={handlePersonalGuaranteeSSNEncryptedChange}>
-                            </lightning-input>
+                                </template> 
+                               
                             </lightning-layout-item>
                         </lightning-layout>
                     </div>
-                </lightning-accordion-section>
+                </lightning-accordion-section>--> 
 
 
   <!--ownership info-->

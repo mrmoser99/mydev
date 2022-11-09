@@ -1,12 +1,8 @@
 <template>
-
     <template if:false={showCustomer}>
         <template if:true={showQuickSearch}>
-
-            <div class="slds-var-m-top_medium slds-card">
-                <lightning-card>
-
-                    <div if:true={errorMsg} style="margin-left: 3%;">
+             <div class="slds-var-m-top_medium slds-card">
+                <lightning-card><div if:true={errorMsg} style="margin-left: 3%;">
                         <p style="color: red;">{errorMsg}</p>
                     </div>
 
@@ -28,7 +24,6 @@
 
         <template if:true={isModalOpen}>
             <div class="slds-box" style = "height: 600px;">
-                <!--<c-sample-address onnotify={handleNotify} ismodalopen={init}></c-sample-address>-->
                 <c-cross-corporate-address oncancelevent={closeModalpopup} recordid={recordId}>
                 </c-cross-corporate-address>
             </div>
@@ -70,8 +65,8 @@
             </div>
 
             <p style="color: #33ccff;font-weight: bold;cursor: pointer;" class="slds-var-m-around_small"
-                onclick={changeCustomer}>
-                Change Customer
-            </p>
+                onclick={addCustomer}>
+                Edit Cross Corporate Guarantee</p>
+               
     </template>
 </template>

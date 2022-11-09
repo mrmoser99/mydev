@@ -291,4 +291,14 @@ span[force-recordAvatar_recordAvatar]
 .comm-content-header c-enroll-progress-bar .slds-progress {
     max-width : 90%!important;
 }
+
+
+/*Datatable changes in Contract Documents component */
+.comm-page-detail-a0n .slds-table_header-fixed_container > div > table thead > tr > th {
+        border-bottom: solid 2px #0099FF!important;
+}
+
+.comm-page-detail-a0n .slds-resizable__divider {
+    display:none!important;
+}
 :root { --dxp-c-section-columns-max-width: 1440px; }
