@@ -1,96 +1,119 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 11-09-2022
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
 <template>
 
     <lightning-layout multiple-rows=true horizontal-align="spread">
-        <lightning-layout-item size=8>
-            <lightning-accordion class="slds-border_top slds-m-top_small" allowmultiplesectionsopen="true"
-                active-section-name="Finance Structure">
-                <!-- Finance section -->
-                <lightning-accordion-section name="Finance Structure" label="Finance Structure">
-                    <div class="financeBody">
-                        <lightning-layout multiple-rows>
-                            <lightning-layout-item size=6 class="slds-p-right_small">
-                                <lightning-combobox name="financeType" label="Lease Type" value={financeType}
-                                    options={financeTypePicklist} disabled={isRateDisabled}
-                                    onchange={handleDependentRatesPicklistChange}
-                                    field-level-help="The header (see above) needs to be filled out to make a Lease Type selection."
-                                    required>
-                                </lightning-combobox>
-                            </lightning-layout-item>
-                            <lightning-layout-item size=6>
-                                <lightning-combobox name="financeTerm" label="Finance Term" value={financeTerm}
-                                    options={financeTermPicklist} onchange={handleChange} field-level-help="test"
-                                    required>
-                                </lightning-combobox>
-                            </lightning-layout-item>
-                            <lightning-layout-item size=6 class="slds-p-right_small">
-                                <lightning-combobox name="rateType" label="Rate Type" value={rateType}
-                                    options={rateTypePicklist} disabled={isRateDisabled}
-                                    onchange={handleDependentTermsPicklistChange} field-level-help="test" required>
-                                </lightning-combobox>
-                            </lightning-layout-item>
-                            <lightning-layout-item size=6>
-                                <lightning-combobox name="paymentFrequency" label="Payment Frequency"
-                                    value={paymentFrequency} options={frequencyPicklist} onchange={handleChange}
-                                    field-level-help="" required>
-                                </lightning-combobox>
-                            </lightning-layout-item>
-                            <lightning-layout-item size=6 class="slds-p-right_small">
-                                <lightning-combobox name="advPayments" label="Advanced Payments (Optional)"
-                                    value={advPayments} options={advancedPaymentsPicklist} onchange={handleChange}
-                                    field-level-help="">
-                                </lightning-combobox>
-                            </lightning-layout-item>
-                        </lightning-layout>
-                    </div>
 
-                </lightning-accordion-section>
+        <lightning-layout-item size=8 class="slds-m-top_medium">
+            <div class="body-top slds-p-around_medium slds-var-m-right_medium">
+                <div class="specification-header">
+                    <h1 class="slds-text-heading_large">
+                        Specifications - Reuseable Comp
+                    </h1>
+                    <p>Build your quote below then click 'Save'. You can select more than one
+                        financing term to view an instant comparison and generate multiple options based on
+                        term</p>
+                    <p style="color:red">* fields are required</p>
+                </div>
+            </div>
 
-                <!-- Assets section -->
+            <div class="Header  slds-var-m-right_medium">
+                <lightning-accordion allowmultiplesectionsopen="true" active-section-name="Finance Structure">
+                    <!-- Finance section -->
 
-                <template for:each={assets} for:item="assetItem">
-                    <lightning-accordion-section name={assetItem.sectionName} label={assetItem.assetHeading}
-                        key={assetItem.assetNo}>
-                        <c-assetcreation asset={assetItem} program-id={program} quote-object={quoteObject}
-                            oncreateasset={handleAddAsset} ondeleteasset={handleDeleteAssetModal}
-                            onupdateasset={handleUpdateAsset}></c-assetcreation>
+                    <lightning-accordion-section name="Finance Structure" label="Finance Structure">
+                        <div class="financeBody">
+                            <lightning-layout multiple-rows>
+                                <lightning-layout-item size=6 class="slds-p-right_small">
+                                    <lightning-combobox name="financeType" label="Lease Type" value={financeType}
+                                        options={financeTypePicklist} disabled={isRateDisabled}
+                                        onchange={handleDependentRatesPicklistChange}
+                                        field-level-help="The header (see above) needs to be filled out to make a Lease Type selection."
+                                        required>
+                                    </lightning-combobox>
+                                </lightning-layout-item>
+                                <lightning-layout-item size=6>
+                                    <lightning-combobox name="financeTerm" label="Finance Term" value={financeTerm}
+                                        options={financeTermPicklist} onchange={handleChange} field-level-help="test"
+                                        required>
+                                    </lightning-combobox>
+                                </lightning-layout-item>
+                                <lightning-layout-item size=6 class="slds-p-right_small">
+                                    <lightning-combobox name="rateType" label="Rate Type" value={rateType}
+                                        options={rateTypePicklist} disabled={isRateDisabled}
+                                        onchange={handleDependentTermsPicklistChange} field-level-help="test" required>
+                                    </lightning-combobox>
+                                </lightning-layout-item>
+                                <lightning-layout-item size=6>
+                                    <lightning-combobox name="paymentFrequency" label="Payment Frequency"
+                                        value={paymentFrequency} options={frequencyPicklist} onchange={handleChange}
+                                        field-level-help="" required>
+                                    </lightning-combobox>
+                                </lightning-layout-item>
+                                <lightning-layout-item size=6 class="slds-p-right_small">
+                                    <lightning-combobox name="advPayments" label="Advanced Payments (Optional)"
+                                        value={advPayments} options={advancedPaymentsPicklist} onchange={handleChange}
+                                        field-level-help="">
+                                    </lightning-combobox>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </div>
+
                     </lightning-accordion-section>
-                </template>
+
+                    <!-- Assets section -->
+
+                    <template for:each={assets} for:item="assetItem">
+                        <lightning-accordion-section name={assetItem.sectionName} label={assetItem.assetHeading}
+                            key={assetItem.assetNo}>
+                            <c-assetcreation asset={assetItem} program-id={program} quote-object={quoteObject}
+                                oncreateasset={handleAddAsset} ondeleteasset={handleDeleteAssetModal}
+                                onupdateasset={handleUpdateAsset}></c-assetcreation>
+                        </lightning-accordion-section>
+                    </template>
 
 
-                <!-- Accessories Section -->
+                    <!-- Accessories Section -->
 
-                <template for:each={accessories} for:item="accessoryItem">
-                    <lightning-accordion-section name="Accessory Details" label={accessoryItem.accessoryHeading}
-                        key={accessoryItem.accNo}>
-                        <c-accessorycreation accessory={accessoryItem} related-asset-picklist={relatedAssets}
-                            oncreateaccessory={handleAddAccessory} ondeleteaccessory={handleDeleteAccessoryModal}
-                            onupdateaccessory={handleUpdateAccessory}>
-                        </c-accessorycreation>
+                    <template for:each={accessories} for:item="accessoryItem">
+                        <lightning-accordion-section name="Accessory Details" label={accessoryItem.accessoryHeading}
+                            key={accessoryItem.accNo}>
+                            <c-accessorycreation accessory={accessoryItem} related-asset-picklist={relatedAssets}
+                                oncreateaccessory={handleAddAccessory} ondeleteaccessory={handleDeleteAccessoryModal}
+                                onupdateaccessory={handleUpdateAccessory}>
+                            </c-accessorycreation>
+                        </lightning-accordion-section>
+                    </template>
+
+                    <!-- Comment Section-->
+                    <lightning-accordion-section name="Comments" label="Comments for DLL (Optional)"
+                        allowmultiplesectionsopen="true">
+                        <div class="commentsBody">
+                            <lightning-layout multiple-rows=true>
+
+                                <lightning-layout-item size=12>
+                                    <p>Please include any important comments about this
+                                        quote
+                                        option
+                                        for your Account Manager</p>
+                                </lightning-layout-item>
+                                <lightning-layout-item size=12>
+                                    <lightning-textarea label="Comments" onchange={saveDLLComments} value={comments}>
+                                    </lightning-textarea>
+                                </lightning-layout-item>
+                            </lightning-layout>
+
+                        </div>
                     </lightning-accordion-section>
-                </template>
-
-                <!-- Comment Section-->
-                <lightning-accordion-section name="Comments" label="Comments for DLL (Optional)"
-                    allowmultiplesectionsopen="true">
-                    <div class="commentsBody">
-                        <lightning-layout multiple-rows=true>
-
-                            <lightning-layout-item size=12>
-                                <p>Please include any important comments about this
-                                    quote
-                                    option
-                                    for your Account Manager</p>
-                            </lightning-layout-item>
-                            <lightning-layout-item size=12>
-                                <lightning-textarea label="Comments" onchange={saveDLLComments} value={comments}>
-                                </lightning-textarea>
-                            </lightning-layout-item>
-                        </lightning-layout>
-
-                    </div>
-                </lightning-accordion-section>
-            </lightning-accordion>
+                </lightning-accordion>
+            </div>
         </lightning-layout-item>
+
         <lightning-layout-item size="4" class="slds-m-top_medium">
             <div class="summary slds-p-around_medium">
                 <lightning-layout multiple-rows=true>
@@ -173,6 +196,8 @@
                 </lightning-layout>
             </div>
         </lightning-layout-item>
+
+
         <!--Save and Close  This is the main save at the bottom of the quote page -->
         <lightning-layout-item size=8>
             <div class="body-bottom slds-p-around_medium slds-m-right_medium">

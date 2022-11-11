@@ -1513,6 +1513,18 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         this.loading=false;
     }
 
+     handleAppeal(){
+
+        console.log('handle appeal' + this.oppId);
+
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: window.location.origin + '/dllondemand/s/appeal?oppid=' + this.oppId
+            }
+        })        
+    }
+
     /**
      * First validate and save the credit application in Salesforce
      * Then callSubmitCreditApp()

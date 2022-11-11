@@ -2,8 +2,8 @@
  * @description       : LWC component to Credit Application Page container. 
  * @author            : Kritika Sharma : Traction on Demand
  * @group             : Kritika Sharma & Surbhi Goyal :  Traction on Demand
- * @last modified on  : 19-05-2022
- * @last modified by  : Kritika Sharma
+ * @last modified on  : 11-09-2022
+ * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
  * @Changes Log        :
  * Date       - BUG/PBI    - Author                   - Description
  * 09/14/2022 - BUG 848045 - Fernando Nereu de Souza  - added a logic to prevent duplicate Opportunities
@@ -2270,6 +2270,8 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             })
         }
     }
+
+    
 
     showToast(title, message, variant) {
         const event = new ShowToastEvent({

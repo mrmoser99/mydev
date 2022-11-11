@@ -1,0 +1,90 @@
+/**
+ * Created by ShiqiSun on 11/17/2021.
+ * Modified by Kritika Sharma : Traction on Demand 
+ * Date : 03-03-2022
+ */
+
+.Header{
+  background: white!important;
+  /*height:150px;*/ 
+}
+
+.header-field-section{
+    padding:      20px 20px 20px 0px;
+    width:        200px;
+}
+
+.body-top{
+  background:white!important;
+  border:1px solid #D4D4D4;
+  border-left:0px!important;
+}
+
+.tab-class{
+  border-top:none!important;
+  border-radius:0px!important;
+}
+
+.quote-header{
+  border-bottom:none!important;
+}
+
+.tab-background{
+  background:#dddbda!important;
+  margin-right:-1px;
+}
+
+.slds-tabs_default__nav{
+  background:white!important
+}
+
+.proposal-container{
+  background: white;
+  height:auto;
+}
+
+.no-padding{
+  padding:0px!important;
+}
+
+.body-bottom{
+  background:white!important;
+  border-bottom:1px solid #D4D4D4;
+  border-left: 1px solid #D4D4D4;
+  border-right: 1px solid #D4D4D4;
+}
+
+.display-field{
+  display:grid;
+}
+
+.summary{
+  background: white;
+  border-top: 3px solid #33ADFF;
+}
+
+.locationComboboxWidth { 
+  width: 300px;
+}
+
+.proposal-container table thead tr th div {
+  border-bottom: 2px solid #0099FF!important;
+}
+
+.addPercentSign::after {
+  content: "%";
+}
+
+label.slds-form-element__label {
+  font-weight: bolder!important;
+  color: black!important;
+}
+.marginBottom{
+  margin-bottom: 10px;
+}
+.marginBottomContent{
+  margin-bottom: 15px;
+}
+.marginRight{
+  margin-right: 10px;
+}
