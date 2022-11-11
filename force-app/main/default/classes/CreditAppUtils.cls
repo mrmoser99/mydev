@@ -517,7 +517,8 @@ public static void submitCreditAppFuture(String quoteId){
 		system.debug('r error is: ' + r.ErrorMsg);
 		system.debug('e: ' + e);
 		stack = e.getStackTraceString();
-		CreditAppUtils.triggerCreditResponse(o.id, false, r.ErrorMsg);
+		if (!Test.isRunningTest())
+			CreditAppUtils.triggerCreditResponse(o.id, false, r.ErrorMsg);
 	}
 	finally{
 
@@ -859,7 +860,7 @@ public static void submitPreQualCreditAppFuture(String opportunityId){
 		system.debug('r error is: ' + r.ErrorMsg);
 		system.debug('e: ' + e);
 		stack = e.getStackTraceString();
-		if (!error)
+		if (!error && !Test.isRunningTest())
 			CreditAppUtils.triggerCreditResponse(o.Id, false, r.ErrorMsg);
 	}
 	finally{

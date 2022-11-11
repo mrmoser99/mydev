@@ -1,3 +1,10 @@
+/**
+ * @description       : 
+ * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+ * @group             : 
+ * @last modified on  : 11-11-2022
+ * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+**/
 @isTest
 private class TestCreditAppUtils {
 
@@ -21,7 +28,8 @@ static void setup(){
 	Contact c2 = new Contact(firstName = 'Test', lastName = 'Dog', accountId = a.id, role__c='Ultimate Beneficial Owner');
 	insert c2;
 
-	Opportunity o = new Opportunity( nickname__c = 'dog1', amount = 10000.00, Name='jack', accountId = v.id, StageName = 'Quoting', CloseDate = date.today().addDays(30));
+	Opportunity o = new Opportunity( nickname__c = 'dog1', amount = 10000.00,
+	 Name='jack', accountId = v.id, StageName = 'Quoting', CloseDate = date.today().addDays(30));
 	o.recordtypeId =  Schema.getGlobalDescribe().get('Opportunity').getDescribe().getRecordTypeInfosByName().get('Retail').getRecordTypeId();
 	system.debug('o is: ' + o);
 	insert o;

@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 11-07-2022
+ * @last modified on  : 11-10-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 @isTest
@@ -52,7 +52,7 @@ Static testmethod void test1(){
 
 	CustomerUtilsWithoutSharing.updateCustomerId(false,q.id,a.id);
 
-	CustomerUtils.getCustomerId(q.id, 999);
+	CustomerUtils.getCustomerId(q.id, 999); 
 
 	CustomerUtils.quickSearchAll('test');
 

@@ -2,7 +2,7 @@
   @description       : 
   @author            : ChangeMeIn@UserSettingsUnder.SFDoc
   @group             : 
-  @last modified on  : 11-02-2022
+  @last modified on  : 11-10-2022
   @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 -->
 <template>
@@ -259,6 +259,21 @@
     <div>
         <c-customer-quick-search onprogressvaluechange={handleProgress} record-id="00604000005cdSOAAY">
         </c-customer-quick-search>
+    </div>
+
+
+    <div class="margin-bottom-2rem">
+        <lightning-card title="Calling child method from parent" icon-name="custom:custom14">
+            <div class="slds-m-around_medium">
+                <div class="parent-wrapper">
+                    <button class="btn" onclick={changeColor}>Click me to change bar color</button>
+                    <div class="child-wrapper">
+                        <c-child></c-child>
+                    </div>
+
+                </div>
+            </div>
+        </lightning-card>
     </div>
 
 </template>

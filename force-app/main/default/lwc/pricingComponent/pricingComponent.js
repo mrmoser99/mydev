@@ -32,10 +32,17 @@ import setProposalForQuote from "@salesforce/apex/CreateQuoteOpportunity.setProp
 import saveCustomerCommentsToOpp from "@salesforce/apex/CreateQuoteOpportunity.saveCustomerCommentsToOpp";
 import getSmartCommDoc from "@salesforce/apex/SmartCommUtils.getSmartCommDoc";
 //import getLoginURL from '@salesforce/apex/SmartCommUtils.getLoginURL';
+ 
+import { loadScript } from 'lightning/platformResourceLoader';
+import cometd from '@salesforce/resourceUrl/cometd';
+import getSessionId from '@salesforce/apex/GenericUtilityClass.getSessionId';
+
 
 
 import CREDITAPP_ASSET_TITLE from '@salesforce/label/c.CREDITAPP_ASSET_TITLE';
 import CREDITAPP_ASSET_DUP from '@salesforce/label/c.CREDITAPP_ASSET_DUP';
+
+
 
 
 const SEARCH_DELAY = 300;
@@ -46,6 +53,13 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     @api sectionTitle;
     @api sectionSubTitle;
     @api oppid;
+    @api option;
+
+    //platform event
+    @api channel = '/event/Pricing__e';;
+    libInitialized = false;
+    sessionId;
+    error;
 
     //Object model
     assets = [{
@@ -243,8 +257,10 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     }
 
     connectedCallback() {
+       
         //  this.showToast('This is the Opportunity Id', this.oppid, 'success');
         console.log('Opportunity Id provided');
+        console.log('************************** resusable component *********************');
         console.log(this.oppid);
         this.loading = false;
         if (this.oppid) {
@@ -353,7 +369,9 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                             if (this.financeType) {
                                 loadsToGo++;
                                 this.loading = true;
-                                console.log('new used is: ');
+                                console.log('new used is: ' + this.assetTypeQuote);
+                                console.log(this.program);
+                                console.log(this.financeType)
 
                                 getFinancialProducts({programId: this.program, financetype: this.financeType, newused: this.assetTypeQuote})
                                     .then(result => {
@@ -1096,10 +1114,17 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         }, 500);
     }
 
+    @api childHandleOptionPicklist(){
+        console.log('child handle option picklist');
+    }
+
     //Option picklist handler
     handleOptionPicklist(event) {
         this.loading = true;
         this.optionsPicklistVal = event.target.value.toString();
+
+        console.log('****************** '  + this.optionsPicklistVal);
+
         if(this.optionsPicklistVal === 'New Option'){
             this.leaseTypeSummary = '-';
             this.rateTypeSummary = '-';
@@ -1166,6 +1191,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
             this.comments = '';
         }else {
+            console.log('here');
             //Values to be used by input fields
             this.quoteObject.isEdit = true;
             this.quoteObject.isClone = false;
@@ -2500,6 +2526,57 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     handleCustomerInfoShow(event) {
         console.log('handle customer info show' + 'event.detail:' + event.detail + ' oppid:' + this.opportunityId);
         this.customerInfoShow=event.detail;
+
+    }
+
+     @wire(getSessionId)
+    wiredSessionId({ error, data }) {
+        if (data) {
+            this.sessionId = data;
+            this.error = undefined;
+            loadScript(this, cometd)
+            .then(() => {
+                console.log('initializing');
+                this.initializeCometD(this.channel,this.oppId);
+            });
+        } else if (error) {
+            this.error = error;
+            this.sessionId = undefined;
+            console.log('error is: ' + JSON.stringify(this.error));
+        }
+    }
+
+
+    // initialize CometD 
+    initializeCometD(channel,oppId) {
+        console.log('initialize cometD');
+        if (this.libInitialized) {
+            return;
+        }
+        this.libInitialized = true;
+        var lwcThisContext = this;
+        var cometdlib = new window.org.cometd.CometD();
+        cometdlib.configure({
+            url: window.location.protocol + '//' + window.location.hostname + '/cometd/56.0/',
+            requestHeaders: { Authorization: 'OAuth ' + this.sessionId},
+            appendMessageTypeToURL : false,
+            logLevel: 'debug'
+        });
+        cometdlib.websocketEnabled = false;
+        cometdlib.handshake(function(status) {
+            if (status.successful) {
+                cometdlib.subscribe(channel, function(message){
+                    lwcThisContext.handlePlatformEvent(message);
+                });
+                
+            } else {
+                console.error('Error in handshaking: ' + JSON.stringify(status));
+            }
+        });
+    }
+
+    handlePlatformEvent(message){
+        console.log('in process event' + JSON.stringify(message));
 
     }
 

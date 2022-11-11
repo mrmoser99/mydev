@@ -397,7 +397,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                     //this.loading = false;
                 }).catch(error => {
                 this.showToast('Invalid Opportunity Id', this.oppid, 'error');
-                console.log('Opportunity Import Error:');
+                console.log('Opportunity Import Error:' + error);
                 console.log(JSON.parse(JSON.stringify(error)));
                 this.loading = false;
             });
@@ -1114,10 +1114,13 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
         }, 500);
     }
 
+    
     //Option picklist handler
     handleOptionPicklist(event) {
+
         this.loading = true;
         this.optionsPicklistVal = event.target.value.toString();
+        console.log('pick list value is: ' + this.optionsPicklistVal);
         if(this.optionsPicklistVal === 'New Option'){
             this.leaseTypeSummary = '-';
             this.rateTypeSummary = '-';

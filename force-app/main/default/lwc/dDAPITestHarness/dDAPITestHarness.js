@@ -244,10 +244,16 @@ export default class dDAPITestHarness extends LightningElement {
         });
     }
 
+    changeColor(){
+
+        let childComponent = this.template.querySelector('c-child');
+        let test = childComponent.childMethod(); 
+
+    }
     // Handles subscribe button click
     handleSubscribe() {
 
-     
+        
         
         console.log('ugh');
         // Callback invoked whenever a new event message is received
