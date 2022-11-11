@@ -2,6 +2,12 @@
  * Created by ShiqiSun on 11/18/2021.
  */
 
+/*
+ Change Log:  
+
+ 11/11/2022 - MRM - Added a return in the wired get makes to return if null is sent in....
+*/
+
 import {LightningElement, wire, api, track} from 'lwc';
 
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -61,6 +67,7 @@ export default class assetcreation extends LightningElement {
     //Controls for disable
     @api
     get isMakeDisabled() {
+        
         return this.programId === '';
     }
     @api
@@ -103,12 +110,22 @@ export default class assetcreation extends LightningElement {
         this.dispatchEvent(event);
     }
 
+     connectedCallback() {
+        console.log(' in asset creation - program is :' + this.programId);
+     }
+
     /***********************************************************************************************************
      * getMakes
      ************************************************************************************************************/
     @wire(getMakes, {programId: '$programId'})
     wiredgetMakes({error, data}) {
-        console.log('he hit here');
+
+        if (this.programId == undefined){
+            console.log('dont do anything on null');
+            return;
+        }
+            
+        console.log('he hit here with program id: ' + this.programId);
         console.log('this.asset = ' +JSON.stringify(this.asset));
         this.loading = true;
 

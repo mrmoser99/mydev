@@ -10,7 +10,8 @@
 
 import {api, track, LightningElement, wire} from 'lwc';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
-import getUserSite from "@salesforce/apex/PricingUtils.getUserSite";
+import getUserSite from "@salesforce/apex/PricingUtils.getUserSite"; 
+import triggerPricingMessage from "@salesforce/apex/PricingUtils.triggerPricingMessage";
 import getPrograms from "@salesforce/apex/PricingUtils.getPrograms";
 import getFinancialProducts from "@salesforce/apex/PricingUtils.getFinancialProducts";
 import getFinancialProduct from "@salesforce/apex/PricingUtils.getFinancialProduct";
@@ -261,6 +262,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                         this.hasLocationSelectionSalesRep = false;
                         this.specificationTabActive = false;
                         this.program = this.options[0].quote.Program_ID__c;
+                        console.log('**************   program is: ' + this.program);
                         if (this.optionsPicklist.length > 1) {
                             let wrapperEvent2 = {value: 0};
                             let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: true};
@@ -1118,8 +1120,19 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
     //Option picklist handler
     handleOptionPicklist(event) {
 
+        console.log('parent is changing option 4');
         this.loading = true;
         this.optionsPicklistVal = event.target.value.toString();
+        
+        let myType = 'option';
+
+        console.log('this is it ' + this.options[this.optionsPicklistVal].quote.OpportunityId);
+
+        let myOppId = this.options[this.optionsPicklistVal].quote.OpportunityId;
+
+        triggerPricingMessage({oppId : myOppId, type: myType, message: this.optionsPicklistVal});
+        
+
         console.log('pick list value is: ' + this.optionsPicklistVal);
         if(this.optionsPicklistVal === 'New Option'){
             this.leaseTypeSummary = '-';

@@ -27,7 +27,7 @@ import saveQuotePricingDataBackToServer from "@salesforce/apex/CreateQuoteOpport
 import saveQuoteLinePricingDataBackToServer from "@salesforce/apex/CreateQuoteOpportunity.saveQuoteLinePricingDataBackToServer";
 import markQuoteOptionAsPrimary from "@salesforce/apex/CreateQuoteOpportunity.markQuoteOptionAsPrimary";
 import markQuoteOptionAsCreditAppSelection from "@salesforce/apex/CreateQuoteOpportunity.markQuoteOptionAsCreditAppSelection";
-import queryQuoteOpportunity from "@salesforce/apex/CreateQuoteOpportunity.QueryQuoteOpportunityTemp";
+import queryQuoteOpportunity from "@salesforce/apex/CreateQuoteOpportunity.QueryQuoteOpportunity";
 import setProposalForQuote from "@salesforce/apex/CreateQuoteOpportunity.setProposalForQuote";
 import saveCustomerCommentsToOpp from "@salesforce/apex/CreateQuoteOpportunity.saveCustomerCommentsToOpp";
 import getSmartCommDoc from "@salesforce/apex/SmartCommUtils.getSmartCommDoc";
@@ -105,7 +105,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     nickname = '';
     location;
     salesRep;
-    program = '';
+    @api program;
     assetTypeQuote = 'New';
     userSite;
     quoteNumber;
@@ -257,19 +257,22 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     }
 
     connectedCallback() {
-       
+        console.log('************************** resusable component *********************' + this.program);
         //  this.showToast('This is the Opportunity Id', this.oppid, 'success');
         console.log('Opportunity Id provided');
-        console.log('************************** resusable component *********************');
+    
         console.log(this.oppid);
         this.loading = false;
         if (this.oppid) {
             this.loading = true;
             this.isLoadedQuote = true;
+            
             queryQuoteOpportunity({'oppId' : this.oppid})
                 .then(result => {
                     this.parseData(result);
+                     
                     this.addPricingDataToLoadedQuotes();
+                     
                     if (this.options.length !== 0) {
                         this.hasQuotes = true;
                         this.hasLocationSelection = true;
@@ -412,10 +415,10 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                     }
                     //this.loading = false;
                 }).catch(error => {
-                this.showToast('Invalid Opportunity Id', this.oppid, 'error');
-                console.log('Opportunity Import Error:');
-                console.log(JSON.parse(JSON.stringify(error)));
-                this.loading = false;
+                    this.showToast('Invalid Opportunity Id', this.oppid, 'error');
+                    console.log('Opportunity Import Error:');
+                    console.log(JSON.parse(JSON.stringify(error)));
+                    this.loading = false;
             });
         }
         /**
@@ -1114,13 +1117,10 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         }, 500);
     }
 
-    @api childHandleOptionPicklist(){
-        console.log('child handle option picklist');
-    }
-
     //Option picklist handler
     handleOptionPicklist(event) {
         this.loading = true;
+        // this.optionsPicklistVal = value;
         this.optionsPicklistVal = event.target.value.toString();
 
         console.log('****************** '  + this.optionsPicklistVal);
@@ -1192,6 +1192,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             this.comments = '';
         }else {
             console.log('here');
+             
+
             //Values to be used by input fields
             this.quoteObject.isEdit = true;
             this.quoteObject.isClone = false;
@@ -1776,7 +1778,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                     if (this.quotesHaveDifference(this.options[i], this.quoteObjectSummary[j])) {
                         console.log('Found Difference');
                         console.log(JSON.parse(JSON.stringify(this.options[i])));
-                        console.log(JSON.parse(JSON.stringify(this.quoteObjectSummary[j])));
+                        console.log(JSON.parse(JSON.stringify(optionsthis.quoteObjectSummary[j])));
                         this.quoteObjectSummary.splice(j, 1);
                         break;
                     }
@@ -2024,6 +2026,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         }
 
         this.optionsPicklist = [];
+        console.log('ol' + this.options.length);
+
         for (let i = 0; i < this.options.length; i++) {
             this.options[i].optionNumber = i + 1;
             this.options[i].optionIndex = i;
@@ -2046,6 +2050,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 this.hasNoActiveQuoteForCredApp = false;
             }
             this.options[i].quoteLines = this.sortQuoteLinesByAccessories(this.options[i]);
+            console.log('this options i' + this.options[i]);
         }
         this.optionsPicklist.push({value:'New Option', label:'New Option'});
         console.log('this is the options picklist:');
@@ -2537,7 +2542,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             loadScript(this, cometd)
             .then(() => {
                 console.log('initializing');
-                this.initializeCometD(this.channel,this.oppId);
+                this.initializeCometD(this.channel);
             });
         } else if (error) {
             this.error = error;
@@ -2548,7 +2553,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
 
     // initialize CometD 
-    initializeCometD(channel,oppId) {
+    initializeCometD(channel) {
         console.log('initialize cometD');
         if (this.libInitialized) {
             return;
@@ -2576,7 +2581,17 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     }
 
     handlePlatformEvent(message){
-        console.log('in process event' + JSON.stringify(message));
+        
+        console.log(' *********************** in process event in child:' + JSON.stringify(message));
+        console.log(message.data.payload.Opportunity__c);
+        if ( message.data.payload.Message_Type__c == 'option' && message.data.payload.Opportunity__c == this.oppid){
+
+            let choice = message.data.payload.Message__c;
+            let wrapperEvent2 = {value: choice};
+            let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: true};
+            this.handleOptionPicklist(wrapperEvent);
+        }
+     
 
     }
 

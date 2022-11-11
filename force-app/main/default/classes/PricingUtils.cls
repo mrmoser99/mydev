@@ -693,7 +693,10 @@ public static String getMakes(String programId){
 
 	try{
 
+		
 		String programResourceId =  programId;
+
+		System.debug('the program is:' + programId + ' res:' + programResourceId);
 
 		PartnerPortal__mdt pp = getPartnerPortalSettings();
 
@@ -1602,6 +1605,85 @@ public static void saveErrorLog(String e) {
 	system.debug('error log: ' + el);
 	insert el;
 }
+
+/************************************************************************************************************************************************
+ * trigger platform event - various events for pricing page
+ *
+ * change log:
+ *
+ * 11/7/2022 - MRM Created
+ * 
+ *
+ *****************************************************************************************************************************************************/
+@AuraEnabled
+ public static String  triggerPricingMessage(String oppId, String type, String message){
+
+	String UUID;
+	List<Pricing__e> pricingEvents = new List<Pricing__e>();
+
+	pricingEvents.add(new Pricing__e(Opportunity__c = oppId, Message_Type__c = type, Message__c = message));
+	
+	List<Database.SaveResult> results = EventBus.publish(pricingEvents);
+	List<Error_Log__c> errorSuccessList = new List<Error_Log__c>();
+	List<Error_Log__c> errorFailList = new List<Error_Log__c>();
+	 
+	for (Database.SaveResult sr : results) {
+    	if (sr.isSuccess()) {
+
+			UUID = EventBus.getOperationId(sr);
+
+			system.debug('sr is: ' + sr);
+			
+        	System.debug('Successfully published event.');
+			Error_Log__c el = new Error_Log__c();
+			el.callout_name__c = 'Trigger Pricing Event';
+			String recordTypeID = Schema.getGlobalDescribe().get('Error_Log__c').getDescribe().getRecordTypeInfosByName().get('Integration Error Log').getRecordTypeId();
+
+			el.recordTypeId = recordTypeID;
+			el.Class_name__c = 'PricingUtils';
+			el.Exception_Message__c = message;
+			 
+			el.Method_Name__c = 'triggerPricingMessage';
+		 
+			el.status_code__c = 0;
+			
+			el.quote_id__c =oppId;
+			errorSuccessList.add(el);
+    	} 
+		else {
+			
+
+        	for(Database.Error err : sr.getErrors()) {
+
+				Error_Log__c el = new Error_Log__c();
+				el.callout_name__c = 'Trigger Pricing Message';
+				String recordTypeID = Schema.getGlobalDescribe().get('Error_Log__c').getDescribe().getRecordTypeInfosByName().get('Integration Error Log').getRecordTypeId();
+
+				el.recordTypeId = recordTypeID;
+				el.Class_name__c = 'PricingUtils';
+			 
+				el.Method_Name__c = 'triggerPricingMessage';
+		 
+				el.status_code__c = 900;
+			
+				el.quote_id__c = oppId;
+
+				el.exception_message__c = err.getStatusCode() + ' ' + err.getMessage();
+            	
+				errorFailList.add(el);
+        	}
+			
+    	}
+	} 
+	
+	if (!errorFailList.isEmpty())
+		insert errorFailList;
+	if (!errorSuccessList.isEmpty())
+		insert errorSuccessList;
+
+	 return UUID;
+}
+
 
 
 public static void byPassCalloutTest(){
