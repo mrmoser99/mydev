@@ -1616,12 +1616,14 @@ public static void saveErrorLog(String e) {
  *
  *****************************************************************************************************************************************************/
 @AuraEnabled
- public static String  triggerPricingMessage(String oppId, String type, String message){
+ public static String  triggerPricingMessage(String oppId, String type, String nickname, String message, String location, String locationId,
+  		String assetType, String program, String programId){
 
 	String UUID;
 	List<Pricing__e> pricingEvents = new List<Pricing__e>();
 
-	pricingEvents.add(new Pricing__e(Opportunity__c = oppId, Message_Type__c = type, Message__c = message));
+	pricingEvents.add(new Pricing__e(Opportunity__c = oppId, Nickname__c = nickname, Message_Type__c = type, Message__c = message,
+	Program_Name__c = program, Program_Id__c = programId, Asset_Type__c = assetType, Location_Id__c = locationId, Location_Name__c = location));
 	
 	List<Database.SaveResult> results = EventBus.publish(pricingEvents);
 	List<Error_Log__c> errorSuccessList = new List<Error_Log__c>();

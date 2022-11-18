@@ -33,9 +33,9 @@ import saveCustomerCommentsToOpp from "@salesforce/apex/CreateQuoteOpportunity.s
 import getSmartCommDoc from "@salesforce/apex/SmartCommUtils.getSmartCommDoc";
 //import getLoginURL from '@salesforce/apex/SmartCommUtils.getLoginURL';
  
-import { loadScript } from 'lightning/platformResourceLoader';
-import cometd from '@salesforce/resourceUrl/cometd';
-import getSessionId from '@salesforce/apex/GenericUtilityClass.getSessionId';
+//import { loadScript } from 'lightning/platformResourceLoader';
+//import cometd from '@salesforce/resourceUrl/cometd';
+//import getSessionId from '@salesforce/apex/GenericUtilityClass.getSessionId';
 
 
 
@@ -55,13 +55,16 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     @api oppid;
     @api option;
 
-    //platform event
-    @api channel = '/event/Pricing__e';;
-    libInitialized = false;
-    sessionId;
+    
     error;
 
+    accordianSection = '';
+     
+
+    triggerParentSave = false;
+
     //Object model
+    
     assets = [{
         sectionName: 'asset0',
         assetHeading: 'Asset 1',
@@ -79,7 +82,6 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
     opportunityId;
 
-
     @track quoteObject = {
         deleteAssets: [],
         isEdit: false,
@@ -87,8 +89,15 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         assetTypeQuote: 'New',
         financeType:'BO',
         paymentFrequency: 'Monthly',
-        advPayments: '0'
+        advPayments: '0',
+        program: null,
+        programId: null,
+        location: null,
+        locationId: null,
+        nickname: null,
+        financeTerm: null
     };
+
 
     quoteObjectSummary = [];
 
@@ -114,15 +123,32 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     rateType;
 
     @api
+    sayHello(){
+        console.log('hello');
+    }
+    
+    @api
     get isRateDisabled() {
-        let result = (this.program === '') || (this.assetTypeQuote === '') || (this.location === '') || (this.nickname === '');
+        
+
+         
+
+        //console.log('entering is rate disabled ' + JSON.stringify(this.quoteObject));
+
+        
+        let result =  (this.program === '') || (this.assetTypeQuote === '') || (this.location === '') || (this.nickname === '');
+        //console.log('result is: ' + result + ' lenthg:' + this.openAccordionSections.length)  ;
         if (!result && (this.openAccordionSections.length === 0)) {
             this.openAccordionSections = ['Finance Structure'];
+            //console.log('here');
         } else if (result && this.openAccordionSections.includes('Finance Structure') && (this.openAccordionSections.length === 1)) {
             this.openAccordionSections = [];
+            //console.log('there');
         }
+        
         return result;
     }
+    
 
     financeTerm;
 
@@ -257,8 +283,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     }
 
     connectedCallback() {
-        console.log('************************** resusable component *********************' + this.program);
-        //  this.showToast('This is the Opportunity Id', this.oppid, 'success');
+        console.log('************************** resusable component *********************');
+         
         console.log('Opportunity Id provided');
     
         console.log(this.oppid);
@@ -269,12 +295,15 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             
             queryQuoteOpportunity({'oppId' : this.oppid})
                 .then(result => {
+                    console.log('here');
                     this.parseData(result);
-                     
+                         console.log('here2');
                     this.addPricingDataToLoadedQuotes();
+                        console.log('here3');
                      
                     if (this.options.length !== 0) {
                         this.hasQuotes = true;
+                        this.accordianSection = 'Finance Structure'; 
                         this.hasLocationSelection = true;
                         this.hasLocationSelectionSalesRep = false;
                         this.specificationTabActive = true;  ///mrm change 1
@@ -296,6 +325,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                             this.salesRepDisplayName = this.options[0].quote.Partner_Sales_Rep__r.Name;
                             this.salesRep = this.options[0].quote.Partner_Sales_Rep__r.Name; 
                         }
+                            console.log('here4');
                         this.location = this.options[0].quote.Location_ID__c;
                         this.displayLocation = result.newOpp.Account.Name;
                         for (let i = 0; i < this.options.length; i++) {
@@ -308,6 +338,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                             this.creditAppId = this.options[0].quote.Id;
                         }
                         let loadsToGo = 2;
+                            console.log('here5');
                         if (this.location) {
                             getPrograms({siteName: this.location})
                                 .then(result => {
@@ -335,6 +366,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                                 this.programPicklist = undefined;
                                 return;
                             });
+                                console.log('here6a');
                             console.log('get salesreps');
                             getSalesReps({ originatingSiteId: this.location })
                                 .then(result => {
@@ -369,15 +401,19 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                                     this.showToast('Something went wrong', error.body.message, 'error');
                                 });
                             console.log('dog1');
+                            console.log('here6b');
                             if (this.financeType) {
                                 loadsToGo++;
                                 this.loading = true;
                                 console.log('new used is: ' + this.assetTypeQuote);
                                 console.log(this.program);
                                 console.log(this.financeType)
-
+                                this.quoteObject.program = this.program;
+                                this.quoteObject.programId = this.program;
+                                    console.log('here7');
                                 getFinancialProducts({programId: this.program, financetype: this.financeType, newused: this.assetTypeQuote})
                                     .then(result => {
+                                        console.log('here8');
                                         let plist = [];
                                         let tempData = JSON.parse(result);
                                         console.log('tempData = ' + tempData);
@@ -396,6 +432,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                                                 this.quoteObject.rateType = onlyonelabel;
                                                 this.quoteObject.rateTypeId = onlyoneid;
                                                 this.rateTypePicklist = plist;
+                                                 console.log('calling load terms here 3');
                                                 this.loadTerms();
                                                 return;
                                             }
@@ -404,15 +441,18 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                                         if (loadsToGo === 0) {
                                             this.loading = false;
                                         }
-                                        console.log(plist);
+                                        console.log('plist is: ' + plist);
                                         this.rateTypePicklist = plist;
                                     })
                                     .catch(error => {
+                                        console.log('here8');
                                         console.log(JSON.stringify(error));
                                     });
+                                    console.log('here 9');
                             }
                         }
                     }
+                    console.log('here 101');
                     //this.loading = false;
                 }).catch(error => {
                     this.showToast('Invalid Opportunity Id', this.oppid, 'error');
@@ -690,6 +730,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                         this.rateType = onlyoneid;
                         this.quoteObject.rateType = onlyonelabel;
                         this.quoteObject.rateTypeId = onlyoneid;
+                        console.log('calling load terms here');
                         this.loadTerms();
                         this.rateTypePicklist = plist;
                         return;
@@ -712,7 +753,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
     loadTerms() {
 
-        console.log('in load terms');
+        console.log('in load terms in pircing component' + this.program);
 
         getFinancialProduct({programId: this.program, productId: this.rateType, newused: this.assetTypeQuote})
             .then(result => {
@@ -768,6 +809,19 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 }
 
                 console.log('loadTerms done');
+
+                this.loading = false;
+
+                console.log('triggering on child save in parent' + this.triggerParentSave);
+                if (this.triggerParentSave){
+                    const passEvent = new CustomEvent('childsave', {
+                        detail: {quote: this.quoteObject, activeTabValue:'proposal'} 
+                    });
+                    this.triggerParentSave = false;
+                    this.dispatchEvent(passEvent);
+                }
+
+                 
                 console.log(this.pricingApiCallCount);
 
             })
@@ -823,10 +877,9 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.quoteObject[event.target.name] = event.target.value;
         console.log('In change function');
         console.log(JSON.parse(JSON.stringify(this.quoteObject)));
+        console.log('load rates 1');
         this.loadRates();
-        console.log('In change function2');
-         
-
+    
     }
 
     handleChangeSalesRep(event) {
@@ -866,20 +919,27 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.displayModal = true;
     }
 
-    handleDependentRatesPicklistChange(event) {
+    handleDependentRatesPicklistChange(message) {
+        console.log('handle depending in pricing compt');
 
-        console.log('handeldependingratespicklistchagne');
+     
+
+        let name = 'program';
+        this.quoteObject[name] = this.quoteObject.program;
+        this.quoteObject[name +'Id'] = this.quoteObject.programId;
+        
+        
         this.loading = true;
-        this[event.target.name] = event.target.value;
-        this.quoteObject[event.target.name] = event.target.options.find(opt => opt.value === event.detail.value).label;
-        this.quoteObject[event.target.name +'Id'] = event.target.value;
 
-        this.displayLocation = this.siteList.find(opt => opt.value === this.quoteObject.location).label;
+        this[name] = message;
+        this.displayLocation = this.quoteObject.location;
         this.displayProgram = this.quoteObject.program;
 
         console.log(JSON.stringify(this.quoteObject)); 
-
+        console.log('load rates 2');
         this.loadRates();
+
+    
     }
 
     handleDependentTermsPicklistChange(event) {
@@ -887,8 +947,10 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this[event.target.name] = event.target.value;
         this.quoteObject[event.target.name] = event.target.options.find(opt => opt.value === event.detail.value).label;
         this.quoteObject[event.target.name +'Id'] = event.target.value;
-        console.log(JSON.stringify(this.quoteObject));
+     
+        
         this.loadTerms();
+        
     }
 
     //Search Implementation
@@ -1119,11 +1181,13 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
     //Option picklist handler
     handleOptionPicklist(event) {
+
+     
         this.loading = true;
         // this.optionsPicklistVal = value;
         this.optionsPicklistVal = event.target.value.toString();
 
-        console.log('****************** '  + this.optionsPicklistVal);
+         
 
         if(this.optionsPicklistVal === 'New Option'){
             this.leaseTypeSummary = '-';
@@ -1191,7 +1255,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
             this.comments = '';
         }else {
-            console.log('here');
+            
              
 
             //Values to be used by input fields
@@ -1209,7 +1273,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
         this.loading = false;
 
-        console.log('handleOptionPicklist finished');
+         
     }
 
 
@@ -1223,7 +1287,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             this.openAccordionSections = ('asset' + this.currentPosition);
         }, 500);
         this.loading = false;
-        console.log('handleAddAsset finished');
+         
     }
 
     handleDeleteAssetModal(event) {
@@ -1240,31 +1304,31 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
     handleDeleteAsset(event) {
         this.loading = true;
-        console.log('got here');
+        
         console.log(event.detail);
         this.deleteRelatedAccessories(this.assets[event.detail]);
-        console.log('part one');
+         
         if (typeof this.assets[event.detail].Id !== 'undefined') {
             this.quoteObject.deleteAssets.push({Id:this.assets[event.detail].Id});
         }
         this.assets.splice(event.detail, 1);
-        console.log('part two');
+     
 
         this.currentPosition--;
         for (let i = 0; i < this.assets.length; i++) {
             this.assets[i].assetNo = i;
         }
-        console.log('part three');
+         
         this.updateAssetPicklist();
-        console.log(this.assets);
+         
         this.loading = false;
-        console.log('handleDeleteAsset finished');
+        
     }
 
     handleUpdateAsset(event) {
         this.loading = true;
         
-        console.log(JSON.stringify(this.assets));
+         
 
         for (let i = 0; i < this.assets.length; i++) {
             if (this.assets[i].modelId === this.assets[event.detail.assetNo].modelId
@@ -1289,7 +1353,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         if (!this.saveRunning) {
             this.loading = false;
         }
-        console.log('handleUpdateAsset finished');
+         
     }
 
     //Accessory Handlers
@@ -1298,23 +1362,23 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.loading = true;
         this.currentAccPosition++;
         this.accessories.push({accNo: this.currentAccPosition, accessoryHeading: 'Accessory ' + (this.currentAccPosition + 1), isFirst: false});
-        console.log(this.accessories);
+         
         this.loading = false;
-        console.log('handleAddAccessory finished');
+         
     }
 
     handleUpdateAccessory(event) {
         this.loading = true;
         this.accessories[event.detail.accNo] = event.detail;
-        console.log(JSON.stringify(this.accessories));
+        
         this.loading = false;
-        console.log('handleUpdateAccessory finished');
+        
     }
 
     handleDeleteAccessory(event) {
         this.loading = true;
-        console.log('got here');
-        console.log(event.detail);
+         
+        
         if (typeof this.accessories[event.detail].Id !== 'undefined') {
             this.quoteObject.deleteAssets.push({Id:this.accessories[event.detail].Id});
         }
@@ -1336,12 +1400,14 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             //this.accessories = JSON.parse(JSON.stringify(this.accessories));
         }
         this.accessories = JSON.parse(JSON.stringify(this.accessories));
-        console.log(JSON.parse(JSON.stringify(this.accessories)));
+         
         this.loading = false;
-        console.log('handleDeleteAccessory finished');
+     
     }
 
     validateInputBeforeSave() {
+     
+
         if ((typeof this.quoteObject.program === 'undefined') ||
             (typeof this.quoteObject.programId === 'undefined') ||
             (typeof this.quoteObject.nickname === 'undefined') ||
@@ -1365,8 +1431,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                     this.showToast('Error in fields in at least one Asset', 'Please fill out the required fields in Asset ' + (i + 1) + ' to be able to save.', 'error');
                     return false;
                 }
-                if ((typeof this.assets[i].subsidy === 'undefined') ||
-                    (this.assets[i].subsidy === 'No')) {
+                if ((typeof this.assets[i].subsidy === 'undefined') ) {
                     this.showToast('Error in fields in at least one Asset', 'Please wait for subsidy to load in Asset ' + (i + 1) + ' to be able to save.', 'error');
                     return false;
                 }
@@ -1393,7 +1458,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         return result;
     }
 
-    saveDLLComments(event) {
+    saveDLLComments(event) {veaccArr
         this.comments = event.detail.value;
     }
 
@@ -1404,7 +1469,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
     //Save quote
     handleOnSave(event) {
-        console.log('pq save');
+     
         if (!this.validateInputBeforeSave()) {
             return;
         }
@@ -1412,27 +1477,40 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.isLoadedQuote = true;
         this.loading = true;
         this.quoteObject.comments = this.comments;
-        console.log('Value of Comments');
-        console.log(this.comments);
-        console.log(this.quoteObject.comments);
+    
         if (typeof this.quoteObject.assetTypeQuote === 'undefined') {
             this.quoteObject.assetTypeQuote = 'New';
         }
         this.quoteObject.assets = this.assets;
         this.quoteObject.accessories = this.validateAccessories(this.accessories);
         this.quoteObject.oppId = this.opportunityId;
-        console.log('got in here');
-        console.log(JSON.parse(JSON.stringify(this.quoteObject)));
         let passingParam = JSON.stringify(this.quoteObject);
-        console.log(this.hasQuotes);
+    
         //if (this.hasQuotes === true) {
-       //     this.template.querySelector('lightning-tabset').activeTabValue = 'proposal';
+        //    this.template.querySelector('lightning-tabset').activeTabValue = 'proposal';
         //}
-        console.log(this.quoteObject.isClone);
-        this.editQuote(passingParam);
+        if (this.quoteObject.isEdit) {
+            console.log( 'before edit');
+            this.triggerParentSave = true;
+            this.editQuote(passingParam);
+            console.log( 'after edit');
+        } else if (this.quoteObject.isClone || this.hasQuotes) {
+                console.log( 'before copy');
+            this.triggerParentSave = true;
+            this.cloneQuote(passingParam);
+                console.log( 'after copy');
+            
+            
+        } else {
+            console.log( 'before create');
+            this.createQuote(passingParam);
+            console.log( 'after create');
+        }
+        
         
     }
-
+        
+   
     //Second page implementations
     handleAssetEdit(event) {
         this.loading = true;
@@ -1443,21 +1521,10 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.quoteObject.optionNum = (event.detail - 0) + 1;
         this.processAssets(this.options[event.detail].quoteLines);
         this.processCurrentOption(this.options[event.detail]);
-        //this.processPricingSummary(this.options[event.detail].quote, event.detail);
-        console.log(this.assets);
-        console.log('Newton --------------------');
-        console.log(this.quoteObject);
-        //this.quoteObject = this.options[event.detail];
-        //this.processCurrentOption(this.quoteObject);
         setTimeout( () => {//options picklist does not load fast enough
             this.specificationTabActive = true;
             this.optionsPicklistVal = event.detail;
             this.template.querySelector('lightning-tabset').activeTabValue = 'spec';
-            /*this.template.querySelectorAll('lightning-input[name="nickname"]').forEach(
-                (element) => {element.disabled = true;}
-            );*/
-            this.loading = false;
-            console.log('handleAssetEdit finished');
         }, 500);
     }
 
@@ -1468,16 +1535,10 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.showCreateInstead = false;
         this.quoteObject.Id = null;
         this.activeOption = undefined;
-        console.log(this.opportunityId);
         this.quoteObject.oppId = this.opportunityId;
-        console.log('assetClone 1');
         this.processAssets(this.options[event.detail].quoteLines);
-        console.log('assetClone 2');
         this.processCurrentOption(this.options[event.detail]);
-        console.log('assetClone 3');
         //this.processPricingSummary(this.options[event.detail].quote);
-        console.log(this.assets);
-        console.log(this.quoteObject);
         //this.quoteObject = this.options[event.detail];
         //this.processCurrentOption(this.quoteObject);
         setTimeout( () => {//options picklist does not load fast enough
@@ -1488,12 +1549,10 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 (element) => {element.disabled = true;}
             );*/
             this.loading = false;
-            console.log('handleAssetClone finished');
         }, 500);
     }
 
     handleAssetDelete(event) {
-        console.log(event.detail);
         this.currentDeleteId = event.detail;
         this.displayModalDelete = true;
     }
@@ -1526,9 +1585,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     }
 
     deleteRelatedAccessories(assets) {
-        console.log(assets);
         let tempAcc = JSON.parse(JSON.stringify(this.accessories));
-        console.log(tempAcc);
         this.accessories = [];
         for (let i = 0; i < tempAcc.length; i++) {
             if (!(parseInt(tempAcc[i].relatedAsset) === parseInt(assets.assetNo))) {
@@ -1536,7 +1593,6 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 this.currentAccPosition--;
             }
         }
-        console.log('deleteRelatedAccessories');
         if (this.accessories.length === 0) {
             this.accessories.push({
                 accNo: 0,
@@ -1558,14 +1614,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         let residualTotal = 0;
         for (let i = 0; i < response.assets.length; i++) {
             for (let j = 0; j < quote.quoteLines.length; j++) {
-                console.log('Current Iteration of addPricingDataToQuoteLines');
-                console.log(i);
-                console.log(j);
-                console.log(parseInt(response.assets[i].sequenceId));
-                //console.log(parseInt(quote.quoteLines[j].Sequence_ID__c));
                 if (response.assets[i].sequenceId === quote.quoteLines[j].Id) {
                     quote.quoteLines[j].payment = response.assets[i].paymentAmount;
-                    //quote.quoteLines[j].Total_Sales_Price__c = response.assets[i].financedAmount;
                     quote.quoteLines[j].interestRate = (parseFloat(jsonString.Interest__c)).toFixed(2) + '%';
                     let objToAdd = {};
                     if (response.assets[i].bookedResidualAmount) {
@@ -1590,14 +1640,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             }
             for (let k = 0; k < response.assets[i].assetComponents.length; k++) {
                 for (let j = 0; j < quote.quoteLines.length; j++) {
-                    console.log('Current Iteration of accessories addPricingDataToQuoteLines');
-                    console.log(i);
-                    console.log(j);
-                    console.log(parseInt(response.assets[i].assetComponents[k].sequenceId));
-                    //console.log(parseInt(quote.quoteLines[j].Sequence_ID__c));
                     if (response.assets[i].assetComponents[k].sequenceId === quote.quoteLines[j].Id) {
                         quote.quoteLines[j].payment = response.assets[i].assetComponents[k].paymentAmount;
-                        console.log(response.assets[i].assetComponents[k].financedAmount);
                         //quote.quoteLines[j].Total_Sales_Price__c = response.assets[i].assetComponents[k].financedAmount;
                         quote.quoteLines[j].interestRate = (parseFloat(jsonString.Interest__c)).toFixed(2) + '%';
                         let objToAdd = {};
@@ -1623,8 +1667,6 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 }
             }
         }
-        console.log('addpricingdatatoquotelines 1');
-        console.log(JSON.parse(JSON.stringify(addDataBackToServer)));
         if (addDataBackToServer.length !== 0) {
             saveQuoteLinePricingDataBackToServer({quoteString : JSON.stringify(addDataBackToServer)})
                 .then(result => {
@@ -1695,7 +1737,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                     this.quoteObjectSummary = [];
                     this.quoteObjectSummary.push(newQuoteSummary);
                 }
-                console.log('before addoptionsummaries in getPrice');
+                
                 this.addOptionSummaries(true);
                 /*this.options[optionsIndex].sumData = [ {
                     'totalPrice' : resultParsed.financeAmount,
@@ -1705,6 +1747,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 } ];*/
                 console.log(resultParsed);
                 console.log('End of getPrice');
+                this.quoteObject.isEdit = false;
+               
             })
             .catch(error => {
                 console.log(JSON.parse(JSON.stringify(error)));
@@ -1799,6 +1843,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     }
 
     addOptionSummaries(setCurrentOption) {
+        console.log('in addOptionSummaries: ' + setCurrentOption);
+
         if (this.pricingApiCallCount !== 0) {
             this.pricingApiCallCount--;
         }
@@ -1863,32 +1909,39 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             /*if (setCurrentOption) {
                 this.specificationTabActive = true;
                 this.template.querySelector('lightning-tabset').activeTabValue = 'spec';
-            }*/
-            this.loading = false;
+            }*/  
             console.log('addOptionSummaries Finished');
-        }, 750);
+
+            console.log('triggering on child save in parent');
+            const passEvent = new CustomEvent('childsave', {
+            detail: {quote: this.quoteObject, activeTabValue:'proposal'} 
+            });
+            this.dispatchEvent(passEvent);
+            
+        }, 750); 
     }
 
     //save methods to backend For quote creation,edit,clone
     createQuote(passingParam) {
         createQuoteOpportunity({jsonInput: passingParam})
             .then(result => {
-                this.showToast('Quote has been saved!', 'Quote was saved successfully', 'success');
+                this.showToast('Quote has been created!', 'Quote was created successfully', 'success');
                 this.parseData(result);
-                console.log('createQuote past parseData');
                 if (!this.onlyValidateHeader) {
                     this.addMissingOptionSummary(result);
                     this.hasQuotes = true;
                     this.specificationTabActive = false;
+                   
                 } else {
                     this.hasLocationSelection = true;
                     if ((this.options.length > 0) && this.options[0].quote.Partner_Sales_Rep__r) {
                         this.salesRepDisplayName = this.options[0].quote.Partner_Sales_Rep__r.Name;
                     }
                 }
+                
                 this.saveRunning = false;
                 this.onlyValidateHeader = false;
-                //this.template.querySelector('lightning-tabset').activeTabValue = 'proposal';
+                
             })
             .catch(error => {
                 console.log(JSON.stringify(error));
@@ -1897,6 +1950,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 this.saveRunning = false;
             });
     }
+     
 
     cloneQuote(passingParam) {
         cloneQuoteOption({jsonInput: passingParam})
@@ -1905,6 +1959,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 this.parseData(result);
                 this.addMissingOptionSummary(result);
                 this.saveRunning = false;
+                
+                
             })
             .catch(error => {
                 console.log(error);
@@ -1915,13 +1971,21 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             });
     }
 
+     
     editQuote(passingParam) {
+
+        console.log('edit quote: ' + passingParam);
+        
+
         editQuoteOption({jsonInput: passingParam})
             .then(result => {
                 this.showToast('Quote has been edited!', 'Quote was edited successfully', 'success');
+                 
                 this.parseData(result);
                 this.addMissingOptionSummary(result);
                 this.saveRunning = false;
+                
+               
             })
             .catch(error => {
                 console.log(JSON.stringify(error));
@@ -1929,6 +1993,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 this.loading = false;
                 this.saveRunning = false;
             });
+
+             
     }
 
     deleteQuote(passingParam) {
@@ -1939,6 +2005,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 this.showToast('Quote has been deleted!', 'Quote was deleted successfully', 'success');
                 this.parseData(result);
                 this.addOptionSummaries(false);
+                 
+                
             })
             .catch(error => {
                 console.log(JSON.stringify(error));
@@ -2336,6 +2404,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.nickname = option.Name;
         this.assetTypeQuote = option.Asset_Type__c;
         this.loading = true;
+        console.log('load rates 3');
         this.loadRates();
         console.log('Retrieved data: ');
         console.log(JSON.parse(JSON.stringify(this.quoteObject)));
@@ -2364,6 +2433,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             tempAsset.msrp = String(assets[i].MSRP__c);
             tempAsset.batteryIncluded = assets[i].Battery_Included__c;
             tempAsset.subsidyName = assets[i].Subsidy__c;
+            console.log('subsidy stuf: ' + assets[i].Subsidy_ID__c);
             if (typeof assets[i].Subsidy_ID__c === 'undefined') {
                 tempAsset.subsidy = 'No';
             } else {
@@ -2534,7 +2604,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
     }
 
-     @wire(getSessionId)
+
+    /* @wire(getSessionId)
     wiredSessionId({ error, data }) {
         if (data) {
             this.sessionId = data;
@@ -2578,12 +2649,39 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 console.error('Error in handshaking: ' + JSON.stringify(status));
             }
         });
+    } */
+
+    @api childOption(option){
+        console.log('called child option: ' +  option);
+       
+        let wrapperEvent2 = {value: option};
+        let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: true};
+        this.handleOptionPicklist(wrapperEvent);
     }
 
-    handlePlatformEvent(message){
-        
+
+    @api childPricing(quoteObject){
+
+        console.log('**** in child pricing *****'  + JSON.stringify(quoteObject));
+ 
+        this.quoteObject = quoteObject;
+
+        this.assetTypeQuote = this.quoteObject.assetTypeQuote;
+        this.programId = this.quoteObject.programId;
+        this.program = this.quoteObject.programId;
+        this.location = this.quoteObject.location;
+        this.nickname = this.quoteObject.nickname;
+
+        this.accordianSection = 'Finance Structure'; 
+        this.handleDependentRatesPicklistChange(this.quoteObject.programId);
+
+    }
+
+    /* handlePlatformEvent(message){
+
         console.log(' *********************** in process event in child:' + JSON.stringify(message));
         console.log(message.data.payload.Opportunity__c);
+        this.accordianSection = 'Finance Structure'; 
         if ( message.data.payload.Message_Type__c == 'option' && message.data.payload.Opportunity__c == this.oppid){
 
             let choice = message.data.payload.Message__c;
@@ -2591,8 +2689,28 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: true};
             this.handleOptionPicklist(wrapperEvent);
         }
+
+        if ( message.data.payload.Message_Type__c == 'program' && message.data.payload.Opportunity__c == this.oppid){
+            
+            this.quoteObject.assetTypeQuote = message.data.payload.Asset_Type__c;
+            this.assetTypeQuote = message.data.payload.Asset_Type__c;
+            this.quoteObject.program = message.data.payload.Program_Name__c;
+            this.quoteObject.programId = message.data.payload.Program_Id__c; 
+            this.quoteObject.location = message.data.payload.Location_Id__c;
+            this.quoteObject.nickname = message.data.payload.Nickname__c;
+            this.programId = message.data.payload.Program_Id__c; 
+            this.location = message.data.payload.Location_Id__c;
+            this.nickname =  message.data.payload.Nickname__c;
+            this.program = message.data.payload.Program_Id__c; 
+            let choice = message.data.payload.Message__c;
+           
+            console.log('choice is: ' + choice) ;
+            
+            this.handleDependentRatesPicklistChange(choice);
+            
+        }
      
 
     }
-
+ */
 }

@@ -1090,6 +1090,10 @@ export default class dDAPITestHarness extends LightningElement {
          
     }
 
+    handleChildSave(event){
+        console.log('parent got the word');
+    }
+
     handleProgress(event) {
         console.log('event: ' + event.detail);
         window.location.reload();

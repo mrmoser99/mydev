@@ -18,6 +18,7 @@ import getAssetTypes from "@salesforce/apex/PricingUtils.getAssetTypes";
 import getModels from "@salesforce/apex/PricingUtils.getModels";
 import getAsset from "@salesforce/apex/PricingUtils.getAsset";
 import getSubsidies from '@salesforce/apex/PricingUtils.getSubsidies';
+import StayInTouchSignature from '@salesforce/schema/User.StayInTouchSignature';
 
 export default class assetcreation extends LightningElement {
     @api asset = {};
@@ -50,8 +51,25 @@ export default class assetcreation extends LightningElement {
     assetType = {};
     model = {};
 
-    @api quoteObject;
+     
 
+   
+    @api  
+    quoteObject = {
+        deleteAssets: [],
+        isEdit: false,
+        isClone: false,
+        assetTypeQuote: 'New',
+        financeType:'BO',
+        paymentFrequency: 'Monthly',
+        advPayments: '0',
+        program: null,
+        programId: null,
+        location: null,
+        locationId: null,
+        nickname: null,
+        financeTerm: null
+    };
     //Lists
     makePicklist = [];
     assetTypePicklist = [];
@@ -111,7 +129,9 @@ export default class assetcreation extends LightningElement {
     }
 
      connectedCallback() {
-        console.log(' in asset creation - program is :' + this.programId);
+        console.log(' in asset creation - program is :' + this.programId + '-' 
+        + JSON.stringify(this.quoteObject) );
+        
      }
 
     /***********************************************************************************************************
@@ -119,14 +139,15 @@ export default class assetcreation extends LightningElement {
      ************************************************************************************************************/
     @wire(getMakes, {programId: '$programId'})
     wiredgetMakes({error, data}) {
-
+         
         if (this.programId == undefined){
             console.log('dont do anything on null');
             return;
         }
+         
             
         console.log('he hit here with program id: ' + this.programId);
-        console.log('this.asset = ' +JSON.stringify(this.asset));
+        console.log('this.asset = ' +JSON.stringify(this.asset) + JSON.stringify(this.quoteObject));
         this.loading = true;
 
 
@@ -480,6 +501,7 @@ export default class assetcreation extends LightningElement {
     }
 
     callSubsidies(event) {
+        console.log('in call sub' + JSON.stringify(this.quoteObject));
         if (event.target.value.length !== 0) {
             this.template.querySelector(`[data-id="${event.target.name}"]`).value = '$' + this.formatCurrency(event.target.value);
         }
@@ -520,6 +542,8 @@ export default class assetcreation extends LightningElement {
             return;
         }
 
+        console.log('here 2');
+
         this.loading = true;
 
         console.log(this.quoteObject.programId);
@@ -537,6 +561,7 @@ export default class assetcreation extends LightningElement {
             financeTypeTranslated = 'dollar-out';
         }
         console.log('abc' + this.quoteObject.assetTypeQuote);
+     
         getSubsidies({ programId: this.quoteObject.programId, productId: this.quoteObject.rateTypeId,
             numberOfMonths: this.quoteObject.financeTerm, make : this.makePicklist.find(opt => opt.value === this.asset.makeId).label,
             paymentFrequency: this.quoteObject.paymentFrequency.toLowerCase(), financeAmount : this.asset.numberOfUnits * this.asset.unitSalesPrice,
@@ -596,7 +621,7 @@ export default class assetcreation extends LightningElement {
             .catch(error => {
                 console.log(JSON.parse(JSON.stringify(error)));
                 this.loading = false;
-                this.showToast('Something went wrong', error.body.message, 'error');
+                this.showToast('Something went wrong', 'error.body.message', 'error');
             });
     }
 

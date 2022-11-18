@@ -2,10 +2,17 @@
   @description       : 
   @author            : ChangeMeIn@UserSettingsUnder.SFDoc
   @group             : 
-  @last modified on  : 11-11-2022
+  @last modified on  : 11-18-2022
   @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 -->
 <template>
+
+
+    <div class="slds-var-m-around_small">
+        <div if:true={loading}>
+            <lightning-spinner alternative-text="Loading..." variant="brand"></lightning-spinner>
+        </div>
+    </div>
 
     <lightning-layout multiple-rows=true horizontal-align="spread">
 
@@ -23,9 +30,9 @@
             </div>
 
             <div class="Header  slds-var-m-right_medium">
-                <lightning-accordion allowmultiplesectionsopen="true" active-section-name="Finance Structure">
-                    <!-- Finance section -->
-
+                <lightning-accordion allow-multiple-sections-open active-section-name={accordianSection}>
+                    <!-- Finance section  -->
+                    Rate disabled is {isRateDisabled}
                     <lightning-accordion-section name="Finance Structure" label="Finance Structure">
                         <div class="financeBody">
                             <lightning-layout multiple-rows>
@@ -68,26 +75,36 @@
 
                     <!-- Assets section -->
 
-                    <template for:each={assets} for:item="assetItem">
-                        <lightning-accordion-section name={assetItem.sectionName} label={assetItem.assetHeading}
-                            key={assetItem.assetNo}>
-                            <c-assetcreation asset={assetItem} program-id={program} quote-object={quoteObject}
-                                oncreateasset={handleAddAsset} ondeleteasset={handleDeleteAssetModal}
-                                onupdateasset={handleUpdateAsset}></c-assetcreation>
-                        </lightning-accordion-section>
+
+                    <template if:false={isRateDisabled}>
+                        <template if:false={loading}>
+                            <template for:each={assets} for:item="assetItem">
+                                {program}
+                                {quoteObject}
+                                <lightning-accordion-section name={assetItem.sectionName} label={assetItem.assetHeading}
+                                    key={assetItem.assetNo}>
+                                    <c-assetcreation asset={assetItem} program-id={program} quote-object={quoteObject}
+                                        oncreateasset={handleAddAsset} ondeleteasset={handleDeleteAssetModal}
+                                        onupdateasset={handleUpdateAsset}></c-assetcreation>
+                                </lightning-accordion-section>
+                            </template>
+                        </template>
                     </template>
 
-
                     <!-- Accessories Section -->
-
-                    <template for:each={accessories} for:item="accessoryItem">
-                        <lightning-accordion-section name="Accessory Details" label={accessoryItem.accessoryHeading}
-                            key={accessoryItem.accNo}>
-                            <c-accessorycreation accessory={accessoryItem} related-asset-picklist={relatedAssets}
-                                oncreateaccessory={handleAddAccessory} ondeleteaccessory={handleDeleteAccessoryModal}
-                                onupdateaccessory={handleUpdateAccessory}>
-                            </c-accessorycreation>
-                        </lightning-accordion-section>
+                    <template if:false={isRateDisabled}>
+                        <template if:false={loading}>
+                            <template for:each={accessories} for:item="accessoryItem">
+                                <lightning-accordion-section name={accessoryItem.accessoryHeading}
+                                    label={accessoryItem.accessoryHeading} key={accessoryItem.accNo}>
+                                    <c-accessorycreation accessory={accessoryItem}
+                                        related-asset-picklist={relatedAssets} onupdateaccessory={handleUpdateAccessory}
+                                        oncreateaccessory={handleAddAccessory}
+                                        ondeleteaccessory={handleDeleteAccessoryModal}>
+                                    </c-accessorycreation>
+                                </lightning-accordion-section>
+                            </template>
+                        </template>
                     </template>
 
                     <!-- Comment Section-->
@@ -205,6 +222,7 @@
                 </lightning-button>
                 <lightning-button class="slds-float_right" variant="brand" label="Save" onclick={handleOnSave}>
                 </lightning-button>
+
             </div>
         </lightning-layout-item>
     </lightning-layout>

@@ -865,7 +865,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
 
     handleDependentRatesPicklistChange(event) {
 
-        console.log('handeldependingratespicklistchagne');
+        console.log('handeldependingratespicklistchagne' + event.target.name);
         this.loading = true;
         this[event.target.name] = event.target.value;
         this.quoteObject[event.target.name] = event.target.options.find(opt => opt.value === event.detail.value).label;

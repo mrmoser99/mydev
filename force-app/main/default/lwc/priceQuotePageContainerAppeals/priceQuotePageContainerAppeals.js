@@ -1,11 +1,6 @@
 <!--
- - Author: Mark Moser
+ - Author: Shiqi Sun, Traction on Demand
  - Date: 11/17/2021.
-
- Change Log:
-
-    11/10/22 - MRM Resturctured pricing to be reusable for appeals
-
  -->
 
 <!-- Price Quote Page Container -->
@@ -206,10 +201,8 @@
         </lightning-layout-item>
 
         <!-- tab view if has quotes -->
-
         <lightning-layout-item size=12 class="tab-class slds-box_border" if:true={hasQuotes}>
             <div>
-
                 <lightning-tabset active-tab-value={currentTab}>
                     <lightning-tab onactive={handleTabChange} label="Specifications" class="tab-background"
                         value="spec">
@@ -253,16 +246,17 @@
                                                 options={optionsPicklist} onchange={handleOptionPicklist}>
                                             </lightning-combobox>
                                         </lightning-layout-item>
+
+                                        <!--Specifics sections-->
+
                                     </lightning-layout>
                                 </div>
                             </lightning-layout-item>
-
+                            <div>
+                                <c-pricing-component oppid="00678000003eJ6mAAE">
+                                </c-pricing-component>
+                            </div>
                         </lightning-layout>
-
-                        <div class="child-wrapper">
-                            <c-pricing-component onchildsave={handleChildSave} oppid={oppid}>
-                            </c-pricing-component>
-                        </div>
                     </lightning-tab>
 
 
@@ -350,16 +344,246 @@
         </lightning-layout-item>
 
         <!-- New Quote View (No quotes generated)-->
-
         <template if:false={hasQuotes}>
-
             <!--Specification, Assets and Accessory-->
-            <div class="child-wrapper">
-                <c-pricing-component onchildsave={handleChildSave} oppid={oppid}>
-                </c-pricing-component>
-            </div>
+            <lightning-layout-item size=8 class="slds-m-top_medium">
+                <div class="body-top slds-p-around_medium slds-m-right_medium">
+                    <lightning-layout multiple-rows=true>
+                        <lightning-layout-item size=12>
+                            <div class="specification-header">
+                                <h1 class="slds-text-heading_large">
+                                    <template if:false={showCreateInstead}>
+                                        <template if:false={quoteObject.isEdit}>
+                                            <template if:false={quoteObject.isClone}>
+                                                Specifications
+                                            </template>
+                                        </template>
+                                        <template if:true={quoteObject.isEdit}>
+                                            Edit this Quote Option
+                                        </template>
+                                        <template if:true={quoteObject.isClone}>
+                                            Copy this Quote Option
+                                        </template>
+                                    </template>
+                                    <template if:true={showCreateInstead}>
+                                        Create another Quote Option
+                                    </template>
+                                </h1>
+                                <p>Build your quote below then click 'Save'. You can select more than one
+                                    financing term to view an instant comparison and generate multiple options based on
+                                    term</p>
+                                <p style="color:red">* fields are required</p>
+                            </div>
+                        </lightning-layout-item>
 
+                        <!--Specifics sections-->
+                        <lightning-layout-item size=12>
+                            <lightning-accordion allow-multiple-sections-open onsectiontoggle={handleSectionToggle}
+                                class="slds-border_top slds-m-top_small" active-section-name={openAccordionSections}>
+                                <!-- Finance section -->
+                                <lightning-accordion-section name="Finance Structure" label="Finance Structure">
+                                    <div class="financeBody">
+                                        <lightning-layout multiple-rows>
+                                            <lightning-layout-item size=6 class="slds-p-right_small">
+                                                <lightning-combobox name="financeType" label="Lease Type"
+                                                    value={financeType} options={financeTypePicklist}
+                                                    disabled={isRateDisabled}
+                                                    onchange={handleDependentRatesPicklistChange}
+                                                    field-level-help="The header (see above) needs to be filled out to make a Lease Type selection."
+                                                    required>
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=6>
+                                                <lightning-combobox name="financeTerm" label="Finance Term"
+                                                    value={financeTerm} disabled={isFinanceTermDisabled}
+                                                    options={financeTermPicklist} onchange={handleChange}
+                                                    field-level-help="test" required>
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=6 class="slds-p-right_small">
+                                                <lightning-combobox name="rateType" label="Rate Type" value={rateType}
+                                                    options={rateTypePicklist} disabled={isRateDisabled}
+                                                    onchange={handleDependentTermsPicklistChange}
+                                                    field-level-help="test" required>
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=6>
+                                                <lightning-combobox name="paymentFrequency" label="Payment Frequency"
+                                                    value={paymentFrequency} options={frequencyPicklist}
+                                                    onchange={handleChange} field-level-help="" required>
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=6 class="slds-p-right_small">
+                                                <lightning-combobox name="advPayments"
+                                                    label="Advanced Payments (Optional)" value={advPayments}
+                                                    options={advancedPaymentsPicklist} onchange={handleChange}
+                                                    field-level-help="">
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+                                        </lightning-layout>
+                                    </div>
+
+                                </lightning-accordion-section>
+
+                                <!-- Assets section -->
+                                <template if:false={isRateDisabled}>
+                                    <template if:false={loading}>
+                                        <template for:each={assets} for:item="assetItem">
+                                            <lightning-accordion-section name={assetItem.sectionName}
+                                                label={assetItem.assetHeading} key={assetItem.assetNo}>
+                                                <c-assetcreation asset={assetItem} program-id={program}
+                                                    quote-object={quoteObject} oncreateasset={handleAddAsset}
+                                                    ondeleteasset={handleDeleteAssetModal}
+                                                    onupdateasset={handleUpdateAsset}></c-assetcreation>
+                                            </lightning-accordion-section>
+                                        </template>
+                                    </template>
+                                </template>
+
+                                <!-- Accessories Section -->
+                                <template if:false={isRateDisabled}>
+                                    <template if:false={loading}>
+                                        <template for:each={accessories} for:item="accessoryItem">
+                                            <lightning-accordion-section name={accessoryItem.accessoryHeading}
+                                                label={accessoryItem.accessoryHeading} key={accessoryItem.accNo}>
+                                                <c-accessorycreation accessory={accessoryItem}
+                                                    related-asset-picklist={relatedAssets}
+                                                    onupdateaccessory={handleUpdateAccessory}
+                                                    oncreateaccessory={handleAddAccessory}
+                                                    ondeleteaccessory={handleDeleteAccessoryModal}>
+                                                </c-accessorycreation>
+                                            </lightning-accordion-section>
+                                        </template>
+                                    </template>
+                                </template>
+
+                                <!-- Comment Section-->
+                                <lightning-accordion-section name="Comments" label="Comments for DLL (Optional)">
+                                    <div class="commentsBody">
+                                        <lightning-layout multiple-rows=true>
+
+                                            <lightning-layout-item size=12>
+                                                <p>Please include any important comments about this quote option for
+                                                    your
+                                                    Account Manager</p>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size=12>
+                                                <lightning-textarea data-id="createQuoteComments"
+                                                    onchange={saveDLLComments} value={comments} label="Comments">
+                                                </lightning-textarea>
+                                            </lightning-layout-item>
+                                        </lightning-layout>
+
+                                    </div>
+                                </lightning-accordion-section>
+                            </lightning-accordion>
+                        </lightning-layout-item>
+
+                    </lightning-layout>
+                </div>
+            </lightning-layout-item>
+
+            <!--Summary section-->
+            <lightning-layout-item size="4" class="slds-m-top_medium">
+                <div class="summary slds-p-around_medium">
+                    <lightning-layout multiple-rows=true>
+                        <lightning-layout-item class="slds-p-bottom_small" size=12>
+                            <h1 class="slds-text-heading_large">
+                                Summary
+                            </h1>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span class="slds-text-color_weak">Lease Type</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span>{leaseTypeSummary}</span>
+                        </lightning-layout-item>
+
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span class="slds-text-color_weak">Rate Type</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span>{rateTypeSummary}</span>
+                        </lightning-layout-item>
+
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span class="slds-text-color_weak">Advanced Payments</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span>{advancedPaymentsSummary}</span>
+                        </lightning-layout-item>
+
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span class="slds-text-color_weak">Base Unit/Sales Price</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span>{baseUnitSalesPriceWithoutDuplicatesSummary}</span>
+                        </lightning-layout-item>
+
+                        <hr />
+
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span>Total Price</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-p-bottom_small" size="6" alignment-bump="right">
+                            <span>{baseUnitSalesPriceSummary}</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-p-bottom_small" size=12>
+                            <h1 class="slds-text-heading_large">
+                                Payment
+                            </h1>
+                        </lightning-layout-item>
+
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span class="slds-text-color_weak">Term</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span>{termSummary}</span>
+                        </lightning-layout-item>
+
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span class="slds-text-color_weak">Interest Rate</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span>{interestRateSummary}</span>
+                        </lightning-layout-item>
+
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span class="slds-text-color_weak">Residual</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span>{residualSummary}</span>
+                        </lightning-layout-item>
+
+                        <hr />
+
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span>Total Payment</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-p-bottom_small" size="6">
+                            <span>{totalPaymentSummary}</span>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+            </lightning-layout-item>
+
+
+
+
+            <!--Save and Close  This is the main save at the bottom of the quote page -->
+            <lightning-layout-item size=8>
+                <div class="body-bottom slds-p-around_medium slds-m-right_medium">
+                    <lightning-button variant="brand-outline" label="Cancel" onclick={displayModalToTrue}>
+                    </lightning-button>
+                    <lightning-button class="slds-float_right" variant="brand" label="Save" onclick={handleOnSave}>
+                    </lightning-button>
+                </div>
+            </lightning-layout-item>
         </template>
+
+
     </lightning-layout>
+
+
 
 </template>
