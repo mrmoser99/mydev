@@ -68,7 +68,8 @@ export default class assetcreation extends LightningElement {
         location: null,
         locationId: null,
         nickname: null,
-        financeTerm: null
+        financeTerm: null,
+        option: null
     };
     //Lists
     makePicklist = [];
@@ -129,8 +130,8 @@ export default class assetcreation extends LightningElement {
     }
 
      connectedCallback() {
-        console.log(' in asset creation - program is :' + this.programId + '-' 
-        + JSON.stringify(this.quoteObject) );
+        //console.log(' in asset creation - program is :' + this.programId + '-' 
+        //+ JSON.stringify(this.quoteObject) );
         
      }
 
@@ -141,13 +142,13 @@ export default class assetcreation extends LightningElement {
     wiredgetMakes({error, data}) {
          
         if (this.programId == undefined){
-            console.log('dont do anything on null');
+            //console.log('dont do anything on null');
             return;
         }
          
             
-        console.log('he hit here with program id: ' + this.programId);
-        console.log('this.asset = ' +JSON.stringify(this.asset) + JSON.stringify(this.quoteObject));
+        //console.log('he hit here with program id: ' + this.programId);
+        //console.log('this.asset = ' +JSON.stringify(this.asset) + JSON.stringify(this.quoteObject));
         this.loading = true;
 
 
@@ -165,12 +166,12 @@ export default class assetcreation extends LightningElement {
             data = JSON.parse(data);
 
             data.forEach(function (element) {
-                console.log(element);
+                //console.log(element);
 
                 mlist.push({label: element.makeName, value: element.makeId});
 
             });
-            console.log(this.asset.make + 'this is the make');
+            //console.log(this.asset.make + 'this is the make');
             if(typeof this.asset.make !== 'undefined' && typeof this.programId !== 'undefined'){
                 this.make.label = this.asset.make;
                 this.make.value = this.asset.makeId;
@@ -184,7 +185,7 @@ export default class assetcreation extends LightningElement {
 
             this.loading = false;
             if (this.programId) {
-                this.showToast('Something went wrong trying to get makes', error.body.message, 'error');
+                this.showToast('Something went wrong trying to get makes', 'error.body.message', 'error');
             }
             return;
 
@@ -194,7 +195,7 @@ export default class assetcreation extends LightningElement {
 
         this.makePicklist = mlist;
 
-
+        this.isLoading = false;
     }
 
     /*getMakesNotWired(programId) {
@@ -205,12 +206,12 @@ export default class assetcreation extends LightningElement {
                 data = JSON.parse(result);
 
                 data.forEach(function (element) {
-                    console.log(element);
+                    //console.log(element);
 
                     mlist.push({label: element.makeName, value: element.makeId});
 
                 });
-                console.log(this.asset.make + 'this is the make');
+                //console.log(this.asset.make + 'this is the make');
                 if(typeof this.asset.make !== 'undefined' && typeof this.programIdChange !== 'undefined'){
                     this.make.label = this.asset.make;
                     this.make.value = this.asset.makeId;
@@ -219,7 +220,7 @@ export default class assetcreation extends LightningElement {
                 this.loading = false;
             })
             .catch(error => {
-                console.log(JSON.stringify(error));
+                //console.log(JSON.stringify(error));
                 this.showToast('getMakes error', error, 'error');
                 this.loading = false;
             });
@@ -228,7 +229,7 @@ export default class assetcreation extends LightningElement {
 
     //API calls to get picklist values
     getAssetTypes(programId, make) {
-        console.log('got in here');
+        //console.log('got in here');
         getAssetTypes({programId: programId, triggerAssetTypes: make})
             .then(results => {
 
@@ -254,9 +255,9 @@ export default class assetcreation extends LightningElement {
             })
             .catch(error => {
                 this.showToast('Error getting Asset Types for an Asset', 'There are no asset types being returned.', 'warning'); 
-                console.log(JSON.parse(JSON.stringify(error)));
+                //console.log(JSON.parse(JSON.stringify(error)));
                 this.loading = false;
-                //this.showToast('Something went wrong', error.body.message, 'error');
+                this.showToast('Something went wrong', 'error', 'error');
 
             });
 
@@ -272,8 +273,8 @@ export default class assetcreation extends LightningElement {
 
                 let res = JSON.parse(results);
 
-                console.log('getModels');
-                console.log(res);
+                //console.log('getModels');
+                //console.log(res);
 
                 let mlist = [];
 
@@ -289,7 +290,7 @@ export default class assetcreation extends LightningElement {
                 this.loading = false;
             }).catch(error => {
                 this.showToast('Error getting models for an Asset', 'No Models available for this Class.', 'warning');
-                console.log(error);
+                //console.log(error);
                 let tempAsset = JSON.parse(JSON.stringify(this.asset));
                 tempAsset.assetType = undefined;
                 tempAsset.assetTypeId = undefined;
@@ -324,7 +325,7 @@ export default class assetcreation extends LightningElement {
 
                 this.loading=true;
 
-                console.log(' result is: ' + JSON.parse(result));
+                //console.log(' result is: ' + JSON.parse(result));
 
                 this.data = result;
                 let elist = [];
@@ -406,7 +407,7 @@ export default class assetcreation extends LightningElement {
                 }
                 this.assetOperatingList = elist;
                 this.annualHoursList = hlist;
-                console.log(this.annualHoursList);
+                //console.log(this.annualHoursList);
                 this.mastList = mlist;
                 this.batteryIncludedList = blist;
                 loadsToGo--;
@@ -425,8 +426,8 @@ export default class assetcreation extends LightningElement {
                 }
         }).catch(error=>{
             this.showToast('Error getting other info for an Asset', error.body.message, 'error');
-            console.log(JSON.parse(JSON.stringify(error)));
-            //console.log(error);
+            //console.log(JSON.parse(JSON.stringify(error)));
+            ////console.log(error);
             loadsToGo--;
             if (loadsToGo === 0) {
                 this.loading = false;
@@ -448,10 +449,10 @@ export default class assetcreation extends LightningElement {
             paymentFrequency: this.quoteObject.paymentFrequency, financeAmount : this.asset.unitSalesPrice,
             assetCondition: 'new', paymentTiming : 'in-arrears'})
             .then(result => {
-                console.log('Apex has finished with getSubsidies');
+                //console.log('Apex has finished with getSubsidies');
                 let data = JSON.parse(result);
-                console.log(JSON.parse(JSON.stringify(data)));
-                console.log('there is data' + data);
+                //console.log(JSON.parse(JSON.stringify(data)));
+                //console.log('there is data' + data);
                 let sList = [];
 
                 data.forEach(function(element){
@@ -469,7 +470,7 @@ export default class assetcreation extends LightningElement {
 
             })
             .catch(error => {
-                console.log(JSON.parse(JSON.stringify(error)));
+                //console.log(JSON.parse(JSON.stringify(error)));
                 loadsToGo--;
                 if (loadsToGo === 0) {
                     this.loading = false;
@@ -501,7 +502,7 @@ export default class assetcreation extends LightningElement {
     }
 
     callSubsidies(event) {
-        console.log('in call sub' + JSON.stringify(this.quoteObject));
+        //console.log('in call sub' + JSON.stringify(this.quoteObject));
         if (event.target.value.length !== 0) {
             this.template.querySelector(`[data-id="${event.target.name}"]`).value = '$' + this.formatCurrency(event.target.value);
         }
@@ -542,16 +543,16 @@ export default class assetcreation extends LightningElement {
             return;
         }
 
-        console.log('here 2');
+        //console.log('here 2');
 
         this.loading = true;
 
-        console.log(this.quoteObject.programId);
-        console.log(this.quoteObject.rateTypeId);
-        console.log(this.quoteObject.financeTerm);
-        console.log(this.makePicklist.find(opt => opt.value === this.asset.makeId).label);
-        console.log(this.quoteObject.paymentFrequency);
-        console.log(this.asset.numberOfUnits * this.asset.unitSalesPrice);
+        //console.log(this.quoteObject.programId);
+        //console.log(this.quoteObject.rateTypeId);
+        //console.log(this.quoteObject.financeTerm);
+        //console.log(this.makePicklist.find(opt => opt.value === this.asset.makeId).label);
+        //console.log(this.quoteObject.paymentFrequency);
+        //console.log(this.asset.numberOfUnits * this.asset.unitSalesPrice);
 
         let financeTypeTranslated = this.quoteObject.financeType;
 
@@ -560,23 +561,23 @@ export default class assetcreation extends LightningElement {
         } else if (financeTypeTranslated === 'BO') {
             financeTypeTranslated = 'dollar-out';
         }
-        console.log('abc' + this.quoteObject.assetTypeQuote);
+        //console.log('abc' + this.quoteObject.assetTypeQuote);
      
         getSubsidies({ programId: this.quoteObject.programId, productId: this.quoteObject.rateTypeId,
             numberOfMonths: this.quoteObject.financeTerm, make : this.makePicklist.find(opt => opt.value === this.asset.makeId).label,
             paymentFrequency: this.quoteObject.paymentFrequency.toLowerCase(), financeAmount : this.asset.numberOfUnits * this.asset.unitSalesPrice,
             assetCondition: this.quoteObject.assetTypeQuote, paymentTiming : 'in-arrears', financeType : financeTypeTranslated}) 
             .then(result => {
-                console.log('Apex has finished with getSubsidies');
-                //console.log(result);
+                //console.log('Apex has finished with getSubsidies');
+                ////console.log(result);
                 let data = JSON.parse(result);
-                console.log(JSON.parse(JSON.stringify(data)));
+                //console.log(JSON.parse(JSON.stringify(data)));
                 let subsidyFound = 'false';
             
                 if (data.data.subsidies.manufacturer[0].interest.nominalRate.percentages.length > 0)
                     subsidyFound = 'true';
                 
-                console.log('subsidy: ' + subsidyFound);
+                //console.log('subsidy: ' + subsidyFound);
 
 
                 if (subsidyFound === 'true') { //remember to add subsidy name (this.subsidyName)
@@ -619,7 +620,7 @@ export default class assetcreation extends LightningElement {
 
             })
             .catch(error => {
-                console.log(JSON.parse(JSON.stringify(error)));
+                //console.log(JSON.parse(JSON.stringify(error)));
                 this.loading = false;
                 this.showToast('Something went wrong', 'error.body.message', 'error');
             });
@@ -682,7 +683,7 @@ export default class assetcreation extends LightningElement {
                 trimmedPrice = trimmedPrice[0] + '.';
             }
         }
-        console.log('TrimmedPrice::' + trimmedPrice);
+        //console.log('TrimmedPrice::' + trimmedPrice);
         tempAsset[event.target.name] = trimmedPrice.toString();
         const assetEvent = new CustomEvent("updateasset", {
             detail: tempAsset
@@ -711,7 +712,7 @@ export default class assetcreation extends LightningElement {
        
         this.loading = true;
         //this.asset.assetHeading = 'Asset Details - ' + event.target.options.find(opt => opt.value === event.detail.value).label;
-        //console.log('Made it past new changes');
+        ////console.log('Made it past new changes');
         this[event.target.name].value = event.target.value;
         this[event.target.name].label = event.target.options.find(opt => opt.value === event.detail.value).label;
         let tempAsset = JSON.parse(JSON.stringify(this.asset));
@@ -807,7 +808,7 @@ export default class assetcreation extends LightningElement {
         tempAsset.subsidyName = undefined;
         this.subsidyList = [];
         this.loading = true;
-        console.log('got here');
+        //console.log('got here');
         this.getOtherInformation(event.target.value);
         const assetEvent = new CustomEvent("updateasset", {
             detail: tempAsset
@@ -819,7 +820,7 @@ export default class assetcreation extends LightningElement {
     //Geetha - new code for unitprice
     @api
     resetUnitPrice(){
-        console.log('resetUnitPrice now ' );
+        //console.log('resetUnitPrice now ' );
         this.template.querySelector('[data-id="unitSalesPrice"]').value = '';
         this.template.querySelector('[data-id="subsidy"]').value = undefined;
        // this.asset.subsidy = undefined;

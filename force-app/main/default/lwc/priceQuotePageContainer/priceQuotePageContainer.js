@@ -1390,6 +1390,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
 
     saveDLLComments(event) {
         this.comments = event.detail.value;
+        handleOnSave(event);
     }
 
     handleOnSaveOnlyHeader(event) {
