@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>APPLE_OPPORTUNITIES</fullName>
+    <columns>CORE.USERS.FULL_NAME</columns>
+    <columns>Application_Date__c</columns>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>OPPORTUNITY.STAGE_NAME</columns>
+    <columns>Sub_Stage__c</columns>
+    <columns>Program__c</columns>
+    <columns>OPPORTUNITY.AMOUNT</columns>
+    <columns>Sales_Rep_Name__c</columns>
+    <columns>Sales_Rep_ID__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Program__c</field>
+        <operation>contains</operation>
+        <value>APPLE</value>
+    </filters>
+    <filters>
+        <field>Source_System__c</field>
+        <operation>notContain</operation>
+        <value>Canada</value>
+    </filters>
+    <label>*Apple Opportunities</label>
+    <sharedTo>
+        <group>SF_Admin</group>
+        <roleAndSubordinatesInternal>Country_Sales_Manager_TS_United_States_Apple</roleAndSubordinatesInternal>
+    </sharedTo>
+</ListView>

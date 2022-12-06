@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Non-Transactional</fullName>
+    <description>Sales Process for Non-Transactional Opportunities</description>
+    <isActive>true</isActive>
+    <values>
+        <fullName>Closed Lost</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed Won</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Negotiating</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Qualify</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Structuring</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Targeting</fullName>
+        <default>false</default>
+    </values>
+</BusinessProcess>

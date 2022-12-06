@@ -1,0 +1,1107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Asset_Market_Category__c</fullName>
+    <externalId>false</externalId>
+    <label>Asset/Market Category</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <controllingField>Business_Unit1__c</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Miscellaneous</fullName>
+                <default>false</default>
+                <label>Miscellaneous</label>
+            </value>
+            <value>
+                <fullName>Kyocera Digital Copier</fullName>
+                <default>false</default>
+                <label>Kyocera Digital Copier</label>
+            </value>
+            <value>
+                <fullName>Kyocera Printer</fullName>
+                <default>false</default>
+                <label>Kyocera Printer</label>
+            </value>
+            <value>
+                <fullName>Toshiba Digital Copier</fullName>
+                <default>false</default>
+                <label>Toshiba Digital Copier</label>
+            </value>
+            <value>
+                <fullName>Toshiba Printer</fullName>
+                <default>false</default>
+                <label>Toshiba Printer</label>
+            </value>
+            <value>
+                <fullName>Sharp DC</fullName>
+                <default>false</default>
+                <label>Sharp DC</label>
+            </value>
+            <value>
+                <fullName>Sharp Printer</fullName>
+                <default>false</default>
+                <label>Sharp Printer</label>
+            </value>
+            <value>
+                <fullName>Ricoh DC</fullName>
+                <default>false</default>
+                <label>Ricoh DC</label>
+            </value>
+            <value>
+                <fullName>Ricoh Printer</fullName>
+                <default>false</default>
+                <label>Ricoh Printer</label>
+            </value>
+            <value>
+                <fullName>Konica Minolta DC</fullName>
+                <default>false</default>
+                <label>Konica Minolta DC</label>
+            </value>
+            <value>
+                <fullName>KM Printer</fullName>
+                <default>false</default>
+                <label>KM Printer</label>
+            </value>
+            <value>
+                <fullName>Dealer Printer</fullName>
+                <default>false</default>
+                <label>Dealer Printer</label>
+            </value>
+            <value>
+                <fullName>Dealer Digital Copier</fullName>
+                <default>false</default>
+                <label>Dealer Digital Copier</label>
+            </value>
+            <value>
+                <fullName>Clean Tech</fullName>
+                <default>false</default>
+                <label>Clean Tech</label>
+            </value>
+            <value>
+                <fullName>Dental</fullName>
+                <default>false</default>
+                <label>Dental</label>
+            </value>
+            <value>
+                <fullName>Fitness</fullName>
+                <default>false</default>
+                <label>Fitness</label>
+            </value>
+            <value>
+                <fullName>Home Health</fullName>
+                <default>false</default>
+                <label>Home Health</label>
+            </value>
+            <value>
+                <fullName>Imaging</fullName>
+                <default>false</default>
+                <label>Imaging</label>
+            </value>
+            <value>
+                <fullName>Life Science</fullName>
+                <default>false</default>
+                <label>Life Science</label>
+            </value>
+            <value>
+                <fullName>Ophthalmic</fullName>
+                <default>false</default>
+                <label>Ophthalmic</label>
+            </value>
+            <value>
+                <fullName>Surgical</fullName>
+                <default>false</default>
+                <label>Surgical</label>
+            </value>
+            <value>
+                <fullName>AGV</fullName>
+                <default>false</default>
+                <label>AGV</label>
+            </value>
+            <value>
+                <fullName>Class I - Counterbalance Electric</fullName>
+                <default>false</default>
+                <label>Class I - Counterbalance Electric</label>
+            </value>
+            <value>
+                <fullName>Class II - Narrow Aisle</fullName>
+                <default>false</default>
+                <label>Class II - Narrow Aisle</label>
+            </value>
+            <value>
+                <fullName>Class III - Powered Walk Behind</fullName>
+                <default>false</default>
+                <label>Class III - Powered Walk Behind</label>
+            </value>
+            <value>
+                <fullName>Class IV - Cushion Tire ICE</fullName>
+                <default>false</default>
+                <label>Class IV - Cushion Tire ICE</label>
+            </value>
+            <value>
+                <fullName>Class V - Pneumatic Tire ICE</fullName>
+                <default>false</default>
+                <label>Class V - Pneumatic Tire ICE</label>
+            </value>
+            <value>
+                <fullName>Class VII - Tow Tractor</fullName>
+                <default>false</default>
+                <label>Class VII - Tow Tractor</label>
+            </value>
+            <value>
+                <fullName>Forklift Accessories</fullName>
+                <default>false</default>
+                <label>Forklift Accessories</label>
+            </value>
+            <value>
+                <fullName>MH Allied equipment</fullName>
+                <default>false</default>
+                <label>MH Allied equipment</label>
+            </value>
+            <value>
+                <fullName>Non Powered</fullName>
+                <default>false</default>
+                <label>Non Powered</label>
+            </value>
+            <value>
+                <fullName>Aerial Work Platforms</fullName>
+                <default>false</default>
+                <label>Aerial Work Platforms</label>
+            </value>
+            <value>
+                <fullName>Asphalt / Paving Equipment</fullName>
+                <default>false</default>
+                <label>Asphalt / Paving Equipment</label>
+            </value>
+            <value>
+                <fullName>Compaction Equipment</fullName>
+                <default>false</default>
+                <label>Compaction Equipment</label>
+            </value>
+            <value>
+                <fullName>Concrete Equipment</fullName>
+                <default>false</default>
+                <label>Concrete Equipment</label>
+            </value>
+            <value>
+                <fullName>Cranes</fullName>
+                <default>false</default>
+                <label>Cranes</label>
+            </value>
+            <value>
+                <fullName>Aggregate</fullName>
+                <default>false</default>
+                <label>Aggregate</label>
+            </value>
+            <value>
+                <fullName>Drills</fullName>
+                <default>false</default>
+                <label>Drills</label>
+            </value>
+            <value>
+                <fullName>Off - Highway Trucks</fullName>
+                <default>false</default>
+                <label>Off - Highway Trucks</label>
+            </value>
+            <value>
+                <fullName>Excavator</fullName>
+                <default>false</default>
+                <label>Excavator</label>
+            </value>
+            <value>
+                <fullName>Dozer</fullName>
+                <default>false</default>
+                <label>Dozer</label>
+            </value>
+            <value>
+                <fullName>Skid Steer Loader</fullName>
+                <default>false</default>
+                <label>Skid Steer Loader</label>
+            </value>
+            <value>
+                <fullName>Loaders</fullName>
+                <default>false</default>
+                <label>Loaders</label>
+            </value>
+            <value>
+                <fullName>Rough Terrain Forklift</fullName>
+                <default>false</default>
+                <label>Rough Terrain Forklift</label>
+            </value>
+            <value>
+                <fullName>Scrap / Recycling Equipment</fullName>
+                <default>false</default>
+                <label>Scrap / Recycling Equipment</label>
+            </value>
+            <value>
+                <fullName>Scrapers &amp; Graders</fullName>
+                <default>false</default>
+                <label>Scrapers &amp; Graders</label>
+            </value>
+            <value>
+                <fullName>Trenchers / Cable Plows</fullName>
+                <default>false</default>
+                <label>Trenchers / Cable Plows</label>
+            </value>
+            <value>
+                <fullName>Other Construction</fullName>
+                <default>false</default>
+                <label>Other Construction</label>
+            </value>
+            <value>
+                <fullName>Forestry</fullName>
+                <default>false</default>
+                <label>Forestry</label>
+            </value>
+            <value>
+                <fullName>Air Transport</fullName>
+                <default>false</default>
+                <label>Air Transport</label>
+            </value>
+            <value>
+                <fullName>Truck Chassis</fullName>
+                <default>false</default>
+                <label>Truck Chassis</label>
+            </value>
+            <value>
+                <fullName>Truck Tractor</fullName>
+                <default>false</default>
+                <label>Truck Tractor</label>
+            </value>
+            <value>
+                <fullName>Buses &amp; Coaches</fullName>
+                <default>false</default>
+                <label>Buses &amp; Coaches</label>
+            </value>
+            <value>
+                <fullName>Commercial Vans</fullName>
+                <default>false</default>
+                <label>Commercial Vans</label>
+            </value>
+            <value>
+                <fullName>Containers</fullName>
+                <default>false</default>
+                <label>Containers</label>
+            </value>
+            <value>
+                <fullName>Drawbars</fullName>
+                <default>false</default>
+                <label>Drawbars</label>
+            </value>
+            <value>
+                <fullName>Rail</fullName>
+                <default>false</default>
+                <label>Rail</label>
+            </value>
+            <value>
+                <fullName>Semi-trailers</fullName>
+                <default>false</default>
+                <label>Semi-trailers</label>
+            </value>
+            <value>
+                <fullName>Truck Body</fullName>
+                <default>false</default>
+                <label>Truck Body</label>
+            </value>
+            <value>
+                <fullName>Swap Bodies</fullName>
+                <default>false</default>
+                <label>Swap Bodies</label>
+            </value>
+            <value>
+                <fullName>Auxiliary Equipment</fullName>
+                <default>false</default>
+                <label>Auxiliary Equipment</label>
+            </value>
+            <value>
+                <fullName>Water Transport</fullName>
+                <default>false</default>
+                <label>Water Transport</label>
+            </value>
+            <value>
+                <fullName>Modular Trailers</fullName>
+                <default>false</default>
+                <label>Modular Trailers</label>
+            </value>
+            <value>
+                <fullName>Snow Removal Equipment</fullName>
+                <default>false</default>
+                <label>Snow Removal Equipment</label>
+            </value>
+            <value>
+                <fullName>Sterilization</fullName>
+                <default>false</default>
+                <label>Sterilization</label>
+            </value>
+            <value>
+                <fullName>Energy Efficiency</fullName>
+                <default>false</default>
+                <label>Energy Efficiency</label>
+            </value>
+            <value>
+                <fullName>Lighting</fullName>
+                <default>false</default>
+                <label>Lighting</label>
+            </value>
+            <value>
+                <fullName>Pharmacy</fullName>
+                <default>false</default>
+                <label>Pharmacy</label>
+            </value>
+            <value>
+                <fullName>Aesthetics</fullName>
+                <default>false</default>
+                <label>Aesthetics</label>
+            </value>
+            <value>
+                <fullName>Veterinary</fullName>
+                <default>false</default>
+                <label>Veterinary</label>
+            </value>
+            <value>
+                <fullName>Rehabilitation</fullName>
+                <default>false</default>
+                <label>Rehabilitation</label>
+            </value>
+            <value>
+                <fullName>Apple TV 4K J105a</fullName>
+                <default>false</default>
+                <label>Apple TV 4K J105a</label>
+            </value>
+            <value>
+                <fullName>Apple TV 4K J305</fullName>
+                <default>false</default>
+                <label>Apple TV 4K J305</label>
+            </value>
+            <value>
+                <fullName>Apple TV J42</fullName>
+                <default>false</default>
+                <label>Apple TV J42</label>
+            </value>
+            <value>
+                <fullName>Apple TV J42B</fullName>
+                <default>false</default>
+                <label>Apple TV J42B</label>
+            </value>
+            <value>
+                <fullName>HomePod</fullName>
+                <default>false</default>
+                <label>HomePod</label>
+            </value>
+            <value>
+                <fullName>HomePod mini</fullName>
+                <default>false</default>
+                <label>HomePod mini</label>
+            </value>
+            <value>
+                <fullName>iPad (7th Gen)</fullName>
+                <default>false</default>
+                <label>iPad (7th Gen)</label>
+            </value>
+            <value>
+                <fullName>iPad (8th Gen)</fullName>
+                <default>false</default>
+                <label>iPad (8th Gen)</label>
+            </value>
+            <value>
+                <fullName>iPad Air 4</fullName>
+                <default>false</default>
+                <label>iPad Air 4</label>
+            </value>
+            <value>
+                <fullName>iPad Mini 5</fullName>
+                <default>false</default>
+                <label>iPad Mini 5</label>
+            </value>
+            <value>
+                <fullName>iPad Pro 11in (2nd Gen)</fullName>
+                <default>false</default>
+                <label>iPad Pro 11in (2nd Gen)</label>
+            </value>
+            <value>
+                <fullName>iPad Pro 11in (3rd Gen)</fullName>
+                <default>false</default>
+                <label>iPad Pro 11in (3rd Gen)</label>
+            </value>
+            <value>
+                <fullName>iPad Pro 13in (4th Gen)</fullName>
+                <default>false</default>
+                <label>iPad Pro 13in (4th Gen)</label>
+            </value>
+            <value>
+                <fullName>iPad Pro 13in (5th Gen)</fullName>
+                <default>false</default>
+                <label>iPad Pro 13in (5th Gen)</label>
+            </value>
+            <value>
+                <fullName>iPhone 11</fullName>
+                <default>false</default>
+                <label>iPhone 11</label>
+            </value>
+            <value>
+                <fullName>iPhone 12</fullName>
+                <default>false</default>
+                <label>iPhone 12</label>
+            </value>
+            <value>
+                <fullName>iPhone 12 mini</fullName>
+                <default>false</default>
+                <label>iPhone 12 mini</label>
+            </value>
+            <value>
+                <fullName>iPhone 12 Pro</fullName>
+                <default>false</default>
+                <label>iPhone 12 Pro</label>
+            </value>
+            <value>
+                <fullName>iPhone 12 Pro Max</fullName>
+                <default>false</default>
+                <label>iPhone 12 Pro Max</label>
+            </value>
+            <value>
+                <fullName>iPhone SE (2nd Gen)</fullName>
+                <default>false</default>
+                <label>iPhone SE (2nd Gen)</label>
+            </value>
+            <value>
+                <fullName>iPhone XR</fullName>
+                <default>false</default>
+                <label>iPhone XR</label>
+            </value>
+            <value>
+                <fullName>iPod Touch (7th Gen)</fullName>
+                <default>false</default>
+                <label>iPod Touch (7th Gen)</label>
+            </value>
+            <value>
+                <fullName>iMac 21/24</fullName>
+                <default>false</default>
+                <label>iMac 21/24</label>
+            </value>
+            <value>
+                <fullName>iMac 27</fullName>
+                <default>false</default>
+                <label>iMac 27</label>
+            </value>
+            <value>
+                <fullName>iMac Pro</fullName>
+                <default>false</default>
+                <label>iMac Pro</label>
+            </value>
+            <value>
+                <fullName>Mac Mini</fullName>
+                <default>false</default>
+                <label>Mac Mini</label>
+            </value>
+            <value>
+                <fullName>Mac Mini Historical and Other</fullName>
+                <default>false</default>
+                <label>Mac Mini Historical and Other</label>
+            </value>
+            <value>
+                <fullName>Mac Pro</fullName>
+                <default>false</default>
+                <label>Mac Pro</label>
+            </value>
+            <value>
+                <fullName>MacBook Air 13</fullName>
+                <default>false</default>
+                <label>MacBook Air 13</label>
+            </value>
+            <value>
+                <fullName>MacBook Pro 13 Retina</fullName>
+                <default>false</default>
+                <label>MacBook Pro 13 Retina</label>
+            </value>
+            <value>
+                <fullName>MacBook Pro 15/16 Retina</fullName>
+                <default>false</default>
+                <label>MacBook Pro 15/16 Retina</label>
+            </value>
+            <value>
+                <fullName>AirPods B288</fullName>
+                <default>false</default>
+                <label>AirPods B288</label>
+            </value>
+            <value>
+                <fullName>AirPods B298</fullName>
+                <default>false</default>
+                <label>AirPods B298</label>
+            </value>
+            <value>
+                <fullName>AirPods Max</fullName>
+                <default>false</default>
+                <label>AirPods Max</label>
+            </value>
+            <value>
+                <fullName>Wired Headphones</fullName>
+                <default>false</default>
+                <label>Wired Headphones</label>
+            </value>
+            <value>
+                <fullName>SE Cell (N142)</fullName>
+                <default>false</default>
+                <label>SE Cell (N142)</label>
+            </value>
+            <value>
+                <fullName>SE GPS (N140)</fullName>
+                <default>false</default>
+                <label>SE GPS (N140)</label>
+            </value>
+            <value>
+                <fullName>Series 3 GPS (N121)</fullName>
+                <default>false</default>
+                <label>Series 3 GPS (N121)</label>
+            </value>
+            <value>
+                <fullName>Series 4 Cell (141)</fullName>
+                <default>false</default>
+                <label>Series 4 Cell (141)</label>
+            </value>
+            <value>
+                <fullName>Series 5 Cell (N146)</fullName>
+                <default>false</default>
+                <label>Series 5 Cell (N146)</label>
+            </value>
+            <value>
+                <fullName>Series 5 GPS (N144)</fullName>
+                <default>false</default>
+                <label>Series 5 GPS (N144)</label>
+            </value>
+            <value>
+                <fullName>Series 6 Cell (N158)</fullName>
+                <default>false</default>
+                <label>Series 6 Cell (N158)</label>
+            </value>
+            <value>
+                <fullName>Series 6 GPS (N157)</fullName>
+                <default>false</default>
+                <label>Series 6 GPS (N157)</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Apple TV 4K J105a</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Apple TV 4K J305</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Apple TV J42</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Apple TV J42B</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>HomePod</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>HomePod mini</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPad (7th Gen)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Series 6 Cell (N158)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Series 6 GPS (N157)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <controllingFieldValue>Clean Technology</controllingFieldValue>
+            <valueName>Miscellaneous</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Kyocera Digital Copier</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Toshiba Digital Copier</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Sharp DC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Sharp Printer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Ricoh DC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Ricoh Printer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Konica Minolta DC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Dealer Printer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Dealer Digital Copier</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <controllingFieldValue>Clean Technology</controllingFieldValue>
+            <valueName>Dental</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <controllingFieldValue>Clean Technology</controllingFieldValue>
+            <valueName>Fitness</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <controllingFieldValue>Clean Technology</controllingFieldValue>
+            <valueName>Imaging</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <controllingFieldValue>Clean Technology</controllingFieldValue>
+            <valueName>Life Science</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>AGV</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Class I - Counterbalance Electric</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Class II - Narrow Aisle</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Class III - Powered Walk Behind</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Class IV - Cushion Tire ICE</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Class V - Pneumatic Tire ICE</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Class VII - Tow Tractor</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Forklift Accessories</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>MH Allied equipment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Non Powered</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Aerial Work Platforms</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Asphalt / Paving Equipment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Compaction Equipment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Concrete Equipment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Cranes</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Aggregate</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Drills</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Off - Highway Trucks</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Excavator</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Dozer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Skid Steer Loader</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Loaders</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Rough Terrain Forklift</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Scrap / Recycling Equipment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Scrapers &amp; Graders</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Trenchers / Cable Plows</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Other Construction</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Forestry</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Air Transport</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Truck Chassis</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Truck Tractor</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Buses &amp; Coaches</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Commercial Vans</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Containers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Drawbars</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Rail</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Semi-trailers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Truck Body</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Swap Bodies</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Auxiliary Equipment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Water Transport</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Modular Trailers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <valueName>Snow Removal Equipment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Kyocera Printer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Toshiba Printer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>KM Printer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <controllingFieldValue>Clean Technology</controllingFieldValue>
+            <valueName>Clean Tech</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <controllingFieldValue>Clean Technology</controllingFieldValue>
+            <valueName>Home Health</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <controllingFieldValue>Clean Technology</controllingFieldValue>
+            <valueName>Ophthalmic</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <controllingFieldValue>Clean Technology</controllingFieldValue>
+            <valueName>Surgical</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPad (8th Gen)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPad Air 4</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPad Mini 5</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPad Pro 11in (2nd Gen)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPad Pro 11in (3rd Gen)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPad Pro 13in (4th Gen)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPad Pro 13in (5th Gen)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPhone 11</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPhone 12</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPhone 12 mini</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPhone 12 Pro</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPhone 12 Pro Max</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPhone SE (2nd Gen)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPhone XR</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iPod Touch (7th Gen)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iMac 21/24</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iMac 27</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>iMac Pro</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Mac Mini</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Mac Mini Historical and Other</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Mac Pro</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>MacBook Air 13</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>MacBook Pro 13 Retina</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>MacBook Pro 15/16 Retina</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>AirPods B288</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>AirPods B298</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>AirPods Max</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Wired Headphones</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>SE Cell (N142)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>SE GPS (N140)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Series 3 GPS (N121)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Series 4 Cell (141)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Series 5 Cell (N146)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Series 5 GPS (N144)</valueName>
+        </valueSettings>
+    </valueSet>
+    <visibleLines>5</visibleLines>
+</CustomField>

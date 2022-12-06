@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sales_Rep_ID_2__c</fullName>
+    <description>Captures the unique identifier for the Sales Rep 2 individual assigned to an Opportunity. Set via integration. Used to query Salesforce for the User record corresponding to this individual. Related to Opportunity Apex function for Opportunity Owner and Opportunity Team Member insertion.</description>
+    <encryptionScheme>None</encryptionScheme>
+    <externalId>true</externalId>
+    <label>Sales Rep ID 2</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

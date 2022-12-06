@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AFC_All_Opportunities</fullName>
+    <columns>Sales_Rep_Name_2__c</columns>
+    <columns>Application_Date__c</columns>
+    <columns>Application_Number__c</columns>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>OPPORTUNITY.AMOUNT</columns>
+    <columns>OPPORTUNITY.CLOSE_DATE</columns>
+    <columns>Sub_Stage__c</columns>
+    <columns>CORE.USERS.FULL_NAME</columns>
+    <columns>Actions_and_next_steps__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>OPPORTUNITY.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Opportunity.Retail</value>
+    </filters>
+    <filters>
+        <field>Program__c</field>
+        <operation>equals</operation>
+        <value>AGCO CORPORATION</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.CLOSED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <label>*AFC Open Opportunities</label>
+    <sharedTo>
+        <group>AFC_US</group>
+    </sharedTo>
+</ListView>

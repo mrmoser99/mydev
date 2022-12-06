@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Tradeup_Amount__c</fullName>
+    <defaultValue>0</defaultValue>
+    <description>For this opportunity, this represents the total amount of cost associated to assets under lease that will be traded up. Traded up means that the customer on this opportunity has existing leased asset(s) with DLL and he wishes to end the lease obligation for that asset or assets. The remaining cost of those assets that has not been paid plus fees are added to this opportunity and will increase the financed amount for this opportunity.</description>
+    <externalId>false</externalId>
+    <label>Total Tradeup Amount</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

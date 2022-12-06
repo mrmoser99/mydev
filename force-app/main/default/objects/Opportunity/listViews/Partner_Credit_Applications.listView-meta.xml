@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Partner_Credit_Applications</fullName>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>Application_Number__c</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>Partner_Sales_Rep__c</columns>
+    <columns>OPPORTUNITY.AMOUNT</columns>
+    <columns>Application_Date__c</columns>
+    <columns>Expiration_Date__c</columns>
+    <columns>Sub_Stage__c</columns>
+    <columns>CORE.USERS.FULL_NAME</columns>
+    <columns>OPPORTUNITY.CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>OPPORTUNITY.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Opportunity.Retail</value>
+    </filters>
+    <label>*Partner Credit Applications</label>
+    <sharedTo>
+        <group>SF_Admin</group>
+    </sharedTo>
+</ListView>

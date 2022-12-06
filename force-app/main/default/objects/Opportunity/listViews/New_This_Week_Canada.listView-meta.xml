@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>New_This_Week_Canada</fullName>
+    <booleanFilter>1 AND (2 OR 3)</booleanFilter>
+    <columns>CORE.USERS.FULL_NAME</columns>
+    <columns>Application_Date__c</columns>
+    <columns>Application_Number__c</columns>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>UNQ_Customer__c</columns>
+    <columns>OPPORTUNITY.AMOUNT</columns>
+    <columns>OPPORTUNITY.STAGE_NAME</columns>
+    <columns>Sub_Stage__c</columns>
+    <columns>Sales_Rep_Name__c</columns>
+    <columns>Sales_Rep_Name_2__c</columns>
+    <columns>Sales_Rep_ID__c</columns>
+    <columns>Sales_Rep_ID_2__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>UNQ_Opportunity__c</field>
+        <operation>contains</operation>
+        <value>GDW_DesMoines</value>
+    </filters>
+    <filters>
+        <field>Application_Date__c</field>
+        <operation>equals</operation>
+        <value>THIS_WEEK</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.CREATED_DATE</field>
+        <operation>equals</operation>
+        <value>THIS_WEEK</value>
+    </filters>
+    <label>*New This Week Canada F&amp;A</label>
+    <sharedTo>
+        <group>BU_F_A_Canada</group>
+    </sharedTo>
+</ListView>

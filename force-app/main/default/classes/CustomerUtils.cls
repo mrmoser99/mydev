@@ -711,20 +711,32 @@ public static void saveErrorLog(String e) {
 
 @AuraEnabled
 public static void fillBufferLWC(){
-	//having some intial load performanc issues for searching....addedit this to fire up the buffers and speed customer
-	//search; MRM 10/31/2022
+    //having some intial load performanc issues for searching....addedit this to fire up the buffers and speed customer
+    //search; MRM 10/31/2022; revised on 12/9/2022;
 
-	CustomerUtils.fillBuffer();
+    CustomerUtils.fillBuffer();
 }
+
 
 @future
-public static void fillBuffer() {
-	
-	List<Account> b1 = [SELECT id, name FROM Account WHERE name like 'A%' and billingState = 'PA' ORDER BY name  limit 1];
+public static void  fillBuffer() {
+   
+      fillNoShare n = new fillNoShare();
+}
 
-	List<Account> b2 = [SELECT id, name FROM Account WHERE name like '%A%'  and billingState = 'PA' ORDER BY name  limit 1];
+public without sharing class fillNoShare {
+    public List<Account> accList = new List<Account>();
+
+    public fillNoShare(){
+    
+     List<Account> b1 = [SELECT id, name FROM Account where billingstate = 'PA' limit 5000 ];
+
+     List<Account> b2 = [SELECT id, name FROM Account where name like '% %' limit 5000 ];
+
+    }
 
 }
+
 
 //some extra lines to cover test of 75%
 public static void coverTest(){

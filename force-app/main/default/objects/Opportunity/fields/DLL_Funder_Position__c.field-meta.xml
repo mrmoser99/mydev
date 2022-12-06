@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DLL_Funder_Position__c</fullName>
+    <description>NBD</description>
+    <externalId>false</externalId>
+    <label>DLL Funder Position</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Exclusive funder</fullName>
+                <default>false</default>
+                <label>Exclusive funder</label>
+            </value>
+            <value>
+                <fullName>Right of first refusal</fullName>
+                <default>false</default>
+                <label>Right of first refusal</label>
+            </value>
+            <value>
+                <fullName>Panel funder</fullName>
+                <default>false</default>
+                <label>Panel funder</label>
+            </value>
+            <value>
+                <fullName>Approved funder</fullName>
+                <default>false</default>
+                <label>Approved funder</label>
+            </value>
+            <value>
+                <fullName>Not applicable</fullName>
+                <default>false</default>
+                <label>Not applicable</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

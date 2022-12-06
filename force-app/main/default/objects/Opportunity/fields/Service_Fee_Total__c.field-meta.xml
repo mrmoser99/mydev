@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Service_Fee_Total__c</fullName>
+    <description>This field is calculated via Flows, based on Line Items entered manually in the DLL on Demand Portal.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This field is calculated based on individual Asset Line Items entered manually in the DLL on Demand Portal.</inlineHelpText>
+    <label>Service Fee Total</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ISO_Code__c</fullName>
+    <businessOwnerUser>mmikael.franzen@dllgroup.com.st01d06</businessOwnerUser>
+    <businessStatus>Active</businessStatus>
+    <description>ISO code of quote for customer</description>
+    <externalId>false</externalId>
+    <formula>TEXT(Account.Region_Relationship__r.ISO_Code__c)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>ISO code of quote for customer</inlineHelpText>
+    <label>ISO Code</label>
+    <required>false</required>
+    <securityClassification>External</securityClassification>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

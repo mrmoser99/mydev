@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Billing_Address_Preference__c</fullName>
+    <description>For DLL on Demand Portal - records whether the user selected the default Billing Address for the End User Account (System Address) or entered a new Billing Address</description>
+    <externalId>false</externalId>
+    <label>Billing Address Preference</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Use existing billing address</fullName>
+                <default>false</default>
+                <label>Use existing billing address</label>
+            </value>
+            <value>
+                <fullName>Enter new billing address</fullName>
+                <default>false</default>
+                <label>Enter new billing address</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

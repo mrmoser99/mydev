@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MAH</fullName>
+    <columns>Application_Date__c</columns>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>Sub_Stage__c</columns>
+    <columns>OPPORTUNITY.STAGE_NAME</columns>
+    <columns>OPPORTUNITY.CLOSE_DATE</columns>
+    <columns>Funded_Date__c</columns>
+    <columns>Application_Approval_Date__c</columns>
+    <columns>CORE.USERS.FULL_NAME</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>OPPORTUNITY.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Opportunity.Retail</value>
+    </filters>
+    <filters>
+        <field>Source_System__c</field>
+        <operation>equals</operation>
+        <value>GDW_US_DesMoines</value>
+    </filters>
+    <filters>
+        <field>OpVendorCode__c</field>
+        <operation>equals</operation>
+        <value>24,E0,E6,F0</value>
+    </filters>
+    <label>*MAH</label>
+    <sharedTo>
+        <group>MAH_US</group>
+    </sharedTo>
+</ListView>

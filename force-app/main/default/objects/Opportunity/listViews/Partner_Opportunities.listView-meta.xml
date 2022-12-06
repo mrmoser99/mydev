@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Partner_Opportunities</fullName>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>OPPORTUNITY.AMOUNT</columns>
+    <columns>Number_of_Assets__c</columns>
+    <columns>OPPORTUNITY.STAGE_NAME</columns>
+    <columns>End_User__c</columns>
+    <columns>OPPORTUNITY.CREATED_DATE</columns>
+    <columns>Partner_Sales_Rep__c</columns>
+    <columns>Opportunity_Number__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Opportunity_Number__c</field>
+        <operation>equals</operation>
+        <value>2208-28928</value>
+    </filters>
+    <label>Partner Opportunities</label>
+    <sharedTo>
+        <group>BU_Office_Equipment_Canada</group>
+        <group>BU_Office_Equipment_United_States</group>
+        <group>SF_Admin</group>
+    </sharedTo>
+</ListView>

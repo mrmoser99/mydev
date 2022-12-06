@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Commercial_Finance__c</fullName>
+    <externalId>false</externalId>
+    <label>Commercial Finance</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>No</fullName>
+                <default>false</default>
+                <label>No</label>
+            </value>
+            <value>
+                <fullName>Yes: Indirect - Tier 1</fullName>
+                <default>false</default>
+                <label>Yes: Indirect - Tier 1</label>
+            </value>
+            <value>
+                <fullName>Yes: Direct - Tier 1</fullName>
+                <default>false</default>
+                <label>Yes: Direct - Tier 1</label>
+            </value>
+            <value>
+                <fullName>Yes: Direct - Tier 2</fullName>
+                <default>false</default>
+                <label>Yes: Direct - Tier 2</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

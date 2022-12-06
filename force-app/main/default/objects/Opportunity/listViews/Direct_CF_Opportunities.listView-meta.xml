@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Direct_CF_Opportunities</fullName>
+    <columns>OPPORTUNITY.TYPE</columns>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>OPPORTUNITY.STAGE_NAME</columns>
+    <columns>Sub_Stage__c</columns>
+    <columns>OPPORTUNITY.AMOUNT</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>OPPORTUNITY.CREATED_DATE</columns>
+    <columns>OPPORTUNITY.LAST_UPDATE</columns>
+    <columns>OPPORTUNITY.RECORDTYPE</columns>
+    <columns>Comments__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Business_Unit__c</field>
+        <operation>equals</operation>
+        <value>Commercial Finance</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.TYPE</field>
+        <operation>equals</operation>
+        <value>New Program,Program Expansion,Dealer Direct</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Opportunity.Commercial_Finance_Channel</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.CLOSED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <label>*Vendor CF opportunities</label>
+    <sharedTo>
+        <role>Account_Manager_CF</role>
+        <role>Country_Sales_Manager_CF_Canada_A</role>
+        <role>Country_Sales_Manager_CF_United_States_A</role>
+        <role>Country_Sales_Manager_CF_United_States_Canada_B</role>
+        <role>GBU_President_CF</role>
+        <role>Global_Business</role>
+        <role>Global_Insurance_CF</role>
+        <role>Global_Program_Management_CF</role>
+        <role>Global_Program_Management_Team_CF</role>
+        <role>Marketing_CF</role>
+        <role>New_Business_Development_CF</role>
+        <role>Regional_Sales_Manager_CF_North_America</role>
+        <role>Sales_Account_Manager_CF_United_States_A</role>
+    </sharedTo>
+</ListView>

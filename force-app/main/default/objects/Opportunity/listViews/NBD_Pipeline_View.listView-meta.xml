@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NBD_Pipeline_View</fullName>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>Business_Unit1__c</columns>
+    <columns>OPPORTUNITY.STAGE_NAME</columns>
+    <columns>Focus_Countries__c</columns>
+    <columns>OPPORTUNITY.AMOUNT</columns>
+    <columns>OPPORTUNITY.PROBABILITY</columns>
+    <columns>OPPORTUNITY.CLOSE_DATE</columns>
+    <columns>Region__c</columns>
+    <columns>Actions_and_next_steps__c</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <filterScope>Mine</filterScope>
+    <filters>
+        <field>OPPORTUNITY.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Opportunity.New_Business_Development</value>
+    </filters>
+    <label>*NBD Pipeline View</label>
+    <sharedTo>
+        <group>NBD_Reps</group>
+    </sharedTo>
+</ListView>

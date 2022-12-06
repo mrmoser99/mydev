@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TODAY</fullName>
+    <booleanFilter>1 AND 2</booleanFilter>
+    <columns>CORE.USERS.FULL_NAME</columns>
+    <columns>Application_Date__c</columns>
+    <columns>Application_Approval_Date__c</columns>
+    <columns>OPPORTUNITY.CREATED_DATE</columns>
+    <columns>OPPORTUNITY.LAST_UPDATE</columns>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>OPPORTUNITY.STAGE_NAME</columns>
+    <columns>Sub_Stage__c</columns>
+    <columns>OpVendorCode__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Source_System__c</field>
+        <operation>equals</operation>
+        <value>GDW_US_DESMOINES</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.CREATED_DATE</field>
+        <operation>equals</operation>
+        <value>TODAY,YESTERDAY</value>
+    </filters>
+    <label>*App Date or  App Appvd Date = TODAY</label>
+    <sharedTo>
+        <roleAndSubordinatesInternal>GBU_President_F_A</roleAndSubordinatesInternal>
+    </sharedTo>
+</ListView>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Enrollment_Steps__c</fullName>
+    <description>This field is used in the DLL on Demand Partner Portal.</description>
+    <externalId>false</externalId>
+    <label>Enrollment Steps</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Review Specs</fullName>
+                <default>false</default>
+                <label>Review Specs</label>
+            </value>
+            <value>
+                <fullName>Complete Asset Details</fullName>
+                <default>false</default>
+                <label>Complete Asset Details</label>
+            </value>
+            <value>
+                <fullName>Review Customer Billing</fullName>
+                <default>false</default>
+                <label>Review Customer Billing</label>
+            </value>
+            <value>
+                <fullName>Request Documents</fullName>
+                <default>false</default>
+                <label>Request Documents</label>
+            </value>
+            <value>
+                <fullName>Submit Documents</fullName>
+                <default>false</default>
+                <label>Submit Documents</label>
+            </value>
+            <value>
+                <fullName>Complete Funding</fullName>
+                <default>false</default>
+                <label>Complete Funding</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

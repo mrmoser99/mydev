@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sub_Stage__c</fullName>
+    <description>Opportunity sub stages to be used by each BU</description>
+    <externalId>false</externalId>
+    <label>Sub-Stage</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>StageName</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Warm Leads Identified</fullName>
+                <default>false</default>
+                <label>Warm Leads Identified</label>
+            </value>
+            <value>
+                <fullName>On Hold</fullName>
+                <default>false</default>
+                <label>On Hold</label>
+            </value>
+            <value>
+                <fullName>Prospect</fullName>
+                <default>false</default>
+                <label>Prospect</label>
+            </value>
+            <value>
+                <fullName>Customer Meeting</fullName>
+                <default>false</default>
+                <label>Customer Meeting</label>
+            </value>
+            <value>
+                <fullName>Executive Endorsement</fullName>
+                <default>false</default>
+                <label>Executive Endorsement</label>
+            </value>
+            <value>
+                <fullName>Nondisclosure Agreement Executed</fullName>
+                <default>false</default>
+                <label>Nondisclosure Agreement Executed</label>
+            </value>
+            <value>
+                <fullName>Required Functional Approvals Complete (Table 1)</fullName>
+                <default>false</default>
+                <label>Required Functional Approvals Complete (Table 1)</label>
+            </value>
+            <value>
+                <fullName>Workshop Hosted</fullName>
+                <default>false</default>
+                <label>Workshop Hosted</label>
+            </value>
+            <value>
+                <fullName>Principles Document/Term Sheet Drafted</fullName>
+                <default>false</default>
+                <label>Principles Document/Term Sheet Drafted</label>
+            </value>
+            <value>
+                <fullName>Required Functional Approvals Complete (Table 2)</fullName>
+                <default>false</default>
+                <label>Required Functional Approvals Complete (Table 2)</label>
+            </value>
+            <value>
+                <fullName>Principles Document/Term Sheet Signed</fullName>
+                <default>false</default>
+                <label>Principles Document/Term Sheet Signed</label>
+            </value>
+            <value>
+                <fullName>Program Fact Sheet</fullName>
+                <default>false</default>
+                <label>Program Fact Sheet</label>
+            </value>
+            <value>
+                <fullName>Development of Offer</fullName>
+                <default>false</default>
+                <label>Development of Offer</label>
+            </value>
+            <value>
+                <fullName>Vendor Risk Application</fullName>
+                <default>false</default>
+                <label>Vendor Risk Application</label>
+            </value>
+            <value>
+                <fullName>Determine Risk Acceptance Criteria</fullName>
+                <default>false</default>
+                <label>Determine Risk Acceptance Criteria</label>
+            </value>
+            <value>
+                <fullName>ABC Assessment</fullName>
+                <default>false</default>
+                <label>ABC Assessment</label>
+            </value>
+            <value>
+                <fullName>Remarketing Arrangement</fullName>
+                <default>false</default>
+                <label>Remarketing Arrangement</label>
+            </value>
+            <value>
+                <fullName>Profit &amp; Loss Calculation</fullName>
+                <default>false</default>
+                <label>Profit &amp; Loss Calculation</label>
+            </value>
+            <value>
+                <fullName>Program Agreement Under Review</fullName>
+                <default>false</default>
+                <label>Program Agreement Under Review</label>
+            </value>
+            <value>
+                <fullName>DLL Selected</fullName>
+                <default>false</default>
+                <label>DLL Selected</label>
+            </value>
+            <value>
+                <fullName>Required Functional Approvals Complete (Table 3)</fullName>
+                <default>false</default>
+                <label>Required Functional Approvals Complete (Table 3)</label>
+            </value>
+            <value>
+                <fullName>Local Due Diligence &amp; Approval Committee</fullName>
+                <default>false</default>
+                <label>Local Due Diligence &amp; Approval Committee</label>
+            </value>
+            <value>
+                <fullName>Global Credit Committee Approval</fullName>
+                <default>false</default>
+                <label>Global Credit Committee Approval</label>
+            </value>
+            <value>
+                <fullName>Determine Vendor Reporting Requirements</fullName>
+                <default>false</default>
+                <label>Determine Vendor Reporting Requirements</label>
+            </value>
+            <value>
+                <fullName>Create Rollout Plan (Global)</fullName>
+                <default>false</default>
+                <label>Create Rollout Plan (Global)</label>
+            </value>
+            <value>
+                <fullName>Implementation Plan (Local)</fullName>
+                <default>false</default>
+                <label>Implementation Plan (Local)</label>
+            </value>
+            <value>
+                <fullName>Agreement Executed</fullName>
+                <default>false</default>
+                <label>Agreement Executed</label>
+            </value>
+            <value>
+                <fullName>Assigned Local Implementation</fullName>
+                <default>false</default>
+                <label>Assigned Local Implementation</label>
+            </value>
+            <value>
+                <fullName>MVP Implemented</fullName>
+                <default>false</default>
+                <label>MVP Implemented</label>
+            </value>
+            <value>
+                <fullName>Quote Draft</fullName>
+                <default>false</default>
+                <label>Quote Draft</label>
+            </value>
+            <value>
+                <fullName>Quoting &amp; Proposal</fullName>
+                <default>false</default>
+                <label>Quoting &amp; Proposal</label>
+            </value>
+            <value>
+                <fullName>Application Draft</fullName>
+                <default>false</default>
+                <label>Application Draft</label>
+            </value>
+            <value>
+                <fullName>Application Submitted</fullName>
+                <default>false</default>
+                <label>Application Submitted</label>
+            </value>
+            <value>
+                <fullName>Application Pending</fullName>
+                <default>false</default>
+                <label>Application Pending</label>
+            </value>
+            <value>
+                <fullName>Application Approved</fullName>
+                <default>false</default>
+                <label>Application Approved</label>
+            </value>
+            <value>
+                <fullName>Conditional Approval</fullName>
+                <default>false</default>
+                <label>Conditional Approval</label>
+            </value>
+            <value>
+                <fullName>Document Request Draft</fullName>
+                <default>false</default>
+                <label>Document Request Draft</label>
+            </value>
+            <value>
+                <fullName>Documents Requested</fullName>
+                <default>false</default>
+                <label>Documents Requested</label>
+            </value>
+            <value>
+                <fullName>With Documentation Team</fullName>
+                <default>false</default>
+                <label>With Documentation Team</label>
+            </value>
+            <value>
+                <fullName>Documents Out</fullName>
+                <default>false</default>
+                <label>Documents Out</label>
+            </value>
+            <value>
+                <fullName>Documents In</fullName>
+                <default>false</default>
+                <label>Documents In</label>
+            </value>
+            <value>
+                <fullName>Documents Back</fullName>
+                <default>false</default>
+                <label>Documents Back</label>
+            </value>
+            <value>
+                <fullName>Purchase Order Issued</fullName>
+                <default>false</default>
+                <label>Purchase Order Issued</label>
+            </value>
+            <value>
+                <fullName>Invoice Received</fullName>
+                <default>false</default>
+                <label>Invoice Received</label>
+            </value>
+            <value>
+                <fullName>Delivery and Acceptance Received</fullName>
+                <default>false</default>
+                <label>Delivery and Acceptance Received</label>
+            </value>
+            <value>
+                <fullName>Prep for Funding</fullName>
+                <default>false</default>
+                <label>Prep for Funding</label>
+            </value>
+            <value>
+                <fullName>Passed to Funding</fullName>
+                <default>false</default>
+                <label>Passed to Funding</label>
+            </value>
+            <value>
+                <fullName>Funding Team Accepted</fullName>
+                <default>false</default>
+                <label>Funding Team Accepted</label>
+            </value>
+            <value>
+                <fullName>Booked</fullName>
+                <default>false</default>
+                <label>Booked</label>
+            </value>
+            <value>
+                <fullName>Qualifying</fullName>
+                <default>false</default>
+                <label>Qualifying</label>
+            </value>
+            <value>
+                <fullName>Development of Offer/Proposal</fullName>
+                <default>false</default>
+                <label>Development of Offer/Proposal</label>
+            </value>
+            <value>
+                <fullName>Negotiating</fullName>
+                <default>false</default>
+                <label>Negotiating</label>
+            </value>
+            <value>
+                <fullName>In Credit</fullName>
+                <default>false</default>
+                <label>In Credit</label>
+            </value>
+            <value>
+                <fullName>Disqualified</fullName>
+                <default>false</default>
+                <label>Disqualified</label>
+            </value>
+            <value>
+                <fullName>Activated</fullName>
+                <default>false</default>
+                <label>Activated</label>
+            </value>
+            <value>
+                <fullName>Credit Declined</fullName>
+                <default>false</default>
+                <label>Credit Declined</label>
+            </value>
+            <value>
+                <fullName>Credit Disqualified</fullName>
+                <default>false</default>
+                <label>Credit Disqualified</label>
+            </value>
+            <value>
+                <fullName>Solution Disqualified</fullName>
+                <default>false</default>
+                <label>Solution Disqualified</label>
+            </value>
+            <value>
+                <fullName>Expired/Withdrawn</fullName>
+                <default>false</default>
+                <label>Expired/Withdrawn</label>
+            </value>
+            <value>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+                <label>Cancelled</label>
+            </value>
+            <value>
+                <fullName>Deleted</fullName>
+                <default>false</default>
+                <label>Deleted</label>
+            </value>
+            <value>
+                <fullName>Customer</fullName>
+                <default>false</default>
+                <label>Customer</label>
+            </value>
+            <value>
+                <fullName>Calculation</fullName>
+                <default>false</default>
+                <label>Calculation</label>
+            </value>
+            <value>
+                <fullName>Documents</fullName>
+                <default>false</default>
+                <label>Documents</label>
+            </value>
+            <value>
+                <fullName>Review</fullName>
+                <default>false</default>
+                <label>Review</label>
+            </value>
+            <value>
+                <fullName>Won</fullName>
+                <default>false</default>
+                <label>Won</label>
+            </value>
+            <value>
+                <fullName>Lost</fullName>
+                <default>false</default>
+                <label>Lost</label>
+            </value>
+            <value>
+                <fullName>Completed</fullName>
+                <default>false</default>
+                <label>Completed</label>
+            </value>
+            <value>
+                <fullName>Contacted</fullName>
+                <default>false</default>
+                <label>Contacted</label>
+            </value>
+            <value>
+                <fullName>In Process</fullName>
+                <default>false</default>
+                <label>In Process</label>
+            </value>
+            <value>
+                <fullName>Additional Information requested</fullName>
+                <default>false</default>
+                <label>Additional Information requested</label>
+            </value>
+            <value>
+                <fullName>Competitor</fullName>
+                <default>false</default>
+                <label>Competitor</label>
+            </value>
+            <value>
+                <fullName>Cash</fullName>
+                <default>false</default>
+                <label>Cash</label>
+            </value>
+            <value>
+                <fullName>Customer Not Ready</fullName>
+                <default>false</default>
+                <label>Customer Not Ready</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Qualifying</controllingFieldValue>
+            <controllingFieldValue>Qualify</controllingFieldValue>
+            <valueName>Nondisclosure Agreement Executed</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Qualifying</controllingFieldValue>
+            <controllingFieldValue>Qualify</controllingFieldValue>
+            <valueName>Required Functional Approvals Complete (Table 1)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Qualifying</controllingFieldValue>
+            <controllingFieldValue>Qualify</controllingFieldValue>
+            <valueName>Workshop Hosted</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Qualifying</controllingFieldValue>
+            <controllingFieldValue>Qualify</controllingFieldValue>
+            <valueName>Program Fact Sheet</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Qualifying</controllingFieldValue>
+            <valueName>Qualifying</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Qualifying</controllingFieldValue>
+            <valueName>Contacted</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Qualifying</controllingFieldValue>
+            <valueName>In Process</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Qualifying</controllingFieldValue>
+            <valueName>Additional Information requested</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed Won</controllingFieldValue>
+            <valueName>Agreement Executed</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed Won</controllingFieldValue>
+            <valueName>Assigned Local Implementation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed Won</controllingFieldValue>
+            <valueName>MVP Implemented</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed Won</controllingFieldValue>
+            <valueName>Booked</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed Won</controllingFieldValue>
+            <valueName>Activated</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed Won</controllingFieldValue>
+            <valueName>Completed</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Negotiating</controllingFieldValue>
+            <controllingFieldValue>Quoting</controllingFieldValue>
+            <controllingFieldValue>Targeting</controllingFieldValue>
+            <controllingFieldValue>Structuring</controllingFieldValue>
+            <controllingFieldValue>Qualify</controllingFieldValue>
+            <valueName>On Hold</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Negotiating</controllingFieldValue>
+            <valueName>Principles Document/Term Sheet Signed</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Negotiating</controllingFieldValue>
+            <valueName>Program Agreement Under Review</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Negotiating</controllingFieldValue>
+            <valueName>DLL Selected</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Negotiating</controllingFieldValue>
+            <valueName>Required Functional Approvals Complete (Table 3)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Negotiating</controllingFieldValue>
+            <valueName>Local Due Diligence &amp; Approval Committee</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Negotiating</controllingFieldValue>
+            <valueName>Global Credit Committee Approval</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Negotiating</controllingFieldValue>
+            <valueName>Determine Vendor Reporting Requirements</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Negotiating</controllingFieldValue>
+            <valueName>Create Rollout Plan (Global)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Negotiating</controllingFieldValue>
+            <valueName>Implementation Plan (Local)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Documentation</controllingFieldValue>
+            <valueName>Document Request Draft</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Documentation</controllingFieldValue>
+            <valueName>Documents Requested</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Documentation</controllingFieldValue>
+            <valueName>With Documentation Team</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Documentation</controllingFieldValue>
+            <valueName>Documents Out</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Documentation</controllingFieldValue>
+            <valueName>Documents In</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Documentation</controllingFieldValue>
+            <valueName>Documents Back</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Documentation</controllingFieldValue>
+            <valueName>Purchase Order Issued</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Documentation</controllingFieldValue>
+            <valueName>Invoice Received</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Documentation</controllingFieldValue>
+            <valueName>Delivery and Acceptance Received</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Documentation</controllingFieldValue>
+            <valueName>Prep for Funding</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Documentation</controllingFieldValue>
+            <valueName>Passed to Funding</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Documentation</controllingFieldValue>
+            <valueName>Funding Team Accepted</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Quoting</controllingFieldValue>
+            <valueName>Quote Draft</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Quoting</controllingFieldValue>
+            <valueName>Quoting &amp; Proposal</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Quoting</controllingFieldValue>
+            <valueName>Application Draft</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Quoting</controllingFieldValue>
+            <valueName>Application Submitted</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Quoting</controllingFieldValue>
+            <valueName>Application Pending</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Quoting</controllingFieldValue>
+            <valueName>Application Approved</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Quoting</controllingFieldValue>
+            <valueName>Conditional Approval</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Quoting</controllingFieldValue>
+            <valueName>Development of Offer/Proposal</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Quoting</controllingFieldValue>
+            <valueName>Negotiating</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Quoting</controllingFieldValue>
+            <valueName>In Credit</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed/Lost</controllingFieldValue>
+            <valueName>Competitor</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed/Lost</controllingFieldValue>
+            <valueName>Cash</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed/Lost</controllingFieldValue>
+            <valueName>Customer Not Ready</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed Lost</controllingFieldValue>
+            <valueName>Disqualified</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed Lost</controllingFieldValue>
+            <valueName>Credit Declined</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed Lost</controllingFieldValue>
+            <valueName>Credit Disqualified</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed Lost</controllingFieldValue>
+            <valueName>Solution Disqualified</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed Lost</controllingFieldValue>
+            <valueName>Expired/Withdrawn</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed Lost</controllingFieldValue>
+            <valueName>Cancelled</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed Lost</controllingFieldValue>
+            <valueName>Deleted</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Targeting</controllingFieldValue>
+            <valueName>Warm Leads Identified</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Targeting</controllingFieldValue>
+            <valueName>Prospect</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Targeting</controllingFieldValue>
+            <valueName>Customer Meeting</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Targeting</controllingFieldValue>
+            <valueName>Executive Endorsement</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Structuring</controllingFieldValue>
+            <valueName>Principles Document/Term Sheet Drafted</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Structuring</controllingFieldValue>
+            <valueName>Required Functional Approvals Complete (Table 2)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Structuring</controllingFieldValue>
+            <valueName>Development of Offer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Structuring</controllingFieldValue>
+            <valueName>Vendor Risk Application</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Structuring</controllingFieldValue>
+            <valueName>Determine Risk Acceptance Criteria</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Structuring</controllingFieldValue>
+            <valueName>ABC Assessment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Structuring</controllingFieldValue>
+            <valueName>Remarketing Arrangement</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Structuring</controllingFieldValue>
+            <valueName>Profit &amp; Loss Calculation</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

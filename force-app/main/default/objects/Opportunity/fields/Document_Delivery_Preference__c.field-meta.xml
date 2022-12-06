@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Document_Delivery_Preference__c</fullName>
+    <description>For DLL on Demand Portal - records whether the user selected to have their documents created and sent via DocuSign (in MOSAIC) or via a PDF</description>
+    <externalId>false</externalId>
+    <label>Document Delivery Preference</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Docusign</fullName>
+                <default>true</default>
+                <label>Docusign</label>
+            </value>
+            <value>
+                <fullName>PDF</fullName>
+                <default>false</default>
+                <label>PDF</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

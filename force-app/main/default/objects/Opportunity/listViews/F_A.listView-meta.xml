@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>F_A</fullName>
+    <columns>Application_Date__c</columns>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>Sub_Stage__c</columns>
+    <columns>OPPORTUNITY.STAGE_NAME</columns>
+    <columns>OPPORTUNITY.CLOSE_DATE</columns>
+    <columns>Funded_Date__c</columns>
+    <columns>Application_Approval_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CORE.USERS.LAST_NAME</field>
+        <operation>equals</operation>
+        <value>Rosa</value>
+    </filters>
+    <label>*F&amp;A</label>
+    <sharedTo>
+        <group>BU_F_A_Canada</group>
+        <group>BU_F_A_United_States</group>
+        <roleAndSubordinatesInternal>GBU_President_F_A</roleAndSubordinatesInternal>
+    </sharedTo>
+</ListView>

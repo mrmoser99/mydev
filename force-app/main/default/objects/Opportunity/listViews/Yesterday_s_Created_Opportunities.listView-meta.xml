@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Yesterday_s_Created_Opportunities</fullName>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>Application_Number__c</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>Sub_Stage__c</columns>
+    <columns>Program__c</columns>
+    <columns>OPPORTUNITY.AMOUNT</columns>
+    <columns>Application_Date__c</columns>
+    <filterScope>Mine</filterScope>
+    <filters>
+        <field>OPPORTUNITY.CREATED_DATE</field>
+        <operation>equals</operation>
+        <value>YESTERDAY</value>
+    </filters>
+    <label>Yesterday&apos;s Created Opportunities</label>
+    <sharedTo>
+        <group>SF_Admin</group>
+    </sharedTo>
+</ListView>

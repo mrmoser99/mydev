@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Equipment_Use__c</fullName>
+    <description>How the equipment will be used</description>
+    <externalId>false</externalId>
+    <label>Equipment Use</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>FARM</fullName>
+                <default>false</default>
+                <label>FARM</label>
+            </value>
+            <value>
+                <fullName>COMM</fullName>
+                <default>false</default>
+                <label>COMM</label>
+            </value>
+            <value>
+                <fullName>PERS</fullName>
+                <default>false</default>
+                <label>PERS</label>
+            </value>
+            <value>
+                <fullName>CUST</fullName>
+                <default>false</default>
+                <label>CUST</label>
+            </value>
+            <value>
+                <fullName>INDU</fullName>
+                <default>false</default>
+                <label>INDU</label>
+            </value>
+            <value>
+                <fullName>Rental Yard</fullName>
+                <default>false</default>
+                <label>Rental Yard</label>
+            </value>
+            <value>
+                <fullName>Forestry</fullName>
+                <default>false</default>
+                <label>Forestry</label>
+            </value>
+            <value>
+                <fullName>Industrial</fullName>
+                <default>false</default>
+                <label>Industrial</label>
+            </value>
+            <value>
+                <fullName>Personal</fullName>
+                <default>false</default>
+                <label>Personal</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>Commercial</fullName>
+                <default>false</default>
+                <label>Commercial</label>
+            </value>
+            <value>
+                <fullName>Custom</fullName>
+                <default>false</default>
+                <label>Custom</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

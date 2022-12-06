@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Related_Quote_Line__c</fullName>
+    <businessOwnerGroup>North_America_Admins</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>If the line item was created from a quote, this links to the original quote line item. A series of unique opportunity line items may point to the same quote line item if the quote line item had a quantity greater than one.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If the line item was created from a quote, this links to the original quote line item. A series of unique opportunity line items may point to the same quote line item if the quote line item had a quantity greater than one.</inlineHelpText>
+    <label>Related Quote Line</label>
+    <referenceTo>Quote_Line__c</referenceTo>
+    <relationshipName>Application_Line_Items</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

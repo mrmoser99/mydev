@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Synced_Quote_Stage_Name__c</fullName>
+    <businessOwnerUser>mmikael.franzen@dllgroup.com.st01d06</businessOwnerUser>
+    <businessStatus>Active</businessStatus>
+    <description>It is used for kanban settings. it is the synced quote status value. we have created this field because formula fields cannot be used in search. And cannot be translated. Used in reports.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Synced quote status value</inlineHelpText>
+    <label>Stage Name</label>
+    <required>false</required>
+    <securityClassification>External</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Calculation</fullName>
+                <default>false</default>
+                <label>Calculation</label>
+            </value>
+            <value>
+                <fullName>Calculation Expired</fullName>
+                <default>false</default>
+                <label>Calculation Expired</label>
+            </value>
+            <value>
+                <fullName>Assessment</fullName>
+                <default>false</default>
+                <label>Assessment</label>
+            </value>
+            <value>
+                <fullName>Refer</fullName>
+                <default>false</default>
+                <label>Refer</label>
+            </value>
+            <value>
+                <fullName>Declined</fullName>
+                <default>false</default>
+                <label>Declined</label>
+            </value>
+            <value>
+                <fullName>Approved</fullName>
+                <default>false</default>
+                <label>Approved</label>
+            </value>
+            <value>
+                <fullName>Approved With Conditions</fullName>
+                <default>false</default>
+                <label>Approved With Conditions</label>
+            </value>
+            <value>
+                <fullName>Documents Generated</fullName>
+                <default>false</default>
+                <label>Documents Generated</label>
+            </value>
+            <value>
+                <fullName>Pending Documentation</fullName>
+                <default>false</default>
+                <label>Pending Documentation</label>
+            </value>
+            <value>
+                <fullName>Pending Validation</fullName>
+                <default>false</default>
+                <label>Pending Validation</label>
+            </value>
+            <value>
+                <fullName>Pending Information</fullName>
+                <default>false</default>
+                <label>Pending Information</label>
+            </value>
+            <value>
+                <fullName>Expired</fullName>
+                <default>false</default>
+                <label>Expired</label>
+            </value>
+            <value>
+                <fullName>Funded/Won</fullName>
+                <default>false</default>
+                <label>Funded/Won</label>
+            </value>
+            <value>
+                <fullName>Lost</fullName>
+                <default>false</default>
+                <label>Lost</label>
+            </value>
+            <value>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+                <label>Cancelled</label>
+            </value>
+            <value>
+                <fullName>Pending E-Sign</fullName>
+                <default>false</default>
+                <label>Pending E-Sign</label>
+            </value>
+            <value>
+                <fullName>Pending Review</fullName>
+                <default>false</default>
+                <label>Pending Review</label>
+            </value>
+            <value>
+                <fullName>Blocked Due To Multiple PG</fullName>
+                <default>false</default>
+                <label>Blocked Due To Multiple PG</label>
+            </value>
+            <value>
+                <fullName>Review Completed</fullName>
+                <default>false</default>
+                <label>Review Completed</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

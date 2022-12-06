@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Test_Pipeline</fullName>
+    <booleanFilter>(1 OR 2) AND 3</booleanFilter>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>OPPORTUNITY.AMOUNT</columns>
+    <columns>OPPORTUNITY.CLOSE_DATE</columns>
+    <columns>Sub_Stage__c</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <filterScope>Mine</filterScope>
+    <filters>
+        <field>Sub_Stage__c</field>
+        <operation>equals</operation>
+        <value>Pre-Qualified,Quoting &amp; Proposals,Application Submitted,Application Pending,Application Conditioned,Application Approved,Documents Out,Documents Back,Purchase Order Sent,Invoice Received,D&amp;A Received,Prep for Funding,Passed to Funding</value>
+    </filters>
+    <filters>
+        <field>Sub_Stage__c</field>
+        <operation>equals</operation>
+        <value>Funding Team Accepted</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Opportunity.Direct,Opportunity.Retail</value>
+    </filters>
+    <label>*My Pipeline DSM</label>
+    <sharedTo>
+        <group>Amber_Team</group>
+        <group>SF_Admin</group>
+    </sharedTo>
+</ListView>

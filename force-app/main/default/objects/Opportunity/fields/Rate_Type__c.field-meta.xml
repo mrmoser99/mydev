@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rate_Type__c</fullName>
+    <description>Rate Type</description>
+    <externalId>false</externalId>
+    <label>Rate Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>LOW RATE</fullName>
+                <default>false</default>
+                <label>LOW RATE</label>
+            </value>
+            <value>
+                <fullName>STANDARD RATE</fullName>
+                <default>false</default>
+                <label>STANDARD RATE</label>
+            </value>
+            <value>
+                <fullName>SPECIAL RATE</fullName>
+                <default>false</default>
+                <label>SPECIAL RATE</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Customer_Authorization__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Authorization for checking customer credit</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Customer&apos;s credit check authorization flag</inlineHelpText>
+    <label>Customer Authorization</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

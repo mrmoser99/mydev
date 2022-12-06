@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CF_Account_ID__c</fullName>
+    <description>Formula field which holds the CF Account ID AutoNumber value from Account for CCRIS</description>
+    <externalId>false</externalId>
+    <formula>Account.CF_Account_ID__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>CCRIS AutoNumber</inlineHelpText>
+    <label>CF Account ID</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

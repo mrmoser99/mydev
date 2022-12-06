@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>My_Pipeline_All_Open_G_T</fullName>
+    <columns>Application_Date__c</columns>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>Dealer_Phone1__c</columns>
+    <columns>OPPORTUNITY.AMOUNT</columns>
+    <columns>OPPORTUNITY.STAGE_NAME</columns>
+    <columns>Sub_Stage__c</columns>
+    <columns>DocuSign__c</columns>
+    <columns>Miscellaneous_Notes__c</columns>
+    <columns>OPPORTUNITY.CLOSE_DATE</columns>
+    <filterScope>SalesTeam</filterScope>
+    <filters>
+        <field>OPPORTUNITY.STAGE_NAME</field>
+        <operation>notEqual</operation>
+        <value>Closed/Lost,Closed Won,Booked,Application Declined,Expired,Closed Lost,Withdrawn,Deleted,Cancelled</value>
+    </filters>
+    <filters>
+        <field>OpVendorCode__c</field>
+        <operation>equals</operation>
+        <value>E5,E4,U3,F5,J6,I4,I5,F6</value>
+    </filters>
+    <label>*My Pipeline (All Open) G&amp;T</label>
+    <sharedTo>
+        <role>Country_Sales_Manager_G_T</role>
+        <role>Sales_Support_G_T</role>
+    </sharedTo>
+</ListView>

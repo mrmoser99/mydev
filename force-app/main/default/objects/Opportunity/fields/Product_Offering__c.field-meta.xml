@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Product_Offering__c</fullName>
+    <externalId>false</externalId>
+    <label>Product Offering</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <controllingField>Business_Unit1__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Assignment</fullName>
+                <default>false</default>
+                <label>Assignment</label>
+            </value>
+            <value>
+                <fullName>Capital Lease</fullName>
+                <default>false</default>
+                <label>Capital Lease</label>
+            </value>
+            <value>
+                <fullName>Co-branded</fullName>
+                <default>false</default>
+                <label>Co-branded</label>
+            </value>
+            <value>
+                <fullName>Cost Per</fullName>
+                <default>false</default>
+                <label>Cost Per</label>
+            </value>
+            <value>
+                <fullName>Financial Solution Leasing</fullName>
+                <default>false</default>
+                <label>Financial Solution Leasing</label>
+            </value>
+            <value>
+                <fullName>FPPO</fullName>
+                <default>false</default>
+                <label>FPPO</label>
+            </value>
+            <value>
+                <fullName>Maintenance Financing</fullName>
+                <default>false</default>
+                <label>Maintenance Financing</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>Private Label</fullName>
+                <default>false</default>
+                <label>Private Label</label>
+            </value>
+            <value>
+                <fullName>Referral</fullName>
+                <default>false</default>
+                <label>Referral</label>
+            </value>
+            <value>
+                <fullName>Service Only</fullName>
+                <default>false</default>
+                <label>Service Only</label>
+            </value>
+            <value>
+                <fullName>Subscription Financing</fullName>
+                <default>false</default>
+                <label>Subscription Financing</label>
+            </value>
+            <value>
+                <fullName>Subsidized</fullName>
+                <default>false</default>
+                <label>Subsidized</label>
+            </value>
+            <value>
+                <fullName>True Lease</fullName>
+                <default>false</default>
+                <label>True Lease</label>
+            </value>
+            <value>
+                <fullName>Vendor Finance - FL</fullName>
+                <default>false</default>
+                <label>Vendor Finance - FL</label>
+            </value>
+            <value>
+                <fullName>Vendor Finance - Loan</fullName>
+                <default>false</default>
+                <label>Vendor Finance - Loan</label>
+            </value>
+            <value>
+                <fullName>Vendor Finance - OL</fullName>
+                <default>false</default>
+                <label>Vendor Finance - OL</label>
+            </value>
+            <value>
+                <fullName>Vendor Finance - Other</fullName>
+                <default>false</default>
+                <label>Vendor Finance - Other</label>
+            </value>
+            <value>
+                <fullName>Refresh</fullName>
+                <default>false</default>
+                <label>Refresh</label>
+            </value>
+            <value>
+                <fullName>Expansion</fullName>
+                <default>false</default>
+                <label>Expansion</label>
+            </value>
+            <value>
+                <fullName>Mac Upgrade</fullName>
+                <default>false</default>
+                <label>Mac Upgrade</label>
+            </value>
+            <value>
+                <fullName>Single Upfront Payment</fullName>
+                <default>false</default>
+                <label>Single Upfront Payment</label>
+            </value>
+            <value>
+                <fullName>Guaranteed Buyback</fullName>
+                <default>false</default>
+                <label>Guaranteed Buyback</label>
+            </value>
+            <value>
+                <fullName>Technology Utilization Agreement</fullName>
+                <default>false</default>
+                <label>Technology Utilization Agreement</label>
+            </value>
+            <value>
+                <fullName>Apple K12-Public Finance</fullName>
+                <default>false</default>
+                <label>Apple K12-Public Finance</label>
+            </value>
+            <value>
+                <fullName>Apple K12 - Taxable</fullName>
+                <default>false</default>
+                <label>Apple K12 - Taxable</label>
+            </value>
+            <value>
+                <fullName>Same-as-cash K12</fullName>
+                <default>false</default>
+                <label>Same-as-cash K12</label>
+            </value>
+            <value>
+                <fullName>Higher Education - Public Finance</fullName>
+                <default>false</default>
+                <label>Higher Education - Public Finance</label>
+            </value>
+            <value>
+                <fullName>Education - Mac Guaranteed Buyback</fullName>
+                <default>false</default>
+                <label>Education - Mac Guaranteed Buyback</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Assignment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Capital Lease</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Co-branded</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Cost Per</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>FPPO</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Maintenance Financing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Other</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Private Label</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Referral</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Service Only</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Subscription Financing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Subsidized</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction, Transportation &amp; Infrastructure (CTI)</controllingFieldValue>
+            <controllingFieldValue>Office Equipment (OE)</controllingFieldValue>
+            <controllingFieldValue>Food &amp; Agriculture (F&amp;A)</controllingFieldValue>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>True Lease</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Refresh</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Expansion</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Mac Upgrade</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Single Upfront Payment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Guaranteed Buyback</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Technology Utilization Agreement</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Apple K12-Public Finance</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Apple K12 - Taxable</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Same-as-cash K12</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Higher Education - Public Finance</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology Solutions</controllingFieldValue>
+            <valueName>Education - Mac Guaranteed Buyback</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <valueName>Financial Solution Leasing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <valueName>Vendor Finance - FL</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <valueName>Vendor Finance - Loan</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <valueName>Vendor Finance - OL</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Commercial Finance</controllingFieldValue>
+            <valueName>Vendor Finance - Other</valueName>
+        </valueSettings>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

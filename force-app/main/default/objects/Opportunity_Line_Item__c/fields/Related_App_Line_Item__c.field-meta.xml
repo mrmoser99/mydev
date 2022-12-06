@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Related_App_Line_Item__c</fullName>
+    <businessOwnerGroup>North_America_Admins</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Accessories or fees, for example, may be related back to a specific application line item.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Accessories or fees, for example, may be related back to a specific application line item.</inlineHelpText>
+    <label>Related App Line Item</label>
+    <referenceTo>Opportunity_Line_Item__c</referenceTo>
+    <relationshipName>Related_Application_Lines</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

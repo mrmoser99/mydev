@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reason_for_Loss_Is_Required</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    ISPICKVAL(Sub_Stage__c, &apos;Lost&apos;),
+    ISBLANK(Reason_for_Loss__c),
+    NOT($Permission.Override_Opportunity_Validation)
+)</errorConditionFormula>
+    <errorDisplayField>Reason_for_Loss__c</errorDisplayField>
+    <errorMessage>Please fill the reason for loss.</errorMessage>
+</ValidationRule>

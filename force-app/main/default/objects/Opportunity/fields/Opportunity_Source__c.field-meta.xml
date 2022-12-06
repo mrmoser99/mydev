@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Opportunity_Source__c</fullName>
+    <externalId>false</externalId>
+    <label>Opportunity Source</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Rabobank</fullName>
+                <default>false</default>
+                <label>Rabobank</label>
+            </value>
+            <value>
+                <fullName>DLL</fullName>
+                <default>false</default>
+                <label>DLL</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

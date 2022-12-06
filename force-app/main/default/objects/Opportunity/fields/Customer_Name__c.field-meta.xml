@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Customer_Name__c</fullName>
+    <businessOwnerUser>mmikael.franzen@dllgroup.com.st01d06</businessOwnerUser>
+    <businessStatus>Active</businessStatus>
+    <description>Customer&apos;s account name. It is used for list view. The text type of the field is selected to search by the value of this field</description>
+    <encryptionScheme>None</encryptionScheme>
+    <externalId>false</externalId>
+    <inlineHelpText>Customer&apos;s account name</inlineHelpText>
+    <label>Customer Name</label>
+    <length>255</length>
+    <required>false</required>
+    <securityClassification>External</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

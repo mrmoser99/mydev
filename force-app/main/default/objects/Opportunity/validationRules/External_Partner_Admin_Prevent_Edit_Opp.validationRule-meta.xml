@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>External_Partner_Admin_Prevent_Edit_Opp</fullName>
+    <active>true</active>
+    <description>If User = Partner Admin and Opportunity Owner &lt;&gt; Partner Admin
+Prevent Edits on Opportunities for DLL on Demand Go Live.</description>
+    <errorConditionFormula>$User.Profile_Name__c = &apos;Partner Admin&apos; &amp;&amp;
+CreatedBy.Profile.Name  &lt;&gt; &apos;Partner Admin&apos; &amp;&amp;
+NOT(ISNEW()) &amp;&amp;  $Organization.Id &lt;&gt; &apos;00D780000004eYh&apos;</errorConditionFormula>
+    <errorMessage>At this time, editing Applications is disabled - changes cannot be saved</errorMessage>
+</ValidationRule>

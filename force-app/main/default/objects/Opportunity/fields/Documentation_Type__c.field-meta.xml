@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Documentation_Type__c</fullName>
+    <externalId>false</externalId>
+    <label>Documentation Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Agreement for Inventory Finance</fullName>
+                <default>false</default>
+                <label>Agreement for Inventory Finance</label>
+            </value>
+            <value>
+                <fullName>Conditional Sales Agreement</fullName>
+                <default>false</default>
+                <label>Conditional Sales Agreement</label>
+            </value>
+            <value>
+                <fullName>Cost-Per-Procedure</fullName>
+                <default>false</default>
+                <label>Cost-Per-Procedure</label>
+            </value>
+            <value>
+                <fullName>Co-Terminous Addendum</fullName>
+                <default>false</default>
+                <label>Co-Terminous Addendum</label>
+            </value>
+            <value>
+                <fullName>CPC Agreement</fullName>
+                <default>false</default>
+                <label>CPC Agreement</label>
+            </value>
+            <value>
+                <fullName>Equipment Lease Agreement</fullName>
+                <default>false</default>
+                <label>Equipment Lease Agreement</label>
+            </value>
+            <value>
+                <fullName>Fee per Procedure</fullName>
+                <default>false</default>
+                <label>Fee per Procedure</label>
+            </value>
+            <value>
+                <fullName>Finance Agreement</fullName>
+                <default>false</default>
+                <label>Finance Agreement</label>
+            </value>
+            <value>
+                <fullName>Finance Order (Rental Fleet)</fullName>
+                <default>false</default>
+                <label>Finance Order (Rental Fleet)</label>
+            </value>
+            <value>
+                <fullName>Flex Lease Agreement</fullName>
+                <default>false</default>
+                <label>Flex Lease Agreement</label>
+            </value>
+            <value>
+                <fullName>HW Installment Payment Agreement</fullName>
+                <default>false</default>
+                <label>HW Installment Payment Agreement</label>
+            </value>
+            <value>
+                <fullName>Installment Payment Agreement</fullName>
+                <default>false</default>
+                <label>Installment Payment Agreement</label>
+            </value>
+            <value>
+                <fullName>Lease Agreement</fullName>
+                <default>false</default>
+                <label>Lease Agreement</label>
+            </value>
+            <value>
+                <fullName>Loan &amp; Security Agreement</fullName>
+                <default>false</default>
+                <label>Loan &amp; Security Agreement</label>
+            </value>
+            <value>
+                <fullName>Loan Agreement</fullName>
+                <default>false</default>
+                <label>Loan Agreement</label>
+            </value>
+            <value>
+                <fullName>Master Installment Payment Agreement</fullName>
+                <default>false</default>
+                <label>Master Installment Payment Agreement</label>
+            </value>
+            <value>
+                <fullName>Master Lease Agreement</fullName>
+                <default>false</default>
+                <label>Master Lease Agreement</label>
+            </value>
+            <value>
+                <fullName>Master Lease Schedule $OUT</fullName>
+                <default>false</default>
+                <label>Master Lease Schedule $OUT</label>
+            </value>
+            <value>
+                <fullName>Master Lease Schedule FMV</fullName>
+                <default>false</default>
+                <label>Master Lease Schedule FMV</label>
+            </value>
+            <value>
+                <fullName>Master Lease Schedule Stated</fullName>
+                <default>false</default>
+                <label>Master Lease Schedule Stated</label>
+            </value>
+            <value>
+                <fullName>Master Rental Agreement</fullName>
+                <default>false</default>
+                <label>Master Rental Agreement</label>
+            </value>
+            <value>
+                <fullName>Master Schedule</fullName>
+                <default>false</default>
+                <label>Master Schedule</label>
+            </value>
+            <value>
+                <fullName>Master Schedule Auto Commence</fullName>
+                <default>false</default>
+                <label>Master Schedule Auto Commence</label>
+            </value>
+            <value>
+                <fullName>MIPA Schedule</fullName>
+                <default>false</default>
+                <label>MIPA Schedule</label>
+            </value>
+            <value>
+                <fullName>MLA Schedule $OUT</fullName>
+                <default>false</default>
+                <label>MLA Schedule $OUT</label>
+            </value>
+            <value>
+                <fullName>MLA Schedule FMV</fullName>
+                <default>false</default>
+                <label>MLA Schedule FMV</label>
+            </value>
+            <value>
+                <fullName>MLA Schedule FPPO</fullName>
+                <default>false</default>
+                <label>MLA Schedule FPPO</label>
+            </value>
+            <value>
+                <fullName>Print At Your Service Subscription Agreement</fullName>
+                <default>false</default>
+                <label>Print At Your Service Subscription Agreement</label>
+            </value>
+            <value>
+                <fullName>Rental Agreement</fullName>
+                <default>false</default>
+                <label>Rental Agreement</label>
+            </value>
+            <value>
+                <fullName>Rental Lease Agreement</fullName>
+                <default>false</default>
+                <label>Rental Lease Agreement</label>
+            </value>
+            <value>
+                <fullName>Software Agreement</fullName>
+                <default>false</default>
+                <label>Software Agreement</label>
+            </value>
+            <value>
+                <fullName>Technology Utilization Agreement</fullName>
+                <default>false</default>
+                <label>Technology Utilization Agreement</label>
+            </value>
+            <value>
+                <fullName>True Rental Agreement</fullName>
+                <default>false</default>
+                <label>True Rental Agreement</label>
+            </value>
+            <value>
+                <fullName>Co-Terminous Addendum  (CTA)</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Co-Terminous Addendum  (CTA)</label>
+            </value>
+            <value>
+                <fullName>Unknown</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Unknown</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
