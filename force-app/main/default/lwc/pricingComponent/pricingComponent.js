@@ -727,9 +727,11 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     
     //Functions for loading in dependent picklist values
     loadRates() {
-        //console.log('this asstypequote' + this.assetTypeQuote);
+        console.log('this asstypequote' + this.assetTypeQuote + this.program + this.financeType);
+        
         getFinancialProducts({programId: this.program, financetype: this.financeType, newused: this.assetTypeQuote})
             .then(result => {
+                console.log('result: ' + JSON.stringify(result));
                 let plist = [];
                 let tempData = JSON.parse(result);
              
@@ -754,18 +756,21 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                     }
 
                 }
-                //console.log(plist);
+                console.log(plist);
                 this.rateTypePicklist = plist;
                 this.loading = false;
 
-                //console.log('loadRates done');
+                console.log('loadRates done');
 
             })
             .catch(error => {
+                console.log('error' + error);
                 this.showToast('Something went wrong', error.body.message, 'error');
                 this.loading = false;
                 this.rateTypePicklist = undefined;
             });
+
+            console.log('this asstypequote leaveving');
     }
 
     
@@ -988,23 +993,21 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     *  
     ***************************************************************************************************************/
     handleDependentRatesPicklistChange(message) {
-        //console.log('handle depending in pricing compt');
-
-     
-
-        let name = 'program';
-        this.quoteObject[name] = this.quoteObject.program;
-        this.quoteObject[name +'Id'] = this.quoteObject.programId;
         
+        //let name = 'program';
+        //this.quoteObject[name] = this.quoteObject.program;
+        //this.quoteObject[name +'Id'] = this.quoteObject.programId;
         
+        console.log('handle depending in pricing compt' + JSON.stringify(this.quoteObject));
+
         this.loading = true;
 
         this[name] = message;
         this.displayLocation = this.quoteObject.location;
         this.displayProgram = this.quoteObject.program;
 
-        //console.log(JSON.stringify(this.quoteObject)); 
-        //console.log('load rates 2');
+        console.log(JSON.stringify(this.quoteObject)); 
+        console.log('load rates 2');
         this.loadRates();
 
     
@@ -1086,104 +1089,18 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     *  
     ***************************************************************************************************************/
     handleCancel(event) {
+
         this.loading = true;
-        this.displayModal = false;
 
-        this.activeOption = undefined;
+        const passEvent = new CustomEvent('childcancel', {
+            detail: {quote: this.quoteObject, activeTabValue:'proposal'} 
+            });
+            this.dispatchEvent(passEvent);
 
-        let prog;
-        let progId;
-        let loc;
-        let salesId;
-        let quoteNickname;
-        let assetTypeQuoteCopy;
 
-        if (this.hasQuotes) {
-            this.specificationTabActive = false;
-            this.optionsPicklistVal = 'New Option';
-            this.template.querySelector('lightning-tabset').activeTabValue = 'proposal';
-            prog = this.quoteObject.program;
-            progId = this.quoteObject.programId;
-            loc = this.quoteObject.location;
-            salesId = this.quoteObject.salesRep;
-            assetTypeQuoteCopy = this.quoteObject.assetTypeQuote;
-            quoteNickname = this.nickname;
-        } else {
-            prog = undefined;
-            progId = undefined;
-            loc = undefined;
-            salesId = undefined;
-            quoteNickname = undefined;
-            assetTypeQuoteCopy = undefined;
-            this.nickname = undefined;
-            this.salesRep = undefined;
-            this.location = undefined;
-            this.program = undefined;
-            this.assetTypeQuote = undefined;
-            this.hasLocationSelection = true;
-            this.hasLocationSelectionSalesRep = true;
-        }
-
-        this.leaseTypeSummary = '-';
-        this.rateTypeSummary = '-';
-        this.advancedPaymentsSummary = '-';
-        this.baseUnitSalesPriceSummary = '-';
-        this.baseUnitSalesPriceWithoutDuplicatesSummary = '-';
-        this.totalPaymentSummary = '-';
-        this.residualSummary = '-';
-        this.interestRateSummary = '-';
-        this.termSummary = '-';
-
-        this.quoteObject = {
-            deleteAssets: [],
-            financeType:'BO',
-            paymentFrequency: 'Monthly',
-            advPayments: '0',
-            assetTypeQuote: assetTypeQuoteCopy,
-            nickname: quoteNickname,
-            program:  prog,
-            programId: progId,
-            location: loc,
-            salesRep: salesId
-        };
-
-        if (this.opportunityId) {
-            this.quoteObject.oppId = this.opportunityId;
-            this.quoteObject.isEdit = false;
-            this.quoteObject.isClone = true;
-            this.showCreateInstead = true;
-        } else {
-            this.quoteObject.isEdit = false;
-            this.quoteObject.isClone = false;
-            this.showCreateInstead = false;
-        }
-
-        this.assets = [{
-            sectionName: 'asset0',
-            assetHeading: 'Asset 1',
-            assetNo: 0,
-            isFirst: true
-        }];
-        this.accessories = [{
-            accNo: 0,
-            accessoryHeading: 'Accessory 1',
-            isFirst: true
-        }];
-        //this.program = '';
-        //this.assetTypeQuote = 'New';
-
-        //finance attributes
-        this.rateType = '';
-        this.financeTerm = '';
-        this.financeType = 'BO';
-        this.paymentFrequency = 'Monthly';
-        this.advPayments = '0';
-
-        this.comments = '';
-        setTimeout(() => {
-            this.loading = false;
-            //console.log('handleCancel finished');
-        }, 500);
+        console.log('pricing component handle cancel');
+        
+        this.loading = false;
     }
 
     
@@ -2030,7 +1947,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     createQuote(passingParam) {
         createQuoteOpportunity({jsonInput: passingParam})
             .then(result => {
-                this.showToast('Quote has been created!', 'Quote was created successfully', 'success');
+                
                 this.parseData(result);
                 if (!this.onlyValidateHeader) {
                     this.addMissingOptionSummary(result);
@@ -2046,6 +1963,13 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 
                 this.saveRunning = false;
                 this.onlyValidateHeader = false;
+                this.showToast('Quote has been created!', 'Quote was created successfully', 'success');
+                
+                const passEvent = new CustomEvent('childsave', {
+                        detail: {quote: this.quoteObject, activeTabValue:'proposal'} 
+                    });
+                     
+                this.dispatchEvent(passEvent);
                 
             })
             .catch(error => {

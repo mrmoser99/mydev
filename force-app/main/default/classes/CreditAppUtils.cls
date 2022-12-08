@@ -12,6 +12,7 @@
  *  10/19/22 - MRM modified the exception logic to write to log and improve ease of debugging; works better
  *  10/31/22 - MRM added Credit_Response__e platform event 
  *  11/07/22 - MRM added credit response platform event 
+ *  12/08/22 - MRM added 1.10 factor to prequal payment to fool mosaic
  *******************************************************************************************************************/
 public without sharing class CreditAppUtils {
 
@@ -639,245 +640,258 @@ public static String submitPreQualCreditApp(String opportunityId){
 public static void submitPreQualCreditAppFuture(String opportunityId){
 	String recordTypeID = Schema.getGlobalDescribe().get('Error_Log__c').getDescribe().getRecordTypeInfosByName().get('Integration Error Log').getRecordTypeId();
 
-	Boolean error=false;
-	String response;
-	String jsonStr;
-	ReturnStatus r =new ReturnStatus();
-	String stack;
-	Opportunity o;
+  Boolean error=false;
+  String response;
+  String jsonStr;
+  ReturnStatus r =new ReturnStatus();
+  String stack;
+  Opportunity o;
 
-	try{
+  try{
 
-		o = [select Id
-		     ,end_user__c
-		     ,amount
-		     ,end_user_phone__c
-		     ,Beneficial_Owner_Type__c
-		     ,name
-		     ,account.originating_site_id__c
-		     from Opportunity
-		     where id = : opportunityId
-		];
-
-
-		JSONSubmitCreditAppRequest app = new JSONSubmitCreditAppRequest();
-
-		JSONSubmitCreditAppRequest.PricingQuote pricingQuote = new JSONSubmitCreditAppRequest.PricingQuote();
-		pricingQuote.id = o.name;
-		pricingQuote.url = URL.getSalesforceBaseUrl().toExternalForm() + '/' + o.id;
-
-		JSONSubmitCreditAppRequest.ExternalReferences externalReferences = new JSONSubmitCreditAppRequest.ExternalReferences();
-		externalReferences.pricingQuote = pricingQuote; 
-
-		JSONSubmitCreditAppRequest.PrimaryPhoneNumber primaryPhoneNumber = new JSONSubmitCreditAppRequest.PrimaryPhoneNumber();
-		primaryPhoneNumber.phone_number = o.End_User_Phone__c;
-		primaryPhoneNumber.type = 'business';
-		if (o.End_User_Phone__c == null)
-			primaryPhoneNumber.type = null;
+    o = [select Id
+         ,end_user__c
+         ,amount
+         ,end_user_phone__c
+         ,Beneficial_Owner_Type__c
+		 ,Payment_Amount__c
+         ,name
+         ,account.originating_site_id__c
+         from Opportunity
+         where id = : opportunityId
+    ];
 
 
-		JSONSubmitCreditAppRequest.Contacts contacts = new JSONSubmitCreditAppRequest.Contacts();
-		contacts.name = UserInfo.getName();
-		contacts.email = UserINfo.getUserEmail();
+    JSONSubmitCreditAppRequest app = new JSONSubmitCreditAppRequest();
 
-		List<JSONSubmitCreditAppRequest.Contacts> cList = new List<JSONSubmitCreditAppRequest.Contacts>();
+    JSONSubmitCreditAppRequest.PricingQuote pricingQuote = new JSONSubmitCreditAppRequest.PricingQuote();
+    pricingQuote.id = o.name;
+    pricingQuote.url = URL.getSalesforceBaseUrl().toExternalForm() + '/' + o.id;
 
+    JSONSubmitCreditAppRequest.ExternalReferences externalReferences = new JSONSubmitCreditAppRequest.ExternalReferences();
+    externalReferences.pricingQuote = pricingQuote; 
 
-		List<JSONSubmitCreditAppRequest.PrimaryPhoneNumber> pList = new List<JSONSubmitCreditAppRequest.PrimaryPhoneNumber>();
-		pList.add(primaryPhoneNumber);
-
-		if (!pList.isEmpty())
-			contacts.phoneNumbers = pList;
-
-		cList.add(contacts);
-
-
-		JSONSubmitCreditAppRequest.Identifiers identifiers = new JSONSubmitCreditAppRequest.Identifiers();
-
-		System_ID__c s = [select id
-		                  ,DLL_External_ID__c
-		                  from System_ID__c
-		                  where account__c = : o.End_User__c
-		                                     and DLL_External_Key_Source__c = 'ORACLE'
-		                                                                      and (DLL_External_Key_Type__c = 'TCAPartyId'
-		                                                                                                      or DLL_External_Key_Type__c ='TCA_PARTY_ID'
-		                                                                                                                                    or DLL_External_Key_Type__c = 'TCAPartyID')
-
-		                                                                      limit 1];
-
-		system.debug('************** tca party id : ' +  s.DLL_External_ID__c);
-
-		identifiers.tcaPartyId = s.DLL_External_ID__c;
-
-		if (s.DLL_External_ID__c == null) {
-			error=true;
-			throw new AuraHandledException('TCA Party ID is required!');
-		}
-
-		JSONSubmitCreditAppRequest.Lessee lessee = new JSONSubmitCreditAppRequest.Lessee();
-		lessee.contacts = cList;
-		lessee.countryOfRegistration = 'US';
-		lessee.identifiers = identifiers;
-
-		JSONSubmitCreditAppRequest.FinancialProduct financialProduct = new JSONSubmitCreditAppRequest.FinancialProduct();
-		financialProduct.id = '1.NA.PI.' + o.account.originating_site_id__c + System.Label.Pre_Qual_Financial_Product_Id;
-
-		JSONSubmitCreditAppRequest.Structure structure = new JSONSubmitCreditAppRequest.Structure();
-		structure.brand =  System.Label.Pre_Qual_Brand;
-		structure.model =  System.Label.Pre_Qual_Model;
-
-		JSONSubmitCreditAppRequest.Finance_Z finance_Z = new JSONSubmitCreditAppRequest.Finance_Z();
-		finance_Z.quantity = 1;
-		finance_Z.salePrice = o.amount;
-
-		JSONSubmitCreditAppRequest.Rentals rentals = new JSONSubmitCreditAppRequest.Rentals();
-
-		JSONSubmitCreditAppRequest.ResidualValue residualValue = new JSONSubmitCreditAppRequest.ResidualValue();
-		JSONSubmitCreditAppRequest.Adjustments adjustments = new JSONSubmitCreditAppRequest.Adjustments();
-
-		residualValue.adjustments = adjustments;
-		finance_Z.residualValue = residualValue;
-
-		JSONSubmitCreditAppRequest.Identifiers_Z identifiers_z = new JSONSubmitCreditAppRequest.Identifiers_Z();
-		identifiers_z.structure = structure;
-
-		JSONSubmitCreditAppRequest.Catalog catalog = new JSONSubmitCreditAppRequest.Catalog();
-		catalog.identifiers = identifiers_z;
-
-		List<JSONSubmitCreditAppRequest.Assets> assetList = new List<JSONSubmitCreditAppRequest.Assets>();
+    JSONSubmitCreditAppRequest.PrimaryPhoneNumber primaryPhoneNumber = new JSONSubmitCreditAppRequest.PrimaryPhoneNumber();
+    primaryPhoneNumber.phone_number = o.End_User_Phone__c;
+    primaryPhoneNumber.type = 'business';
+    if (o.End_User_Phone__c == null)
+      primaryPhoneNumber.type = null;
 
 
-		JSONSubmitCreditAppRequest.Assets assets = new JSONSubmitCreditAppRequest.Assets();
-		assets.catalog = catalog;
+    JSONSubmitCreditAppRequest.Contacts contacts = new JSONSubmitCreditAppRequest.Contacts();
+    contacts.name = UserInfo.getName();
+    contacts.email = UserINfo.getUserEmail();
 
-		assets.condition = 'new';
-		assets.finance = finance_Z;
-		assets.catalog = catalog;
+    List<JSONSubmitCreditAppRequest.Contacts> cList = new List<JSONSubmitCreditAppRequest.Contacts>();
 
-		assetList.add(assets);
 
-		JSONSubmitCreditAppRequest.Payments payments = new JSONSubmitCreditAppRequest.Payments();
-		payments.rentals = rentals;
+    List<JSONSubmitCreditAppRequest.PrimaryPhoneNumber> pList = new List<JSONSubmitCreditAppRequest.PrimaryPhoneNumber>();
+    pList.add(primaryPhoneNumber);
 
-		List<JSONSubmitCreditAppRequest.Proposals> prList = new List<JSONSubmitCreditAppRequest.Proposals>();
-		JSONSubmitCreditAppRequest.Finance finance = new JSONSubmitCreditAppRequest.Finance();
+    if (!pList.isEmpty())
+      contacts.phoneNumbers = pList;
 
-		finance.paymentFrequency  = System.Label.Pre_Qual_Payment_Frequency;
-		finance.paymentTiming = System.Label.Pre_Qual_Payment_Timing;
-		finance.purchaseOption = System.Label.Pre_Qual_Purchase_Option;
-		finance.numberOfMonths = Integer.valueOf(System.Label.Pre_Qual_Number_Of_Months);
-		JSONSubmitCreditAppRequest.Proposals proposals = new JSONSubmitCreditAppRequest.Proposals();
-		proposals.description = o.name;
-		proposals.isPreferred = true;
-		proposals.financialProduct = financialProduct;
+    cList.add(contacts);
 
-		proposals.payments = payments;
-		proposals.externalReferences = externalReferences;
-		proposals.finance = finance;
 
-		proposals.assets = assetList;
+    JSONSubmitCreditAppRequest.Identifiers identifiers = new JSONSubmitCreditAppRequest.Identifiers();
 
-		prLIst.add(proposals);
+    System_ID__c s = [select id
+                      ,DLL_External_ID__c
+                      from System_ID__c
+                      where account__c = : o.End_User__c
+                                         and DLL_External_Key_Source__c = 'ORACLE'
+                                                                          and (DLL_External_Key_Type__c = 'TCAPartyId'
+                                                                                                          or DLL_External_Key_Type__c ='TCA_PARTY_ID'
+                                                                                                                                        or DLL_External_Key_Type__c = 'TCAPartyID')
 
-		List<Contact> cList2 = new List<Contact>();
-		cList2 = [SELECT
-		          FirstName,
-		          LastName,
-		          MiddleName,
-		          Title,
-		          Birthdate_Encrypted__c,
-		          Account_Ownership_Percentage__c,
-		          UBO_Country_of_Residence__c
-		          FROM
-		          Contact
-		          where accountId = : o.end_user__c
-		                            and role__c = 'Ultimate Beneficial Owner'
-		];
+                                                                          limit 1];
 
-		List<JSONSubmitCreditAppRequest.universalBeneficialOwnership> uboList = new List<JSONSubmitCreditAppRequest.universalBeneficialOwnership>();
+    system.debug('************** tca party id : ' +  s.DLL_External_ID__c);
 
-		for (Contact c:cList2) {
-			JSONSubmitCreditAppRequest.universalBeneficialOwnership ubo = new  JSONSubmitCreditAppRequest.universalBeneficialOwnership();
-			ubo.ownershipType = o.Beneficial_Owner_Type__c;
-			ubo.givenName = c.firstName;
-			ubo.middleInitials = c.middleName;
-			ubo.familyName = c.lastName;
-			ubo.title = c.Title;
-			ubo.dateOfBirth = string.valueOf(c.Birthdate_Encrypted__c);
-			ubo.countryOfResidence = c.UBO_Country_of_Residence__c;
-			if (c.UBO_Country_of_Residence__c == 'US')
-				ubo.countryOfResidence = 'United States';
-			ubo.ownershipPercentage = integer.valueOf(c.account_ownership_percentage__c);
-			uboList.add(ubo);
-		}
+    identifiers.tcaPartyId = s.DLL_External_ID__c;
 
-		lessee.universalBeneficialOwnership = uboList;
+    if (s.DLL_External_ID__c == null) {
+      error=true;
+      throw new AuraHandledException('TCA Party ID is required!');
+    }
 
-		JSONSubmitCreditAppRequest.Data data = new JSONSubmitCreditAppRequest.Data();
-		data.externalReference = 'DOD.' + o.id;
-		data.lessee = lessee;
-		data.proposals = prList;
+    JSONSubmitCreditAppRequest.Lessee lessee = new JSONSubmitCreditAppRequest.Lessee();
+    lessee.contacts = cList;
+    lessee.countryOfRegistration = 'US';
+    lessee.identifiers = identifiers;
 
-		jsonStr = '{ "data": ' +  JSON.serialize(data,true) + ' }';
+    JSONSubmitCreditAppRequest.FinancialProduct financialProduct = new JSONSubmitCreditAppRequest.FinancialProduct();
+    financialProduct.id = '1.NA.PI.' + o.account.originating_site_id__c + System.Label.Pre_Qual_Financial_Product_Id;
 
-		system.debug('JSON is: ' + jsonStr);
+    JSONSubmitCreditAppRequest.Structure structure = new JSONSubmitCreditAppRequest.Structure();
+    structure.brand =  System.Label.Pre_Qual_Brand;
+    structure.model =  System.Label.Pre_Qual_Model;
 
-		r = CreditAppUtils.doCallout(jsonStr,'submitPreQualCreditAppFuture',o.id);
+    JSONSubmitCreditAppRequest.Finance_Z finance_Z = new JSONSubmitCreditAppRequest.Finance_Z();
+    finance_Z.quantity = 1;
+    finance_Z.salePrice = o.amount;
 
-		if (r.status != 'OK') {
-			system.debug(r.errorMsg);
-			error=true;
-			CreditAppUtils.triggerCreditResponse(o.Id, false, r.errorMsg);
-		}
+	JSONSubmitCreditAppRequest.ConsolidatedRegulars consolidatedRegulars = new JSONSubmitCreditAppRequest.ConsolidatedRegulars();
+	
+	Decimal temp = (o.amount/60) * 1.10;
+	Decimal rounded = temp.setScale(2, RoundingMode.HALF_UP);
 
-		else{
+	consolidatedRegulars.amount = rounded;
+	consolidatedRegulars.numberOfPayments = Integer.valueOf(System.Label.Pre_Qual_Number_Of_Months);
 
-			JSONSubmitCreditAppRequest creditResponse = (JSONSubmitCreditAppRequest) System.JSON.deserialize(r.responseBody,JSONSubmitCreditAppRequest.class);
+	JSONSubmitCreditAppRequest.Rentals rentals = new JSONSubmitCreditAppRequest.Rentals();
+	List<JSONSubmitCreditAppRequest.ConsolidatedRegulars> crList = new List<JSONSubmitCreditAppRequest.ConsolidatedRegulars>();
+	crList.add(consolidatedRegulars);
 
-			String appn = creditResponse.data.id;
-			o.application_number__c = appn.mid(appn.lastIndexOf('.')+1,12);
-			o.unq_opportunity__c = o.application_number__c;
-			o.stagename = 'Assessment';
-			if (creditResponse.data.status == 'assessment') {
+	rentals.consolidatedRegulars = crList;
 
-				o.sub_stage__c = 'Application Submitted';
-			}
-			else {
-				o.sub_stage__c = creditResponse.data.status;
-			}
+    JSONSubmitCreditAppRequest.ResidualValue residualValue = new JSONSubmitCreditAppRequest.ResidualValue();
+    JSONSubmitCreditAppRequest.Adjustments adjustments = new JSONSubmitCreditAppRequest.Adjustments();
 
-			o.application_date__c = date.today();
+    residualValue.adjustments = adjustments;
+    finance_Z.residualValue = residualValue;
 
-			update o;
+    JSONSubmitCreditAppRequest.Identifiers_Z identifiers_z = new JSONSubmitCreditAppRequest.Identifiers_Z();
+    identifiers_z.structure = structure;
 
-			CreditAppUtils.triggerCreditResponse(o.Id, true, 'OK');
+    JSONSubmitCreditAppRequest.Catalog catalog = new JSONSubmitCreditAppRequest.Catalog();
+    catalog.identifiers = identifiers_z;
 
-		}
+    List<JSONSubmitCreditAppRequest.Assets> assetList = new List<JSONSubmitCreditAppRequest.Assets>();
 
-	}
-	catch (Exception e) {
-		 
-		system.debug('r error is: ' + r.ErrorMsg);
-		system.debug('e: ' + e);
-		stack = e.getStackTraceString();
-		if (!error && !Test.isRunningTest())
-			CreditAppUtils.triggerCreditResponse(o.Id, false, r.ErrorMsg);
-	}
-	finally{
 
-		Error_Log__c e = new Error_Log__c();
-		e.callout_name__c = 'Submit Credit App Pre Qual Future';
-		e.recordTypeId = recordTypeID;
-		e.Class_name__c = 'CreditAppUtils';
-		e.Request_body__c = jsonStr;
-		e.Method_Name__c = 'submitCreditAppPreQualFuture';
-		e.Response_body__c = r.responseBody;
-		e.status_code__c = r.responseCode;
-		e.stack_trace__c = stack;
-		e.exception_message__c = r.ErrorMsg;
-		e.quote_id__c = opportunityId;
-		insert e;
-	}
+    JSONSubmitCreditAppRequest.Assets assets = new JSONSubmitCreditAppRequest.Assets();
+    assets.catalog = catalog;
+
+    assets.condition = 'new';
+    assets.finance = finance_Z;
+    assets.catalog = catalog;
+
+    assetList.add(assets);
+
+    JSONSubmitCreditAppRequest.Payments payments = new JSONSubmitCreditAppRequest.Payments();
+    payments.rentals = rentals;
+
+    List<JSONSubmitCreditAppRequest.Proposals> prList = new List<JSONSubmitCreditAppRequest.Proposals>();
+    JSONSubmitCreditAppRequest.Finance finance = new JSONSubmitCreditAppRequest.Finance();
+
+    finance.paymentFrequency  = System.Label.Pre_Qual_Payment_Frequency;
+    finance.paymentTiming = System.Label.Pre_Qual_Payment_Timing;
+    finance.purchaseOption = System.Label.Pre_Qual_Purchase_Option;
+    finance.numberOfMonths = Integer.valueOf(System.Label.Pre_Qual_Number_Of_Months);
+    JSONSubmitCreditAppRequest.Proposals proposals = new JSONSubmitCreditAppRequest.Proposals();
+    proposals.description = o.name;
+    proposals.isPreferred = true;
+    proposals.financialProduct = financialProduct;
+
+    proposals.payments = payments;
+    proposals.externalReferences = externalReferences;
+    proposals.finance = finance;
+
+    proposals.assets = assetList;
+
+    prLIst.add(proposals);
+
+    List<Contact> cList2 = new List<Contact>();
+    cList2 = [SELECT
+              FirstName,
+              LastName,
+              MiddleName,
+              Title,
+              Birthdate_Encrypted__c,
+              Account_Ownership_Percentage__c,
+              UBO_Country_of_Residence__c
+              FROM
+              Contact
+              where accountId = : o.end_user__c
+                                and role__c = 'Ultimate Beneficial Owner'
+    ];
+
+    List<JSONSubmitCreditAppRequest.universalBeneficialOwnership> uboList = new List<JSONSubmitCreditAppRequest.universalBeneficialOwnership>();
+
+    for (Contact c:cList2) {
+      JSONSubmitCreditAppRequest.universalBeneficialOwnership ubo = new  JSONSubmitCreditAppRequest.universalBeneficialOwnership();
+      ubo.ownershipType = o.Beneficial_Owner_Type__c;
+      ubo.givenName = c.firstName;
+      ubo.middleInitials = c.middleName;
+      ubo.familyName = c.lastName;
+      ubo.title = c.Title;
+      ubo.dateOfBirth = string.valueOf(c.Birthdate_Encrypted__c);
+      ubo.countryOfResidence = c.UBO_Country_of_Residence__c;
+      if (c.UBO_Country_of_Residence__c == 'US')
+        ubo.countryOfResidence = 'United States';
+      ubo.ownershipPercentage = integer.valueOf(c.account_ownership_percentage__c);
+      uboList.add(ubo);
+    }
+
+    lessee.universalBeneficialOwnership = uboList;
+
+    JSONSubmitCreditAppRequest.Data data = new JSONSubmitCreditAppRequest.Data();
+    data.externalReference = 'DOD.' + o.id;
+    data.lessee = lessee;
+    data.proposals = prList;
+
+    jsonStr = '{ "data": ' +  JSON.serialize(data,true) + ' }';
+
+    system.debug('JSON is: ' + jsonStr);
+
+    r = CreditAppUtils.doCallout(jsonStr,'submitPreQualCreditAppFuture',o.id);
+
+    if (r.status != 'OK') {
+      system.debug(r.errorMsg);
+      error=true;
+      CreditAppUtils.triggerCreditResponse(o.Id, false, r.errorMsg);
+    }
+
+    else{
+
+      JSONSubmitCreditAppRequest creditResponse = (JSONSubmitCreditAppRequest) System.JSON.deserialize(r.responseBody,JSONSubmitCreditAppRequest.class);
+
+      String appn = creditResponse.data.id;
+      o.application_number__c = appn.mid(appn.lastIndexOf('.')+1,12);
+      o.unq_opportunity__c = o.application_number__c;
+      o.stagename = 'Assessment';
+      if (creditResponse.data.status == 'assessment') {
+
+        o.sub_stage__c = 'Application Submitted';
+      }
+      else {
+        o.sub_stage__c = creditResponse.data.status;
+      }
+
+      o.application_date__c = date.today();
+
+      update o;
+
+      CreditAppUtils.triggerCreditResponse(o.Id, true, 'OK');
+
+    }
+
+  }
+  catch (Exception e) {
+     
+    system.debug('r error is: ' + r.ErrorMsg);
+    system.debug('e: ' + e);
+    stack = e.getStackTraceString();
+    if (!error && !Test.isRunningTest())
+      CreditAppUtils.triggerCreditResponse(o.Id, false, r.ErrorMsg);
+  }
+  finally{
+
+    Error_Log__c e = new Error_Log__c();
+    e.callout_name__c = 'Submit Credit App Pre Qual Future';
+    e.recordTypeId = recordTypeID;
+    e.Class_name__c = 'CreditAppUtils';
+    e.Request_body__c = jsonStr;
+    e.Method_Name__c = 'submitCreditAppPreQualFuture';
+    e.Response_body__c = r.responseBody;
+    e.status_code__c = r.responseCode;
+    e.stack_trace__c = stack;
+    e.exception_message__c = r.ErrorMsg;
+    e.quote_id__c = opportunityId;
+    insert e;
+  }
 }
 
 

@@ -276,14 +276,15 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
     connectedCallback() {
         //  this.showToast('This is the Opportunity Id', this.oppid, 'success');
         //console.log('Opportunity Id provided2');
-        
+         
         //console.log(this.oppid);
-        this.loading = false;
+        this.loading = true;
         if (this.oppid) {
             this.loading = true;
             this.isLoadedQuote = true;
             queryQuoteOpportunity({'oppId' : this.oppid})
                 .then(result => {
+                    this.loading = true;
                     this.parseData(result);
                     this.addPricingDataToLoadedQuotes();
                     if (this.options.length !== 0) {
@@ -322,7 +323,9 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                             this.creditAppId = this.options[0].quote.Id;
                         }
                         let loadsToGo = 2;
+
                         if (this.location) {
+                            this.loading = true;
                             getPrograms({siteName: this.location})
                                 .then(result => {
                                     let plist = [];
@@ -349,9 +352,11 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                                 this.programPicklist = undefined;
                                 return;
                             });
+                            this.loading = true;
                              
                             getSalesReps({ originatingSiteId: this.location })
                                 .then(result => {
+
 
                                     let data = JSON.parse(result);
                                     let sList = [];
@@ -952,6 +957,8 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
     *  
     ***************************************************************************************************************/
     handleCancel(event) {
+
+        console.log('handle cancel');
         this.loading = true;
         this.displayModal = false;
 
@@ -1328,6 +1335,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
     ***************************************************************************************************************/
     handleAssetClone(event) {
  
+        console.log('handleAssetClone');
         this.loading = true;
         this.quoteObject.isClone = true;
         this.quoteObject.isEdit = false;
@@ -1733,7 +1741,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
             }*/
             
             //console.log('addOptionSummaries Finished');
-        }, 750);
+        }, 1);
     }
 
     
@@ -2422,7 +2430,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
     ***************************************************************************************************************/
     handleDealerProposal(event) {
         this.CustomerProposal = event.target.value;
-        //console.log('inside cust this.oppid=>' + this.opportunityId);
+        console.log('inside cust this.oppid=>' + this.opportunityId);
         let baseUrl = this.getBaseUrl();
         getSmartCommDoc({
             batchConfigResId: 990380852,
@@ -2430,7 +2438,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
             proposalType: 'DealerProposal'
         }).then(result => {
             if (result) {
-                //console.log('success' + JSON.stringify(result));
+                console.log('success' + JSON.stringify(result));
                 this.docID = result;
                 this.finalurl = baseUrl + 'sfc/servlet.shepherd/document/download/' + this.docID + '?operationContext=S1';
                 this[NavigationMixin.Navigate]({
@@ -2440,9 +2448,13 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                     }
                 }, false);
             }
+            else{
+                 this.showToast( 'An error has occurred generating document!', '', 'error');
+            }
 
         }).catch(error => {
             this.error = error;
+            this.showToast( 'An error has occurred generating document!', JSON.stringify(error), 'error');
             //console.log(this.error);
             // this.loader = false;
         })
@@ -2472,9 +2484,13 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                     }
                 }, false);
             }
+            else{
+                 this.showToast( 'An error has occurred generating document!', JSON.stringify(result), 'error');
+            }
 
         }).catch(error => {
             this.error = error;
+            this.showToast( 'An error has occurred generating document!','', 'error');
             //console.log(this.error);
             // this.loader = false;
         })

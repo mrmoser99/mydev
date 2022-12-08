@@ -11,6 +11,7 @@
  *  7/11/2022 - MRM fixed duplicate accounts from being displayed/selected
  *  10/11/2022 - MRM removed enduser!= null for performance improvements
  *  10/31/2022 - MRM - Added fillBuffer; This is run async at login to get the customer buffers loaded up; 
+ *  12/6/2022 - MRM - Changed contract search to first find customers; performance improvement test
  *******************************************************************************************************************/
 public inherited sharing class CustomerUtils {
 
@@ -189,7 +190,7 @@ static List<Account> quickSearchDynamic(String strAccName, String city, String s
 	if (city == null)
 		city = '';
 
-
+	city = '%' + city + '%';
 
 	//List<Contract__c> checkList = [select name from Contract__c];
 	//system.debug('Checklist size is: ' + checkList.size());
@@ -199,9 +200,24 @@ static List<Account> quickSearchDynamic(String strAccName, String city, String s
 
 	String source = System.Label.Wayne_Key_Source;     //ORACLE
 	String keyTYpe = System.Label.Wayne_Key_Type;     //TCA PARTY ID
+	String recordTypeId = Schema.Sobjecttype.Account.getRecordTypeInfosByDeveloperName().get('End_User').getRecordTypeId();
 
+	Map<ID,Account> custMap = new Map<ID,Account>([Select id from Account 
+			   where name like : strAccName
+	           and billingstate = : state
+	           and billingcity like : city
+			  ]);
 
 	AggregateResult[] ARs =[Select end_user__c, count(Id)
+	                    From Contract__c o
+	                    where end_user__c in: custMap.keySet()
+	                    group by end_user__c
+	                    having count(id) > 0
+	                    order by count(id) desc
+	                    limit 20  ];
+	
+
+	/* 		   AggregateResult[] ARs =[Select end_user__c, count(Id)
 	                        From Contract__c o
 	                        where end_user__r.name like : strAccName
 	                        and end_user__r.billingstate = : state
@@ -210,8 +226,9 @@ static List<Account> quickSearchDynamic(String strAccName, String city, String s
 	                                                       group by end_user__c
 	                                                       having count(id) > 0
 	                                                       order by count(id) desc
-	                                                       limit 20
+	                                                       limit 20  
 	];
+	*/
 
 
 	system.debug(ARs);
@@ -731,7 +748,10 @@ public without sharing class fillNoShare {
     
      List<Account> b1 = [SELECT id, name FROM Account where billingstate = 'PA' limit 5000 ];
 
-     List<Account> b2 = [SELECT id, name FROM Account where name like '% %' limit 5000 ];
+    List<Account> b2 = [SELECT id, name FROM Account where name like '% %' limit 5000 ];
+
+	List<Contract__c> c1 = [Select end_user__r.name, end_user__r.billingstate from Contract__c limit 5000];
+
 
     }
 

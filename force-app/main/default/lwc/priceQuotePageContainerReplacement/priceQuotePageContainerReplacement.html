@@ -260,7 +260,8 @@
                         </lightning-layout>
 
                         <div class="child-wrapper">
-                            <c-pricing-component onchildsave={handleChildSave} oppid={oppid} newoption={newoption}>
+                            <c-pricing-component onchildcancel={handleCancel} onchildsave={handleChildSave}
+                                oppid={oppid} newoption={newoption}>
                             </c-pricing-component>
                         </div>
                     </lightning-tab>
@@ -278,7 +279,6 @@
                                 </lightning-layout-item>
                                 <lightning-layout-item size=12>
                                     <template for:each={options} for:item="option">
-
                                         <c-quote-line-datatable key={option.quote.Id} options-sum={option.sumData}
                                             option={option} onselectquote={handleQuoteSelectForCreditApp}
                                             ontoggleproposalforquote={handleProposalToggleForQuote}

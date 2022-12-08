@@ -10,28 +10,35 @@
                 <div class="option-header">
                     <lightning-layout>
                         <lightning-layout-item size="10">
-                            <h2 class="slds-text-heading_medium slds-m-right_small" style="display:inline;">Option {option.optionNumber}</h2>
-                            <lightning-button class="slds-m-right_small" variant="base" label="Edit"
-                                              title="Edit" onclick={handleEditAsset}></lightning-button>
-                            <lightning-button class="slds-m-right_small" variant="base" label="Copy"
-                                              title="Copy" onclick={handleCloneAsset}></lightning-button> 
+                            <h2 class="slds-text-heading_medium slds-m-right_small" style="display:inline;">Option
+                                {option.optionNumber}</h2>
+                            <lightning-button class="slds-m-right_small" variant="base" label="Edit" title="Edit"
+                                onclick={handleEditAsset}></lightning-button>
+                            <lightning-button class="slds-m-right_small" variant="base" label="Copy" title="Copy"
+                                onclick={handleCloneAsset}></lightning-button>
 
-                            <input data-id="includeInProposal" checked={isProposalChecked} value={option.quote.Id} type="checkbox" onclick={handleProposalCheckbox} class="proposalInput slds-m-right_small"></input>
+                            <input data-id="includeInProposal" checked={isProposalChecked} value={option.quote.Id}
+                                type="checkbox" onclick={handleProposalCheckbox}
+                                class="proposalInput slds-m-right_small"></input>
                             <label>Include in Proposal&nbsp;&nbsp;</label>
-                            <input id="includeInCreditApplication" checked={isCreditAppChecked} value={option.quote.Id} type="radio" name="creditApplicationRadio" onclick={handleCreditAppRadio} class="slds-m-right_small"></input>
+                            <input id="includeInCreditApplication" checked={isCreditAppChecked} value={option.quote.Id}
+                                type="radio" name="creditApplicationRadio" onclick={handleCreditAppRadio}
+                                class="slds-m-right_small"></input>
                             <label>Include in Credit Application</label>
                         </lightning-layout-item>
                         <lightning-layout-item size="2">
                             <lightning-button class="slds-m-right_small delete-button slds-float_right" variant="base"
-                                              label="Delete" title="Delete" onclick={handleDeleteAsset}></lightning-button> 
+                                label="Delete" title="Delete" onclick={handleDeleteAsset}></lightning-button>
                         </lightning-layout-item>
                     </lightning-layout>
                 </div>
             </lightning-layout-item>
             <lightning-layout-item size="12">
                 <div class="option-body">
-                    <lightning-datatable key-field={option.quote.Id} data={option.quoteLines} columns={columns} hide-checkbox-column></lightning-datatable>
-                    <lightning-datatable key-field={option.quote.Id} data={optionsSum} columns={columnsSum} hide-checkbox-column hide-table-header></lightning-datatable>
+                    <lightning-datatable key-field={option.quote.Id} data={option.quoteLines} columns={columns}
+                        hide-checkbox-column></lightning-datatable>
+                    <lightning-datatable key-field={option.quote.Id} data={optionsSum} columns={columnsSum}
+                        hide-checkbox-column hide-table-header></lightning-datatable>
                 </div>
             </lightning-layout-item>
         </lightning-layout>
