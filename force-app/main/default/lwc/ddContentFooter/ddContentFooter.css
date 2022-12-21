@@ -45,6 +45,8 @@
 .footerLogo{
 width:150px;
 height: 40px;
+text-align: center;
+margin-block: auto;
 }
 
 .textContent {
@@ -76,4 +78,20 @@ height: 40px;
         font-size: 0.8rem;
     
     }
+}
+
+.contactSupport {
+    color: #0099ff;    
+}
+
+.contactEmail {
+    color: gray !important;
+}
+
+.contactPhone {
+    color: gray !important;
+}
+
+.information {
+    margin-block: 10px;
 }

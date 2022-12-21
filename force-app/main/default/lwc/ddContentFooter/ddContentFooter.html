@@ -1,64 +1,70 @@
 <!--DLL on Demand - Footer used across all the pages
-//PBI:633819 version1: Geetha Bharadwaj -->
+//PBI:633819 version1: Geetha Bharadwaj 
+//PBI:779222 version2: Vinicio Ramos - As a portal user I need to know how I can contact DLL for support.
+-->
 <template>
 	<div class="footerBack">
 		<div class="slds-grid slds-wrap footerWidth">
-			<div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_2-of-12">
+			<div class="slds-col footerLogo slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_2-of-12">
 				<span>
 				<img class="footerLogo" src={dlllogo} />
 				</span>
 			</div>
-			<div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_10-of-12">
-				<div class="slds-grid slds-grid_align-end">
-					<div class="">
-						<span>
-						<a target="_blank" href="https://www.facebook.com/dllgroup"> <img class="socialMediaIcons slds-p-around-small" src={facebooklogo} /></a>
-						</span>
-					</div>
-					<div class="">
-						<span>
-						<a target="_blank" href="https://twitter.com/DLLgroup"> <img class="socialMediaIcons slds-p-around-small" src={twitterlogo} /></a>
-						</span>
-					</div>
-					<div class="">
-						<span>  <a target="_blank" href="https://www.linkedin.com/company/dllgroup"><img class="socialMediaIcons slds-p-around-small" src={linkedinlogo} /></a></span>
-					</div>
+			<div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+				<div class="slds-p-horizontal_medium contactSupport" >
+					<p>Contact Support</p>
+					<div><p><lightning-icon icon-name="utility:call" style="zoom: 45%; margin-right: 10px;" alternative-text="" title=""></lightning-icon>
+						<lightning-formatted-phone class="contactPhone" value={contactPhone></lightning-formatted-phone></p></div>
+					<div><p><lightning-formatted-email class="contactEmail" value={contactEmail}></lightning-formatted-email></p></div>
 				</div>
 			</div>
-		
-			<div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12 slds-m-top_small">
-			<!--	<span>
-					<div class="daterange" >{dateRangeString}</div>
-				</span> -->
-			</div>
-			<div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12 slds-m-top_small">
-				<div class="slds-grid slds-grid_align-end">
-					<div class="">
-						<span class="textContent">
-								<div class="slds-p-horizontal_medium daterange" >{dateRangeString}</div>
-						</span>
+			<div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_7-of-12">
+				<div class="">
+						<div class="slds-grid information slds-grid_align-end">
+							<div class="">
+								<span>
+								<a target="_blank" href="https://www.facebook.com/dllgroup"> <img class="socialMediaIcons slds-p-around-small" src={facebooklogo} /></a>
+								</span>
+							</div>
+							<div class="">
+								<span>
+								<a target="_blank" href="https://twitter.com/DLLgroup"> <img class="socialMediaIcons slds-p-around-small" src={twitterlogo} /></a>
+								</span>
+							</div>
+							<div class="">
+								<span>  <a target="_blank" href="https://www.linkedin.com/company/dllgroup"><img class="socialMediaIcons slds-p-around-small" src={linkedinlogo} /></a></span>
+							</div>
+						</div>
 					</div>
-					<div class="">
-						<span>
-							<a target="_blank" href="https://www.dllgroup.com/us/en-us/privacy" class="textContent">
-								<div class="slds-p-horizontal_medium ">Privacy statement</div>
-							</a>
-						</span>
+					<div class="slds-col">
+						<div class="slds-grid slds-grid_align-end">
+							<div class="">
+								<span class="textContent">
+										<div class="slds-p-horizontal_medium daterange" >{dateRangeString}</div>
+								</span>
+							</div>
+							<div class="">
+								<span>
+									<a target="_blank" href="https://www.dllgroup.com/us/en-us/privacy" class="textContent">
+										<div class="slds-p-horizontal_medium ">Privacy statement</div>
+									</a>
+								</span>
+							</div>
+							<div class="">
+								<span>
+									<a target="_blank" href="https://www.dllgroup.com/us/en-us/disclaimer" class="textContent">
+										<div class="slds-p-horizontal_medium ">Disclaimer</div>
+									</a>
+								</span>
+							</div>
+							<div class="">
+								<a target="_blank" href="https://www.dllgroup.com/us/en-us/cookie-statement" class="textContent">
+									<div class="slds-p-horizontal_medium slds-p-right_none ">Cookie statement</div>
+								</a>
+							</div>
+						</div>
 					</div>
-					<div class="">
-						<span>
-							<a target="_blank" href="https://www.dllgroup.com/us/en-us/disclaimer" class="textContent">
-								<div class="slds-p-horizontal_medium ">Disclaimer</div>
-							</a>
-						</span>
-					</div>
-					<div class="">
-						<a target="_blank" href="https://www.dllgroup.com/us/en-us/cookie-statement" class="textContent">
-							<div class="slds-p-horizontal_medium slds-p-right_none ">Cookie statement</div>
-						</a>
-					</div>
-				</div>
-			</div>
+			</div>		
 		</div>
 	</div> 
 </template>

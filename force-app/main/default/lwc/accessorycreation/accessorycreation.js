@@ -63,6 +63,10 @@ export default class Accessorycreation extends LightningElement {
         this.dispatchEvent(accEvent);
     }
     handleChange(event) {
+
+         
+        this.handleChangeSalesPrice(event);
+         
         let tempAcc = JSON.parse(JSON.stringify(this.accessory));
         tempAcc[event.target.name] = event.target.value;
         const accEvent = new CustomEvent("updateaccessory", {
@@ -109,6 +113,8 @@ export default class Accessorycreation extends LightningElement {
         return returnStr;
     }
     handleChangeSalesPrice(event) {
+
+        console.log('in here');
         let tempAcc = JSON.parse(JSON.stringify(this.accessory));
         let trimmedPrice = this.removeInvalidPriceCharacters(event.target.value.toString()); 
         trimmedPrice = trimmedPrice.split('.');

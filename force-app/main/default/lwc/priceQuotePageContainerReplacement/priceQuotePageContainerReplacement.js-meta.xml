@@ -12,7 +12,8 @@
         <targetConfig targets="lightningCommunity__Default">
             <property label="Section Title" name="sectionTitle" type="String" default="New Quote" />
             <property label="Section Sub Title" name="sectionSubTitle" type="String" default="Details &amp; Add Ons" />
-            <property label="opp id" name="oppid" type="String" default="No Input Provided" />
+            <property label="opp id" name="oppid" type="String" default="00678000003eJ6mAAE" />
+            <property label="option" name="option" type="String" default="" />
         </targetConfig>  
     </targetConfigs>
 </LightningComponentBundle>

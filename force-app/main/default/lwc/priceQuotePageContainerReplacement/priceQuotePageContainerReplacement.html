@@ -10,11 +10,7 @@
 
 <!-- Price Quote Page Container -->
 <template>
-    <div class="slds-var-m-around_small">
-        <div if:true={loading}>
-            <lightning-spinner alternative-text="Loading..." variant="brand"></lightning-spinner>
-        </div>
-    </div>
+
     <div style="background-color: #FED8B1; padding: 5px; margin: 5px">
         This website is currently under construction. We may update the content of this website from time to time. We
         grant you access to this website as our valued partner for the sole purpose of obtaining your user experience
@@ -26,6 +22,8 @@
         requests for technical support, and other communications relating to this website should be directed to Sophie
         McLachlan at smclachlan@leasedirect.com
     </div>
+
+
     <div if:true={displayModal}>
         <!-- Modal for when the cancel button is pressed and the user must confirm that the forum data is to be cleared-->
         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
@@ -213,6 +211,11 @@
                 <lightning-tabset active-tab-value={currentTab}>
                     <lightning-tab onactive={handleTabChange} label="Specifications" class="tab-background"
                         value="spec">
+                        <div class="slds-var-m-around_small">
+                            <div if:true={loading}>
+                                <lightning-spinner alternative-text="Loading..." variant="brand"></lightning-spinner>
+                            </div>
+                        </div>
                         <lightning-layout multiple-rows=true class="no-padding">
                             <!--Specification, Assets and Accessory-->
                             <lightning-layout-item size=8>
@@ -260,8 +263,8 @@
                         </lightning-layout>
 
                         <div class="child-wrapper">
-                            <c-pricing-component onchildcancel={handleCancel} onchildsave={handleChildSave}
-                                oppid={oppid} newoption={newoption}>
+                            <c-pricing-component onchildcancel={handleChildCancel} onchildsave={handleChildSave}
+                                oppid={oppid} newoption={newoption} clone={quoteObject.isClone}>
                             </c-pricing-component>
                         </div>
                     </lightning-tab>
@@ -269,6 +272,7 @@
 
 
                     <lightning-tab onactive={handleTabChange} label="Proposal" value="proposal">
+
                         <div class="proposal-container slds-p-around_medium">
                             <lightning-layout multiple-rows=true>
                                 <lightning-layout-item size=12>
@@ -277,19 +281,34 @@
                                         you'd like to include and download your proposal document by clicking the
                                         buttons below.</p>
                                 </lightning-layout-item>
+
+
                                 <lightning-layout-item size=12>
-                                    <template for:each={options} for:item="option">
+                                    <template if:true={loading}>
+                                        <div>
+                                            <lightning-spinner alternative-text="Loading" variant="brand" size="small">
+                                            </lightning-spinner>
+                                        </div>
+                                    </template>
+                                    <template if:false={loading} for:each={options} for:item="option">
                                         <c-quote-line-datatable key={option.quote.Id} options-sum={option.sumData}
                                             option={option} onselectquote={handleQuoteSelectForCreditApp}
                                             ontoggleproposalforquote={handleProposalToggleForQuote}
                                             oneditasset={handleAssetEdit} oncloneasset={handleAssetClone}
                                             ondeleteasset={handleAssetDelete}></c-quote-line-datatable>
-                                    </template>
 
+                                    </template>
                                 </lightning-layout-item>
+
                                 <lightning-layout-item size="12">
                                     <lightning-button class="slds-m-right_small" variant="base" label="+ Add Option"
                                         title="+ Add Option" onclick={handleAddOption}></lightning-button>
+                                    <div class="slds-var-m-around_small">
+                                        <div if:true={loading}>
+                                            <lightning-spinner alternative-text="Loading..."
+                                                variant="brand"></lightning-spinner>
+                                        </div>
+                                    </div>
                                 </lightning-layout-item>
                                 <lightning-layout-item size=12>
                                     <h2 class="slds-text-heading_medium">Comments for Your Customer</h2>
@@ -355,11 +374,13 @@
 
             <!--Specification, Assets and Accessory-->
             <div class="child-wrapper">
-                <c-pricing-component onchildsave={handleChildSave} oppid={oppid} newoption={newoption}>
+                <c-pricing-component onchildcancel={handleChildCancel} onchildsave={handleChildSave} oppid={oppid}
+                    newoption={newoption}>
                 </c-pricing-component>
             </div>
 
         </template>
+
     </lightning-layout>
 
 </template>

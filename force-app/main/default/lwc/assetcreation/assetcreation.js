@@ -6,6 +6,7 @@
  Change Log:  
 
  11/11/2022 - MRM - Added a return in the wired get makes to return if null is sent in....
+ 12/22/2022 - MRM - Added fix to make changes to number of units to reload subsidy picklist
 */
 
 import {LightningElement, wire, api, track} from 'lwc';
@@ -502,17 +503,22 @@ export default class assetcreation extends LightningElement {
     }
 
     callSubsidies(event) {
-        //console.log('in call sub' + JSON.stringify(this.quoteObject));
-        if (event.target.value.length !== 0) {
-            this.template.querySelector(`[data-id="${event.target.name}"]`).value = '$' + this.formatCurrency(event.target.value);
+         
+        /* who ever put in this formattting; made the change event on units to fail since this was null 
+        MRM - I added the check for target name to correct*/
+        if (event.target.name == 'unitSalesPrice'){
+            if (event.target.value.length !== 0) {
+                this.template.querySelector(`[data-id="${event.target.name}"]`).value = '$' + this.formatCurrency(event.target.value);
+            }
         }
+     
         if ((typeof this.quoteObject.programId === 'undefined') ||
             (typeof this.quoteObject.financeType === 'undefined') ||
             (typeof this.quoteObject.financeTerm === 'undefined') ||
             (typeof this.asset.make === 'undefined') ||
             (typeof this.quoteObject.paymentFrequency === 'undefined') ||
             (typeof this.asset.unitSalesPrice === 'undefined') ||
-            (typeof this.asset.numberOfUnits === 'undefined') ||
+            (typeof this.asset.numberOfUnits === 'undefined' || this.asset.numberOfUnits == '') ||
             (typeof this.quoteObject.rateTypeId === 'undefined')) {
             let missingDataNames = [];
             if (typeof this.quoteObject.programId === 'undefined') {
@@ -536,14 +542,15 @@ export default class assetcreation extends LightningElement {
             if (typeof this.asset.unitSalesPrice === 'undefined') {
                 missingDataNames.push('Unit Sales Price');
             }
-            if (typeof this.asset.numberOfUnits === 'undefined') {
+            
+            if (typeof this.asset.numberOfUnits === 'undefined' || this.asset.numberOfUnits == '') {
                 missingDataNames.push('Number of Units');
             }
             this.showToast('Missing data for subsidies', missingDataNames.join(', '), 'error');
             return;
         }
 
-        //console.log('here 2');
+        console.log('here 2');
 
         this.loading = true;
 
@@ -552,7 +559,7 @@ export default class assetcreation extends LightningElement {
         //console.log(this.quoteObject.financeTerm);
         //console.log(this.makePicklist.find(opt => opt.value === this.asset.makeId).label);
         //console.log(this.quoteObject.paymentFrequency);
-        //console.log(this.asset.numberOfUnits * this.asset.unitSalesPrice);
+        console.log(this.asset.numberOfUnits * this.asset.unitSalesPrice);
 
         let financeTypeTranslated = this.quoteObject.financeType;
 
@@ -640,13 +647,28 @@ export default class assetcreation extends LightningElement {
     }
 
     handleChange(event) {
+
+        console.log('handle change' + JSON.stringify(this.asset));
+
         let tempAsset = JSON.parse(JSON.stringify(this.asset));
         tempAsset[event.target.name] = event.target.value;
+
+        console.log('handle change' + JSON.stringify(tempAsset));
+
         const assetEvent = new CustomEvent("updateasset", {
             detail: tempAsset
         })
 
         this.dispatchEvent(assetEvent);
+
+        setTimeout(() => {
+            console.log('handle change' + JSON.stringify(this.asset));
+            this.callSubsidies(event);
+        }, 1500);
+
+    
+
+        
     }
 
     removeInvalidPriceCharacters(str) {
