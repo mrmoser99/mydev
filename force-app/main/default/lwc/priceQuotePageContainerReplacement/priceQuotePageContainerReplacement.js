@@ -10,36 +10,26 @@
 
 import {api, track, LightningElement, wire} from 'lwc';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
+import {ShowToastEvent} from "lightning/platformShowToastEvent";
+
+//pricing stuff
 import getUserSite from "@salesforce/apex/PricingUtils.getUserSite"; 
- 
 import getPrograms from "@salesforce/apex/PricingUtils.getPrograms";
 import getFinancialProducts from "@salesforce/apex/PricingUtils.getFinancialProducts";
 import getFinancialProduct from "@salesforce/apex/PricingUtils.getFinancialProduct";
-import getPrice from "@salesforce/apex/PricingUtils.getPrice";
 import getSalesReps from "@salesforce/apex/PricingUtils.getSalesReps";
- 
-import {ShowToastEvent} from "lightning/platformShowToastEvent";
-import apexSearch from '@salesforce/apex/priceQuotePageController.searchContacts';
 import getSalesRepsFromReturnedOSID from "@salesforce/apex/CreateQuoteOpportunity.getSalesRepsFromReturnedOSID";
-import createQuoteOpportunity from "@salesforce/apex/CreateQuoteOpportunity.CreateQuoteOpportunity";
 
+//data manipulation items
 import deleteQuoteOption from "@salesforce/apex/CreateQuoteOpportunity.DeleteQuoteOption";
-import saveQuotePricingDataBackToServer from "@salesforce/apex/CreateQuoteOpportunity.saveQuotePricingDataBackToServer";
-import saveQuoteLinePricingDataBackToServer from "@salesforce/apex/CreateQuoteOpportunity.saveQuoteLinePricingDataBackToServer";
 import markQuoteOptionAsPrimary from "@salesforce/apex/CreateQuoteOpportunity.markQuoteOptionAsPrimary";
 import markQuoteOptionAsCreditAppSelection from "@salesforce/apex/CreateQuoteOpportunity.markQuoteOptionAsCreditAppSelection";
 import queryQuoteOpportunity from "@salesforce/apex/CreateQuoteOpportunity.QueryQuoteOpportunity";
 import setProposalForQuote from "@salesforce/apex/CreateQuoteOpportunity.setProposalForQuote";
 import saveCustomerCommentsToOpp from "@salesforce/apex/CreateQuoteOpportunity.saveCustomerCommentsToOpp";
 import getSmartCommDoc from "@salesforce/apex/SmartCommUtils.getSmartCommDoc";
- 
 
 
-import CREDITAPP_ASSET_TITLE from '@salesforce/label/c.CREDITAPP_ASSET_TITLE';
-import CREDITAPP_ASSET_DUP from '@salesforce/label/c.CREDITAPP_ASSET_DUP';
-
-
-const SEARCH_DELAY = 300;
 
 export default class PriceQuotePageContainerReplacment extends NavigationMixin(LightningElement) {
 
@@ -109,8 +99,6 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
 
     //finance attributes
     rateType;
-
-     
     
     /***************************************************************************************************************
     *  
@@ -276,20 +264,15 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     connectedCallback() {
         
-        //console.log(this.oppid);
+        console.log(this.oppid);
         this.loading = false;
 
-        console.log('callback' + this.loading);
-
-        console.log('the opp id is: ' + this.oppid); 
- 
         if (this.oppid) {
             this.loading = true;
             this.isLoadedQuote = true;
             queryQuoteOpportunity({'oppId' : this.oppid})
                 .then(result => {
                     this.parseData(result);
-                    console.log('result is: ' + JSON.stringify(result));
                     this.addPricingDataToLoadedQuotes();
                     if (this.options.length !== 0) {
                         this.hasQuotes = true;
@@ -297,11 +280,9 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                         this.hasLocationSelectionSalesRep = false;
                         this.specificationTabActive = false;
                         this.program = this.options[0].quote.Program__c;
-                        console.log('**************   program is: ' + this.program);
                         if (this.optionsPicklist.length > 1) {
                             let wrapperEvent2 = {value: 0};
                             let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: false};
-                             console.log('calling handle options 2' + this.loading);
                             this.handleOptionPicklist(wrapperEvent);
                             this.optionsPicklistVal = '0';
                         }
@@ -770,7 +751,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this.hasNoActiveQuoteForCredApp = false;
          
         this.loading = true;
-        //console.log('event detail:' + event.detail);
+        console.log('event detail:' + event.detail);
 
         markQuoteOptionAsCreditAppSelection({quoteId : this.creditAppId, oppId : this.opportunityId})
             .then(result => {
@@ -786,6 +767,13 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
             }).catch(error => {
             this.showToast('Error in saving selection','Error', 'error');
             this.loading = false;
+        });
+
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: window.location.origin + '/dllondemand/s/quotetestpage?oppid=' + this.oppid
+            }
         });
     }
 
@@ -903,24 +891,6 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this.quoteObject[event.target.name +'Id'] = event.target.value;
         //console.log(JSON.stringify(this.quoteObject));
         this.loadTerms();
-    }
-
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
-    //Search Implementation
-    handleSearch(event) {
-        const lookupElement = event.target;
-        apexSearch(event.detail)
-            .then(results => {
-                //console.log(results);
-                lookupElement.setSearchResults(results);
-            })
-            .catch(error => {
-                //console.log(error);
-                // TODO: handle error
-            });
     }
 
     
@@ -1274,43 +1244,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     handleOnSaveOnlyHeader(event) {
         this.onlyValidateHeader = true;
-        this.handleOnSave(event);
-    }
-
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
-    //Save quote
-    handleOnSave(event) {
-        if (!this.validateInputBeforeSave()) {
-            return;
-        }
-        this.saveRunning = true;
-        this.isLoadedQuote = true;
-        this.loading = true;
-        this.quoteObject.comments = this.comments;
-         
-        if (typeof this.quoteObject.assetTypeQuote === 'undefined') {
-            this.quoteObject.assetTypeQuote = 'New';
-        }
-        this.quoteObject.assets = this.assets;
-        this.quoteObject.accessories = this.validateAccessories(this.accessories);
-        this.quoteObject.oppId = this.opportunityId;
-         
-        let passingParam = JSON.stringify(this.quoteObject);
-         
-        if (this.hasQuotes === true) {
-            this.template.querySelector('lightning-tabset').activeTabValue = 'proposal';
-        }
-        
-        if (this.quoteObject.isEdit) {
-            this.editQuote(passingParam);
-        } else if (this.quoteObject.isClone || this.hasQuotes) {
-            this.cloneQuote(passingParam);
-        } else {
-            this.createQuote(passingParam);
-        }
+        //this.handleOnSave(event);
     }
 
     
@@ -1324,23 +1258,20 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this.quoteObject.isClone = false;
         this.showCreateInstead = false;
         this.activeOption = event.detail;
-        console.log('event detail:' + this.activeOption);
-        this.quoteObject.optionNum = (event.detail - 0) + 1;
-        this.quoteObject.option = (event.detail - 0) + 1;
-        this.newoption = this.quoteObject.optionNum;
-        console.log('handel asset edit: ' + JSON.stringify(this.quoteObject));
+        this.quoteObject.optionNum =  this.activeOption;
+        this.quoteObject.option =  this.activeOption;
+        this.newoption = this.activeOption;
+        this.optionsPicklistVal = this.activeOption;
+        
+        //keep this out for a while. don't see a value in it
+        //this.processAssets(this.options[this.activeOption].quoteLines);
+        //this.processCurrentOption(this.options[this.activeOption]);
+     
+        this.specificationTabActive = true;
+        this.template.querySelector('lightning-tabset').activeTabValue = 'spec';
 
-        this.processAssets(this.options[event.detail].quoteLines);
-        this.processCurrentOption(this.options[event.detail]);
-         
-        setTimeout( () => {//options picklist does not load fast enough
-            this.specificationTabActive = true;
-            this.optionsPicklistVal = event.detail;
-            this.template.querySelector('lightning-tabset').activeTabValue = 'spec';
-             
-            this.loading = false;
-             
-        }, 500);
+        this.loading = false;
+        
     }
 
     
@@ -1359,15 +1290,18 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this.showCreateInstead = false;
         this.activeOption = event.detail;
         this.quoteObject.oppId = this.opportunityId;
-        this.processAssets(this.options[event.detail].quoteLines);
-        this.processCurrentOption(this.options[event.detail]);
+        this.newoption = event.detail;
         
-        setTimeout( () => {//options picklist does not load fast enough
-            this.specificationTabActive = true;
-            this.optionsPicklistVal = event.detail;
-            this.template.querySelector('lightning-tabset').activeTabValue = 'spec';
-            this.loading = false;
-        }, 500);
+        //keept this out for now...don't see much value
+        //this.processAssets(this.options[event.detail].quoteLines);
+        //this.processCurrentOption(this.options[event.detail]);
+        
+        //setTimeout( () => {//options picklist does not load fast enough
+        this.specificationTabActive = true;
+        this.optionsPicklistVal = event.detail;
+        this.template.querySelector('lightning-tabset').activeTabValue = 'spec';
+        this.loading = false;
+        //}, 500);
     }
 
     
@@ -1446,74 +1380,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     }
 
     
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
-    addPricingDataToQuoteLines(response, quote, jsonString) {
-        let addDataBackToServer = [];
-        let residualTotal = 0;
-        for (let i = 0; i < response.assets.length; i++) {
-            for (let j = 0; j < quote.quoteLines.length; j++) {
-                if (response.assets[i].sequenceId === quote.quoteLines[j].Id) {
-                    quote.quoteLines[j].payment = response.assets[i].paymentAmount;
-                    quote.quoteLines[j].interestRate = (parseFloat(jsonString.Interest__c)).toFixed(2) + '%';
-                    let objToAdd = {};
-                    if (response.assets[i].bookedResidualAmount) {
-                        objToAdd.Booked_Residual_Amount__c = response.assets[i].bookedResidualAmount;
-                        quote.quoteLines[j].closeAt = response.assets[i].bookedResidualAmount;
-                        residualTotal += parseFloat(response.assets[i].bookedResidualAmount);
-                    } else {
-                        objToAdd.Booked_Residual_Amount__c = 0;
-                        quote.quoteLines[j].closeAt = 0;
-                    }
-                    if (response.assets[i].billedResidualAmount) {
-                        objToAdd.Billed_Residual_Amount__c = response.assets[i].billedResidualAmount;
-                    } else {
-                        objToAdd.Billed_Residual_Amount__c = 0;
-                    }
-                    objToAdd.Id = quote.quoteLines[j].Id;
-                    objToAdd.Payment_Amount__c = response.assets[i].paymentAmount;
-                    addDataBackToServer.push(objToAdd);
-                    break;
-                }
-            }
-            for (let k = 0; k < response.assets[i].assetComponents.length; k++) {
-                for (let j = 0; j < quote.quoteLines.length; j++) {
-                    if (response.assets[i].assetComponents[k].sequenceId === quote.quoteLines[j].Id) {
-                        quote.quoteLines[j].payment = response.assets[i].assetComponents[k].paymentAmount;
-                        quote.quoteLines[j].interestRate = (parseFloat(jsonString.Interest__c)).toFixed(2) + '%';
-                        let objToAdd = {};
-                        if (response.assets[i].assetComponents[k].bookedResidualAmount) {
-                            objToAdd.Booked_Residual_Amount__c = response.assets[i].assetComponents[k].bookedResidualAmount;
-                            quote.quoteLines[j].closeAt = response.assets[i].assetComponents[k].bookedResidualAmount;
-                            residualTotal += parseFloat(response.assets[i].assetComponents[k].bookedResidualAmount);
-                        } else {
-                            objToAdd.Booked_Residual_Amount__c = 0;
-                            quote.quoteLines[j].closeAt = 0;
-                        }
-                        if (response.assets[i].assetComponents[k].billedResidualAmount) {
-                            objToAdd.Billed_Residual_Amount__c = response.assets[i].assetComponents[k].billedResidualAmount;
-                        } else {
-                            objToAdd.Billed_Residual_Amount__c = 0;
-                        }
-                        objToAdd.Id = quote.quoteLines[j].Id;
-                        objToAdd.Payment_Amount__c = response.assets[i].assetComponents[k].paymentAmount;
-                        addDataBackToServer.push(objToAdd);
-                        break;
-                    }
-                }
-            }
-        }
-        if (addDataBackToServer.length !== 0) {
-            saveQuoteLinePricingDataBackToServer({quoteString : JSON.stringify(addDataBackToServer)})
-                .then(result => {
-                    //this.showToast('Success saving quote line data', result, 'success');
-                }).catch(error => {
-                this.showToast('Something went wrong saving data for quote lines', JSON.stringify(error), 'error');
-            });
-        }
-        return residualTotal;
-    }
+    
 
     
     /***************************************************************************************************************
@@ -1529,58 +1396,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     }
 
     
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
-    processPricingSummary(quoteObj) {
-        console.log('process pricing summary');
-        this.loading = true;
-        let lastBit = quoteObj.quote.Program_ID__c.split('.');
-        lastBit = lastBit[lastBit.length - 1];
-        getPrice({"quoteId" : quoteObj.quote.Id, "programId" : quoteObj.quote.Program_ID__c, "siteId" : quoteObj.quote.Location_ID__c})
-            .then(result => {
-                let resultParsed = JSON.parse(result);
-                let quotePricingAPIData = {};
-                quotePricingAPIData.Id = quoteObj.quote.Id;
-                quotePricingAPIData.Amount__c = resultParsed.financeAmount;
-                quotePricingAPIData.Interest__c = resultParsed.monthlyAPR;
-                quotePricingAPIData.Total_Payment__c = resultParsed.paymentAmount;
-                quotePricingAPIData.Residual__c = this.addPricingDataToQuoteLines(resultParsed, quoteObj, quotePricingAPIData);
-                saveQuotePricingDataBackToServer({"quoteString" : JSON.stringify(quotePricingAPIData)})
-                    .then(result => {
-                        //this.showToast('Success in Saving Pricing Information.', result, 'success');
-                    })
-                    .catch(error => {
-                        this.showToast('Error saving Pricing Summary Information.', error, 'error');
-                    });
-                let newQuoteSummary = JSON.parse(JSON.stringify(quoteObj));
-                this.removeDuplicateQuoteFromQOS(quoteObj.quote.Id);
-                newQuoteSummary.sumData = [];
-                let sumDataContents = {};
-                sumDataContents.Amount__c = resultParsed.financeAmount;
-                sumDataContents.interestRate = parseFloat(resultParsed.monthlyAPR).toFixed(2) + '%';
-                sumDataContents.closeAt = quotePricingAPIData.Residual__c;
-                sumDataContents.payment = resultParsed.paymentAmount;
-                newQuoteSummary.sumData.push(sumDataContents);
-                if (this.quoteObjectSummary) {
-                    this.quoteObjectSummary.push(newQuoteSummary);
-                } else {
-                    this.quoteObjectSummary = [];
-                    this.quoteObjectSummary.push(newQuoteSummary);
-                }
-                this.addOptionSummaries(true);
-            })
-            .catch(error => {
-                this.showToast('Error getting Pricing Summary Information.', error, 'error');
-                this.pricingApiCallCount--;
-                if (this.pricingApiCallCount === 0) {
-                    this.loading = false;
-                }
-                 //Geetha - accessory code fix on edit
-                 this.currentAccPosition = this.accessories.length - 1;
-            });
-    }
-
+    
     
     /***************************************************************************************************************
     *  
@@ -1654,44 +1470,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     }
 
     
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
-    addMissingOptionSummary(resultArr) {
-        console.log('add missing');
-        //console.log('arr lengths: ');
-        //console.log(this.options.length);
-        //console.log(this.quoteObjectSummary.length);
-        this.pricingApiCallCount = this.options.length;
-        for (let i = 0; i < this.options.length; i++) {
-            /*//console.log('addmissingoptionsummary 1');
-            let skipCurrentElement = false;
-            for (let j = 0; j < this.quoteObjectSummary.length; j++) {
-                //console.log('addmissingoptionsummary 2');
-                if (this.options[i].quote.Id === this.quoteObjectSummary[j].quote.Id) {
-                    if (this.quotesHaveDifference(this.options[i], this.quoteObjectSummary[j])) {
-                        //console.log('Found Difference');
-                        //console.log(JSON.parse(JSON.stringify(this.options[i])));
-                        //console.log(JSON.parse(JSON.stringify(this.quoteObjectSummary[j])));
-                        this.quoteObjectSummary.splice(j, 1);
-                        break;
-                    }
-                    skipCurrentElement = true;
-                    break;
-                }
-            }
-            if (skipCurrentElement) {
-                continue;
-            }*/
-            ////console.log('This is the option getting pricing data');
-            ////console.log(JSON.parse(JSON.stringify(this.options[i])));
-            this.processPricingSummary(this.options[i]);
-            //return;
-        }
-        //this.pricingApiCallCount++;
-        //this.addOptionSummaries(true);
-    }
-
+    
     
     /***************************************************************************************************************
     *  
@@ -1734,7 +1513,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                 this.quoteObject.isEdit = true;
                 this.quoteObject.isClone = false;
             } else {
-                this.processAssets(this.options[this.activeOption].quoteLines);
+                this.processAssets(this.options[this.aprocessCurrentOptionctiveOption].quoteLines);
                 this.processCurrentOption(this.options[this.activeOption]);
                 this.optionsPicklistVal = this.activeOption;
                 this.quoteObject.isEdit = true;
@@ -1759,48 +1538,10 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                 this.optionsPicklistVal = this.optionsPicklistVal.toString();
             }
             this.options = JSON.parse(JSON.stringify(this.options));
-            /*if (setCurrentOption) {
-                this.specificationTabActive = true;
-                this.template.querySelector('lightning-tabset').activeTabValue = 'spec';
-            }*/
             
-            //console.log('addOptionSummaries Finished');
         }, 1);
     }
-
     
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
-    //save methods to backend For quote creation,edit,clone
-    createQuote(passingParam) {
-        createQuoteOpportunity({jsonInput: passingParam})
-            .then(result => {
-                this.showToast('Quote has been saved!', 'Quote was saved successfully', 'success');
-                this.parseData(result);
-                //console.log('createQuote past parseData');
-                if (!this.onlyValidateHeader) {
-                    this.addMissingOptionSummary(result);
-                    this.hasQuotes = true;
-                    this.specificationTabActive = false;
-                } else {
-                    this.hasLocationSelection = true;
-                    if ((this.options.length > 0) && this.options[0].quote.Partner_Sales_Rep__r) {
-                        this.salesRepDisplayName = this.options[0].quote.Partner_Sales_Rep__r.Name;
-                    }
-                }
-                this.saveRunning = false;
-                this.onlyValidateHeader = false;
-                this.template.querySelector('lightning-tabset').activeTabValue = 'proposal';
-            })
-            .catch(error => {
-                //console.log(JSON.stringify(error));
-                this.showToast('Error Saving Record.', error, 'error');
-                this.loading = false;
-                this.saveRunning = false;
-            });
-    }
-
     
     /***************************************************************************************************************
     *  
@@ -1857,7 +1598,13 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
 
         console.log('in parent handle child cancel');
 
-        this.handleCancel(event);
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: window.location.origin + '/dllondemand/s/quotetestpage?oppid=' +this.oppid
+            }
+        });
+
     }
 
     
@@ -1872,14 +1619,12 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     deleteQuote(passingParam) {
         deleteQuoteOption({quoteOptionId: passingParam})
             .then(result => {
-                //console.log('we have got in here-- delete');
-                //console.log(result);
                 this.showToast('Quote has been deleted!', 'Quote was deleted successfully', 'success');
                 this.parseData(result);
                 this.addOptionSummaries(false);
             })
             .catch(error => {
-                //console.log(JSON.stringify(error));
+                console.log(JSON.stringify(error));
                 this.showToast('An error has occurred trying to delete an option.', error, 'error');
                 this.loading = false;
             });
@@ -2426,6 +2171,10 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     *  
     ***************************************************************************************************************/
     handleProposalToggleForQuote(event) {
+
+
+        console.log('set propostal for quote' + event.detail);
+
         this.loading = true;
         if (this.proposalIdsIncluded.includes(event.detail)) {
             this.proposalIdsIncluded.splice(this.proposalIdsIncluded.indexOf(event.detail), 1);
@@ -2452,6 +2201,13 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                     this.showToast( 'An error has occurred adding this Quote to the proposal', JSON.stringify(error), 'error');
                 });
         }
+
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: window.location.origin + '/dllondemand/s/quotetestpage?oppid=' + this.oppid
+            }
+        });
     }
 
     
