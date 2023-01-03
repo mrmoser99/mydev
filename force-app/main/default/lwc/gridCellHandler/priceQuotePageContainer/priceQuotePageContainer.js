@@ -3,33 +3,37 @@
 *
 *  Change Log:
 *  07/22/2022 - MRM - made leasetype picklist dynamic based on asset condition.
-*  11/17/2022 - MRM - made pricing a reusable component to suppor appeals; Pricing 2.0
-                MRM - removed call pricing and save for all options. only save the option changed;
-                      this saves tons of processing and was not required
-                    -  
-                
+*  10/6/2022 - Geetha - Fixed Bugs 870385, 868811
+*  10/20/2022 - Geetha - PBI 882069 - As a portal user I want to edit/copy the asset condition of an existing quote option
 *
 */
 
 import {api, track, LightningElement, wire} from 'lwc';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
-import {ShowToastEvent} from "lightning/platformShowToastEvent";
- 
-
-//pricing stuff
+import getUserSite from "@salesforce/apex/PricingUtils.getUserSite";
 import getPrograms from "@salesforce/apex/PricingUtils.getPrograms";
 import getFinancialProducts from "@salesforce/apex/PricingUtils.getFinancialProducts";
 import getFinancialProduct from "@salesforce/apex/PricingUtils.getFinancialProduct";
 import getPrice from "@salesforce/apex/PricingUtils.getPrice";
 import getSalesReps from "@salesforce/apex/PricingUtils.getSalesReps";
- 
-//data manipulation
+//import submitCreditApp from "@salesforce/apex/CreditAppUtils.submitCreditApp";
+import {ShowToastEvent} from "lightning/platformShowToastEvent";
+import apexSearch from '@salesforce/apex/priceQuotePageController.searchContacts';
+import getSalesRepsFromReturnedOSID from "@salesforce/apex/CreateQuoteOpportunity.getSalesRepsFromReturnedOSID";
 import createQuoteOpportunity from "@salesforce/apex/CreateQuoteOpportunity.CreateQuoteOpportunity";
 import cloneQuoteOption from "@salesforce/apex/CreateQuoteOpportunity.CloneQuoteOption";
 import editQuoteOption from "@salesforce/apex/CreateQuoteOpportunity.EditQuoteOption";
+import deleteQuoteOption from "@salesforce/apex/CreateQuoteOpportunity.DeleteQuoteOption";
 import saveQuotePricingDataBackToServer from "@salesforce/apex/CreateQuoteOpportunity.saveQuotePricingDataBackToServer";
 import saveQuoteLinePricingDataBackToServer from "@salesforce/apex/CreateQuoteOpportunity.saveQuoteLinePricingDataBackToServer";
+import markQuoteOptionAsPrimary from "@salesforce/apex/CreateQuoteOpportunity.markQuoteOptionAsPrimary";
+import markQuoteOptionAsCreditAppSelection from "@salesforce/apex/CreateQuoteOpportunity.markQuoteOptionAsCreditAppSelection";
 import queryQuoteOpportunity from "@salesforce/apex/CreateQuoteOpportunity.QueryQuoteOpportunity";
+import setProposalForQuote from "@salesforce/apex/CreateQuoteOpportunity.setProposalForQuote";
+import saveCustomerCommentsToOpp from "@salesforce/apex/CreateQuoteOpportunity.saveCustomerCommentsToOpp";
+import getSmartCommDoc from "@salesforce/apex/SmartCommUtils.getSmartCommDoc";
+//import getLoginURL from '@salesforce/apex/SmartCommUtils.getLoginURL';
+
 
 import CREDITAPP_ASSET_TITLE from '@salesforce/label/c.CREDITAPP_ASSET_TITLE';
 import CREDITAPP_ASSET_DUP from '@salesforce/label/c.CREDITAPP_ASSET_DUP';
@@ -37,22 +41,12 @@ import CREDITAPP_ASSET_DUP from '@salesforce/label/c.CREDITAPP_ASSET_DUP';
 
 const SEARCH_DELAY = 300;
 
-export default class PricingComponent extends NavigationMixin(LightningElement) {
+export default class PriceQuotePageContainer extends NavigationMixin(LightningElement) {
 
-    // these are used to create pricing component
+    // public property
     @api sectionTitle;
     @api sectionSubTitle;
     @api oppid;
-    @api option;
-    @api newoption;
-    @api program;
-    @api clone;
-
-    createdQuote = false;
-
-    error;
-    accordianSection = '';
-    triggerParentSave = false;
 
     //Object model
     assets = [{
@@ -67,34 +61,28 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         isFirst: true
     }];
     relatedAssets = [];
+
     options = [];
+
     opportunityId;
-   
+
 
     @track quoteObject = {
         deleteAssets: [],
-        isEdit: null,
-        isClone: null,
+        isEdit: false,
+        isClone: false,
         assetTypeQuote: 'New',
         financeType:'BO',
         paymentFrequency: 'Monthly',
-        advPayments: '0',
-        program: null,
-        programId: null,
-        location: null,
-        locationId: null,
-        nickname: null,
-        financeTerm: null,
-        option: null
+        advPayments: '0'
     };
-
 
     quoteObjectSummary = [];
 
     //trackers
     @track currentPosition = 0;
     @track currentAccPosition = 0;
-    @track loading = false;
+    @track loading = true;
     @track hasQuotes = false;
     @track specificationTabActive = true;
     @track currentTab = 'proposal';
@@ -104,14 +92,33 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     nickname = '';
     location;
     salesRep;
+    program = '';
     assetTypeQuote = 'New';
     userSite;
     quoteNumber;
 
     //finance attributes
     rateType;
+
+    @api
+    get isRateDisabled() {
+        let result = (this.program === '') || (this.assetTypeQuote === '') || (this.location === '') || (this.nickname === '');
+        if (!result && (this.openAccordionSections.length === 0)) {
+            this.openAccordionSections = ['Finance Structure'];
+        } else if (result && this.openAccordionSections.includes('Finance Structure') && (this.openAccordionSections.length === 1)) {
+            this.openAccordionSections = [];
+        }
+        return result;
+    }
+
     financeTerm;
-        financeType = 'BO';
+
+    @api
+    get isFinanceTermDisabled() {
+        return (typeof this.rateType === 'undefined') || (this.program === '') || (this.assetTypeQuote === '') || (this.location === '') || (this.nickname === '');
+    }
+
+    financeType = 'BO';
     paymentFrequency = 'Monthly';
     advPayments = '0';
 
@@ -148,22 +155,31 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     ];
 
     optionsPicklist = [];
+
     osidForSalesReps = [];
+
     showCreateInstead = false;
 
     //Search
     newContactRecord;
+
     comments;
+
     displayLocation;
     displayProgram;
     salesRepDisplayName;
+
     creditAppId;
     hasNoActiveQuoteForCredApp = true;
+
     displayModal = false;
+
     displayModalDelete = false;
     currentDeleteId = '';
+
     hasLocationSelection = true;
     hasLocationSelectionSalesRep = true;
+
     leaseTypeSummary = '-';
     rateTypeSummary = '-';
     advancedPaymentsSummary = '-';
@@ -173,108 +189,36 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     residualSummary = '-';
     interestRateSummary = '-';
     termSummary = '-';
+
     activeOption;
+
     displayNameForLocation;
     displayNameForLocationPicklist;
+
     onlyValidateHeader = false;
+
     proposalIdsIncluded = [];
+
     doRedirectToCreditApp = false;
+
     currentPageReference;
+
     pricingApiCallCount = 0;
+
     customerComments = '';
+
     doAssetDeleteInstead = false;
     deleteAssetEventSavedForModal;
     doAccessoryDeleteInstead = false;
     deleteAccessoryEventSavedForModal;
+
     isLoadedQuote = false;
+
     salesRepInputValue = '';
     refreshSalesRepDropdown = true;
+
     saveRunning = false;
 
-    /***************************************************************************************************************
-     * api section - communication from parent
-     * 
-     * 3 key apis - childOption, childCondition, childPricing
-     * 
-     * these three are called by parent to set up the overall paramerters for pricing to execute; for example
-     * program, location, new/used, nick name, sales rep
-    ***************************************************************************************************************/
-    
-
-    /***************************************************************************************************************
-     * isRateDisabled
-     ***************************************************************************************************************/
-    @api
-    get isRateDisabled() {
-
-        let result =  (this.program === '') || (this.assetTypeQuote === '') || (this.location === '') || (this.nickname === '');
-        if (!result && (this.openAccordionSections.length === 0)) {
-            this.openAccordionSections = ['Finance Structure'];
-        }
-        else if (result && this.openAccordionSections.includes('Finance Structure') && (this.openAccordionSections.length === 1)) {
-            this.openAccordionSections = [];
-        }
-        
-        return result;
-    }
-
-    
-    /***************************************************************************************************************
-     * isFinanceTermDisabled
-    ***************************************************************************************************************/
-    
-    @api
-    get isFinanceTermDisabled() {
-        return (typeof this.rateType === 'undefined') || (this.program === '') || (this.assetTypeQuote === '') || (this.location === '') || (this.nickname === '');
-    }
-    /***************************************************************************************************************
-    * childCondition - parent calls this to signal new/used changed
-    ***************************************************************************************************************/
-    @api childCondition(option){
-        
-        let wrapperEvent2 = {value: option};
-        let wrapperEvent = {target: wrapperEvent2};
-        this.handleChange(wrapperEvent);
-        
-    }
-    /***************************************************************************************************************
-     * childOption - parent calls this to signal option change on quot
-     * 
-     * 
-     * 
-     ***************************************************************************************************************/
-    @api childOption(option){
-        //console.log('called child option: ' +  option);
-       
-        let wrapperEvent2 = {value: option};
-        let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: false};
-        this.handleOptionPicklist(wrapperEvent);
-    }
-    /***************************************************************************************************************
-     * childPricing - parent calls this to send in the nickname sales rep location and program
-     * 
-     * 
-     ***************************************************************************************************************/
-    @api childPricing(quoteObject){
-
-        //console.log('**** in child pricing *****'  );
- 
-        this.quoteObject = quoteObject;
-
-        this.assetTypeQuote = this.quoteObject.assetTypeQuote;
-        this.programId = this.quoteObject.programId;
-        this.program = this.quoteObject.programId;
-        this.location = this.quoteObject.location;
-        this.nickname = this.quoteObject.nickname;
-
-        this.accordianSection = 'Finance Structure'; 
-        this.handleDependentRatesPicklistChange(this.quoteObject.programId);
-
-    }
-
-    /***************************************************************************************************************
-     *  
-     ***************************************************************************************************************/
     @wire(CurrentPageReference)
     setCurrentPageReference(currentPageReference) {
         if (currentPageReference) {
@@ -283,76 +227,45 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         }
     }
 
-    /***************************************************************************************************************
-     *  
-     ***************************************************************************************************************/
     get newPageReference() {
         return Object.assign({}, this.currentPageReference, {
             state: Object.assign({}, this.currentPageReference.state, this.newPageReferenceUrlParams)
         });
     }
 
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     get newPageReferenceUrlParams() {
         return {
             oppid: this.opportunityId
         };
     }
 
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     setCurrentPageIdBasedOnUrl() {
         this.newPageId = this.currentPageReference.state.oppid;
     }
 
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     connectedCallback() {
-        
-        //console.log('this opp id is ' + this.oppid);
+        //  this.showToast('This is the Opportunity Id', this.oppid, 'success');
+        console.log('Opportunity Id provided');
+        console.log(this.oppid);
+        this.loading = false;
         if (this.oppid) {
             this.loading = true;
             this.isLoadedQuote = true;
-            
             queryQuoteOpportunity({'oppId' : this.oppid})
                 .then(result => {
-                 
                     this.parseData(result);
-                 
                     this.addPricingDataToLoadedQuotes();
-                     
-                     
                     if (this.options.length !== 0) {
                         this.hasQuotes = true;
-                        this.accordianSection = 'Finance Structure'; 
                         this.hasLocationSelection = true;
                         this.hasLocationSelectionSalesRep = false;
-                        this.specificationTabActive = true;  ///mrm change 1
+                        this.specificationTabActive = false;
                         this.program = this.options[0].quote.Program_ID__c;
-                        
-
-                        if (this.newoption == 'New Option'){
-                            let wrapperEvent2 = {value: this.newoption};
-                            let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: false};
+                        if (this.optionsPicklist.length > 1) {
+                            let wrapperEvent2 = {value: 0};
+                            let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: true};
                             this.handleOptionPicklist(wrapperEvent);
-                            this.optionsPicklistVal = this.newoption;
-                            this.loading = false;
-
-                        }
-                        else{
-                            if (this.optionsPicklist.length > 1) {
-                                if (typeof this.newoption === 'undefined')
-                                    this.newoption = 0;
-                                let wrapperEvent2 = {value: this.newoption};
-                                let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: true};
-                                this.handleOptionPicklist(wrapperEvent);
-                                this.quoteObject.option = this.newoption;
-                                this.optionsPicklistVal = this.newoption;
-                            }
+                            this.optionsPicklistVal = '0';
                         }
                         this.nickname = result.newOpp.Nickname__c;
                         if (result.newOpp.Comments__c) {
@@ -377,14 +290,13 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                             this.creditAppId = this.options[0].quote.Id;
                         }
                         let loadsToGo = 2;
-                             
                         if (this.location) {
                             getPrograms({siteName: this.location})
                                 .then(result => {
                                     let plist = [];
                                     let data = JSON.parse(result);
                                     data.forEach(function (element) {
-                                        ////console.log(element.programName + ' ' + element.programId);
+                                        console.log(element.programName + ' ' + element.programId);
                                         plist.push({label: element.programName, value: element.programId});
 
                                     });
@@ -395,17 +307,17 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                                             this.loading = false;
                                         }
                                     }, 1500);
-                                })
-                                .catch(error => {
-                                    this.showToast('Something went wrong', error.body.message, 'error');
-                                    loadsToGo--;
-                                    if (loadsToGo === 0) {
-                                        this.loading = false;
-                                    }
-                                    this.programPicklist = undefined;
-                                    return;
-                                });
-                                
+                                }).catch(error => {
+                                console.log(JSON.parse(JSON.stringify(error)));
+                                this.showToast('Something went wrong', error.body.message, 'error');
+                                loadsToGo--;
+                                if (loadsToGo === 0) {
+                                    this.loading = false;
+                                }
+                                this.programPicklist = undefined;
+                                return;
+                            });
+                            console.log('get salesreps');
                             getSalesReps({ originatingSiteId: this.location })
                                 .then(result => {
 
@@ -421,10 +333,16 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                                     sList.push({label: 'None', value: ''});
 
                                     this.salesRepList = sList;
+                                    this.salesRepListBackup = sList;
+                                    console.log('getSalesReps1 Done');
+                                    console.log(JSON.parse(JSON.stringify(sList)));
+                                    //this.salesRep = this.options[0].quote.Partner_Sales_Rep__c;
                                     loadsToGo--;
                                     if (loadsToGo === 0) {
                                         this.loading = false;
                                     }
+
+
                                 })
                                 .catch(error => {
                                     loadsToGo--;
@@ -433,16 +351,17 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                                     }
                                     this.showToast('Something went wrong', error.body.message, 'error');
                                 });
-                             
+                            console.log('dog1');
                             if (this.financeType) {
                                 loadsToGo++;
-                                this.quoteObject.program = this.program;
-                                this.quoteObject.programId = this.program;
-                                
+                                this.loading = true;
+                                console.log('new used is: ');
+
                                 getFinancialProducts({programId: this.program, financetype: this.financeType, newused: this.assetTypeQuote})
                                     .then(result => {
                                         let plist = [];
                                         let tempData = JSON.parse(result);
+                                        console.log('tempData = ' + tempData);
                                         let onlyoneid = null;
                                         let onlyonelabel = null;
                                         if (tempData.length > 0) {
@@ -466,19 +385,21 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                                         if (loadsToGo === 0) {
                                             this.loading = false;
                                         }
+                                        console.log(plist);
                                         this.rateTypePicklist = plist;
                                     })
                                     .catch(error => {
-                                        //console.log(JSON.stringify(error));
+                                        console.log(JSON.stringify(error));
                                     });
-                                    
                             }
                         }
                     }
-                    this.loading = false;
+                    //this.loading = false;
                 }).catch(error => {
-                    this.showToast('Invalid Opportunity Id', this.oppid, 'error');
-                    this.loading = false;
+                this.showToast('Invalid Opportunity Id', this.oppid, 'error');
+                console.log('Opportunity Import Error:');
+                console.log(JSON.parse(JSON.stringify(error)));
+                this.loading = false;
             });
         }
         /**
@@ -500,14 +421,27 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             {value: 'Contact', label: 'New Contact', preNavigateCallback},
 
         ];
-
-        //console.log('end of callback');
-        
     }
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
-    
+
+    setCustomerComments(e) {
+        this.customerComments = e.detail.value;
+    }
+
+    saveCustomerComments() {
+        this.loading = true;
+        console.log('Start of customerCommentsSave');
+        console.log(this.customerComments);
+        console.log(this.opportunityId);
+        saveCustomerCommentsToOpp({comments : this.customerComments, oppId : this.opportunityId})
+            .then(result => {
+                this.showToast('Customer comments saved!', 'Success!','success');
+                this.loading = false;
+            }).catch(error => {
+            this.showToast('An error occurred trying to save customer comments.', JSON.stringify(error), 'error');
+            this.loading = false;
+        });
+    }
+
     showToast(title, message, variant) {
         const event = new ShowToastEvent({
             title: title,
@@ -517,16 +451,207 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         });
         this.dispatchEvent(event);
     }
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
-    
+
+    //Wire methods
+    /***********************************************************************************************************
+     * getUserSIte
+     ************************************************************************************************************/
+    @wire(getUserSite, {userId: null})
+    wiredgetUserSite({error, data}) {
+        this.loading = true;
+        this.advance = '0';
+        this.frequency = 'monthly';
+        console.log('in getUserSite');
+
+        if (data) {
+            let parsedData = JSON.parse(data);
+            console.log(JSON.parse(JSON.stringify(data)));
+            let osidObj = {osidArray: []};
+            //this.location = parsedData.returnSiteList[0].originatingSiteId;
+            //this.userSite = parsedData.returnSiteList[0].originatingSiteId;
+            for (let i = 0; i < parsedData.returnSiteList.length; i++) {
+                this.siteList.push({label: parsedData.returnSiteList[i].name, value: parsedData.returnSiteList[i].originatingSiteId});
+                osidObj.osidArray.push(parsedData.returnSiteList[i].originatingSiteId);
+            }
+            this.siteList = JSON.parse(JSON.stringify(this.siteList));
+            if ((this.salesRepList.length === 0) && !this.isLoadedQuote) {
+                getSalesRepsFromReturnedOSID({osidJSON:  JSON.stringify(osidObj)})
+                    .then(result => {
+
+                        let data = JSON.parse(result);
+                        let sList = [];
+                        let osidList = [];
+
+                        data.forEach(function (element) {
+
+                            sList.push({label: element.name, value: element.id});
+                            osidList.push({osid: element.osid, value: element.id});
+
+                        });
+
+                        sList.push({label: 'None', value: ''});
+
+                        this.salesRepList = sList;
+                        console.log('getSalesRepsOSID Done');
+                        console.log(JSON.parse(JSON.stringify(sList)));
+                        this.osidForSalesReps = osidList;
+                        this.loading = false;
+                        this.hasLocationSelectionSalesRep = false;
+                    }).catch(error => {
+                        this.loading = false;
+                        this.showToast('Something went wrong', error.body.message, 'error');
+                });
+                return;
+            }
+            //this.quoteObject.userSite = parsedData.returnSiteList[0].originatingSiteId;
+
+        } else if (error) {
+            this.showToast('Something went wrong', error.body.message, 'error');
+            this.location = undefined;
+        }
+        setTimeout(() => {
+            this.loading = false;
+
+            console.log('wiredGetUserSite done');
+        }, 1500);
+    }
+
+    /***********************************************************************************************************
+     * getPrograms
+     ************************************************************************************************************/
+    /*@wire(getPrograms, {siteName: '$location'})
+    wiredgetPrograms({error, data}) {
+        this.loading = true;
+        let plist = [];
+        if (data) {
+            data = JSON.parse(data);
+            data.forEach(function (element) {
+                console.log(element.programName + ' ' + element.programId);
+                plist.push({label: element.programName, value: element.programId});
+
+            });
+        } else if (error) {
+            this.showToast('Something went wrong', error.body.message, 'error');
+            this.loading = false;
+            this.programPicklist = undefined;
+            return;
+        }
+        this.programPicklist = plist;
+        setTimeout(() => {
+            this.loading = false;
+        }, 1500);
+    }*/
+
+    handleChangeLocation(event) {
+        this[event.target.name] = event.target.value;
+        this.quoteObject[event.target.name] = event.target.value;
+
+        this.refreshSalesRepDropdown = false;
+
+        this.loading = true;
+        if (!this.program) {
+            this.hasLocationSelection = false;
+        }
+        this.hasLocationSelectionSalesRep = false;
+
+        let loadsToGo = 2;
+
+        getPrograms({siteName: event.target.value})
+            .then(result => {
+                let plist = [];
+                let data = JSON.parse(result);
+                let hasProgramId = false;
+                data.forEach(function (element) {
+                    console.log(element.programName + ' ' + element.programId);
+                    plist.push({label: element.programName, value: element.programId});
+
+                });
+                for (let i = 0; i < plist.length; i++) {
+                    if (this.program === plist[i].value) {
+                        hasProgramId = true;
+                    }
+                }
+                if (!hasProgramId) {
+                    this.hasLocationSelection = false;
+                    this.program = '';
+                    this.quoteObject.program = undefined;
+                    this.quoteObject.programId = undefined;
+                }
+                this.programPicklist = plist;
+                setTimeout(() => {
+                    loadsToGo--;
+                    if (loadsToGo === 0) {
+                        this.loading = false;
+
+                        console.log('handleChangeLocation done2');
+                    }
+                }, 1500);
+            }).catch(error => {
+            console.log(JSON.parse(JSON.stringify(error)));
+            this.showToast('Something went wrong', error.body.message, 'error');
+            loadsToGo--;
+            if (loadsToGo === 0) {
+                this.loading = false;
+            }
+            this.programPicklist = undefined;
+            return;
+        });
+
+        getSalesReps({ originatingSiteId: event.target.value })
+            .then(result => {
+
+
+
+                let data = JSON.parse(result);
+                let sList = [];
+                let currentSalesRep = this.quoteObject.salesRep;
+                let saveCurrentSalesRep = false;
+
+                data.forEach(function(element){
+                    if (currentSalesRep === element.id) {
+                        saveCurrentSalesRep = true;
+                    }
+                    sList.push({label: element.name, value: element.id});
+
+                });
+
+                sList.push({label: 'None', value: ''});
+
+                //this.salesRepList = sList;
+
+                if (!saveCurrentSalesRep) {
+                    console.log('sales rep removed');
+                    //this.salesRepList = JSON.parse(JSON.stringify(this.salesRepList));
+                    this.salesRep = '';
+                    this.quoteObject.salesRep = '';
+                }
+
+                this.refreshSalesRepDropdown = true;
+
+                console.log('getSalesReps2 Done');
+                console.log(JSON.parse(JSON.stringify(sList)));
+                loadsToGo--;
+                if (loadsToGo === 0) {
+                    this.loading = false;
+
+                    console.log('handleChangeLocation done');
+                }
+
+
+            })
+            .catch(error => {
+                loadsToGo--;
+                if (loadsToGo === 0) {
+                    this.loading = false;
+                }
+                this.showToast('Something went wrong', error.body.message, 'error');
+            });
+
+    }
+
     //Functions for loading in dependent picklist values
     loadRates() {
-
-        //this.loading = true;
-
+        console.log('this asstypequote' + this.assetTypeQuote);
         getFinancialProducts({programId: this.program, financetype: this.financeType, newused: this.assetTypeQuote})
             .then(result => {
                 let plist = [];
@@ -552,27 +677,23 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                     }
 
                 }
+                console.log(plist);
                 this.rateTypePicklist = plist;
-                
+                this.loading = false;
+
+                console.log('loadRates done');
+
             })
             .catch(error => {
-                //console.log('error' + error);
                 this.showToast('Something went wrong', error.body.message, 'error');
                 this.loading = false;
                 this.rateTypePicklist = undefined;
             });
-
-            
     }
 
-    
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     loadTerms() {
 
-        ////console.log('in load terms in pircing component' + this.program);
+        console.log('in load terms');
 
         getFinancialProduct({programId: this.program, productId: this.rateType, newused: this.assetTypeQuote})
             .then(result => {
@@ -626,6 +747,10 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 if(this.pricingApiCallCount === 0) {
                     this.loading = false;
                 }
+
+                console.log('loadTerms done');
+                console.log(this.pricingApiCallCount);
+
             })
             .catch(error => {
                 this.showToast('Something went wrong', error.body.message, 'error');
@@ -634,10 +759,6 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             });
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     //update picklist values for assets
     updateAssetPicklist() {
         this.relatedAssets = [];
@@ -648,20 +769,37 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         }
     }
 
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
+    handleQuoteSelectForCreditApp(event) {
+        this.creditAppId = event.detail;
+        this.hasNoActiveQuoteForCredApp = false;
+         
+        this.loading = true;
+        console.log('event detail:' + event.detail);
+
+        markQuoteOptionAsCreditAppSelection({quoteId : this.creditAppId, oppId : this.opportunityId})
+            .then(result => {
+                if (result == 'NoPayment'){
+                    this.creditAppId = null;
+                    this.hasNoActiveQuoteForCredApp = true;
+                    this.showToast('This option cannot be selected because there is no valid payment!', 'Error', 'error');
+                    this.loading = false;
+                    return;
+                }
+                this.showToast('Success saving selection', 'Success', 'success');
+                this.loading = false;
+            }).catch(error => {
+            this.showToast('Error in saving selection','Error', 'error');
+            this.loading = false;
+        });
+    }
+
     //handlers for picklists
     onInputChange(event) {
         this[event.target.name] = event.target.value;
         this.quoteObject[event.target.name] = event.target.value;
     }
 
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     handleChange(event) {
-
         this[event.target.name] = event.target.value;
         //Geetha - new code for unitprice //edit/copy asset PBI 882069
         if(event.target.value == 'Used'){
@@ -671,26 +809,34 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             this.assets.forEach(a=>{
                 a.unitSalesPrice = undefined;
           })
-          //callout for Leasetype and Ratetype
+            //callout for Leasetype and Ratetype
           this.loadTerms();
 
         }
         this.quoteObject[event.target.name] = event.target.value;
+        console.log('In change function');
+        console.log(JSON.parse(JSON.stringify(this.quoteObject)));
         this.loadRates();
+        console.log('In change function2');
+         
+
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     handleChangeSalesRep(event) {
         if (!event.target || (event.target === {}) || (typeof event.target.value === 'undefined')) {
             return;
+        } else {
+            this.salesRep = '';            
+            event.target.inputValue = '';    
         }
-        
+
+        //console.log(this.salesRepList);
+        //console.log(event.target.value);
         this.salesRep = this.salesRepList.find(element => element.value === event.target.value).label;
         this.quoteObject.salesRep = event.target.value;
-        
+        console.log('In change function');
+        console.log(JSON.parse(JSON.stringify(this.quoteObject)));
+
         if (this.isLoadedQuote) {
             return;
         }
@@ -709,83 +855,57 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     displayModalToFalse(event) {
         this.displayModal = false;
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     displayModalToTrue(event) {
         this.displayModal = true;
     }
 
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
-    handleDependentRatesPicklistChange2(event) {
+    handleDependentRatesPicklistChange(event) {
 
+        console.log('handeldependingratespicklistchagne' + event.target.name);
         this.loading = true;
         this[event.target.name] = event.target.value;
         this.quoteObject[event.target.name] = event.target.options.find(opt => opt.value === event.detail.value).label;
         this.quoteObject[event.target.name +'Id'] = event.target.value;
 
-        //this.displayLocation = this.siteList.find(opt => opt.value === this.quoteObject.location).label;
-        //this.displayProgram = this.quoteObject.program;
-
-        //console.log(JSON.stringify(this.quoteObject)); 
-
-        this.loadRates();
-
-    }
-    
-    handleDependentRatesPicklistChange(message) {
-        
-        this.loading = true;
-
-        this[name] = message;
-        this.displayLocation = this.quoteObject.location;
+        this.displayLocation = this.siteList.find(opt => opt.value === this.quoteObject.location).label;
         this.displayProgram = this.quoteObject.program;
 
-        //console.log(JSON.stringify(this.quoteObject)); 
-        this.loadRates();
+        console.log(JSON.stringify(this.quoteObject)); 
 
-    
+        this.loadRates();
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     handleDependentTermsPicklistChange(event) {
         this.loading = true;
         this[event.target.name] = event.target.value;
         this.quoteObject[event.target.name] = event.target.options.find(opt => opt.value === event.detail.value).label;
         this.quoteObject[event.target.name +'Id'] = event.target.value;
-     
-        
+        console.log(JSON.stringify(this.quoteObject));
         this.loadTerms();
-        
     }
 
-    
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
+    //Search Implementation
+    handleSearch(event) {
+        const lookupElement = event.target;
+        apexSearch(event.detail)
+            .then(results => {
+                console.log(results);
+                lookupElement.setSearchResults(results);
+            })
+            .catch(error => {
+                console.log(error);
+                // TODO: handle error
+            });
+    }
+
     getSalesRepId(event) {
         this.quoteObject.salesRep = event.detail[0];
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     //toggle for sections
     handleSectionToggle(event) {
         const openSections = event.detail.openSections;
@@ -800,62 +920,114 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         }
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     //tab toggle
     handleTabChange(event) {
         const tab = event.target;
-        ////console.log(event.target.value);
+        console.log(event.target.value);
         this.specificationTabActive = event.target.value === 'spec';
     }
 
-    
-    /***************************************************************************************************************
-    *  handleAddOption  - this is for the +Add Option at the bottom of the options list.
-    ***************************************************************************************************************/
-    handleAddOption(event) {
-
-        //seting the api option so that the call back in the child will switch over to new option upon call
-
-        this.loading = true;
-        this.newoption = 'New Option';
-        this.optionsPicklistVal = this.newoption;
-        this.currentTab = 'spec';
-        this.loading = false;
-        
-    }
-
-    
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     handleCancel(event) {
-
-        
-
-        //console.log('pricing component handle cancel');
-
         this.loading = true;
         this.displayModal = false;
 
-        const passEvent = new CustomEvent('childcancel', {
-            detail: {quote: this.quoteObject, activeTabValue:'proposal'} 
-            });
-            this.dispatchEvent(passEvent);
+        this.activeOption = undefined;
 
+        let prog;
+        let progId;
+        let loc;
+        let salesId;
+        let quoteNickname;
+        let assetTypeQuoteCopy;
 
-        
-        
-        this.loading = false;
+        if (this.hasQuotes) {
+            this.specificationTabActive = false;
+            this.optionsPicklistVal = 'New Option';
+            this.template.querySelector('lightning-tabset').activeTabValue = 'proposal';
+            prog = this.quoteObject.program;
+            progId = this.quoteObject.programId;
+            loc = this.quoteObject.location;
+            salesId = this.quoteObject.salesRep;
+            assetTypeQuoteCopy = this.quoteObject.assetTypeQuote;
+            quoteNickname = this.nickname;
+        } else {
+            prog = undefined;
+            progId = undefined;
+            loc = undefined;
+            salesId = undefined;
+            quoteNickname = undefined;
+            assetTypeQuoteCopy = undefined;
+            this.nickname = undefined;
+            this.salesRep = undefined;
+            this.location = undefined;
+            this.program = undefined;
+            this.assetTypeQuote = undefined;
+            this.hasLocationSelection = true;
+            this.hasLocationSelectionSalesRep = true;
+        }
+
+        this.leaseTypeSummary = '-';
+        this.rateTypeSummary = '-';
+        this.advancedPaymentsSummary = '-';
+        this.baseUnitSalesPriceSummary = '-';
+        this.baseUnitSalesPriceWithoutDuplicatesSummary = '-';
+        this.totalPaymentSummary = '-';
+        this.residualSummary = '-';
+        this.interestRateSummary = '-';
+        this.termSummary = '-';
+
+        this.quoteObject = {
+            deleteAssets: [],
+            financeType:'BO',
+            paymentFrequency: 'Monthly',
+            advPayments: '0',
+            assetTypeQuote: assetTypeQuoteCopy,
+            nickname: quoteNickname,
+            program:  prog,
+            programId: progId,
+            location: loc,
+            salesRep: salesId
+        };
+
+        if (this.opportunityId) {
+            this.quoteObject.oppId = this.opportunityId;
+            this.quoteObject.isEdit = false;
+            this.quoteObject.isClone = true;
+            this.showCreateInstead = true;
+        } else {
+            this.quoteObject.isEdit = false;
+            this.quoteObject.isClone = false;
+            this.showCreateInstead = false;
+        }
+
+        this.assets = [{
+            sectionName: 'asset0',
+            assetHeading: 'Asset 1',
+            assetNo: 0,
+            isFirst: true
+        }];
+        this.accessories = [{
+            accNo: 0,
+            accessoryHeading: 'Accessory 1',
+            isFirst: true
+        }];
+        //this.program = '';
+        //this.assetTypeQuote = 'New';
+
+        //finance attributes
+        this.rateType = '';
+        this.financeTerm = '';
+        this.financeType = 'BO';
+        this.paymentFrequency = 'Monthly';
+        this.advPayments = '0';
+
+        this.comments = '';
+        setTimeout(() => {
+            this.loading = false;
+            console.log('handleCancel finished');
+        }, 500);
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     handleAddOption(event) {
         this.loading = true;
 
@@ -878,7 +1050,10 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         let assetTypeQuoteCopy = this.quoteObject.assetTypeQuote;
 
         if (this.options[0]) {
+            //console.log(JSON.parse(JSON.stringify(this.options[0])));
+            //console.log('Program__c :: ' + this.options[0].quote.Program__c);
             prog = this.options[0].quote.Program__c;
+            //console.log('Program_ID__c :: ' + this.options[0].quote.Program_ID__c);
             progId = this.options[0].quote.Program_ID__c;
             loc = this.options[0].quote.Location_ID__c;
             salesId = this.options[0].quote.Partner_Sales_Rep__c;
@@ -920,6 +1095,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             accessoryHeading: 'Accessory 1',
             isFirst: true
         }];
+        //this.program = '';
+        //this.assetTypeQuote = 'New';
 
         //finance attributes
         this.rateType = '';
@@ -937,19 +1114,10 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         }, 500);
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     //Option picklist handler
     handleOptionPicklist(event) {
-
-     
         this.loading = true;
         this.optionsPicklistVal = event.target.value.toString();
-
-        //console.log('hello' + this.optionsPicklistVal);
-
         if(this.optionsPicklistVal === 'New Option'){
             this.leaseTypeSummary = '-';
             this.rateTypeSummary = '-';
@@ -985,7 +1153,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             if (this.opportunityId) {
                 this.quoteObject.oppId = this.opportunityId;
                 this.quoteObject.isEdit = false;
-                this.quoteObject.isClone = false;
+                this.quoteObject.isClone = true;
                 this.showCreateInstead = true;
             } else {
                 this.quoteObject.isEdit = false;
@@ -999,15 +1167,14 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 assetNo: 0,
                 isFirst: true
             }];
-
-            //console.log('this assets is: ' + JSON.stringify(this.assets));
-
             this.accessories = [{
                 accNo: 0,
                 accessoryHeading: 'Accessory 1',
                 isFirst: true
             }];
-         
+            //this.program = '';
+            //this.assetTypeQuote = 'New';
+
             //finance attributes
             this.rateType = '';
             this.financeTerm = '';
@@ -1017,7 +1184,6 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
             this.comments = '';
         }else {
-            
             //Values to be used by input fields
             this.quoteObject.isEdit = true;
             this.quoteObject.isClone = false;
@@ -1027,20 +1193,16 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             this.processAssets(this.options[event.target.value].quoteLines);
             this.processCurrentOption(this.options[event.target.value]);
         }
-
         if (event.skipLoadToFalse) {
             return;
         }
 
         this.loading = false;
-         
+
+        console.log('handleOptionPicklist finished');
     }
 
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     //Asset component handlers
     handleAddAsset(event) {
         this.loading = true;
@@ -1049,67 +1211,50 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         //This timeout is needed since updating the accordion sections on the screen is async
         setTimeout(() => {
             this.openAccordionSections = ('asset' + this.currentPosition);
-            this.loading = false;
         }, 500);
-        
-         
+        this.loading = false;
+        console.log('handleAddAsset finished');
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     handleDeleteAssetModal(event) {
         this.displayModalDelete = true;
         this.doAssetDeleteInstead = true;
         this.deleteAssetEventSavedForModal = event;
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     handleDeleteAccessoryModal(event) {
         this.displayModalDelete = true;
         this.doAccessoryDeleteInstead = true;
         this.deleteAccessoryEventSavedForModal = event;
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     handleDeleteAsset(event) {
         this.loading = true;
-        
-        ////console.log(event.detail);
+        console.log('got here');
+        console.log(event.detail);
         this.deleteRelatedAccessories(this.assets[event.detail]);
-         
+        console.log('part one');
         if (typeof this.assets[event.detail].Id !== 'undefined') {
             this.quoteObject.deleteAssets.push({Id:this.assets[event.detail].Id});
         }
         this.assets.splice(event.detail, 1);
-     
+        console.log('part two');
 
         this.currentPosition--;
         for (let i = 0; i < this.assets.length; i++) {
             this.assets[i].assetNo = i;
         }
-         
+        console.log('part three');
         this.updateAssetPicklist();
-         
+        console.log(this.assets);
         this.loading = false;
-        
+        console.log('handleDeleteAsset finished');
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     handleUpdateAsset(event) {
         this.loading = true;
         
-         
+        console.log(JSON.stringify(this.assets));
 
         for (let i = 0; i < this.assets.length; i++) {
             if (this.assets[i].modelId === this.assets[event.detail.assetNo].modelId
@@ -1134,44 +1279,35 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         if (!this.saveRunning) {
             this.loading = false;
         }
-         
+        console.log('handleUpdateAsset finished');
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     //Accessory Handlers
     //Asset component handlers
     handleAddAccessory(event) {
+       
         this.loading = true;
+        //Geetha - accessory code fix on edit
+        this.currentAccPosition = this.accessories.length - 1;
         this.currentAccPosition++;
         this.accessories.push({accNo: this.currentAccPosition, accessoryHeading: 'Accessory ' + (this.currentAccPosition + 1), isFirst: false});
-         
+        console.log(this.accessories);
         this.loading = false;
-         
+        console.log('handleAddAccessory finished');
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     handleUpdateAccessory(event) {
         this.loading = true;
         this.accessories[event.detail.accNo] = event.detail;
-        
+        console.log('handleUpAcc ' +JSON.stringify(this.accessories));
         this.loading = false;
-        
+        console.log('handleUpdateAccessory finished');
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     handleDeleteAccessory(event) {
         this.loading = true;
-         
-        
+        console.log('got here');
+        console.log(event.detail);
         if (typeof this.accessories[event.detail].Id !== 'undefined') {
             this.quoteObject.deleteAssets.push({Id:this.accessories[event.detail].Id});
         }
@@ -1193,18 +1329,12 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             //this.accessories = JSON.parse(JSON.stringify(this.accessories));
         }
         this.accessories = JSON.parse(JSON.stringify(this.accessories));
-         
+        console.log(JSON.parse(JSON.stringify(this.accessories)));
         this.loading = false;
-     
+        console.log('handleDeleteAccessory finished');
     }
 
-    
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
     validateInputBeforeSave() {
-     
-
         if ((typeof this.quoteObject.program === 'undefined') ||
             (typeof this.quoteObject.programId === 'undefined') ||
             (typeof this.quoteObject.nickname === 'undefined') ||
@@ -1228,8 +1358,9 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                     this.showToast('Error in fields in at least one Asset', 'Please fill out the required fields in Asset ' + (i + 1) + ' to be able to save.', 'error');
                     return false;
                 }
-                if ((typeof this.assets[i].subsidy === 'undefined') ) {
+                if ((typeof this.assets[i].subsidy === 'undefined')) {
                     this.showToast('Error in fields in at least one Asset', 'Please wait for subsidy to load in Asset ' + (i + 1) + ' to be able to save.', 'error');
+                    console.log('subsidy error' +JSON.stringify(this.assets[i].subsidy));
                     return false;
                 }
             }
@@ -1239,6 +1370,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     }
 
     validateAccessories(accArr) {
+        console.log('accArr ' +JSON.stringify(accArr));
         let result = [];
         for (let i = 0; i < accArr.length; i++) {
             if ((typeof accArr[i].relatedAsset !== 'undefined') &&
@@ -1252,11 +1384,13 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         /*if (result.length !== accArr.length) {
             this.showToast('Total accessories removed from incomplete data: ', accArr.length - result.length, 'error');
         }*/
+        console.log('result_validateacc ' +result);
         return result;
     }
 
-    saveDLLComments(event) {veaccArr
+    saveDLLComments(event) {
         this.comments = event.detail.value;
+        handleOnSave(event);
     }
 
     handleOnSaveOnlyHeader(event) {
@@ -1266,9 +1400,6 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
     //Save quote
     handleOnSave(event) {
-
-        //console.log('in save');
-     
         if (!this.validateInputBeforeSave()) {
             return;
         }
@@ -1276,93 +1407,33 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.isLoadedQuote = true;
         this.loading = true;
         this.quoteObject.comments = this.comments;
-    
+        console.log('Value of Comments');
+        console.log(this.comments);
+        console.log(this.quoteObject.comments);
         if (typeof this.quoteObject.assetTypeQuote === 'undefined') {
             this.quoteObject.assetTypeQuote = 'New';
         }
         this.quoteObject.assets = this.assets;
         this.quoteObject.accessories = this.validateAccessories(this.accessories);
         this.quoteObject.oppId = this.opportunityId;
-        this.quoteObject.nickname = this.nickname;
-         
+        console.log('got in here');
+        console.log(JSON.parse(JSON.stringify(this.quoteObject)));
         let passingParam = JSON.stringify(this.quoteObject);
-    
-        //console.log('this quoteobject is: ' +  this.passingParamnickname + '-' + JSON.stringify(this.quoteObject));
-
-        if (this.clone == true){
-            this.quoteObject.isEdit = false;
-            this.quoteObject.isClone = true;
+        console.log(this.hasQuotes);
+        if (this.hasQuotes === true) {
+            this.template.querySelector('lightning-tabset').activeTabValue = 'proposal';
         }
-        
+        console.log(this.quoteObject.isClone);
         if (this.quoteObject.isEdit) {
-             
-            this.triggerParentSave = true;
             this.editQuote(passingParam);
-             
-        } else if (this.quoteObject.isClone  || this.hasQuotes) {
-         
-            this.triggerParentSave = true;
+        } else if (this.quoteObject.isClone || this.hasQuotes) {
+            console.log('we got in here');
             this.cloneQuote(passingParam);
-         
         } else {
-             
-            this.createdQuote = true;
             this.createQuote(passingParam);
-             
         }
-
-        
-        
-        
-    }
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
-    cloneQuote(passingParam) {
-        cloneQuoteOption({jsonInput: passingParam})
-            .then(result => {
-                if (this.hasQuotes){
-                    this.showToast('Quote option has been saved!', 'Quote was saved successfully', 'success');
-                }
-                else{
-                    this.showToast('Quote has been copied!', 'Quote was copied successfully', 'success');
-                }
-             
-                this.parseData(result);
-                this.newoption = result.quoteOpportunityLineItems.length - 1;
-                this.addMissingOptionSummary(result);
-                this.saveRunning = false;
-            })
-            .catch(error => {
-                //console.log(error);
-                this.showToast('Error Saving Record.', error, 'error');
-                this.loading = false;
-                this.saveRunning = false;
-            });
-    }
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
-    editQuote(passingParam) {
-
-        //this.loading = true;
-        editQuoteOption({jsonInput: passingParam})
-            .then(result => {
-                this.showToast('Quote has been edited!', 'Quote was edited successfully', 'success');
-                this.parseData(result);
-                this.addMissingOptionSummary(result);
-                this.saveRunning = false;
-            })
-            .catch(error => {
-                ////console.log(JSON.stringify(error));
-                this.showToast('An error has occurred trying to edit an option.', error, 'error');
-                this.loading = false;
-                this.saveRunning = false;
-            });
     }
 
-        
-   
     //Second page implementations
     handleAssetEdit(event) {
         this.loading = true;
@@ -1373,10 +1444,21 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.quoteObject.optionNum = (event.detail - 0) + 1;
         this.processAssets(this.options[event.detail].quoteLines);
         this.processCurrentOption(this.options[event.detail]);
+        //this.processPricingSummary(this.options[event.detail].quote, event.detail);
+        console.log(this.assets);
+        console.log('Newton --------------------');
+        console.log(this.quoteObject);
+        //this.quoteObject = this.options[event.detail];
+        //this.processCurrentOption(this.quoteObject);
         setTimeout( () => {//options picklist does not load fast enough
             this.specificationTabActive = true;
             this.optionsPicklistVal = event.detail;
             this.template.querySelector('lightning-tabset').activeTabValue = 'spec';
+            /*this.template.querySelectorAll('lightning-input[name="nickname"]').forEach(
+                (element) => {element.disabled = true;}
+            );*/
+            this.loading = false;
+            console.log('handleAssetEdit finished');
         }, 500);
     }
 
@@ -1387,20 +1469,32 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.showCreateInstead = false;
         this.quoteObject.Id = null;
         this.activeOption = undefined;
+        console.log(this.opportunityId);
         this.quoteObject.oppId = this.opportunityId;
+        console.log('assetClone 1');
         this.processAssets(this.options[event.detail].quoteLines);
+        console.log('assetClone 2');
         this.processCurrentOption(this.options[event.detail]);
+        console.log('assetClone 3');
+        //this.processPricingSummary(this.options[event.detail].quote);
+        console.log(this.assets);
+        console.log(this.quoteObject);
+        //this.quoteObject = this.options[event.detail];
+        //this.processCurrentOption(this.quoteObject);
         setTimeout( () => {//options picklist does not load fast enough
             this.specificationTabActive = true;
             this.optionsPicklistVal = event.detail;
             this.template.querySelector('lightning-tabset').activeTabValue = 'spec';
+            /*this.template.querySelectorAll('lightning-input[name="nickname"]').forEach(
+                (element) => {element.disabled = true;}
+            );*/
             this.loading = false;
+            console.log('handleAssetClone finished');
         }, 500);
-
-        //console.log('qo' + this.quoteObject);
     }
 
     handleAssetDelete(event) {
+        console.log(event.detail);
         this.currentDeleteId = event.detail;
         this.displayModalDelete = true;
     }
@@ -1414,8 +1508,6 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     }
 
     handleDelete(event) {
-
-        //console.log('in handel delete');
         if (this.doAssetDeleteInstead) {
             this.handleDeleteAsset(this.deleteAssetEventSavedForModal);
             this.displayModalDeleteToFalse({});
@@ -1435,7 +1527,9 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     }
 
     deleteRelatedAccessories(assets) {
+        console.log(assets);
         let tempAcc = JSON.parse(JSON.stringify(this.accessories));
+        console.log(tempAcc);
         this.accessories = [];
         for (let i = 0; i < tempAcc.length; i++) {
             if (!(parseInt(tempAcc[i].relatedAsset) === parseInt(assets.assetNo))) {
@@ -1443,6 +1537,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 this.currentAccPosition--;
             }
         }
+        console.log('deleteRelatedAccessories');
         if (this.accessories.length === 0) {
             this.accessories.push({
                 accNo: 0,
@@ -1452,6 +1547,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         } else {
             for (let i = 0; i < this.accessories.length; i++) {
                 this.accessories[i].accNo = i;
+                //this.accessories[i].accessoryHeading = 'Accessory Details';
                 this.currentAccPosition = i;
             }
             this.accessories[0].isFirst = true;
@@ -1463,8 +1559,14 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         let residualTotal = 0;
         for (let i = 0; i < response.assets.length; i++) {
             for (let j = 0; j < quote.quoteLines.length; j++) {
+                console.log('Current Iteration of addPricingDataToQuoteLines');
+                console.log(i);
+                console.log(j);
+                console.log(parseInt(response.assets[i].sequenceId));
+                //console.log(parseInt(quote.quoteLines[j].Sequence_ID__c));
                 if (response.assets[i].sequenceId === quote.quoteLines[j].Id) {
                     quote.quoteLines[j].payment = response.assets[i].paymentAmount;
+                    //quote.quoteLines[j].Total_Sales_Price__c = response.assets[i].financedAmount;
                     quote.quoteLines[j].interestRate = (parseFloat(jsonString.Interest__c)).toFixed(2) + '%';
                     let objToAdd = {};
                     if (response.assets[i].bookedResidualAmount) {
@@ -1482,14 +1584,22 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                     }
                     objToAdd.Id = quote.quoteLines[j].Id;
                     objToAdd.Payment_Amount__c = response.assets[i].paymentAmount;
+                    //objToAdd.Total_Sales_Price__c = response.assets[i].financedAmount;
                     addDataBackToServer.push(objToAdd);
                     break;
                 }
             }
             for (let k = 0; k < response.assets[i].assetComponents.length; k++) {
                 for (let j = 0; j < quote.quoteLines.length; j++) {
+                    console.log('Current Iteration of accessories addPricingDataToQuoteLines');
+                    console.log(i);
+                    console.log(j);
+                    console.log(parseInt(response.assets[i].assetComponents[k].sequenceId));
+                    //console.log(parseInt(quote.quoteLines[j].Sequence_ID__c));
                     if (response.assets[i].assetComponents[k].sequenceId === quote.quoteLines[j].Id) {
                         quote.quoteLines[j].payment = response.assets[i].assetComponents[k].paymentAmount;
+                        console.log(response.assets[i].assetComponents[k].financedAmount);
+                        //quote.quoteLines[j].Total_Sales_Price__c = response.assets[i].assetComponents[k].financedAmount;
                         quote.quoteLines[j].interestRate = (parseFloat(jsonString.Interest__c)).toFixed(2) + '%';
                         let objToAdd = {};
                         if (response.assets[i].assetComponents[k].bookedResidualAmount) {
@@ -1514,6 +1624,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 }
             }
         }
+        console.log('addpricingdatatoquotelines 1');
+        console.log(JSON.parse(JSON.stringify(addDataBackToServer)));
         if (addDataBackToServer.length !== 0) {
             saveQuoteLinePricingDataBackToServer({quoteString : JSON.stringify(addDataBackToServer)})
                 .then(result => {
@@ -1534,132 +1646,176 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         }
     }
 
-    /*****************************************************************************************************
-     * Here is the call price; and a save
-     * 
-     * 
-     * 
-     */
-    
     processPricingSummary(quoteObj) {
-
-        this.loading = true;
-         
+        console.log('starting getPrice:');
+        console.log(JSON.parse(JSON.stringify(quoteObj)));
+        console.log(quoteObj.quote.Program_ID__c);
         let lastBit = quoteObj.quote.Program_ID__c.split('.');
         lastBit = lastBit[lastBit.length - 1];
-
-        let currentDate1 = new Date();
-        let time1 = currentDate1.getHours() + ":" + currentDate1.getMinutes() + ":" + currentDate1.getSeconds() + 
-             ":"  + currentDate1.getMilliseconds(); 
-        //console.log(time1);
-        //console.log('start get price' + time1);
+        console.log(lastBit);
+        console.log(quoteObj.quote.Location_ID__c);
         getPrice({"quoteId" : quoteObj.quote.Id, "programId" : quoteObj.quote.Program_ID__c, "siteId" : quoteObj.quote.Location_ID__c})
             .then(result => {
-                let currentDate2 = new Date();
-                    let time2 = currentDate2.getHours() + ":" + currentDate2.getMinutes() + ":" 
-                    + currentDate2.getSeconds() + 
-                         ":" + currentDate2.getMilliseconds(); 
-                //console.log('end get price' + time2);
-                this.loading = true;
+                console.log(JSON.parse(result));
+                console.log('After response from getPrice');
                 let resultParsed = JSON.parse(result);
-                
+                //this.leaseTypeSummary = 'Pricing API';
+                //this.rateTypeSummary = "monthlyAPR is " + resultParsed.monthlyAPR;
+                //this.advancedPaymentsSummary = "paymentAmount is " + resultParsed.paymentAmount;
+                //this.baseUnitSalesPriceSummary = "financeAmount is " + resultParsed.financeAmount;
+                console.log(resultParsed.financeAmount);
                 let quotePricingAPIData = {};
                 quotePricingAPIData.Id = quoteObj.quote.Id;
+                //quotePricingAPIData.Total_Price__c = resultParsed.financeAmount;
                 quotePricingAPIData.Amount__c = resultParsed.financeAmount;
                 quotePricingAPIData.Interest__c = resultParsed.monthlyAPR;
                 quotePricingAPIData.Total_Payment__c = resultParsed.paymentAmount;
                 quotePricingAPIData.Residual__c = this.addPricingDataToQuoteLines(resultParsed, quoteObj, quotePricingAPIData);
+                console.log('before saveQuotePricingDataBackToServer in getPrice');
                 saveQuotePricingDataBackToServer({"quoteString" : JSON.stringify(quotePricingAPIData)})
                     .then(result => {
-                        let newQuoteSummary = JSON.parse(JSON.stringify(quoteObj));
-                        this.removeDuplicateQuoteFromQOS(quoteObj.quote.Id);
-                        newQuoteSummary.sumData = [];
-                        let sumDataContents = {};
-                        sumDataContents.Amount__c = resultParsed.financeAmount;
-                        sumDataContents.interestRate = parseFloat(resultParsed.monthlyAPR).toFixed(2) + '%';
-                        sumDataContents.closeAt = quotePricingAPIData.Residual__c;
-                        sumDataContents.payment = resultParsed.paymentAmount;
-                        newQuoteSummary.sumData.push(sumDataContents);
-                        if (this.quoteObjectSummary) {
-                            this.quoteObjectSummary.push(newQuoteSummary);
-                        } else {
-                            this.quoteObjectSummary = [];
-                            this.quoteObjectSummary.push(newQuoteSummary);
-                        }
-                
-                        this.addOptionSummaries(true);
-                        this.quoteObject.isEdit = false;
+                        //this.showToast('Success in Saving Pricing Information.', result, 'success');
                     })
                     .catch(error => {
+                        console.log('Pricing Error');
+                        console.log(JSON.parse(JSON.stringify(error)));
                         this.showToast('Error saving Pricing Summary Information.', error, 'error');
                     });
-                
-                
+                let newQuoteSummary = JSON.parse(JSON.stringify(quoteObj));
+                this.removeDuplicateQuoteFromQOS(quoteObj.quote.Id);
+                newQuoteSummary.sumData = [];
+                let sumDataContents = {};
+                sumDataContents.Amount__c = resultParsed.financeAmount;
+                sumDataContents.interestRate = parseFloat(resultParsed.monthlyAPR).toFixed(2) + '%';
+                sumDataContents.closeAt = quotePricingAPIData.Residual__c;
+                sumDataContents.payment = resultParsed.paymentAmount;
+                newQuoteSummary.sumData.push(sumDataContents);
+                if (this.quoteObjectSummary) {
+                    this.quoteObjectSummary.push(newQuoteSummary);
+                } else {
+                    this.quoteObjectSummary = [];
+                    this.quoteObjectSummary.push(newQuoteSummary);
+                }
+                console.log('before addoptionsummaries in getPrice');
+                this.addOptionSummaries(true);
+                /*this.options[optionsIndex].sumData = [ {
+                    'totalPrice' : resultParsed.financeAmount,
+                    'interestRate' : parseFloat(resultParsed.monthlyAPR) / 100.0,
+                    'closeAt' : 7357.57,
+                    'payment' : resultParsed.paymentAmount
+                } ];*/
+                console.log(resultParsed);
+                console.log('End of getPrice');
             })
             .catch(error => {
+                console.log(JSON.parse(JSON.stringify(error)));
                 this.showToast('Error getting Pricing Summary Information.', error, 'error');
                 this.pricingApiCallCount--;
                 if (this.pricingApiCallCount === 0) {
                     this.loading = false;
                 }
+                 //Geetha - accessory code fix on edit
+                 this.currentAccPosition = this.accessories.length - 1;
             });
     }
 
-    /********************************************************************************************************
-     * 
-     * this is where call pricing and save process driven.  processPricingSummary
-     * 
-     * MRM - changed it from recalling pricing and saving for every option to just the option that changed
-     * for situations when there are many options this was nuts.  
-     * 
-     * 
-     */
-    addMissingOptionSummary(resultArr) {
-
-        this.loading = true;
-        //console.log('this option' + JSON.stringify(this.quoteObject) + '====> this options: ' + JSON.stringify(this.options));
-        //console.log('this opton pic val: ' + this.quoteObject.optionNum);
-
-        this.pricingApiCallCount = this.options.length; //0Q078000000HP9uCAG
-        let match = null;
-
-        //console.log('save process is beginning for:' + this.newoption);
-
-        //if this is a new qutoe, first option, then newoption needs to be set to 0 for save;
-
-        if (typeof this.newoption === 'undefined')
-            this.newoption = 0;
-
-        for (let i = 0; i < this.options.length; i++) {
-            if ( i == this.newoption){
-                match = i;
-                
-            }
-            let myOpt = parseInt(this.quoteObject.option);
-            myOpt = myOpt - 1;
-             
-            
+    quotesHaveDifference(quoteObject1, quoteObject2) {
+        if (quoteObject1.quoteLines.length !== quoteObject2.quoteLines.length) {
+            return true;
         }
+        if ((quoteObject1.quote.Advance_Payments__c !== quoteObject2.quote.Advance_Payments__c) ||
+            (quoteObject1.quote.Payment_Timing__c !== quoteObject2.quote.Payment_Timing__c)) {
+            return true;
+        }
+        for (let i = 0; i < quoteObject1.quoteLines.length; i++) {
+            let quote1 = quoteObject1.quoteLines[i];
+            let quote2;
+            let isFound = false;
+            for (let j = 0; j < quoteObject2.quoteLines.length; j++) {
+                if (quote1.Id === quoteObject2.quoteLines[j].Id) {
+                    quote2 = quoteObject2.quoteLines[j];
+                    isFound = true;
+                    break;
+                }
+            }
+            if (!isFound) {
+                console.log('Truth Exit 1');
+                return true;
+            }
+            //Make__c,Make_Id__c,Asset_Type_ITA_Class__c, Asset_Type_ITA_Class_Id__c,Model__c, Model_Id__c, Mast_Type__c,
+            if ((quote1.Number_of_Units__c !== quote2.Number_of_Units__c) ||
+                (quote1.Base_Unit_Sales_Price__c !== quote2.Base_Unit_Sales_Price__c) ||
+                (quote1.Annual_Hours__c !== quote2.Annual_Hours__c) ||
+                (quote1.Operating_Environment__c !== quote2.Operating_Environment__c) ||
+                (quote1.Make__c !== quote2.Make__c) ||
+                (quote1.Make_Id__c !== quote2.Make_Id__c) ||
+                (quote1.Asset_Type_ITA_Class__c !== quote2.Asset_Type_ITA_Class__c) ||
+                (quote1.Asset_Type_ITA_Class_Id__c !== quote2.Asset_Type_ITA_Class_Id__c) ||
+                (quote1.Model__c !== quote2.Model__c) ||
+                (quote1.Model_Id__c !== quote2.Model_Id__c) ||
+                (quote1.Mast_Type__c !== quote2.Mast_Type__c)) {
+                console.log('Truth Exit 2.1.1');
+                return true;
+            }
+            if ((quote1.financeType !== quote2.financeType) ||
+                (quote1.finance_term !== quote2.finance_term) ||
+                (quote1.rateType !== quote2.rateType)) {
+                console.log('Truth Exit 3.1');
+                return true;
+            }
+        }
+        return false;
+    }
 
-        this.processPricingSummary(this.options[match]);
-
-        
+    addMissingOptionSummary(resultArr) {
+        console.log('arr lengths: ');
+        console.log(this.options.length);
+        console.log(this.quoteObjectSummary.length);
+        this.pricingApiCallCount = this.options.length;
+        for (let i = 0; i < this.options.length; i++) {
+            /*console.log('addmissingoptionsummary 1');
+            let skipCurrentElement = false;
+            for (let j = 0; j < this.quoteObjectSummary.length; j++) {
+                console.log('addmissingoptionsummary 2');
+                if (this.options[i].quote.Id === this.quoteObjectSummary[j].quote.Id) {
+                    if (this.quotesHaveDifference(this.options[i], this.quoteObjectSummary[j])) {
+                        console.log('Found Difference');
+                        console.log(JSON.parse(JSON.stringify(this.options[i])));
+                        console.log(JSON.parse(JSON.stringify(this.quoteObjectSummary[j])));
+                        this.quoteObjectSummary.splice(j, 1);
+                        break;
+                    }
+                    skipCurrentElement = true;
+                    break;
+                }
+            }
+            if (skipCurrentElement) {
+                continue;
+            }*/
+            //console.log('This is the option getting pricing data');
+            //console.log(JSON.parse(JSON.stringify(this.options[i])));
+            this.processPricingSummary(this.options[i]);
+            //return;
+        }
+        //this.pricingApiCallCount++;
+        //this.addOptionSummaries(true);
     }
 
     addOptionSummaries(setCurrentOption) {
-
-        this.loading = true;
-
-        //console.log('in addOptionSummaries: ' + setCurrentOption);
-         
+        if (this.pricingApiCallCount !== 0) {
+            this.pricingApiCallCount--;
+        }
+        if ((this.pricingApiCallCount !== 0) && setCurrentOption) {
+            return;
+        }
         this.addPricingDataToLoadedQuotes();
-         
-        //console.log(this.quoteObjectSummary.length);
-        //console.log(this.options.length);
+        console.log('made it past pricingApiCallCount');
+        console.log(this.quoteObjectSummary.length);
+        console.log(this.options.length);
         for (let i = 0; i < this.quoteObjectSummary.length; i++) {
             for (let j = 0; j < this.options.length; j++) {
                 if (this.quoteObjectSummary[i].quote.Id === this.options[j].quote.Id) {
-                    //console.log('Inside addOptionSummaries assignment');
+                    console.log('Inside addOptionSummaries assignment');
                     this.options[j].sumData = this.quoteObjectSummary[i].sumData;
                     break;
                 }
@@ -1701,60 +1857,99 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             this.optionsPicklistVal = 'New Option';
             this.handleCancel();
         }
-        
-    
-        if (this.optionsPicklistVal === 0) {
-            this.optionsPicklistVal = this.optionsPicklistVal.toString();
-        }
-        this.options = JSON.parse(JSON.stringify(this.options));
-
-        this.loading = true;
-         
-         
-        const passEvent = new CustomEvent('childsave', {
-            detail: {oppid: this.oppid, quote: this.quoteObject, activeTabValue:'proposal'} 
-        });
-        this.dispatchEvent(passEvent);
-            
+        //this.loading = false;
+        setTimeout( () => {
+            if (this.optionsPicklistVal === 0) {
+                this.optionsPicklistVal = this.optionsPicklistVal.toString();
+            }
+            this.options = JSON.parse(JSON.stringify(this.options));
+            /*if (setCurrentOption) {
+                this.specificationTabActive = true;
+                this.template.querySelector('lightning-tabset').activeTabValue = 'spec';
+            }*/
+            this.loading = false;
+            console.log('addOptionSummaries Finished');
+        }, 750);
     }
 
     //save methods to backend For quote creation,edit,clone
     createQuote(passingParam) {
-
-        this.loading = true;
         createQuoteOpportunity({jsonInput: passingParam})
             .then(result => {
-
+                this.showToast('Quote has been saved!', 'Quote was saved successfully', 'success');
                 this.parseData(result);
-                this.oppid = result.newOpp.Id;
-
+                console.log('createQuote past parseData');
                 if (!this.onlyValidateHeader) {
                     this.addMissingOptionSummary(result);
                     this.hasQuotes = true;
                     this.specificationTabActive = false;
-                   
                 } else {
                     this.hasLocationSelection = true;
                     if ((this.options.length > 0) && this.options[0].quote.Partner_Sales_Rep__r) {
                         this.salesRepDisplayName = this.options[0].quote.Partner_Sales_Rep__r.Name;
                     }
                 }
-                
                 this.saveRunning = false;
                 this.onlyValidateHeader = false;
-                this.showToast('Quote has been created!', 'Quote was created successfully', 'success');
+                //this.template.querySelector('lightning-tabset').activeTabValue = 'proposal';
             })
             .catch(error => {
-                //console.log(JSON.stringify(error));
+                console.log(JSON.stringify(error));
                 this.showToast('Error Saving Record.', error, 'error');
                 this.loading = false;
                 this.saveRunning = false;
             });
     }
-     
 
-    
-   
+    cloneQuote(passingParam) {
+        cloneQuoteOption({jsonInput: passingParam})
+            .then(result => {
+                this.showToast('Quote has been copied!', 'Quote was copied successfully', 'success');
+                this.parseData(result);
+                this.addMissingOptionSummary(result);
+                this.saveRunning = false;
+            })
+            .catch(error => {
+                console.log(error);
+
+                this.showToast('Error Saving Record.', error, 'error');
+                this.loading = false;
+                this.saveRunning = false;
+            });
+    }
+
+    editQuote(passingParam) {
+        editQuoteOption({jsonInput: passingParam})
+            .then(result => {
+                this.showToast('Quote has been edited!', 'Quote was edited successfully', 'success');
+                this.parseData(result);
+                this.addMissingOptionSummary(result);
+                this.saveRunning = false;
+            })
+            .catch(error => {
+                console.log(JSON.stringify(error));
+                this.showToast('An error has occurred trying to edit an option.', error, 'error');
+                this.loading = false;
+                this.saveRunning = false;
+            });
+    }
+
+    deleteQuote(passingParam) {
+        deleteQuoteOption({quoteOptionId: passingParam})
+            .then(result => {
+                console.log('we have got in here-- delete');
+                console.log(result);
+                this.showToast('Quote has been deleted!', 'Quote was deleted successfully', 'success');
+                this.parseData(result);
+                this.addOptionSummaries(false);
+            })
+            .catch(error => {
+                console.log(JSON.stringify(error));
+                this.showToast('An error has occurred trying to delete an option.', error, 'error');
+                this.loading = false;
+            });
+    }
+
     addPricingDataToLoadedQuotes() {
         for (let i = 0; i < this.options.length; i++) {
             let arr = [];
@@ -1804,8 +1999,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
     //Process after successful result of quote save
     parseData(result) {
-        ////console.log('start parseData');
-        ////console.log(JSON.parse(JSON.stringify(result)));
+        console.log('start parseData');
+        console.log(JSON.parse(JSON.stringify(result)));
 
         this.opportunityId = result.newOpp.Id;
 
@@ -1834,17 +2029,16 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         }
 
         this.optionsPicklist = [];
-        ////console.log('ol' + this.options.length);
-
         for (let i = 0; i < this.options.length; i++) {
             this.options[i].optionNumber = i + 1;
             this.options[i].optionIndex = i;
             this.optionsPicklist.push({value: i.toString(), label: 'Option ' + (i + 1)});
             for (let v = 0; v < this.options[i].quoteLines.length; v++) {
-                //////console.log('Sequence Id is: ' + this.options[i].quoteLines[v].Sequence_ID__c);
+                //console.log('Sequence Id is: ' + this.options[i].quoteLines[v].Sequence_ID__c);
                 this.options[i].quoteLines[v].finance_term = this.options[i].quote.Term__c;
                 this.options[i].quoteLines[v].rateType = this.options[i].quote.Rate_Type__c;
                 this.options[i].quoteLines[v].financeType = this.options[i].quote.Lease_Type__c;
+                if (this.options[i].quoteLines[v].financeType == 'BO') { this.options[i].quoteLines[v].financeType = '$1 Buy out' }
                 this.options[i].quoteLines[v].Include_In_Proposal__c = this.options[i].quote.Include_In_Proposal__c;
                 if (this.options[i].quoteLines[v].Related_Asset__c) {
                     this.options[i].quoteLines[v].Make__c = this.options[i].quoteLines[v].Model__c;
@@ -1860,11 +2054,14 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             this.options[i].quoteLines = this.sortQuoteLinesByAccessories(this.options[i]);
         }
         this.optionsPicklist.push({value:'New Option', label:'New Option'});
+        console.log('this is the options picklist:');
+        console.log(this.optionsPicklist);
         if (this.optionsPicklist.length === 2) {
             let wrapperEvent2 = {value: 0};
-            let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: false};
+            let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: true};
             this.handleOptionPicklist(wrapperEvent);
             this.optionsPicklistVal = '0';
+            console.log('Done adding first selection');
         }
         if (this.onlyValidateHeader) {
             this.hasQuotes = true;
@@ -1875,9 +2072,9 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     }
 
     handleCreditAppRedirect(event) {
-        ////console.log('In handlecreditappredirect');
+        console.log('In handlecreditappredirect');
         if (event.detail === 'refresh') {
-            ////console.log('In handlecreditappredirect refresh');
+            console.log('In handlecreditappredirect refresh');
             //setTimeout(() => {
             /*this[NavigationMixin.Navigate]({
                 type: 'standard__webPage',
@@ -1892,13 +2089,43 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             //document.location.search = '?oppid=' + this.opportunityId;
             setTimeout(() => {location.reload()}, 1000);
             //}, 10);
-            ////console.log('In handlecreditappredirect refresh after');
+            console.log('In handlecreditappredirect refresh after');
         } else {
             this.showToast('Error','Unsuccessful redirect to credit application page', 'error');
         }
     }
 
-    
+    stampIsPrimaryOnSelectedOption(event) {
+        if(this.customerInfoShow == false){
+            // Immediate feedback
+            const evt = new ShowToastEvent({
+                title:      'Customer Authorization',
+                message:    'In order to submit your credit application, you must confirm that at least one customer information should be there.',
+                variant:    'error',
+                duration:   20000
+            });
+            this.dispatchEvent(evt);
+        } else {
+            markQuoteOptionAsPrimary({'quoteId' : this.creditAppId, 'oppId': this.opportunityId})
+                .then(result => {
+                    // Display message  //this is retarted
+                    //this.showToast('Saving', 'Continuing to credit application', 'success');
+
+                    // Redirect to the credit application page
+                    this[NavigationMixin.Navigate]({
+                        type: 'standard__webPage',
+                        attributes: {
+                            url: '/dllondemand/s/opportunity/' + this.opportunityId 
+                        }
+                    });
+                }).catch(error => {
+                console.log('Error stamping Is_Primary__c');
+                console.log(JSON.parse(JSON.stringify(error)));
+                this.showToast('Quote Stamp Failure.', 'Error stamping Is_Primary__c', 'error');
+            });
+        }
+    }
+
     redirectToOpportunityPage(event) {
         if (this.opportunityId) {
             this[NavigationMixin.Navigate]({
@@ -1924,15 +2151,27 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
     //Process response into front end implementation
     processCurrentOption(optionWithSumData) {
-        
+        /*this.nickname = option.nickname;
+        this.location = option.location;
+        this.salesRep = option.salesRep;
+        this.program = option.program;
+        this.assetTypeQuote = option.assetTypeQuote;
+        this.userSite = option.userSite;*/
+
+        console.log('CurrentOption 0');
+
         let option = optionWithSumData.quote;
+
+        console.log('CurrentOption 0.1');
 
         let baseUnitSum;
         let totalPaymentSum;
         let interestRateSum;
         let totalResidualSum;
-
+        console.log('optionWithSumData');
+        console.log(JSON.parse(JSON.stringify(optionWithSumData)));
         if (optionWithSumData.sumData && optionWithSumData.sumData[0]) {
+            console.log('CurrentOption 1.1');
             if (optionWithSumData.sumData[0].Amount__c) {
                 baseUnitSum = Number(optionWithSumData.sumData[0].Amount__c).toLocaleString();
                 let checkForMissingZero = optionWithSumData.sumData[0].Amount__c.toString().split('.');
@@ -1946,7 +2185,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             } else {
                 baseUnitSum = 'Data Not Found';
             }
-
+            console.log('CurrentOption 1.2');
             if (optionWithSumData.sumData[0].payment) {
                 totalPaymentSum = Number(optionWithSumData.sumData[0].payment).toLocaleString();
                 let checkForMissingZero = optionWithSumData.sumData[0].payment.toString().split('.');
@@ -1973,13 +2212,14 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             } else {
                 totalResidualSum = '0.00';
             }
-
+            console.log('CurrentOption 1.3');
             if (optionWithSumData.sumData[0].interestRate) {
                 interestRateSum = optionWithSumData.sumData[0].interestRate;
             } else {
                 interestRateSum = 'Data Not Found';
             }
         } else if (option) {
+            console.log('CurrentOption 1.1');
             if (option.Amount__c) {
                 baseUnitSum = Number(option.Amount__c).toLocaleString();
                 let checkForMissingZero = option.Amount__c.toString().split('.');
@@ -1993,7 +2233,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             } else {
                 baseUnitSum = 'Data Not Found';
             }
-
+            console.log('CurrentOption 1.2');
             if (option.Total_Payment__c) {
                 totalPaymentSum = Number(option.Total_Payment__c).toLocaleString();
                 let checkForMissingZero = option.Total_Payment__c.toString().split('.');
@@ -2020,7 +2260,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             } else {
                 totalResidualSum = '0.00';
             }
-
+            console.log('CurrentOption 1.3');
             if (option.Interest__c) {
                 interestRateSum = (parseFloat(option.Interest__c)).toFixed(2) + '%';
             } else {
@@ -2029,6 +2269,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         } else {
             baseUnitSum = 'Data Not Found';
         }
+
+        console.log('CurrentOption 1');
 
         this.leaseTypeSummary = option.Lease_Type__c;
 
@@ -2056,6 +2298,10 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.interestRateSummary = interestRateSum;
         this.termSummary = option.Term__c;
         this.residualSummary = '$' + totalResidualSum;
+        //console.log('Past Summary Assignment');
+        //console.log(JSON.parse(JSON.stringify(optionWithSumData.sumData)));
+
+        console.log('CurrentOption 2');
 
         this.quoteObject.rateTypeId = option.Rate_Type_Id__c;
         this.quoteObject.rateType = option.Rate_Type__c;
@@ -2076,6 +2322,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             this.salesRepDisplayName = option.Partner_Sales_Rep__r.Name;
             this.salesRep = option.Partner_Sales_Rep__r.Name;
         }
+        console.log('CurrentOption 3');
         this.program = option.Program_ID__c;
         this.rateType = option.Rate_Type_Id__c;
         this.financeTerm = option.Term__c;
@@ -2091,11 +2338,12 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.assetTypeQuote = option.Asset_Type__c;
         this.loading = true;
         this.loadRates();
-
-        
+        console.log('Retrieved data: ');
+        console.log(JSON.parse(JSON.stringify(this.quoteObject)));
     }
 
     processAssets(assets) {
+        console.log('assets_processassets ' +JSON.stringify(assets));
         this.assets = [];
         this.accessories = [];
         let currentAssetNum = 0;
@@ -2118,7 +2366,6 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             tempAsset.msrp = String(assets[i].MSRP__c);
             tempAsset.batteryIncluded = assets[i].Battery_Included__c;
             tempAsset.subsidyName = assets[i].Subsidy__c;
-            ////console.log('subsidy stuf: ' + assets[i].Subsidy_ID__c);
             if (typeof assets[i].Subsidy_ID__c === 'undefined') {
                 tempAsset.subsidy = 'No';
             } else {
@@ -2179,16 +2426,46 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 isFirst: true
             });
         }
+        //this.accessories = JSON.parse(JSON.stringify(this.accessories));
+        console.log(this.assets);
     }
 
-    
+    handleProposalToggleForQuote(event) {
+        this.loading = true;
+        if (this.proposalIdsIncluded.includes(event.detail)) {
+            this.proposalIdsIncluded.splice(this.proposalIdsIncluded.indexOf(event.detail), 1);
+            setProposalForQuote({'quoteId':event.detail, 'trueOrFalse':'false'})
+                .then(result => {
+                    this.showToast('Success!', 'Quote removed from proposal.', 'success');
+                    this.loading = false;
+                })
+                .catch(error => {
+                    this.loading = false;
+                    console.log(JSON.parse(JSON.stringify(error)));
+                    this.showToast( 'An error has occurred removing this Quote from the proposal', JSON.stringify(error), 'error');
+                });
+        } else {
+            this.proposalIdsIncluded.push(event.detail);
+            setProposalForQuote({'quoteId':event.detail, 'trueOrFalse':'true'})
+                .then(result => {
+                    this.showToast('Success!', 'Quote added to proposal.', 'success');
+                    this.loading = false;
+                })
+                .catch(error => {
+                    this.loading = false;
+                    console.log(JSON.parse(JSON.stringify(error)));
+                    this.showToast( 'An error has occurred adding this Quote to the proposal', JSON.stringify(error), 'error');
+                });
+        }
+    }
+
     //Proposal Document -Geetha - start
     getBaseUrl(){
         let baseUrl = 'https://'+location.host+'/';
         /*getLoginURL()
         .then(result => {
             baseUrl = result;
-            window.////console.log(baseUrl);
+            window.console.log(baseUrl);
         })
         .catch(error => {
             console.error('Error: \n ', error);
@@ -2196,9 +2473,65 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         return baseUrl;
     }
 
+    handleDealerProposal(event) {
+        this.CustomerProposal = event.target.value;
+        console.log('inside cust this.oppid=>' + this.opportunityId);
+        let baseUrl = this.getBaseUrl();
+        getSmartCommDoc({
+            batchConfigResId: 990380852,
+            opportunityId: this.opportunityId,
+            proposalType: 'DealerProposal'
+        }).then(result => {
+            if (result) {
+                console.log('success' + JSON.stringify(result));
+                this.docID = result;
+                this.finalurl = baseUrl + 'sfc/servlet.shepherd/document/download/' + this.docID + '?operationContext=S1';
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__webPage',
+                    attributes: {
+                        url: this.finalurl
+                    }
+                }, false);
+            }
+
+        }).catch(error => {
+            this.error = error;
+            console.log(this.error);
+            // this.loader = false;
+        })
+    }
+
+    handleCustomerProposal(event) {
+        this.CustomerProposal = event.target.value;
+        console.log('inside cust this.oppid=>' + this.opportunityId);
+        let baseUrl = this.getBaseUrl();
+        getSmartCommDoc({
+            batchConfigResId: 990380852,
+            opportunityId: this.opportunityId,
+            proposalType: 'CustomerProposal'
+        }).then(result => {
+            if (result) {
+                console.log('success' + JSON.stringify(result));
+                this.docID = result;
+                this.finalurl = baseUrl + 'sfc/servlet.shepherd/document/download/' + this.docID + '?operationContext=S1';
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__webPage',
+                    attributes: {
+                        url: this.finalurl
+                    }
+                }, false);
+            }
+
+        }).catch(error => {
+            this.error = error;
+            console.log(this.error);
+            // this.loader = false;
+        })
+    }
+    //Proposal Document -Geetha - end
 
     handleCustomerInfoShow(event) {
-        ////console.log('handle customer info show' + 'event.detail:' + event.detail + ' oppid:' + this.opportunityId);
+        console.log('handle customer info show' + 'event.detail:' + event.detail + ' oppid:' + this.opportunityId);
         this.customerInfoShow=event.detail;
 
     }

@@ -105,7 +105,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     @api
     get isRateDisabled() {
-        //console.log('rate disab');
+        ////console.log('rate disab');
         let result = (this.program === '') || (this.assetTypeQuote === '') || (this.location === '') || (this.nickname === '');
         if (!result && (this.openAccordionSections.length === 0)) {
             this.openAccordionSections = ['Finance Structure'];
@@ -227,7 +227,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     @wire(CurrentPageReference)
     setCurrentPageReference(currentPageReference) {
-        console.log('in wire');
+        //console.log('in wire');
         if (currentPageReference) {
             this.currentPageReference = currentPageReference;
             this.setCurrentPageIdBasedOnUrl();
@@ -264,7 +264,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     connectedCallback() {
         
-        console.log(this.oppid);
+        //console.log(this.oppid);
         this.loading = false;
 
         if (this.oppid) {
@@ -317,7 +317,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                                     let plist = [];
                                     let data = JSON.parse(result);
                                     data.forEach(function (element) {
-                                        //console.log(element.programName + ' ' + element.programId);
+                                        ////console.log(element.programName + ' ' + element.programId);
                                         plist.push({label: element.programName, value: element.programId});
 
                                     });
@@ -329,7 +329,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                                         //}
                                     }, 1500);
                                 }).catch(error => {
-                                //console.log(JSON.parse(JSON.stringify(error)));
+                                ////console.log(JSON.parse(JSON.stringify(error)));
                                 this.showToast('Something went wrong', error.body.message, 'error');
                                 loadsToGo--;
                                 //if (loadsToGo === 0) {
@@ -357,8 +357,8 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
 
                                     this.salesRepList = sList;
                                     this.salesRepListBackup = sList;
-                                    //console.log('getSalesReps1 Done');
-                                    //console.log(JSON.parse(JSON.stringify(sList)));
+                                    ////console.log('getSalesReps1 Done');
+                                    ////console.log(JSON.parse(JSON.stringify(sList)));
                                     //this.salesRep = this.options[0].quote.Partner_Sales_Rep__c;
                                     loadsToGo--;
                                     // if (loadsToGo === 0) {
@@ -381,8 +381,8 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                     //this.loading = false;
                 }).catch(error => {
                     this.showToast('Invalid Opportunity Id', this.oppid, 'error');
-                    //console.log('Opportunity Import Error:' + error);
-                    //console.log(JSON.parse(JSON.stringify(error)));
+                    ////console.log('Opportunity Import Error:' + error);
+                    ////console.log(JSON.parse(JSON.stringify(error)));
                     this.loading = false;
                 });
         }
@@ -430,11 +430,11 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this.loading = true;
         this.advance = '0';
         this.frequency = 'monthly';
-        //console.log('in getUserSite');
+        ////console.log('in getUserSite');
 
         if (data) {
             let parsedData = JSON.parse(data);
-            //console.log(JSON.parse(JSON.stringify(data)));
+            ////console.log(JSON.parse(JSON.stringify(data)));
             let osidObj = {osidArray: []};
             //this.location = parsedData.returnSiteList[0].originatingSiteId;
             //this.userSite = parsedData.returnSiteList[0].originatingSiteId;
@@ -461,8 +461,8 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                         sList.push({label: 'None', value: ''});
 
                         this.salesRepList = sList;
-                        //console.log('getSalesRepsOSID Done');
-                        //console.log(JSON.parse(JSON.stringify(sList)));
+                        ////console.log('getSalesRepsOSID Done');
+                        ////console.log(JSON.parse(JSON.stringify(sList)));
                         this.osidForSalesReps = osidList;
                         //this.loading = false;
                         this.hasLocationSelectionSalesRep = false;
@@ -481,7 +481,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         //setTimeout(() => {
             //this.loading = false;
 
-            //console.log('wiredGetUserSite done');
+            ////console.log('wiredGetUserSite done');
         //}, 1500);
     }
 
@@ -493,7 +493,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this[event.target.name] = event.target.value;
         this.quoteObject[event.target.name] = event.target.value;
         
-        //console.log('qutoe objasdfa: ' + JSON.stringify(this.quoteObject));
+        ////console.log('qutoe objasdfa: ' + JSON.stringify(this.quoteObject));
 
         this.refreshSalesRepDropdown = false;
 
@@ -513,7 +513,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                 let data = JSON.parse(result);
                 let hasProgramId = false;
                 data.forEach(function (element) {
-                    //console.log(element.programName + ' ' + element.programId);
+                    ////console.log(element.programName + ' ' + element.programId);
                     plist.push({label: element.programName, value: element.programId});
 
                 });
@@ -534,13 +534,13 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                     if (loadsToGo === 0) {
                         //this.loading = false;
 
-                        //console.log('handleChangeLocation done2');
+                        ////console.log('handleChangeLocation done2');
                          
                        
                     }
                 }, 1500);
             }).catch(error => {
-            //console.log(JSON.parse(JSON.stringify(error)));
+            ////console.log(JSON.parse(JSON.stringify(error)));
             this.showToast('Something went wrong', error.body.message, 'error');
             loadsToGo--;
             if (loadsToGo === 0) {
@@ -573,7 +573,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                 //this.salesRepList = sList;
 
                 if (!saveCurrentSalesRep) {
-                    //console.log('sales rep removed');
+                    ////console.log('sales rep removed');
                     //this.salesRepList = JSON.parse(JSON.stringify(this.salesRepList));
                     this.salesRep = '';
                     this.quoteObject.salesRep = '';
@@ -581,13 +581,13 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
 
                 this.refreshSalesRepDropdown = true;
 
-                //console.log('getSalesReps2 Done');
-                //console.log(JSON.parse(JSON.stringify(sList)));
+                ////console.log('getSalesReps2 Done');
+                ////console.log(JSON.parse(JSON.stringify(sList)));
                 loadsToGo--;
                 if (loadsToGo === 0) {
                     //this.loading = false;
 
-                    //console.log('handleChangeLocation done');
+                    ////console.log('handleChangeLocation done');
                 }
 
 
@@ -608,7 +608,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     //Functions for loading in dependent picklist values
     loadRates() {
-        console.log('this asstypequote' + this.assetTypeQuote );
+        //console.log('this asstypequote' + this.assetTypeQuote );
 
         this.loading = true;
         
@@ -633,7 +633,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                         this.quoteObject.rateTypeId = onlyoneid;
                         this.loadTerms();
                         this.rateTypePicklist = plist;
-                        console.log('loadRates done2');
+                        //console.log('loadRates done2');
                         this.loading = false;
                         return;
                     }
@@ -643,7 +643,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                 this.rateTypePicklist = plist;
                 this.loading = false;
 
-                console.log('loadRates done');
+                //console.log('loadRates done');
 
             })
             .catch(error => {
@@ -659,7 +659,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     loadTerms() {
 
-        console.log('in load terms replacement');
+        //console.log('in load terms replacement');
 
         this.loading = true;
 
@@ -716,9 +716,9 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                     //this.loading = false;
                 }
 
-                //console.log('loadTerms done x');
+                ////console.log('loadTerms done x');
                 this.loading = false;
-                //console.log(this.pricingApiCallCount);
+                ////console.log(this.pricingApiCallCount);
 
             })
             .catch(error => {
@@ -751,7 +751,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this.hasNoActiveQuoteForCredApp = false;
          
         this.loading = true;
-        console.log('event detail:' + event.detail);
+        //console.log('event detail:' + event.detail);
 
         markQuoteOptionAsCreditAppSelection({quoteId : this.creditAppId, oppId : this.opportunityId})
             .then(result => {
@@ -793,7 +793,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     handleChange(event) {
 
-        console.log('calling' + this.currentTab);
+        //console.log('calling' + this.currentTab);
 
         if (this.currentTab == 'spec'){
             this.template.querySelector('c-pricing-component').childCondition(event.target.value);
@@ -814,12 +814,12 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
             event.target.inputValue = '';    
         }
 
-        ////console.log(this.salesRepList);
-        ////console.log(event.target.value);
+        //////console.log(this.salesRepList);
+        //////console.log(event.target.value);
         this.salesRep = this.salesRepList.find(element => element.value === event.target.value).label;
         this.quoteObject.salesRep = event.target.value;
-        //console.log('In change function');
-        //console.log(JSON.parse(JSON.stringify(this.quoteObject)));
+        ////console.log('In change function');
+        ////console.log(JSON.parse(JSON.stringify(this.quoteObject)));
 
         if (this.isLoadedQuote) {
             return;
@@ -889,7 +889,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this[event.target.name] = event.target.value;
         this.quoteObject[event.target.name] = event.target.options.find(opt => opt.value === event.detail.value).label;
         this.quoteObject[event.target.name +'Id'] = event.target.value;
-        //console.log(JSON.stringify(this.quoteObject));
+        ////console.log(JSON.stringify(this.quoteObject));
         this.loadTerms();
     }
 
@@ -925,10 +925,10 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     //tab toggle
     handleTabChange(event) {
-        //console.log('************* tab change ' + event.target.value);
+        ////console.log('************* tab change ' + event.target.value);
         this.currentTab = event.target.value;
         const tab = event.target;
-        //console.log(event.target.value);
+        ////console.log(event.target.value);
         this.specificationTabActive = event.target.value === 'spec';
         
     }
@@ -939,7 +939,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     handleCancel(event) {
 
-        console.log('handle cancel');
+        //console.log('handle cancel');
         this.loading = true;
         this.displayModal = false;
 
@@ -1036,7 +1036,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this.comments = '';
         setTimeout(() => {
             this.loading = false;
-            //console.log('handleCancel finished');
+            ////console.log('handleCancel finished');
         }, 500);
     }
 
@@ -1066,9 +1066,9 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
 
         
         this.loading = true;
-        console.log('*** in replacement calling option *** ' + this.loading);
+        //console.log('*** in replacement calling option *** ' + this.loading);
         this.optionsPicklistVal = event.target.value.toString();
-        console.log('this op pick val' + this.optionsPicklistVal);
+        //console.log('this op pick val' + this.optionsPicklistVal);
         if(this.optionsPicklistVal === 'New Option'){
             
             this.leaseTypeSummary = '-';
@@ -1263,9 +1263,9 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this.newoption = this.activeOption;
         this.optionsPicklistVal = this.activeOption;
         
-        //keep this out for a while. don't see a value in it
-        //this.processAssets(this.options[this.activeOption].quoteLines);
-        //this.processCurrentOption(this.options[this.activeOption]);
+        
+        this.processAssets(this.options[this.activeOption].quoteLines);
+        this.processCurrentOption(this.options[this.activeOption]);
      
         this.specificationTabActive = true;
         this.template.querySelector('lightning-tabset').activeTabValue = 'spec';
@@ -1280,7 +1280,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     handleAssetClone(event) { 
  
-        console.log('handleAssetClone');
+        //console.log('handleAssetClone');
         this.loading = true;
          
         this.quoteObject.isEdit = false;
@@ -1292,9 +1292,9 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this.quoteObject.oppId = this.opportunityId;
         this.newoption = event.detail;
         
-        //keept this out for now...don't see much value
-        //this.processAssets(this.options[event.detail].quoteLines);
-        //this.processCurrentOption(this.options[event.detail]);
+        //keep this out for now...don't see much value
+        this.processAssets(this.options[event.detail].quoteLines);
+        this.processCurrentOption(this.options[event.detail]);
         
         //setTimeout( () => {//options picklist does not load fast enough
         this.specificationTabActive = true;
@@ -1353,9 +1353,9 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     *  
     ***************************************************************************************************************/
     deleteRelatedAccessories(assets) {
-        //console.log(assets);
+        ////console.log(assets);
         let tempAcc = JSON.parse(JSON.stringify(this.accessories));
-        //console.log(tempAcc);
+        ////console.log(tempAcc);
         this.accessories = [];
         for (let i = 0; i < tempAcc.length; i++) {
             if (!(parseInt(tempAcc[i].relatedAsset) === parseInt(assets.assetNo))) {
@@ -1404,9 +1404,9 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     
     saveCustomerComments() {
         this.loading = true;
-        console.log('Start of customerCommentsSave');
-        //console.log(this.customerComments);
-        //console.log(this.opportunityId);
+        //console.log('Start of customerCommentsSave');
+        ////console.log(this.customerComments);
+        ////console.log(this.opportunityId);
         saveCustomerCommentsToOpp({comments : this.customerComments, oppId : this.opportunityId})
             .then(result => {
                 this.showToast('Customer comments saved!', 'Success!','success');
@@ -1441,7 +1441,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                 }
             }
             if (!isFound) {
-                //console.log('Truth Exit 1');
+                ////console.log('Truth Exit 1');
                 return true;
             }
             //Make__c,Make_Id__c,Asset_Type_ITA_Class__c, Asset_Type_ITA_Class_Id__c,Model__c, Model_Id__c, Mast_Type__c,
@@ -1456,13 +1456,13 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                 (quote1.Model__c !== quote2.Model__c) ||
                 (quote1.Model_Id__c !== quote2.Model_Id__c) ||
                 (quote1.Mast_Type__c !== quote2.Mast_Type__c)) {
-                //console.log('Truth Exit 2.1.1');
+                ////console.log('Truth Exit 2.1.1');
                 return true;
             }
             if ((quote1.financeType !== quote2.financeType) ||
                 (quote1.finance_term !== quote2.finance_term) ||
                 (quote1.rateType !== quote2.rateType)) {
-                //console.log('Truth Exit 3.1');
+                ////console.log('Truth Exit 3.1');
                 return true;
             }
         }
@@ -1477,7 +1477,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     addOptionSummaries(setCurrentOption) {
 
-        console.log('add option summaries');
+        //console.log('add option summaries');
         this.loading = true;
 
         if (this.pricingApiCallCount !== 0) {
@@ -1548,7 +1548,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     handleChildSave(event){
          
-        console.log('**********parent got the word' + JSON.stringify(event.detail)  + this.loading);
+        //console.log('**********parent got the word' + JSON.stringify(event.detail)  + this.loading);
         
         //this.currentTab = 'proposal';
         
@@ -1564,9 +1564,9 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
 
         //this.connectedCallback();
         */
-        console.log ('transferring now');
+        //console.log ('transferring now');
          
-        console.log('received ' + event.detail.oppid);
+        //console.log('received ' + event.detail.oppid);
 
         this.oppid = event.detail.oppid;
 
@@ -1596,7 +1596,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     handleChildCancel(event){
 
-        console.log('in parent handle child cancel');
+        //console.log('in parent handle child cancel');
 
         this[NavigationMixin.Navigate]({
             type: 'standard__webPage',
@@ -1624,7 +1624,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                 this.addOptionSummaries(false);
             })
             .catch(error => {
-                console.log(JSON.stringify(error));
+                //console.log(JSON.stringify(error));
                 this.showToast('An error has occurred trying to delete an option.', error, 'error');
                 this.loading = false;
             });
@@ -1636,7 +1636,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     addPricingDataToLoadedQuotes() {
 
-        console.log('summing up dater' + this.loading);
+        //console.log('summing up dater' + this.loading);
 
         for (let i = 0; i < this.options.length; i++) {
             let arr = [];
@@ -1697,8 +1697,8 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
 
         //this.loading = true;
 
-        //console.log('start parseData');
-        //console.log(JSON.parse(JSON.stringify(result)));
+        ////console.log('start parseData');
+        ////console.log(JSON.parse(JSON.stringify(result)));
 
         this.opportunityId = result.newOpp.Id;
 
@@ -1732,7 +1732,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
             this.options[i].optionIndex = i;
             this.optionsPicklist.push({value: i.toString(), label: 'Option ' + (i + 1)});
             for (let v = 0; v < this.options[i].quoteLines.length; v++) {
-                ////console.log('Sequence Id is: ' + this.options[i].quoteLines[v].Sequence_ID__c);
+                //////console.log('Sequence Id is: ' + this.options[i].quoteLines[v].Sequence_ID__c);
                 this.options[i].quoteLines[v].finance_term = this.options[i].quote.Term__c;
                 this.options[i].quoteLines[v].rateType = this.options[i].quote.Rate_Type__c;
                 this.options[i].quoteLines[v].financeType = this.options[i].quote.Lease_Type__c;
@@ -1752,16 +1752,16 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
             this.options[i].quoteLines = this.sortQuoteLinesByAccessories(this.options[i]);
         }
         this.optionsPicklist.push({value:'New Option', label:'New Option'});
-        //console.log('this is the options picklist:');
-        //console.log(this.optionsPicklist);
+        ////console.log('this is the options picklist:');
+        ////console.log(this.optionsPicklist);
         if (this.optionsPicklist.length === 2) {
             let wrapperEvent2 = {value: 0};
             let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: false};
-            console.log('calling handle options 1');
+            //console.log('calling handle options 1');
             
             this.handleOptionPicklist(wrapperEvent);
             this.optionsPicklistVal = '0';
-            //console.log('Done adding first selection');
+            ////console.log('Done adding first selection');
         }
         if (this.onlyValidateHeader) {
             this.hasQuotes = true;
@@ -1776,9 +1776,9 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     *  
     ***************************************************************************************************************/
     handleCreditAppRedirect(event) {
-        //console.log('In handlecreditappredirect');
+        ////console.log('In handlecreditappredirect');
         if (event.detail === 'refresh') {
-            //console.log('In handlecreditappredirect refresh');
+            ////console.log('In handlecreditappredirect refresh');
             //setTimeout(() => {
             /*this[NavigationMixin.Navigate]({
                 type: 'standard__webPage',
@@ -1793,7 +1793,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
             //document.location.search = '?oppid=' + this.opportunityId;
             setTimeout(() => {location.reload()}, 1000);
             //}, 10);
-            //console.log('In handlecreditappredirect refresh after');
+            ////console.log('In handlecreditappredirect refresh after');
         } else {
             this.showToast('Error','Unsuccessful redirect to credit application page', 'error');
         }
@@ -1827,8 +1827,8 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                         }
                     });
                 }).catch(error => {
-                //console.log('Error stamping Is_Primary__c');
-                //console.log(JSON.parse(JSON.stringify(error)));
+                ////console.log('Error stamping Is_Primary__c');
+                ////console.log(JSON.parse(JSON.stringify(error)));
                 this.showToast('Quote Stamp Failure.', 'Error stamping Is_Primary__c', 'error');
             });
         }
@@ -1867,7 +1867,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
 
     
     /***************************************************************************************************************
-    *  
+    *  this loads the summary information page on the right
     ***************************************************************************************************************/
     //Process response into front end implementation
     processCurrentOption(optionWithSumData) {
@@ -1880,20 +1880,20 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this.assetTypeQuote = option.assetTypeQuote;
         this.userSite = option.userSite;*/
 
-        //console.log('CurrentOption 0');
+        ////console.log('CurrentOption 0');
 
         let option = optionWithSumData.quote;
 
-        //console.log('CurrentOption 0.1');
+        ////console.log('CurrentOption 0.1');
 
         let baseUnitSum;
         let totalPaymentSum;
         let interestRateSum;
         let totalResidualSum;
-        //console.log('optionWithSumData');
-        //console.log(JSON.parse(JSON.stringify(optionWithSumData)));
+        ////console.log('optionWithSumData');
+        ////console.log(JSON.parse(JSON.stringify(optionWithSumData)));
         if (optionWithSumData.sumData && optionWithSumData.sumData[0]) {
-            //console.log('CurrentOption 1.1');
+            ////console.log('CurrentOption 1.1');
             if (optionWithSumData.sumData[0].Amount__c) {
                 baseUnitSum = Number(optionWithSumData.sumData[0].Amount__c).toLocaleString();
                 let checkForMissingZero = optionWithSumData.sumData[0].Amount__c.toString().split('.');
@@ -1907,7 +1907,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
             } else {
                 baseUnitSum = 'Data Not Found';
             }
-            //console.log('CurrentOption 1.2');
+            ////console.log('CurrentOption 1.2');
             if (optionWithSumData.sumData[0].payment) {
                 totalPaymentSum = Number(optionWithSumData.sumData[0].payment).toLocaleString();
                 let checkForMissingZero = optionWithSumData.sumData[0].payment.toString().split('.');
@@ -1934,14 +1934,14 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
             } else {
                 totalResidualSum = '0.00';
             }
-            //console.log('CurrentOption 1.3');
+            ////console.log('CurrentOption 1.3');
             if (optionWithSumData.sumData[0].interestRate) {
                 interestRateSum = optionWithSumData.sumData[0].interestRate;
             } else {
                 interestRateSum = 'Data Not Found';
             }
         } else if (option) {
-            //console.log('CurrentOption 1.1');
+            ////console.log('CurrentOption 1.1');
             if (option.Amount__c) {
                 baseUnitSum = Number(option.Amount__c).toLocaleString();
                 let checkForMissingZero = option.Amount__c.toString().split('.');
@@ -1955,7 +1955,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
             } else {
                 baseUnitSum = 'Data Not Found';
             }
-            //console.log('CurrentOption 1.2');
+            ////console.log('CurrentOption 1.2');
             if (option.Total_Payment__c) {
                 totalPaymentSum = Number(option.Total_Payment__c).toLocaleString();
                 let checkForMissingZero = option.Total_Payment__c.toString().split('.');
@@ -1982,7 +1982,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
             } else {
                 totalResidualSum = '0.00';
             }
-            //console.log('CurrentOption 1.3');
+            ////console.log('CurrentOption 1.3');
             if (option.Interest__c) {
                 interestRateSum = (parseFloat(option.Interest__c)).toFixed(2) + '%';
             } else {
@@ -1992,7 +1992,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
             baseUnitSum = 'Data Not Found';
         }
 
-        //console.log('CurrentOption 1');
+        ////console.log('CurrentOption 1');
 
         this.leaseTypeSummary = option.Lease_Type__c;
 
@@ -2020,10 +2020,10 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this.interestRateSummary = interestRateSum;
         this.termSummary = option.Term__c;
         this.residualSummary = '$' + totalResidualSum;
-        ////console.log('Past Summary Assignment');
-        ////console.log(JSON.parse(JSON.stringify(optionWithSumData.sumData)));
+        //////console.log('Past Summary Assignment');
+        //////console.log(JSON.parse(JSON.stringify(optionWithSumData.sumData)));
 
-        //console.log('CurrentOption 2');
+        ////console.log('CurrentOption 2');
 
         this.quoteObject.rateTypeId = option.Rate_Type_Id__c;
         this.quoteObject.rateType = option.Rate_Type__c;
@@ -2044,7 +2044,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
             this.salesRepDisplayName = option.Partner_Sales_Rep__r.Name;
             this.salesRep = option.Partner_Sales_Rep__r.Name;
         }
-        //console.log('CurrentOption 3');
+        ////console.log('CurrentOption 3');
         this.program = option.Program_ID__c;
         this.rateType = option.Rate_Type_Id__c;
         this.financeTerm = option.Term__c;
@@ -2060,21 +2060,21 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this.assetTypeQuote = option.Asset_Type__c;
         this.loading = true;
         this.loadRates();
-        //console.log('Retrieved data: ');
-        //console.log(JSON.parse(JSON.stringify(this.quoteObject)));
+        ////console.log('Retrieved data: ');
+        ////console.log(JSON.parse(JSON.stringify(this.quoteObject)));
     }
 
     
     /***************************************************************************************************************
-    *  
+    *  populate asset data for display
     ***************************************************************************************************************/
     processAssets(assets) {
-        console.log('assets_processassets ' +JSON.stringify(assets) );
+        //console.log('assets_processassets ' +JSON.stringify(assets) );
         //this.loading = true;
         let currentDate = new Date();
         let time = currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds()+ 
             ":" + currentDate.getMilliseconds();  
-        console.log(time);
+        //console.log(time);
         this.assets = [];
         this.accessories = [];
         let currentAssetNum = 0;
@@ -2158,11 +2158,11 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
             });
         }
         //this.accessories = JSON.parse(JSON.stringify(this.accessories));
-        console.log(this.assets + ' '  );
+        //console.log(this.assets + ' '  );
         let currentDate1 = new Date();
         let time1 = currentDate1.getHours() + ":" + currentDate1.getMinutes() + ":" + currentDate1.getSeconds() + 
             currentDate1.getMilliseconds(); 
-        console.log(time1);
+        //console.log(time1);
         //
     }
 
@@ -2173,7 +2173,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     handleProposalToggleForQuote(event) {
 
 
-        console.log('set propostal for quote' + event.detail);
+        //console.log('set propostal for quote' + event.detail);
 
         this.loading = true;
         if (this.proposalIdsIncluded.includes(event.detail)) {
@@ -2185,7 +2185,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                 })
                 .catch(error => {
                     this.loading = false;
-                    //console.log(JSON.parse(JSON.stringify(error)));
+                    ////console.log(JSON.parse(JSON.stringify(error)));
                     this.showToast( 'An error has occurred removing this Quote from the proposal', JSON.stringify(error), 'error');
                 });
         } else {
@@ -2197,7 +2197,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                 })
                 .catch(error => {
                     this.loading = false;
-                    //console.log(JSON.parse(JSON.stringify(error)));
+                    ////console.log(JSON.parse(JSON.stringify(error)));
                     this.showToast( 'An error has occurred adding this Quote to the proposal', JSON.stringify(error), 'error');
                 });
         }
@@ -2220,7 +2220,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         /*getLoginURL()
         .then(result => {
             baseUrl = result;
-            window.//console.log(baseUrl);
+            window.////console.log(baseUrl);
         })
         .catch(error => {
             console.error('Error: \n ', error);
@@ -2234,7 +2234,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     handleDealerProposal(event) {
         this.CustomerProposal = event.target.value;
-        console.log('inside cust this.oppid=>' + this.opportunityId);
+        //console.log('inside cust this.oppid=>' + this.opportunityId);
         let baseUrl = this.getBaseUrl();
         getSmartCommDoc({
             batchConfigResId: 990380852,
@@ -2242,7 +2242,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
             proposalType: 'DealerProposal'
         }).then(result => {
             if (result) {
-                console.log('success' + JSON.stringify(result));
+                //console.log('success' + JSON.stringify(result));
                 this.docID = result;
                 this.finalurl = baseUrl + 'sfc/servlet.shepherd/document/download/' + this.docID + '?operationContext=S1';
                 this[NavigationMixin.Navigate]({
@@ -2259,7 +2259,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         }).catch(error => {
             this.error = error;
             this.showToast( 'An error has occurred generating document!', JSON.stringify(error), 'error');
-            //console.log(this.error);
+            ////console.log(this.error);
             // this.loader = false;
         })
     }
@@ -2270,7 +2270,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     handleCustomerProposal(event) {
         this.CustomerProposal = event.target.value;
-        //console.log('inside cust this.oppid=>' + this.opportunityId);
+        ////console.log('inside cust this.oppid=>' + this.opportunityId);
         let baseUrl = this.getBaseUrl();
         getSmartCommDoc({
             batchConfigResId: 990380852,
@@ -2278,7 +2278,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
             proposalType: 'CustomerProposal'
         }).then(result => {
             if (result) {
-                //console.log('success' + JSON.stringify(result));
+                ////console.log('success' + JSON.stringify(result));
                 this.docID = result;
                 this.finalurl = baseUrl + 'sfc/servlet.shepherd/document/download/' + this.docID + '?operationContext=S1';
                 this[NavigationMixin.Navigate]({
@@ -2295,7 +2295,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         }).catch(error => {
             this.error = error;
             this.showToast( 'An error has occurred generating document!','', 'error');
-            //console.log(this.error);
+            ////console.log(this.error);
             // this.loader = false;
         })
     }
@@ -2306,7 +2306,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     *  
     ***************************************************************************************************************/
     handleCustomerInfoShow(event) {
-        //console.log('handle customer info show' + 'event.detail:' + event.detail + ' oppid:' + this.opportunityId);
+        ////console.log('handle customer info show' + 'event.detail:' + event.detail + ' oppid:' + this.opportunityId);
         this.customerInfoShow=event.detail;
 
     }
