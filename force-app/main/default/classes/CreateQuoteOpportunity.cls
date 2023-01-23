@@ -6,7 +6,8 @@
  * 7/11/2022 - MRM Added logic that a quote option can't be in a credit app without a valid payment amount
  * 10/11/2022 - MRM added temp logic to experiment with appeals
  * 10/21/2022 - Geetha added logic for not storing Yes/No for Subsidy Id(instead store blank if Subsidy is No)PBI:882069
- **********************************************************************************************************/
+ * 02/01/2023 : PBI 930611 - Sharing rules Field population :Dibyendu
+ *********************************************************************************************************/
 
 
 public with sharing class CreateQuoteOpportunity {
@@ -85,7 +86,12 @@ public static quoteOpportunityWrapper CreateQuoteOpportunity(String jsonInput) {
 	newOpp.RecordTypeId = [select Id from RecordType where DeveloperName = 'Retail' AND sObjectType = 'Opportunity' limit 1].Id;
 	newOpp.Nickname__c = nickName;
 	newOpp.AccountId = [SELECT Id, Originating_Site_ID__c from Account where Originating_Site_ID__c = : location Limit 1].Id;
-	newOpp.CloseDate = System.today() + 30;
+	//Start Of Change for PBI 930611-Sharing Rule Field Population
+    newOpp.Business_Unit1__c = [select id,label,Business_Unit__c from Contact_Support__mdt where label='Contact Support DLL CTI' Limit 1].Business_Unit__c;
+    newOpp.Business_Unit_Description__c = System.Label.CTI_BUSINESS_UNIT;
+    newOpp.Legal_Entity_Description__c = 'DLL';
+    //End Of Start Of Change for PBI 930611 - -Sharing Rule Field Population
+    newOpp.CloseDate = System.today() + 30;
 	newOpp.StageName = 'Quoting';
 	newOpp.Sub_Stage__c = 'Quoting & Proposal';
 	newOpp.ForecastCategoryName = 'Omitted';

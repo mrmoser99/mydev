@@ -1,0 +1,29 @@
+/**
+ * Created by ShiqiSun on 11/18/2021.
+ */
+
+ .layoutItemWithSpinner {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+  }
+  .layoutItemWithSpinner lightning-combobox {
+    width: 100%;
+  }
+  
+  .layoutItemWithSpinner c-reusable-custom-dropdown-with-search {
+    width: 100%;
+  }
+  
+  .spinnerContainer {
+    position: absolute;
+    width: -webkit-fill-available;
+    min-width: 75px;
+    height: auto;
+    min-height: 75px;
+  }
+  
+  .destructiveButton {
+    --sds-c-button-text-color: crimson;
+  }

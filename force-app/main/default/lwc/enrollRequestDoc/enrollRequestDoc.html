@@ -43,13 +43,13 @@
                                                 <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
                                                     <label class="labelColor"><span
                                                             class="slds-required">*</span>{label.ENROLL_REQ_DOC_FIRST_NAME}</label>
-                                                    <lightning-input name={con.ownerNo} variant="label-hidden"
+                                                    <lightning-input name={con.ownerNo} variant="label-hidden" autocomplete="off"
                                                         value={con.firstName} onchange={handlePersonalFirstNameChange}>
                                                     </lightning-input>
                                                 </lightning-layout-item>
                                                 <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
                                                     <label class="labelColor">{label.ENROLL_REQ_DOC_MIDDLE}</label>
-                                                    <lightning-input name={con.ownerNo} variant="label-hidden"
+                                                    <lightning-input name={con.ownerNo} variant="label-hidden" autocomplete="off"
                                                         value={con.middleName} onchange={handleMiddleNameChange}>
                                                     </lightning-input>
                                                 </lightning-layout-item>
@@ -57,7 +57,7 @@
                                                 <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
                                                     <label class="labelColor"><span
                                                             class="slds-required">*</span>{label.ENROLL_REQ_DOC_LAST_NAME}</label>
-                                                    <lightning-input variant="label-hidden" name={con.ownerNo}
+                                                    <lightning-input variant="label-hidden" name={con.ownerNo} autocomplete="off"
                                                         value={con.lastName} onchange={handleLastNameChange}>
                                                     </lightning-input>
                                                 </lightning-layout-item>
@@ -65,7 +65,7 @@
                                                 <lightning-layout-item size=6 class="marginBottom slds-p-right_small">
                                                     <label class="labelColor"><span
                                                             class="slds-required">*</span>{label.ENROLL_REQ_DOC_SIGNERS_TITLE}</label>
-                                                    <lightning-input name={con.ownerNo} variant="label-hidden"
+                                                    <lightning-input name={con.ownerNo} variant="label-hidden" autocomplete="off"
                                                         value={con.titleValue} onchange={handleTitlePicklistChange}>
                                                     </lightning-input>
                                                 </lightning-layout-item>
@@ -73,7 +73,7 @@
                                                 <lightning-layout-item size=6 class="marginBottom slds-p-right_small">
                                                     <label class="labelColor"><span
                                                             class="slds-required">*</span>{label.ENROLL_REQ_DOC_SIGNERS_EMAIL}</label>
-                                                    <lightning-input type="email" name={con.ownerNo} variant="label-hidden"
+                                                    <lightning-input type="email" name={con.ownerNo} variant="label-hidden" autocomplete="off"
                                                         value={con.emailValue} onchange={handleEmailChange}>
                                                     </lightning-input>
                                                 </lightning-layout-item>
@@ -106,14 +106,14 @@
                                                     <label class="labelColor"><span
                                                             class="slds-required">*</span>{label.ENROLL_REQ_DOC_REVIERS_FIRST_NAME}</label>
                                                     <lightning-input name={review.ownerNo} variant="label-hidden"
-                                                        value={review.firstName}
+                                                        value={review.firstName} autocomplete="off"
                                                         onchange={handleReviewerFirstNameChange}>
                                                     </lightning-input>
                                                 </lightning-layout-item>
 
                                                 <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
                                                     <label class="labelColor">{label.ENROLL_REQ_DOC_MIDDLE}</label>
-                                                    <lightning-input name={review.ownerNo} variant="label-hidden"
+                                                    <lightning-input name={review.ownerNo} variant="label-hidden" autocomplete="off"
                                                         value={review.middleName}
                                                         onchange={handleReviewerMiddleNameChange}>
                                                     </lightning-input>
@@ -122,7 +122,7 @@
                                                 <lightning-layout-item size=4 class="marginBottom slds-p-right_small">
                                                     <label class="labelColor"><span
                                                             class="slds-required">*</span>{label.ENROLL_REQ_DOC_REVIERS_LAST_NAME}</label>
-                                                    <lightning-input name={review.ownerNo} variant="label-hidden"
+                                                    <lightning-input name={review.ownerNo} variant="label-hidden" autocomplete="off"
                                                         value={review.lastName} onchange={handleReviewerLastNameChange}>
                                                     </lightning-input>
                                                 </lightning-layout-item>
@@ -130,7 +130,7 @@
                                                 <lightning-layout-item size=6 class="marginBottom slds-p-right_small">
                                                     <label
                                                         class="labelColor">{label.ENROLL_REQ_DOC_REVIERS_TITLE}</label>
-                                                    <lightning-input name={review.ownerNo} variant="label-hidden"
+                                                    <lightning-input name={review.ownerNo} variant="label-hidden" autocomplete="off"
                                                         value={review.titleValue} onchange={handleReviewerTitleChange}>
                                                     </lightning-input>
                                                 </lightning-layout-item>
@@ -138,7 +138,7 @@
                                                 <lightning-layout-item size=6 class="marginBottom slds-p-right_small">
                                                     <label class="labelColor"><span class="slds-required">*</span>
                                                         {label.ENROLL_REQ_DOC_REVIERS_EMAIL}</label>
-                                                    <lightning-input type="email" name={review.ownerNo} variant="label-hidden"
+                                                    <lightning-input type="email" name={review.ownerNo} variant="label-hidden" autocomplete="off"
                                                         value={review.emailValue} onchange={handleReviewerEmailChange}>
                                                     </lightning-input>
                                                 </lightning-layout-item>

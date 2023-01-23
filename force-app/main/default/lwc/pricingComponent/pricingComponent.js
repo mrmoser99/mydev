@@ -231,6 +231,9 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     * childCondition - parent calls this to signal new/used changed
     ***************************************************************************************************************/
     @api childCondition(option){
+
+        this.assetTypeQuote = option;
+        this.quoteObject.assetTypeQuote  = option;
         
         let wrapperEvent2 = {value: option};
         let wrapperEvent = {target: wrapperEvent2};
@@ -527,6 +530,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
         //this.loading = true;
 
+        console.log('loading rates: ' + this.assetTypeQuote);
+
         getFinancialProducts({programId: this.program, financetype: this.financeType, newused: this.assetTypeQuote})
             .then(result => {
                 let plist = [];
@@ -662,9 +667,12 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     ***************************************************************************************************************/
     handleChange(event) {
 
+        console.log('event target value: ' + event.target.value);
+
         this[event.target.name] = event.target.value;
         //Geetha - new code for unitprice //edit/copy asset PBI 882069
-        if(event.target.value == 'Used'){
+        //MRM - was not working  from used to new
+        //if(event.target.value == 'Used'){
             this.template.querySelectorAll("c-assetcreation").forEach(element=>{
                 element.resetUnitPrice();
             })
@@ -674,7 +682,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
           //callout for Leasetype and Ratetype
           this.loadTerms();
 
-        }
+        //}
         this.quoteObject[event.target.name] = event.target.value;
         this.loadRates();
     }

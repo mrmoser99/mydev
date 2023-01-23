@@ -570,7 +570,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
 
                 sList.push({label: 'None', value: ''});
 
-                //this.salesRepList = sList;
+                this.salesRepList = sList;
 
                 if (!saveCurrentSalesRep) {
                     ////console.log('sales rep removed');
@@ -793,11 +793,13 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     handleChange(event) {
 
-        //console.log('calling' + this.currentTab);
+        console.log('calling' + event.target.value);
 
-        if (this.currentTab == 'spec'){
-            this.template.querySelector('c-pricing-component').childCondition(event.target.value);
-        }
+        
+        this.template.querySelector('c-pricing-component').childCondition(event.target.value);
+        
+        console.log('in handle change' + event.targe.value);
+
 
 
     }

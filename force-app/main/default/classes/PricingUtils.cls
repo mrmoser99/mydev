@@ -1564,8 +1564,7 @@ public static tokenClass getAuthToken(){
 	HTTPResponse res = http.send(reqAPI);
 
 	system.debug('Body' + res.getBody());
-
-
+	
 	if(res.getStatusCode()==200 ) {
 
 		JSONParser parser = JSON.createParser(res.getBody());

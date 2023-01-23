@@ -172,7 +172,7 @@
                                 <lightning-layout-item class="header-field-section" flexibility="auto">
                                     <div class="display-field">
                                         <label>Quote Number</label>
-                                        <span><b><a onclick={openProposal}>{quoteNumberValue}</a></b></span>
+                                            <span><b><a onclick={openProposal}>{quoteNumberValue}</a></b></span>
                                     </div>
                                 </lightning-layout-item>
                             </template>
@@ -294,6 +294,7 @@
                                                                     data-id="Amount" step=".01" type="text"
                                                                     value={totalPrice} onblur={formatCurrencyForInput}
                                                                     onchange={handleChangeFinanceAmount}
+                                                                    autocomplete="off"
                                                                     disabled={isAmountDisabled}>
                                                                 </lightning-input>
                                                             </lightning-layout-item>
@@ -493,6 +494,7 @@
                                                                 label="Customer Story"
                                                                 placeholder="Example: This company has been in business for less than a year. The owner can provide a guarantee to help get this credit approved."
                                                                 value={customerStory.story}
+                                                                autocomplete="off"
                                                                 onchange={handleStoryChange}>
                                                             </lightning-textarea>
                                                         </lightning-layout-item>
@@ -518,6 +520,7 @@
                                                                     variant="label-hidden"
                                                                     placeholder=" Enter First Name"
                                                                     value={personalGuar.firstName}
+                                                                    autocomplete="off"
                                                                     onchange={handlePersonalGuaranteeFirstNameChange}>
                                                                 </lightning-input>
                                                             </lightning-layout-item>
@@ -538,6 +541,7 @@
                                                                     variant="label-hidden"
                                                                     placeholder=" Enter Last Name"
                                                                     value={personalGuar.lastName}
+                                                                    autocomplete="off"
                                                                     onchange={handlePersonalGuaranteeLastNameChange}>
                                                                 </lightning-input>
                                                             </lightning-layout-item>
@@ -551,6 +555,7 @@
                                                                     maxlength="11" onfocus={ssnOnFocus}
                                                                     onblur={ssnOnBlur}
                                                                     value={personalGuar.SocialSecurityNumberForMasking}
+                                                                    autocomplete="off"
                                                                     onchange={handlePersonalGuaranteeSSNEncryptedChange}>
                                                                 </lightning-input>
                                                             </lightning-layout-item>
@@ -623,6 +628,7 @@
                                                                         variant="label-hidden"
                                                                         placeholder=" Enter First Name"
                                                                         value={ownerItem.firstName}
+                                                                        autocomplete="off"
                                                                         onchange={handlePersonalFirstNameChange}>
                                                                     </lightning-input>
                                                                 </lightning-layout-item>
@@ -633,6 +639,7 @@
                                                                         label="Middle Name"
                                                                         placeholder=" Enter Middle Name"
                                                                         value={ownerItem.middleName}
+                                                                        autocomplete="off"
                                                                         onchange={handleMiddleNameChange}>
                                                                     </lightning-input>
                                                                 </lightning-layout-item>
@@ -646,6 +653,7 @@
                                                                         name={ownerItem.ownerNo}
                                                                         placeholder=" Enter Last Name"
                                                                         value={ownerItem.lastName}
+                                                                        autocomplete="off"
                                                                         onchange={handleLastNameChange}>
                                                                     </lightning-input>
                                                                 </lightning-layout-item>
@@ -654,6 +662,7 @@
                                                                     <lightning-input name={ownerItem.ownerNo}
                                                                         label="Title" placeholder=" Select Title"
                                                                         value={ownerItem.titleValue}
+                                                                        autocomplete="off"
                                                                         onchange={handleTitlePicklistChange}>
                                                                     </lightning-input>
                                                                 </lightning-layout-item>
@@ -686,10 +695,17 @@
                                                                         placeholder=" Enter Ownership Percentage"
                                                                         label="Ownership Percentage" type="number"
                                                                         value={ownerItem.ownershipPercentageValue}
+                                                                        autocomplete="off"
                                                                         onchange={handleownershipPercentageChange}>
                                                                     </lightning-input>
                                                                 </lightning-layout-item>
-
+                                                                <lightning-button name={ownerItem.ownerNo}
+                                                                    class="delete-button" 
+                                                                    variant="base" 
+                                                                    label="- Delete Beneficial Owner" 
+                                                                    title="- Delete Beneficial Owner" 
+                                                                    onclick={handleDeleteBO}>
+                                                                </lightning-button>
                                                             </lightning-layout>
                                                         </div>
                                                     </lightning-accordion-section>

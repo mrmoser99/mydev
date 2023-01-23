@@ -92,21 +92,21 @@
         </lightning-layout-item>
     </lightning-layout>
     <div class="Header slds-p-around_medium tab-class slds-box_border topSpace slds-size_8-of-12">
-
+        <p> </p>
         <lightning-layout multiple-rows=true horizontal-align="spread">
 
             <lightning-layout-item size=12>
-                <div class="slds-grid slds-wrap">
-                    <div class="title">
+          
+                    <div class="slds-p-around_medium">
                         <lightning-layout-item>
                             <h1 class="slds-text-heading_large">
                                 A little more information, please.
-                            </h1>
+                            </h1> <br>
                         </lightning-layout-item>
-                    </div>
+                   
                     <lightning-layout-item>
                         <div class="paragraph">
-                            <p class="slds-text-heading_small">
+                            <p >
                                 We need a bit more information to process this application. Please provide us with one
                                 of the following items by
                                 filling out the questions below. (Fields are required only for the item you wish to
@@ -125,7 +125,7 @@
 
                     </lightning-layout-item>
 
-
+               
                 </div>
                 <div>
                     <lightning-accordion allow-multiple-sections-open onsectiontoggle={handleSectionToggle}
@@ -169,6 +169,10 @@
                                     </lightning-layout-item>
                                 </lightning-layout>
                             </div>
+
+                            <p style="color: #33ccff;font-weight: bold;cursor: pointer;" class="slds-var-m-around_small"
+                            onclick={handleEditPersonalGuarantee}>
+                            Edit Personal Guarantee</p>
                             
                         </template>  
                             
@@ -184,7 +188,7 @@
                             <lightning-layout multiple-rows>
                                 <lightning-layout-item size=6 class="slds-p-right_small">
                                     <label class="labelColor"><b>First Name</b></label>
-                                    <lightning-input autocomplete="abc" name='personalGuaranteeFirstName'
+                                    <lightning-input autocomplete="off" name='personalGuaranteeFirstName'
                                                                     variant="label-hidden"
                                                                     placeholder=" Enter First Name"
                                                                     value={personalGuar.firstName}
@@ -194,7 +198,7 @@
                                 </lightning-layout-item>
                                 <lightning-layout-item size=6>
                                     <label class="labelColor"><b>Middle Initial</b></label>
-                                    <lightning-input autocomplete="abc" name='personalGuaranteeMiddleInitial'
+                                    <lightning-input autocomplete="off" name='personalGuaranteeMiddleInitial'
                               variant="label-hidden" maxlength="1"
                               placeholder=" Enter Middle Initial"
                               
@@ -204,7 +208,7 @@
                                 </lightning-layout-item>
                                 <lightning-layout-item size=6 class="slds-p-right_small">
                                     <label class="labelColor"><b>Last Name</b></label>
-                                    <lightning-input autocomplete="abc" name='personalGuaranteeLastName'
+                                    <lightning-input autocomplete="off" type="text" name='personalGuaranteeLastName'
                                     variant="label-hidden"
                                     placeholder=" Enter Last Name"
                                     
@@ -215,14 +219,21 @@
                                 <lightning-layout-item size=6>
                                     <label class="labelColor"><b>Social Security Number
                                         (SSN)</b></label>
-                                    <lightning-input autocomplete="abc" name='personalGuaranteeSSNEncrypted'
+                                    <lightning-input autocomplete="off" name='personalGuaranteeSSNEncrypted'
                                 data-id='personalGuaranteeSSNEncrypted'
-                                variant="label-hidden" placeholder=" Enter SSN"
-                                maxlength="11" onfocus={ssnOnFocus}  
+                                variant="label-hidden" placeholder="XXX-XX-XXXX"
+                                maxlength="9" onfocus={ssnOnFocus}  
                                 onblur={ssnOnBlur}
                                 value={personalGuar.SocialSecurityNumberForMasking}
                                 onchange={handlePersonalGuaranteeSSNEncryptedChange}>
                             </lightning-input>
+
+                            <lightning-input type="text" name="unitSalesPrice" data-id="unitSalesPrice" label="Unit Sales Price" autocomplete="off"
+
+                            required="true"
+        
+                            field-level-help='test'></lightning-input>
+
                                 </lightning-layout-item>
                             </lightning-layout>
                         </template>
@@ -341,10 +352,29 @@
                             
                             </lightning-layout>
                             <lightning-layout>
+                            <template if:true = {showCommentEdit}>
                                 <lightning-layout-item size="12">
                                     <lightning-textarea name="comments" label="Comments" placeholder="Enter comments..." value={comments} onchange ={handleResubmitComm}></lightning-textarea>
+                             
                                 </lightning-layout-item>
-                            </lightning-layout>
+
+
+                            </template>
+                                
+                            <template if:false = {showCommentEdit}>
+                                <lightning-layout-item size="12">
+                                    <lightning-textarea name="comments" label="Comments" placeholder="Enter comments..." value={comments} onchange ={handleResubmitComm} read-only></lightning-textarea>
+                          
+                        <p style="color: #33ccff;font-weight: bold;cursor: pointer;" class="slds-var-m-around_small"
+                        onclick={handleEditResubmitComments}>
+                        Edit Comments</p>
+ 
+                                </lightning-layout-item>
+
+
+                            </template>
+                        </lightning-layout>
+
                         </lightning-accordion-section>
                     </lightning-accordion>
                 </div>
@@ -357,7 +387,7 @@
         <lightning-accordion allow-multiple-sections-open
             onsectiontoggle={handleSectionToggle}
             class="slds-border_top slds-m-top_small"
-            active-section-name="Financing Structure">
+            active-section-name={openAccordionSections}>
             <!-- Finance section -->
             <lightning-accordion-section name="Financing Structure"
                 label="Financing Structure">
@@ -600,46 +630,6 @@
               </lightning-accordion-section>
 
 
-              <!-- Personal Guarantee -->
-             
-            <!--   <lightning-accordion-section name="personalGuarantee"
-                    label="Personal Guarantee (Optional)">
-                    <div>
-                        <lightning-layout multiple-rows=true>
-                            <lightning-layout-item size=6
-                                class="marginBottom slds-p-right_small">
-                                <label class="labelColor"><b>First Name</b></label>
-                                <div>{personalGuar.firstName}</div>
-                            </lightning-layout-item>
-                            <lightning-layout-item size=6
-                                class="marginBottom slds-p-right_small">
-                                <label class="labelColor"><b>Middle Initial</b></label>
-                                <div>{personalGuar.middleInitial}</div>
-                            </lightning-layout-item>
-                            <lightning-layout-item size=6
-                                class="marginBottom slds-p-right_small">
-                                <label class="labelColor"><b>Last Name</b></label>
-                                <div>{personalGuar.lastName}</div>
-                              
-                            </lightning-layout-item>
-                            <lightning-layout-item size=6
-                                class="marginBottom slds-p-right_small">
-                                <label class="labelColor"><b>Social Security Number
-                                        (SSN)</b></label>
-                                <template if:true={isSSN}>
-                                    <div>{personalGuar.SocialSecurityNumberForMasking}
-                                    </div>
-                                </template>
-                                <template if:false={isSSN}>
-                                    <div>{personalGuar.SocialSecurityNumber}</div>
-                                </template> 
-                               
-                            </lightning-layout-item>
-                        </lightning-layout>
-                    </div>
-                </lightning-accordion-section>--> 
-
-
   <!--ownership info-->
   <lightning-accordion-section name="qwnershipInformation"
   label="Ownership Information (Optional)">
@@ -660,11 +650,6 @@
                   options={owmnerShipOptions}
                   value={customerStory.beneficialOwnerType} type="radio"
                   disabled="true"></lightning-radio-group>
-
-              <!-- <lightning-checkbox-group name="beneficialOwnerType" label=""
-                      options={owmnerShipOptions} value={customerStory.beneficialOwnerType} disabled="true">
-                  </lightning-checkbox-group>-->
-
           </lightning-layout-item>
       </lightning-layout>
 
@@ -702,7 +687,7 @@
             <lightning-button onclick={openModal} label="Cancel">
             </lightning-button>
         </lightning-layout-item>
-        <lightning-layout-item size="6">
+        <lightning-layout-item size="5.2">
         </lightning-layout-item>
         <lightning-layout-item size="2">
             <lightning-button style="margin-left: 40px;" label="Save"
@@ -715,12 +700,7 @@
         </lightning-layout-item>
     </lightning-layout>
 </div>
-
-
 </lightning-layout-item> 
     </div>
 </div>
-
-
-
 </template>

@@ -1,27 +1,18 @@
-import createNewOppForCreditCheck from '@salesforce/apex/CreditApplicationHeaderController.createNewOppForCreditCheck';
 import getRelatedPartyForOpp from '@salesforce/apex/CreditApplicationHeaderController.getRelatedPartyForOpp';
 import saveRelatedPartyForOpp from '@salesforce/apex/CreditApplicationHeaderController.saveRelatedPartyForOpp';
 import saveRelatedPartyForOpp1 from '@salesforce/apex/CreditApplicationHeaderController.saveRelatedPartyForOpp1';
 import saveComments from '@salesforce/apex/CreditApplicationHeaderController.saveComments';
-import createPickListValues from '@salesforce/apex/CreditApplicationHeaderController.picklistValues';
-import getContactField from '@salesforce/apex/CreditApplicationHeaderController.getContactField';
 import getOpportunityField from '@salesforce/apex/CreditApplicationHeaderController.getOpportunityData';
 import getQuoteLineField from '@salesforce/apex/CreditApplicationHeaderController.getQuoteLineData';
 import getQuoteLineForAccessoryField from '@salesforce/apex/CreditApplicationHeaderController.getQuoteLineAccessoryData';
 import getSalesReps from "@salesforce/apex/PricingUtils.getSalesReps";
-import getSalesRepsFromReturnedOSID from "@salesforce/apex/CreateQuoteOpportunity.getSalesRepsFromReturnedOSID";
-import getUserSite from "@salesforce/apex/PricingUtils.getUserSite";
-import submitCreditApp from '@salesforce/apex/CreditAppUtils.submitCreditApp';
-import submitPreQualCreditApp from '@salesforce/apex/CreditAppUtils.submitPreQualCreditApp';
-import UpdateBenefitOwnerData from '@salesforce/apex/CreditApplicationHeaderController.UpdateBenefitOwnerData';
-import UpdateQuoteData from '@salesforce/apex/CreditApplicationHeaderController.UpdateQuoteData';
 import {api, track, LightningElement, wire} from 'lwc';
 import {CurrentPageReference} from 'lightning/navigation';
 import {NavigationMixin} from 'lightning/navigation';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 
 // Custom Labels
-import CREDITAPP_CUSTOMERAPPROVAL_MESSAGE from '@salesforce/label/c.CREDITAPP_CUSTOMERAPPROVAL_MESSAGE';
+/*import CREDITAPP_CUSTOMERAPPROVAL_MESSAGE from '@salesforce/label/c.CREDITAPP_CUSTOMERAPPROVAL_MESSAGE';
 import CREDITAPP_CUSTOMERAPPROVAL_TITLE from '@salesforce/label/c.CREDITAPP_CUSTOMERAPPROVAL_TITLE';
 import CREDITAPP_CUSTOMERINFO_MESSAGE from '@salesforce/label/c.CREDITAPP_CUSTOMERINFO_MESSAGE';
 import CREDITAPP_CUSTOMERINFO_TITLE from '@salesforce/label/c.CREDITAPP_CUSTOMERINFO_TITLE';
@@ -43,7 +34,7 @@ import CREDITAPP_UBO_FIRSTNAME from '@salesforce/label/c.CREDITAPP_UBO_FIRSTNAME
 import CREDITAPP_UBO_LASTNAME from '@salesforce/label/c.CREDITAPP_UBO_LASTNAME';
 import CREDITAPP_UBO_REQUIRED from '@salesforce/label/c.CREDITAPP_UBO_REQUIRED';
 import CREDITAPP_UBO_TITLE from '@salesforce/label/c.CREDITAPP_UBO_TITLE';
-import ENROLL_ENABLED from '@salesforce/label/c.ENROLL_ENABLED';
+import ENROLL_ENABLED from '@salesforce/label/c.ENROLL_ENABLED'; */
 
 import UPLOAD_DOC from '@salesforce/label/c.UPLOAD_DOC';
 import UPLOAD_DOC_DESC from '@salesforce/label/c.UPLOAD_DOC_DESC';
@@ -54,7 +45,7 @@ import getRelatedFilesByRecordId from '@salesforce/apex/EnrollController.getRela
 import deleteContentDocument from '@salesforce/apex/EnrollController.deleteContentDocument';
 
 export default class CreditAppAdditionalInfo extends NavigationMixin(LightningElement){
-    label = {
+   /* label = {
         CREDITAPP_CUSTOMERAPPROVAL_MESSAGE,
         CREDITAPP_CUSTOMERAPPROVAL_TITLE,
         CREDITAPP_CUSTOMERINFO_MESSAGE,
@@ -82,7 +73,7 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
         UPLOAD_DOC_DESC,
         UPLOADED_DOC,
         UPLOADED_DOCS_DESC
-    };
+    };*/
 
     @track totalPrice;
     editModeVar = true;
@@ -91,6 +82,7 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
     @track customerStory = {};
     @track beneficialOwnerType = [];
     @track crossCustomer;
+    @track showCommentEdit = true;
     
      // Personal Guarantor
     @track personalGuar={
@@ -137,6 +129,9 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
 
     @api isModalOpen = false;
     filesList2 = [];
+
+    //active accordian sections
+    openAccordionSections = ['Personal Guarantee','Cross Corporate Guarantee','Supporting Documents','Additonal Comments']
 
     get owmnerShipOptions() {
         return [
@@ -313,6 +308,10 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
             console.log('Sub-stage: ' + data.Sub_Stage__c);
             console.log('pghere');
             this.statusValue = data.Sub_Stage__c;
+            this.comments = data.Resubmit_Comments__c;
+            if(this.comments){
+                this.showCommentEdit = false;
+            }
             this.submittedStatus = data.Sub_Stage__c;
             this.locationValue = data.Account.Name;
             this.applicationNameValue=data.Application_Number__c;
@@ -605,10 +604,10 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
                     this.loading = false;
                     return;
                 }
-                if (this.personalGuar.SocialSecurityNumber.length !== 11) {
+                if (this.personalGuar.SocialSecurityNumber.length !== 9) {
                     const evt = new ShowToastEvent({
                         title:      CREDITAPP_SUBMITTEDERROR_TITLE,
-                        message:    'Please provide an eleven character SSN for your Personal Guarantee.',
+                        message:    'Please provide an 9 character SSN for your Personal Guarantee.',
                         variant:    'error',
                         duration:   20000
                     });
@@ -616,7 +615,7 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
                     this.loading = false;
                     return;
                 }
-                if ((this.personalGuar.SocialSecurityNumber[3] !== '-') || (this.personalGuar.SocialSecurityNumber[6] !== '-')) {
+             /*  if ((this.personalGuar.SocialSecurityNumber[3] !== '-') || (this.personalGuar.SocialSecurityNumber[6] !== '-')) {
                     const evt = new ShowToastEvent({
                         title:      CREDITAPP_SUBMITTEDERROR_TITLE,
                         message:    'Please use the - character to separate the SSN for your Personal Guarantee.',
@@ -626,7 +625,7 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
                     this.dispatchEvent(evt);
                     this.loading = false;
                     return;
-                }
+                }*/
                 for (let i = 0; i < this.personalGuar.SocialSecurityNumber.length; i++) {
                     if ((i === 3) || (i === 6)) {
                         continue;
@@ -673,10 +672,8 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
             console.log('customer in addinfo ' +JSON.stringify(this.crossCustomer));
             saveRelatedPartyForOpp1({
                 oppId: this.oppId, 
-                firstName: this.crossCustomer.Name, 
-                middleName: '', 
-                lastName: '', 
-                ssn: this.crossCustomer.Tax_ID__c
+                crossCorp: this.crossCustomer
+               
               
             }).then(result => {
               
@@ -837,7 +834,7 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
 
   
     //toggle for sections
-    handleSectionToggle(event) {
+  /*  handleSectionToggle(event) {
         const openSections = event.detail.openSections;
         this.openAccordionSections = event.detail.openSections;
         if (openSections.length === 0) {
@@ -846,7 +843,7 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
             this.activeSectionsMessage =
                 'Open sections: ' + openSections.join(', ');
         }
-    }
+    }*/
 
     //Resubmit comments
     handleResubmitComm(event){
@@ -865,6 +862,7 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
         if(this.template.querySelector(`[data-id="${dataIdVar}"]`).value == '' || this.template.querySelector(`[data-id="${dataIdVar}"]`).value == null){
             this.personalGuar.SocialSecurityNumber = '';
         }
+        
 
         // Only display masking fields if a date had been selected.
         if((typeof this.personalGuar.SocialSecurityNumber !== 'undefined') && (this.personalGuar.SocialSecurityNumber.length !== 0)){
@@ -879,5 +877,13 @@ export default class CreditAppAdditionalInfo extends NavigationMixin(LightningEl
             isSSN = false;
         }
     }  
+
+    handleEditPersonalGuarantee(){
+        this.showPersonalEdit = true;
+    }
+
+    handleEditResubmitComments(){
+        this.showCommentEdit = true;
+    }
 
 }

@@ -1,0 +1,2129 @@
+{
+  "data": [
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005427",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005427",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERC030VA"
+          }
+        },
+        "listPrice": 28000
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005428",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005428",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERC035VA"
+          }
+        },
+        "listPrice": 30052
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005429",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005429",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERC040VA"
+          }
+        },
+        "listPrice": 31632
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005430",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005430",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERC045VG"
+          }
+        },
+        "listPrice": 33658
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005431",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005431",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERC050VG"
+          }
+        },
+        "listPrice": 34184
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005432",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005432",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERC055VG"
+          }
+        },
+        "listPrice": 34972
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005433",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005433",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERC060VG"
+          }
+        },
+        "listPrice": 35759
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005434",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005434",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERC065VG"
+          }
+        },
+        "listPrice": 37162
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005435",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005435",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERC070VG"
+          }
+        },
+        "listPrice": 37697
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005436",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005436",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERC080VH"
+          }
+        },
+        "listPrice": 57094
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005437",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005437",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERC100VH"
+          }
+        },
+        "listPrice": 61682
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005438",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005438",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERC100VHS"
+          }
+        },
+        "listPrice": 61682
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005439",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005439",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERC120VH"
+          }
+        },
+        "listPrice": 63000
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005419",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005419",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "3-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP025VC"
+          }
+        },
+        "listPrice": 23549
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005420",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005420",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "3-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP030VC"
+          }
+        },
+        "listPrice": 24549
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005440",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005440",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP030VF"
+          }
+        },
+        "listPrice": 28500
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005421",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005421",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "3-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP030VT"
+          }
+        },
+        "listPrice": 29549
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005441",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005441",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP035VF"
+          }
+        },
+        "listPrice": 29900
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005422",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005422",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "3-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP035VT"
+          }
+        },
+        "listPrice": 30639
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005442",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005442",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP040VF"
+          }
+        },
+        "listPrice": 31300
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005423",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005423",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "3-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP040VT"
+          }
+        },
+        "listPrice": 31381
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005443",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005443",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP045VL"
+          }
+        },
+        "listPrice": 33804
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005444",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005444",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP050VL"
+          }
+        },
+        "listPrice": 39500
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005445",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005445",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP060VL"
+          }
+        },
+        "listPrice": 41200
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005446",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005446",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP070VL"
+          }
+        },
+        "listPrice": 45650
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005447",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005447",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP080VM"
+          }
+        },
+        "listPrice": 59058
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005448",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005448",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP090VM"
+          }
+        },
+        "listPrice": 62681
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005449",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005449",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP100VM"
+          }
+        },
+        "listPrice": 64853
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005450",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005450",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP110VM"
+          }
+        },
+        "listPrice": 67838
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005451",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005451",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "4-Wheel Sit Down",
+            "brand": "Yale",
+            "model": "ERP120VM"
+          }
+        },
+        "listPrice": 70052
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005424",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005424",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "3-Wheel Stand Up",
+            "brand": "Yale",
+            "model": "ESC030AD"
+          }
+        },
+        "listPrice": 34163
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005425",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005425",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "3-Wheel Stand Up",
+            "brand": "Yale",
+            "model": "ESC035AD"
+          }
+        },
+        "listPrice": 34404
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005426",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005426",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class I - Counterbalance Elect",
+            "type": "3-Wheel Stand Up",
+            "brand": "Yale",
+            "model": "ESC040AD"
+          }
+        },
+        "listPrice": 36500
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005479",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005479",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC030VX"
+          }
+        },
+        "listPrice": 22981
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005480",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005480",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC035VX"
+          }
+        },
+        "listPrice": 23794
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005481",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005481",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC040SVX"
+          }
+        },
+        "listPrice": 24180
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005482",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005482",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC040VX"
+          }
+        },
+        "listPrice": 24615
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005483",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005483",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC050LX"
+          }
+        },
+        "listPrice": 23800
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005484",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005484",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC050VX"
+          }
+        },
+        "listPrice": 25983
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005485",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005485",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC055SVX"
+          }
+        },
+        "listPrice": 30863
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005486",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005486",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC060VX"
+          }
+        },
+        "listPrice": 29765
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005487",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005487",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC070VX"
+          }
+        },
+        "listPrice": 32742
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005488",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005488",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC080VX"
+          }
+        },
+        "listPrice": 46744
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005489",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005489",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC080VXBCS"
+          }
+        },
+        "listPrice": 48053
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005490",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005490",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC100VX"
+          }
+        },
+        "listPrice": 51883
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005491",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005491",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC100VXBCS"
+          }
+        },
+        "listPrice": 54926
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005492",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005492",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC120VX"
+          }
+        },
+        "listPrice": 64842
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005493",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005493",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC120VXPRS"
+          }
+        },
+        "listPrice": 58715
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005494",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005494",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC135VX"
+          }
+        },
+        "listPrice": 62898
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005495",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005495",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GC155VX"
+          }
+        },
+        "listPrice": 68891
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31008013",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31008013",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GDP300"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31010890",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31010890",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GLC050"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31010762",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31010762",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GLC070VX"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31008894",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31008894",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class IV - Cushion Tire ICE",
+            "type": "Cushion Forklift",
+            "brand": "Yale",
+            "model": "GLC120SVX"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31009961",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31009961",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GLP050"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31011578",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31011578",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GLP060VX"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31012151",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31012151",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GLP070VX"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31011168",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31011168",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GLP080"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31011895",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31011895",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GLP090VX"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31010891",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31010891",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GLP100"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005519",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005519",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP030VX"
+          }
+        },
+        "listPrice": 23505
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005520",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005520",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP035VX"
+          }
+        },
+        "listPrice": 24054
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005521",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005521",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP040MX"
+          }
+        },
+        "listPrice": 21210
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005522",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005522",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP040SVX"
+          }
+        },
+        "listPrice": 24618
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005523",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005523",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP040VX"
+          }
+        },
+        "listPrice": 25935
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005496",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005496",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP040VX Diesel"
+          }
+        },
+        "listPrice": 26713
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005524",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005524",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP050MX"
+          }
+        },
+        "listPrice": 24702
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005525",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005525",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP050VX"
+          }
+        },
+        "listPrice": 29427
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005497",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005497",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP050VX Diesel"
+          }
+        },
+        "listPrice": 30310
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005526",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005526",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP060MX"
+          }
+        },
+        "listPrice": 26720
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005527",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005527",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP060VX"
+          }
+        },
+        "listPrice": 31445
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005498",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005498",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP060VX Diesel"
+          }
+        },
+        "listPrice": 32388
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005528",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005528",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP070VX"
+          }
+        },
+        "listPrice": 33798
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005499",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005499",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP070VX Diesel"
+          }
+        },
+        "listPrice": 34812
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005529",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005529",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP080VX"
+          }
+        },
+        "listPrice": 45928
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005500",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005500",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP080VX Diesel"
+          }
+        },
+        "listPrice": 42927
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005530",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005530",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP090VX"
+          }
+        },
+        "listPrice": 48202
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005501",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005501",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP090VX Diesel"
+          }
+        },
+        "listPrice": 43591
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005531",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005531",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP100VX"
+          }
+        },
+        "listPrice": 53633
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005502",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005502",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP100VX Diesel"
+          }
+        },
+        "listPrice": 50286
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005532",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005532",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP110VX"
+          }
+        },
+        "listPrice": 55630
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005503",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005503",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP110VX Diesel"
+          }
+        },
+        "listPrice": 53396
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005533",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005533",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP120VX"
+          }
+        },
+        "listPrice": 57587
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005504",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005504",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP120VX Diesel"
+          }
+        },
+        "listPrice": 57901
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005534",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005534",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP135VX"
+          }
+        },
+        "listPrice": 62040
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005505",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005505",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP135VX Diesel"
+          }
+        },
+        "listPrice": 59032
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005535",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005535",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "LPG Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP155VX"
+          }
+        },
+        "listPrice": 68480
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005506",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005506",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP155VX Diesel"
+          }
+        },
+        "listPrice": 68843
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005507",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005507",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP170VX"
+          }
+        },
+        "listPrice": 107617
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005508",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005508",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP175VX"
+          }
+        },
+        "listPrice": 111310
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005509",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005509",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP190DC"
+          }
+        },
+        "listPrice": 136134
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005510",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005510",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP190VX"
+          }
+        },
+        "listPrice": 119476
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005511",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005511",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP210DC"
+          }
+        },
+        "listPrice": 150622
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005512",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005512",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP230DC"
+          }
+        },
+        "listPrice": 152324
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005513",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005513",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP230DCS"
+          }
+        },
+        "listPrice": 152835
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005514",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005514",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP250DC"
+          }
+        },
+        "listPrice": 155648
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005515",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005515",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP280DC"
+          }
+        },
+        "listPrice": 158549
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005516",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005516",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP300EC"
+          }
+        },
+        "listPrice": 151313
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005517",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005517",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP330EC"
+          }
+        },
+        "listPrice": 171993
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005518",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005518",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class V - Pneumatic Tire ICE",
+            "type": "Diesel Pneumatic Forklift",
+            "brand": "Yale",
+            "model": "GP360EC"
+          }
+        },
+        "listPrice": 178929
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005473",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005473",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Stackers",
+            "brand": "Yale",
+            "model": "MCW025"
+          }
+        },
+        "listPrice": 16745
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005474",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005474",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Stackers",
+            "brand": "Yale",
+            "model": "MCW030"
+          }
+        },
+        "listPrice": 17345
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005475",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005475",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Stackers",
+            "brand": "Yale",
+            "model": "MCW040"
+          }
+        },
+        "listPrice": 17876
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31011594",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31011594",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Pallet Truck",
+            "brand": "Yale",
+            "model": "MPB040"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005467",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005467",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Pallet Truck",
+            "brand": "Yale",
+            "model": "MPB045-VG"
+          }
+        },
+        "listPrice": 5535
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005460",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005460",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Center Rider",
+            "brand": "Yale",
+            "model": "MPC060"
+          }
+        },
+        "listPrice": 16669
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005461",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005461",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Center Rider",
+            "brand": "Yale",
+            "model": "MPC080"
+          }
+        },
+        "listPrice": 17344
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005462",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005462",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie End Rider",
+            "brand": "Yale",
+            "model": "MPE060-F"
+          }
+        },
+        "listPrice": 14036
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005463",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005463",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie End Rider",
+            "brand": "Yale",
+            "model": "MPE060-VG"
+          }
+        },
+        "listPrice": 15475
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005464",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005464",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie End Rider",
+            "brand": "Yale",
+            "model": "MPE080-VG"
+          }
+        },
+        "listPrice": 16378
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005465",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005465",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie End Rider",
+            "brand": "Yale",
+            "model": "MPR080-VG"
+          }
+        },
+        "listPrice": 18025
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005466",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005466",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie End Rider",
+            "brand": "Yale",
+            "model": "MPR100-VG"
+          }
+        },
+        "listPrice": 19025
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005468",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005468",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Pallet Truck",
+            "brand": "Yale",
+            "model": "MPW060"
+          }
+        },
+        "listPrice": 8695
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005469",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005469",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Pallet Truck",
+            "brand": "Yale",
+            "model": "MPW065"
+          }
+        },
+        "listPrice": 8791
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005470",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005470",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Pallet Truck",
+            "brand": "Yale",
+            "model": "MPW080"
+          }
+        },
+        "listPrice": 8887
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005471",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005471",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Reach Stacker",
+            "brand": "Yale",
+            "model": "MRW020"
+          }
+        },
+        "listPrice": 20632
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005472",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005472",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Reach Stacker",
+            "brand": "Yale",
+            "model": "MRW030"
+          }
+        },
+        "listPrice": 22686
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005476",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005476",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Straddle Stacker",
+            "brand": "Yale",
+            "model": "MSW025"
+          }
+        },
+        "listPrice": 18450
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005477",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005477",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Straddle Stacker",
+            "brand": "Yale",
+            "model": "MSW030"
+          }
+        },
+        "listPrice": 20797
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005478",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005478",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class III - Powered Walk Behin",
+            "type": "Walkie Straddle Stacker",
+            "brand": "Yale",
+            "model": "MSW040"
+          }
+        },
+        "listPrice": 21392
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31011575",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31011575",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class VII - Tow Tractor",
+            "type": "Tow Tractor",
+            "brand": "Yale",
+            "model": "MTR005"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005457",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005457",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class II - Narrow Aisle",
+            "type": "Double Reach Truck",
+            "brand": "Yale",
+            "model": "NDR030DB-36V"
+          }
+        },
+        "listPrice": 33752
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005458",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005458",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class II - Narrow Aisle",
+            "type": "Double Reach Truck",
+            "brand": "Yale",
+            "model": "NDR030EB-36V"
+          }
+        },
+        "listPrice": 37077
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005459",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005459",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class II - Narrow Aisle",
+            "type": "Double Reach Truck",
+            "brand": "Yale",
+            "model": "NDR035EB-36V"
+          }
+        },
+        "listPrice": 37487
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005452",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005452",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class II - Narrow Aisle",
+            "type": "Single Reach Truck",
+            "brand": "Yale",
+            "model": "NR035DB-24V"
+          }
+        },
+        "listPrice": 31956
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005453",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005453",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class II - Narrow Aisle",
+            "type": "Single Reach Truck",
+            "brand": "Yale",
+            "model": "NR035EB-36V"
+          }
+        },
+        "listPrice": 35425
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005454",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005454",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class II - Narrow Aisle",
+            "type": "Single Reach Truck",
+            "brand": "Yale",
+            "model": "NR040DB-24V"
+          }
+        },
+        "listPrice": 35061
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005455",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005455",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class II - Narrow Aisle",
+            "type": "Single Reach Truck",
+            "brand": "Yale",
+            "model": "NR040EB-36V"
+          }
+        },
+        "listPrice": 39816
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31011618",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31011618",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class II - Narrow Aisle",
+            "type": "Single Reach Truck",
+            "brand": "Yale",
+            "model": "NR045EA"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005456",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005456",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class II - Narrow Aisle",
+            "type": "Single Reach Truck",
+            "brand": "Yale",
+            "model": "NR045EB-36V"
+          }
+        },
+        "listPrice": 41499
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005536",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005536",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class II - Narrow Aisle",
+            "type": "Order Picker",
+            "brand": "Yale",
+            "model": "OS030BF"
+          }
+        },
+        "listPrice": 24452
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31005537",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31005537",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Class II - Narrow Aisle",
+            "type": "Order Picker",
+            "brand": "Yale",
+            "model": "OS030EF"
+          }
+        },
+        "listPrice": 22476
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pageSize": 200,
+    "itemCount": 132,
+    "pageCount": 1,
+    "links": {
+      "self": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/assets?feature=Credit-Application-Documents&page=1&pageSize=200&sort=id&brand=1.NA.PI.0000105570-0001.1604.30001422",
+      "first": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/assets?feature=Credit-Application-Documents&page=1&pageSize=200&sort=id&brand=1.NA.PI.0000105570-0001.1604.30001422",
+      "next": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/assets?feature=Credit-Application-Documents&page=1&pageSize=200&sort=id&brand=1.NA.PI.0000105570-0001.1604.30001422",
+      "prev": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/assets?feature=Credit-Application-Documents&page=1&pageSize=200&sort=id&brand=1.NA.PI.0000105570-0001.1604.30001422",
+      "last": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/assets?feature=Credit-Application-Documents&page=1&pageSize=200&sort=id&brand=1.NA.PI.0000105570-0001.1604.30001422"
+    }
+  }
+}

@@ -1,0 +1,422 @@
+<!--
+ - Author: Kritika Sharma & Surbhi Goyal: Traction on Demand
+ - Date : 09/02/2022.
+ -->
+
+<!-- Credit Application Page Container -->
+<template>
+
+    <!-- Component body -->
+    <lightning-layout multiple-rows=true horizontal-align="spread" vertical-align="start" class="componentContainer">
+        
+        <template if:true={loading}>
+            <div class="masterSpinnerContainer">
+                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+            </div>
+        </template>
+    
+        <template if:true={isModalOpen}>
+            <!-- Modal/Popup Box LWC starts here -->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-backdrop slds-backdrop_open slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box LWC body starts here -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"
+                            style="margin-bottom: 15px;">Are you sure you want to cancel?</h2>
+                        <p>If you click yes, any changes you made will be removed.
+                        </p>
+                    </div>
+                    <!-- Modal/Popup Box LWC footer starts here -->
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeModal} title="No">No</button>
+                        <button class="slds-button slds-button_brand" onclick={componentCancel} title="Yes">Yes</button>
+                    </footer>
+                </div>
+            </section>
+        </template>
+
+        <!-- Header/Read only section of prepopulated data from the Context Opportunity  -->
+        <lightning-layout-item size="12" flexibility="auto">
+            <div class="slds-p-left_medium slds-p-top_x-large slds-p-right_medium">
+                <lightning-layout>
+                    <lightning-layout-item size=12>
+                        <div class="specification-header">
+                            <h1 class="slds-text-heading_large">
+                                Submit Credit App 
+                            </h1>
+                            <p class="contentMargin">Review and Complete the information below to submit a Credit Application.</p>
+                            <p class="requiredField">* fields are required</p>
+                        </div>
+                    </lightning-layout-item>
+
+                </lightning-layout>
+            
+            </div>
+        </lightning-layout-item>
+
+        <lightning-layout-item size=12 class="slds-box_border tab-class topSpace" flexibility="auto">
+            <!-- <lightning-layout-item size=12 class="tab-class topSpace"> -->
+                <!-- <div> -->
+                    <lightning-layout multiple-rows=true class="no-padding" horizontal-align="spread" vertical-align="start">
+
+                        <!--Editable Sections-->
+                        <div if:false={renderSummary} style="width: 100%;">
+                            <lightning-layout-item size=12 padding="medium" flexibility="auto">
+                                <lightning-accordion allow-multiple-sections-open
+                                    onsectiontoggle={handleSectionToggle}
+                                    class="slds-border_top slds-m-top_small"
+                                    active-section-name={activeSections}>
+
+                                    <!--Customer Information-->
+                                    <lightning-accordion-section name="Customer Information" label="Customer Information">
+                                        <!--<template if:true={customerTrue}>-->
+                                        <!-- onhidecustominformation={customerInfoSectionHide} -->
+                                        <!-- <c-customer-quick-search record-id={oppId} search-hide="Not"></c-customer-quick-search> -->
+                                        <template if:true={refreshCustomerQuickSearch}> 
+                                            <c-customer-quick-search onupdatecomplete={handleCreditAppRedirect}
+                                                                        oncustomerinfoshow={handleCustomerInfoShow} 
+                                                                        record-id={oppId}>
+                                            </c-customer-quick-search>
+                                        </template>
+                                        <template if:false={refreshCustomerQuickSearch}>
+                                            <p>Refreshing Customer...</p>
+                                        </template>
+                                    </lightning-accordion-section>
+
+                                    <!-- Program Details -->
+                                    <lightning-accordion-section name="Program Information" label="Program Information">
+                                        <lightning-layout multiple-rows="true">
+                                            <lightning-layout-item size="12" padding="around-small" class="layoutItemWithSpinner" flexibility="auto">
+                                                <lightning-combobox name="location" label="Location" required=true value={selectedLocation}
+                                                    class="locationComboboxWidth" options={siteList} disabled="true">
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size="12" padding="around-small" class="layoutItemWithSpinner" flexibility="auto">
+                                                <template if:true={loadingPrograms}>
+                                                    <div class="spinnerContainer">
+                                                        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                                                        <div class="loadingTextContainer">
+                                                            {loadingText}
+                                                        </div>    
+                                                    </div>
+                                                </template>
+
+                                                <lightning-combobox name="program" label="Program" required=true dropdown-alignment="auto" 
+                                                    value={selectedProgramId}
+                                                    disabled={disableProgramSelection} options={programPicklist}
+                                                    onchange={handleProgramChange}>
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+
+                                        </lightning-layout>
+
+                                    </lightning-accordion-section>
+
+                                    
+                                    <!-- Finance section -->
+                                    <lightning-accordion-section name="Financing Structure" label="Financing Structure">
+
+                                        <lightning-layout multiple-rows="true">
+
+                                            <lightning-layout-item size="12" padding="around-small" class="layoutItemWithSpinner" flexibility="auto">
+                                                <template if:true={loadingFinanceTypes}>
+                                                    <div class="spinnerContainer">
+                                                        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                                                        <div class="loadingTextContainer">
+                                                            {loadingText}
+                                                        </div>    
+                                                    </div>
+                                                </template>
+                                                <lightning-combobox name="financeType"
+                                                    label="Finance Type" value={selectedFinanceTypeId}
+                                                    options={financeTypePicklist}
+                                                    disabled={missingProgramSelection}
+                                                    onchange={handleFinanceTypeChange}
+                                                    field-level-help="The header (see above) needs to be filled out to make a Lease Type selection."
+                                                    required>
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item size="12" padding="around-small" class="layoutItemWithSpinner" flexibility="auto">
+                                                <template if:true={loadingFinancialProducts}>
+                                                    <div class="spinnerContainer">
+                                                        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                                                        <div class="loadingTextContainer">
+                                                            {loadingText}
+                                                        </div>    
+                                                    </div>
+                                                </template>
+
+                                                <lightning-combobox name="products" 
+                                                    label="Financial Product" 
+                                                    required=true value={selectedProductId}
+                                                    disabled={missingFinanceTypeSelection} 
+                                                    options={financialProductsPicklist}
+                                                    onchange={handleFinancialProductChange}>
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+                        
+
+                                            <lightning-layout-item size="6" padding="around-small" class="layoutItemWithSpinner" flexibility="auto">
+                                                <template if:true={loadingPaymentFrequencies}>
+                                                    <div class="spinnerContainer">
+                                                        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                                                        <div class="loadingTextContainer">
+                                                            {loadingText}
+                                                        </div>    
+                                                    </div>
+                                                </template>
+
+                                        
+                                                <lightning-combobox name="paymentFrequency" disabled={missingProductSelection}
+                                                    label="Payment Frequency" value={selectedPaymentFrequencyId}
+                                                    options={frequencyPicklist} onchange={handlePaymentFrequencyChange}
+                                                    field-level-help="" required>
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+
+                                            <lightning-layout-item size="6" padding="around-small" class="layoutItemWithSpinner" flexibility="auto">
+                                            
+                                                <template if:true={loadingFinanceTerms}>
+                                                    <div class="spinnerContainer">
+                                                        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                                                        <div class="loadingTextContainer">
+                                                            {loadingText}
+                                                        </div>    
+                                                    </div>
+                                                </template>
+                                                <lightning-input 
+                                                    type="number" 
+                                                    required=true
+                                                    disabled={missingPaymentFrequencySelection}
+                                                    label={financeTermLabel} 
+                                                    value={inputFinanceTerm} 
+                                                    onchange={handleFinanceTermChange}
+                                                    min={financeTermMin} 
+                                                    max={financeTermMax} 
+                                                    step="1"
+                                                    field-level-help="Number of Months of the Financing being Requested"
+                                                    >
+                                                </lightning-input>
+
+                                            </lightning-layout-item>
+
+                                            <lightning-layout-item size="6" padding="around-small" class="layoutItemWithSpinner" flexibility="auto">
+                                                <lightning-input 
+                                                    type="number" 
+                                                    disabled={missingPaymentFrequencySelection}
+                                                    label={formattedPaymentAmountLabel} 
+                                                    value={inputPaymentAmount} 
+                                                    onchange={handlePaymentAmountChange}
+                                                    formatter="currency" 
+                                                    step="0.01"
+                                                    field-level-help="Amount of the desired monthly payment amount. If provided, MOSAIC will use this payment amount and calculate a yield using this paymnent value, and the provided terms, even if the yield calculates to a negative number.">
+                                                </lightning-input>
+
+                                            </lightning-layout-item>
+                                            
+
+                                            <lightning-layout-item size="6" padding="around-small" class="layoutItemWithSpinner" flexibility="auto">
+                                                <lightning-combobox name="assetTypeQuote" label="Asset Condition" required=true
+                                                    value='New' disabled=true options={assetConditionPicklist}
+                                                    onchange={handleAssetTypeChange}>
+                                                </lightning-combobox>
+                                            </lightning-layout-item>
+
+
+                                        </lightning-layout>
+                                        
+                                    </lightning-accordion-section> 
+
+                                    <!-- <template if:true={renderAssets}> -->
+                                        <template if:true={renderAssets}>
+                                            <lightning-accordion-section name="Assets" label="Assets">
+                                                <lightning-accordion allow-multiple-sections-open
+                                                                    onsectiontoggle={handleAssetSectionToggle}
+                                                                    class="slds-border_top slds-m-top_small"
+                                                                    active-section-name={activeAssetSections}>
+            
+                                                                <template for:each={assets} for:item="assetItem">
+                                                        <lightning-accordion-section name={assetItem.sectionName} label={assetItem.assetHeading} key={assetItem.assetNo}>
+                                                            <template if:false={assetItem.isFirst}>
+                                                                <lightning-button slot="actions" 
+                                                                    value={assetItem.assetNo} 
+                                                                    icon-name="utility:delete"    
+                                                                    icon-position="right"
+                                                                    alternative-text="Delete"   
+                                                                    variant="destructive-text"
+                                                                    class="slds-p-left_small slds-p-right_xx-small" 
+                                                                    title="Delete" 
+                                                                    label="Remove"
+                                                                    onclick={handleRemoveAsset}>
+                                                                </lightning-button>
+                                                            </template>
+
+                                                            <c-asset-creation-base 
+                                                                asset={assetItem} 
+                                                                program-id={selectedProgramId}
+                                                                make-picklist={makePicklist}
+                                                                quote-object={quoteObject}
+                                                                onupdateasset={handleUpdateAsset}>
+                                                            </c-asset-creation-base>
+                                                        </lightning-accordion-section>
+                                                    </template>
+                                                </lightning-accordion>
+
+                                                <button
+                                                    class="slds-button slds-button_neutral slds-button_stretch" 
+                                                    onclick={handleAddAsset}>
+                                                    Add Asset +
+                                                </button>
+
+                                            </lightning-accordion-section>
+
+                                        </template>
+                                    <!-- </template> -->
+                                </lightning-accordion>
+
+                            </lightning-layout-item>
+                        </div>
+                        <!--Summary Section-->
+                        <div if:true={renderSummary} style="width: 100%;">
+                            <lightning-layout-item size="12" class="summarySection" flexibility="auto">
+                                <div class="summary slds-p-around_medium">
+                                    <lightning-layout multiple-rows=true>
+                                        <lightning-layout-item class="labelpadding" size=12>
+                                            <h1 class="slds-text-heading_large">
+                                                Summary:
+                                            </h1>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="labelpadding" size="6">
+                                            <span>End User</span>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item class="labelpadding" size="6">
+                                            <span>{endUserAccountName}</span>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="labelpadding" size="6">
+                                            <span>Financed Amount</span>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item class="labelpadding" size="6">
+                                            <lightning-formatted-number 
+                                                class="currencyNumber"
+                                                maximum-fraction-digits="2" 
+                                                format-style="currency" 
+                                                currency-code="USD" 
+                                                value={totalPrice}>
+                                            </lightning-formatted-number>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="labelpadding" size="6">
+                                            <span>Term (x mo.)</span>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item class="labelpadding" size="6">
+                                            <span>{inputFinanceTerm}</span>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="labelpadding" size="6">
+                                            <span>Lease Type</span>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item class="labelpadding" size="6">
+                                            <span>{selectedFinanceTypeName}</span>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="labelpadding" size="6">
+                                            <span>Payment Frequency</span>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item class="labelpadding" size="6">
+                                            <span>{selectedPaymentFrequencyId}</span>
+                                        </lightning-layout-item>
+
+                                        <template if:true={inputPaymentAmountExists}>
+
+                                            <lightning-layout-item class="labelpadding" size="6">
+                                                <span>{formattedPaymentAmountLabel}</span>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item class="labelpadding" size="6">
+                                                <lightning-formatted-number 
+                                                    class="currencyNumber"
+                                                    maximum-fraction-digits="2" 
+                                                    format-style="currency" 
+                                                    currency-code="USD" 
+                                                    value={inputPaymentAmount}>
+                                                </lightning-formatted-number>
+                                            </lightning-layout-item>
+
+                                            <!-- <lightning-layout-item class="labelpadding" size="6">
+                                                <span>Calculated Interest Rate</span>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item class="labelpadding" size="6">
+                                                <lightning-formatted-number 
+                                                    class={interestRateStyleClass}
+                                                    format-style="percent"
+                                                    minimum-fraction-digits="2"
+                                                    maximum-fraction-digits="4"
+                                                    value={calculatedInterestRate}>
+                                                </lightning-formatted-number>
+                                            </lightning-layout-item> -->
+
+                                            <lightning-layout-item class="labelpadding" size="6">
+                                                <span>Total of Payments</span>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item class="labelpadding" size="6">
+                                                <lightning-formatted-number 
+                                                    class="currencyNumber"
+                                                    maximum-fraction-digits="2" 
+                                                    format-style="currency" 
+                                                    currency-code="USD" 
+                                                    value={totalPaymentAmount}>
+                                                </lightning-formatted-number>
+                                            </lightning-layout-item>
+                                            
+                                        </template>
+
+                                    </lightning-layout>
+                                </div>
+                            </lightning-layout-item>
+                        </div>
+
+                    </lightning-layout>
+                <!-- </div> -->
+            <!-- </lightning-layout-item> -->
+        </lightning-layout-item>
+
+    </lightning-layout>
+
+    <footer class="slds-modal__footer" style="position:absolute;width:100%;">
+        <div if:true={renderSummary} style="width:100%;">
+            <lightning-layout multiple-rows=false horizontal-align="spread">
+                <lightning-layout-item size="1" padding="horizontal-small">
+                    <lightning-button variant="brand-outline" label="Back" icon-name="utility:back" onclick={handleHideSummary}></lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item size="4" padding="horizontal-small">
+                    <lightning-button variant="success" 
+                        label="Submit" 
+                        icon-name="utility:send" 
+                        icon-position="right" 
+                        disabled={disableSubmitButton} 
+                        onclick={handleSaveAndSubmit}>
+                    </lightning-button>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+        <div if:false={renderSummary} style="width:100%;">
+            <lightning-layout multiple-rows=false horizontal-align="spread">
+                <lightning-layout-item size="1" padding="horizontal-small">
+                    <lightning-button onclick={openModal} label="Cancel">
+                    </lightning-button>
+                </lightning-layout-item>    
+                <lightning-layout-item size="4" padding="horizontal-small">
+                    <lightning-button variant="brand" 
+                    label="Review / Submit" 
+                    icon-name="utility:asset_audit" 
+                    icon-position="right" 
+                    onclick={handleRenderSummary}
+                    disabled={disableReviewButton}></lightning-button>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </footer>
+
+</template>

@@ -68,8 +68,8 @@
                 <div class="slds-box" style="height: 500px;">
                     <lightning-datatable key-field="Id" data={portfoliolist} columns={columns}
                         hide-checkbox-column="true" enable-infinite-loading={isLoading} onloadmore={loadMoreData}
-                        sorted-by={orderByField} column-widths-mode="auto" sorted-direction={orderByDirection} onsort={updateColumnSorting}
-                        load-more-offest="20">
+                        sorted-by={orderByField}  sorted-direction={orderByDirection} onsort={updateColumnSorting}
+                        load-more-offest="20" min-column-width="90">
                     </lightning-datatable>
                     {loadMoreStatus}
                 </div>

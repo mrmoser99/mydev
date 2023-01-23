@@ -1,0 +1,116 @@
+{
+  "data": {
+    "name": "120 Day Deferred",
+    "id": "1.NA.PI.0000105570-0001.1604.1360.3080",
+    "purchaseOptions": [
+      "dollar-out"
+    ],
+    "modifiedDate": "2022-12-12T21:10:37.767Z",
+    "duration": {
+      "numberOfmonths": {
+        "values": [
+          {
+            "inputs": {
+              "paymentFrequency": "annually"
+            },
+            "minimum": 6,
+            "maximum": 72
+          },
+          {
+            "inputs": {
+              "paymentFrequency": "monthly"
+            },
+            "minimum": 6,
+            "maximum": 72
+          },
+          {
+            "inputs": {
+              "paymentFrequency": "quarterly"
+            },
+            "minimum": 6,
+            "maximum": 72
+          },
+          {
+            "inputs": {
+              "paymentFrequency": "semi-annually"
+            },
+            "minimum": 6,
+            "maximum": 72
+          }
+        ]
+      }
+    },
+    "finance": {
+      "financeAmount": {
+        "minimum": 1000,
+        "maximum": 500000
+      },
+      "rateFactors": {
+        "nominalRate": {
+          "name": "One Dollar Buyout- 1NA00- 120 Day Deferred",
+          "interpolation": "interpolate",
+          "percentages": [
+            {
+              "inputs": {
+                "assetBrandNames": [],
+                "assetModelNames": [],
+                "assetConditions": [],
+                "paymentFrequency": "monthly",
+                "paymentTiming": "in-arrears",
+                "purchaseOption": "dollar-out",
+                "initialDelay": 4,
+                "initialPaymentMultiplier": 0,
+                "securityDepositMultiplier": 0,
+                "numberOfMonths": 64,
+                "financeAmount": 500000
+              },
+              "outputs": {
+                "default": 0.0186
+              }
+            },
+            {
+              "inputs": {
+                "assetBrandNames": [],
+                "assetModelNames": [],
+                "assetConditions": [],
+                "paymentFrequency": "monthly",
+                "paymentTiming": "in-arrears",
+                "purchaseOption": "dollar-out",
+                "initialDelay": 4,
+                "initialPaymentMultiplier": 0,
+                "securityDepositMultiplier": 0,
+                "numberOfMonths": 52,
+                "financeAmount": 500000
+              },
+              "outputs": {
+                "default": 0.0228
+              }
+            },
+            {
+              "inputs": {
+                "assetBrandNames": [],
+                "assetModelNames": [],
+                "assetConditions": [],
+                "paymentFrequency": "monthly",
+                "paymentTiming": "in-arrears",
+                "purchaseOption": "dollar-out",
+                "initialDelay": 4,
+                "initialPaymentMultiplier": 0,
+                "securityDepositMultiplier": 0,
+                "numberOfMonths": 40,
+                "financeAmount": 500000
+              },
+              "outputs": {
+                "default": 0.0297
+              }
+            }
+          ]
+        }
+      }
+    },
+    "subsidies": {
+      "manufacturer": [],
+      "dealer": []
+    }
+  }
+}

@@ -23,6 +23,7 @@ public class ContractTriggerHelper{
         statusChange(oldContractMap, newContractMap);
     }
 
+
     public static void setInitialValues(List<Contract> contracts){
         for(Contract c : contracts){
             if(String.isBlank(c.Source_System__c)){

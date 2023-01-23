@@ -20,33 +20,33 @@ const columns = [
         typeAttributes: {label: { fieldName: 'contractNumber' },
             target: '_self'}
     },
-    { label: 'Customer Name', fieldName: 'endUserURL', sortable: true,
+    { label: 'Customer Name', initialWidth: 340, fieldName: 'endUserURL', sortable: true,
         type: 'url',
         typeAttributes: {label: { fieldName: 'customerName' },
             target: '_self'}
     },
-    { label: 'Sales Rep', fieldName: 'salesRep'},
-    { label: 'Finance Type', fieldName: 'financeType', sortable: true},
+    { label: 'Sales Rep', initialWidth: 100, fieldName: 'salesRep'},
+    { label: 'Finance Type', initialWidth: 80, fieldName: 'financeType', sortable: true},
 //    { label: 'Serial(s)', fieldName: 'serials'},
 //    { label: 'Make(s)', fieldName: 'makes' },
-    { label: 'Term', fieldName: 'term', sortable: true},
-    { label: 'Payments Remaining', fieldName: 'remainPay', sortable: true },
-    { label: 'Health', fieldName: 'health', sortable: true },
-    { label: 'Status', fieldName: 'status', sortable: true  }
+    { label: 'Term', initialWidth: 80, fieldName: 'term', sortable: true},
+    { label: 'Payments Remaining', initialWidth: 80, fieldName: 'remainPay', sortable: true },
+    { label: 'Health', initialWidth: 100, fieldName: 'health', sortable: true },
+    { label: 'Status', fieldName: 'status', sortable: true, fixedWidth: 120  }
     
 ];
 
 const columns2 = [
-    { label: 'Contract', fieldName: 'contractNumber', wrapText:false, /*initialWidth: 200,*/ sortable: true},
-    { label: 'Customer Name', fieldName: 'customerName', /*initialWidth: 200,*/ sortable: true },
-    { label: 'Sales Rep', fieldName: 'salesRep', /*initialWidth: 200,*/ sortable: true },
-    { label: 'Finance Type', fieldName: 'financeType',  /*initialWidth: 110,*/ sortable: true},
+    { label: 'Contract', fieldName: 'contractNumber', wrapText:false,  sortable: true},
+    { label: 'Customer Name', fieldName: 'customerName', sortable: true },
+    { label: 'Sales Rep', fieldName: 'salesRep', sortable: true },
+    { label: 'Finance Type', fieldName: 'financeType', sortable: true},
 //    { label: 'Serial(s)', fieldName: 'serials', /*initialWidth: 150,*/ sortable: true},
 //    { label: 'Make(s)', fieldName: 'makes',  /*initialWidth: 150,*/ sortable: true  },
-    { label: 'Term', fieldName: 'term', /*initialWidth: 100,*/ sortable: true},
-    { label: 'Payments Remaining', fieldName: 'remainPay', /*initialWidth: 100,*/ sortable: true  },
-    { label: 'Health', fieldName: 'health', /*initialWidth: 100,*/ sortable: true },
-    { label: 'Status', fieldName: 'status', /*initialWidth: 120,*/ sortable: true }
+    { label: 'Term', fieldName: 'term', sortable: true},
+    { label: 'Payments Remaining', fieldName: 'remainPay', sortable: true  },
+    { label: 'Health', fieldName: 'health', sortable: true },
+    { label: 'Status', fieldName: 'status', sortable: true }
     
 ];
 

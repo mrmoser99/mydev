@@ -30,14 +30,17 @@ public static String SearchContractDocs(String contractNumber){
     String jsonString;
     Boolean error=false;
 	String ErrorMsg = null;
+    system.debug('DDTcontractNumber :'+contractNumber);
     List<JSONSearchDocResults.DocumentInfo> documentsResult = new List<JSONSearchDocResults.DocumentInfo>();
     try{
+        
+        Contract__c appnumber = [select id,name from Contract__c where id = :contractNumber];
         JSONSearchDoc sDoc = new JSONSearchDoc();
         JSONSearchDoc.SearchParameters dparams = new JSONSearchDoc.SearchParameters();
         JSONSearchDoc.SearchParameter dparam = new JSONSearchDoc.SearchParameter();
         dparam.name = 'Contract Number';
         dparam.operator = '=';
-        dparam.value = contractNumber;
+        dparam.value = appnumber.name;
     	dparams.searchParameter = new List<JSONSearchDoc.SearchParameter>();
         dparams.searchParameter.add(dparam);
         JSONSearchDoc.SearchDocuments searchDoc = new JSONSearchDoc.SearchDocuments();
@@ -47,7 +50,7 @@ public static String SearchContractDocs(String contractNumber){
         sDoc.searchDocuments = searchDoc;
         PartnerPortal__mdt pp = PricingUtils.getPartnerPortalSettings();
 
-        endpoint = 'https://msc-apm-wcrm-' + pp.Azure_Api_Environment__c + '.azure-api.net/earchivemock/api/v1/searchdoc';
+        endpoint = 'https://msc-apm-wcrm-' + pp.Azure_Api_Environment__c + '.azure-api.net/earchive/api/v1/searchdoc';
         HttpRequest reqAPI = new HttpRequest();
         if (!Test.isRunningTest()){
             reqAPI = PricingUtils.buildHttpRequest(endpoint);
@@ -98,6 +101,7 @@ public static String SearchContractDocs(String contractNumber){
     }
     else{
         system.debug('DDT documentsResult :'+documentsResult);
+        system.debug('DDT documentsResult serialize:'+JSON.serialize(documentsResult));
 		return JSON.serialize(documentsResult); 
     }	
 }
@@ -119,23 +123,28 @@ public static void saveErrorLog(String e) {
  * @return   return programList
  *****************************************************************************************************************************************************/
 @AuraEnabled (Cacheable=true)
-public static String GetDocument(String dinNumber){
+public static String GetDocument(String dinNumber,String timeStamp){
 	HttpResponse res1;
 	String endpoint;
     String jsonString;
     Boolean error=false;
 	String ErrorMsg = null;
+    system.debug('DIN Number Actual:'+dinNumber+timeStamp);
+    //system.debug('DIN Number :'+dinNumber.mid(1,dinNumber.length()-2));
     JSONGetDocumentResult.GetDocumentResult getdocResult = new JSONGetDocumentResult.GetDocumentResult();
     try{
         JSONGetDocument getDocParam = new JSONGetDocument();
         JSONGetDocument.GetDocument getDocVar = new JSONGetDocument.GetDocument();
-        getDocVar.din = dinNumber;
+        getDocVar.din = dinNumber.mid(1,dinNumber.length()-2);
+        //getDocVar.din = dinNumber;
+        system.debug('DIN Number Actual:'+dinNumber);
         getDocVar.maxObjSize = 2147483646;
         //getDocVar.timeStamp=long.valueOf(datetime.now().format('ddMMyyhhmm'));
-        getDocVar.timeStamp=Long.valueOf('1609765803884');
+        //getDocVar.timeStamp=Long.valueOf('1609765803884');
+        getDocVar.timeStamp = Long.valueOf(timeStamp.mid(1,timeStamp.length()-2));
         getDocParam.getDocument = getDocVar; 
         PartnerPortal__mdt pp = PricingUtils.getPartnerPortalSettings();
-        endpoint = 'https://msc-apm-wcrm-' + pp.Azure_Api_Environment__c + '.azure-api.net/earchivemock/api/v1/getdoc';
+        endpoint = 'https://msc-apm-wcrm-' + pp.Azure_Api_Environment__c + '.azure-api.net/earchive/api/v1/getdoc';
         HttpRequest reqAPI = new HttpRequest();
         if (!Test.isRunningTest()){
             reqAPI = PricingUtils.buildHttpRequest(endpoint);

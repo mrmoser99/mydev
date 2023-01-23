@@ -1,4 +1,7 @@
 import {LightningElement,track, wire,api} from 'lwc';
+
+import {checkPermission} from 'c/dodJSUtility';
+
 import getQuotes from '@salesforce/apex/QuoteListView.getQuotes';
 import getQuotesNum from '@salesforce/apex/QuoteListView.getQuotesNum';
 import deleteOpp from '@salesforce/apex/QuoteListView.deleteOpp';
@@ -17,6 +20,7 @@ const actions = [{
     label: 'Edit',
     name: 'edit'
 }];
+
 
 const columns = [{
         label: 'Quote Number',
@@ -89,7 +93,8 @@ const columns = [{
         label: 'Status',
         fieldName: 'substage',
         type: 'text',
-        sortable: true
+        sortable: true,
+        fixedWidth: 150
     },
     {
         label: '',
@@ -106,6 +111,9 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
     @track quotes = [];
     @track totalNumberOfRows;
     @track loader = false;
+
+    //Button/Link Permissions
+    NQ01 = true;
 
     //Declare properties
     error;
@@ -172,9 +180,19 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
         this.dispatchEvent(event);
     }
 
+    //method to check if the permission is true or false; this drives display of the button or link
+    async setPermissions() {
+
+        //this.NQ01 = await checkPermission('DOD_NQ01_NEWQUOTE');  
+        //alert('DDT') ; 
+        //alert(this.NQ01);
+    }
+
     //calling connectedCallback
     connectedCallback() {
 
+        this.setPermissions();
+        
         let thisYearNum = new Date().getFullYear();
         let thisYear = thisYearNum.toString();
         let lastYearNum = thisYear - 1;

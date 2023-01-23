@@ -1,0 +1,1127 @@
+{
+  "data": [
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000701",
+      "name": " 20 tons",
+      "masterType": "Transport",
+      "category": "Truck Chassis"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000704",
+      "name": " 20 tons",
+      "masterType": "Transport",
+      "category": "Truck Tractor"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000221",
+      "name": " 7 ton",
+      "masterType": "Construction",
+      "category": "Excavator"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000712",
+      "name": " Coaches",
+      "masterType": "Transport",
+      "category": " Coaches"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000122",
+      "name": " Forage",
+      "masterType": "Agri",
+      "category": " Forage"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000604",
+      "name": " Quality Control",
+      "masterType": "Manufacturing",
+      "category": "Other Manufacturing"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000616",
+      "name": "3-Wheel Sit Down",
+      "masterType": "Materials Handling",
+      "category": "Class I - Counterbalance Elect"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000617",
+      "name": "3-Wheel Stand Up",
+      "masterType": "Materials Handling",
+      "category": "Class I - Counterbalance Elect"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000618",
+      "name": "4-Wheel Sit Down",
+      "masterType": "Materials Handling",
+      "category": "Class I - Counterbalance Elect"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000088",
+      "name": "Aerator - Golf",
+      "masterType": "Agri",
+      "category": " Turf"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000554",
+      "name": "Alarm/Security Equipment",
+      "masterType": "Inventory",
+      "category": " Shop inventory"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000184",
+      "name": "All Terrain Crane - Registered",
+      "masterType": "Construction",
+      "category": "Cranes"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000930",
+      "name": "Ambulances",
+      "masterType": "Healthcare",
+      "category": "Infrastructure"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000547",
+      "name": "Application Software",
+      "masterType": "ICT",
+      "category": "Software"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000217",
+      "name": "Articulated Dump Truck",
+      "masterType": "Construction",
+      "category": "Off - Highway Trucks"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000157",
+      "name": "Articulating Booms",
+      "masterType": "Construction",
+      "category": "Aerial Work Platforms"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000165",
+      "name": "Asphalt Paver",
+      "masterType": "Construction",
+      "category": "Asphalt / Paving Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000231",
+      "name": "Backhoe Loader",
+      "masterType": "Construction",
+      "category": "Loaders"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000648",
+      "name": "Batteries",
+      "masterType": "Materials Handling",
+      "category": "Forklift Accessories"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000235",
+      "name": "Brush Chippers",
+      "masterType": "Construction",
+      "category": "Scrap / Recycling Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000251",
+      "name": "Buckets and hydraulic attach.",
+      "masterType": "Construction",
+      "category": "Other Construction"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000409",
+      "name": "Cardio / Angio x-ray",
+      "masterType": "Healthcare",
+      "category": "Imaging Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000649",
+      "name": "Chargers",
+      "masterType": "Materials Handling",
+      "category": "Forklift Accessories"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000436",
+      "name": "Chromatography",
+      "masterType": "Healthcare",
+      "category": "Diagnostics - Lab/Life Science"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000433",
+      "name": "Clinical Chemistry",
+      "masterType": "Healthcare",
+      "category": "Diagnostics - Lab/Life Science"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000668",
+      "name": "Color Multifunctionals",
+      "masterType": "Office Equipment",
+      "category": "Multifunctionals"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000671",
+      "name": "Color Printer",
+      "masterType": "Office Equipment",
+      "category": "Printers"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000028",
+      "name": "Combine: Corn/Grain Head",
+      "masterType": "Agri",
+      "category": "Harvesting Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000713",
+      "name": "Commercial van",
+      "masterType": "Transport",
+      "category": "Commercial Vans"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000238",
+      "name": "Compost Turners",
+      "masterType": "Construction",
+      "category": "Scrap / Recycling Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000177",
+      "name": "Concrete Batch Plants",
+      "masterType": "Construction",
+      "category": "Concrete Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000179",
+      "name": "Concrete Slip Form Paver",
+      "masterType": "Construction",
+      "category": "Concrete Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000992",
+      "name": "Container Handler",
+      "masterType": "Materials Handling",
+      "category": "Class V - Pneumatic Tire ICE"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000206",
+      "name": "Conveyors",
+      "masterType": "Construction",
+      "category": "Aggregate"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000186",
+      "name": "Crawler Crane",
+      "masterType": "Construction",
+      "category": "Cranes"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000225",
+      "name": "Crawler Dozer",
+      "masterType": "Construction",
+      "category": "Dozer"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000636",
+      "name": "Cushion Forklift",
+      "masterType": "Materials Handling",
+      "category": "Class IV - Cushion Tire ICE"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000569",
+      "name": "Cutting Machine",
+      "masterType": "Manufacturing",
+      "category": "Machine Tools"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000452",
+      "name": "Defibrillators",
+      "masterType": "Healthcare",
+      "category": "Monitoring"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000262",
+      "name": "Delimber",
+      "masterType": "Construction",
+      "category": "Forestry"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000637",
+      "name": "Diesel Pneumatic Forklift",
+      "masterType": "Materials Handling",
+      "category": "Class V - Pneumatic Tire ICE"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000640",
+      "name": "Diesel Sideloader",
+      "masterType": "Materials Handling",
+      "category": "Class V - Pneumatic Tire ICE"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000119",
+      "name": "Disc Mower",
+      "masterType": "Agri",
+      "category": " Forage"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000437",
+      "name": "DNA Sequencer",
+      "masterType": "Healthcare",
+      "category": "Diagnostics - Lab/Life Science"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000623",
+      "name": "Double Reach Truck",
+      "masterType": "Materials Handling",
+      "category": "Class II - Narrow Aisle"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000752",
+      "name": "Dryfreight Semi-trailers",
+      "masterType": "Transport",
+      "category": "Semi-trailers"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000453",
+      "name": "EEG / ECG",
+      "masterType": "Healthcare",
+      "category": "Monitoring"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000625",
+      "name": "Electric Sideloader",
+      "masterType": "Materials Handling",
+      "category": "Class II - Narrow Aisle"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000472",
+      "name": "Endoscopy",
+      "masterType": "Healthcare",
+      "category": "Surgical Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000263",
+      "name": "Feller Buncher",
+      "masterType": "Construction",
+      "category": "Forestry"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000777",
+      "name": "Fire Truck",
+      "masterType": "Transport",
+      "category": "Truck Body"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000753",
+      "name": "Flatbed Semi-trailers",
+      "masterType": "Transport",
+      "category": "Semi-trailers"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000650",
+      "name": "Forklift Attachments",
+      "masterType": "Materials Handling",
+      "category": "Forklift Accessories"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000624",
+      "name": "Four Directional Vehicle",
+      "masterType": "Materials Handling",
+      "category": "Class II - Narrow Aisle"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000144",
+      "name": "Gas",
+      "masterType": "Cars",
+      "category": "Personal vehicles"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000099",
+      "name": "Golf Car - Electric",
+      "masterType": "Agri",
+      "category": " Turf"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000100",
+      "name": "Golf Car - Gas",
+      "masterType": "Agri",
+      "category": " Turf"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000082",
+      "name": "Grain Trailer/Transport",
+      "masterType": "Agri",
+      "category": "Implements"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000571",
+      "name": "Grinding Machine",
+      "masterType": "Manufacturing",
+      "category": "Machine Tools"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000214",
+      "name": "Horizontal Directional Drills",
+      "masterType": "Construction",
+      "category": "Drills"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000237",
+      "name": "Horizontal Grinders",
+      "masterType": "Construction",
+      "category": "Scrap / Recycling Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000572",
+      "name": "Horizontal Machine",
+      "masterType": "Manufacturing",
+      "category": "Machine Tools"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000434",
+      "name": "Immunoassay",
+      "masterType": "Healthcare",
+      "category": "Diagnostics - Lab/Life Science"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000802",
+      "name": "Industrial 3D Printer",
+      "masterType": "Manufacturing",
+      "category": "Other Manufacturing"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000337",
+      "name": "Injection Molding Machine",
+      "masterType": "Food",
+      "category": "Food Packaging Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000591",
+      "name": "Label Printer",
+      "masterType": "Manufacturing",
+      "category": "Packaging - Manufacturing"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000643",
+      "name": "Laden Reach Stacker",
+      "masterType": "Materials Handling",
+      "category": "Class V - Pneumatic Tire ICE"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000574",
+      "name": "Lathe / Turning",
+      "masterType": "Manufacturing",
+      "category": "Machine Tools"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000264",
+      "name": "Log Loader",
+      "masterType": "Construction",
+      "category": "Forestry"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000620",
+      "name": "Low Level Order Picker",
+      "masterType": "Materials Handling",
+      "category": "Class II - Narrow Aisle"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000639",
+      "name": "LPG Pneumatic Forklift",
+      "masterType": "Materials Handling",
+      "category": "Class V - Pneumatic Tire ICE"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000626",
+      "name": "LPG Sideloader",
+      "masterType": "Materials Handling",
+      "category": "Class II - Narrow Aisle"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000910",
+      "name": "Mail Systems",
+      "masterType": "Office Equipment",
+      "category": "Mail Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000439",
+      "name": "Mass spectrometers",
+      "masterType": "Healthcare",
+      "category": "Diagnostics - Lab/Life Science"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000194",
+      "name": "Mobile Cone Crusher",
+      "masterType": "Construction",
+      "category": "Aggregate"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000207",
+      "name": "Mobile Dry Screening Plant",
+      "masterType": "Construction",
+      "category": "Aggregate"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000202",
+      "name": "Mobile Jaw Crusher",
+      "masterType": "Construction",
+      "category": "Aggregate"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000244",
+      "name": "Motor Graders",
+      "masterType": "Construction",
+      "category": " Graders"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000406",
+      "name": "MRI",
+      "masterType": "Healthcare",
+      "category": "Imaging Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000811",
+      "name": "Notebooks",
+      "masterType": "ICT",
+      "category": "Computing"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000985",
+      "name": "Order Picker",
+      "masterType": "Materials Handling",
+      "category": "Class II - Narrow Aisle"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000164",
+      "name": "Other Aerial Work Platforms",
+      "masterType": "Construction",
+      "category": "Aerial Work Platforms"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000213",
+      "name": "Other Aggregate Equipment",
+      "masterType": "Construction",
+      "category": "Aggregate"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000168",
+      "name": "Other Asphalt / Paving",
+      "masterType": "Construction",
+      "category": "Asphalt / Paving Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000627",
+      "name": "Other Class II - Narrow Aisle",
+      "masterType": "Materials Handling",
+      "category": "Class II - Narrow Aisle"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000635",
+      "name": "Other Class III",
+      "masterType": "Materials Handling",
+      "category": "Class III - Powered Walk Behin"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000176",
+      "name": "Other Compaction Equipment",
+      "masterType": "Construction",
+      "category": "Compaction Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000253",
+      "name": "Other Construction",
+      "masterType": "Construction",
+      "category": "Other Construction"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000349",
+      "name": "Other Furniture Office",
+      "masterType": "Furniture Office",
+      "category": "Furniture"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000576",
+      "name": "Other Machine Tools",
+      "masterType": "Manufacturing",
+      "category": "Machine Tools"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000611",
+      "name": "Other Manufacturing",
+      "masterType": "Manufacturing",
+      "category": "Other Manufacturing"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000657",
+      "name": "Other MH Allied equipment",
+      "masterType": "Materials Handling",
+      "category": "MH Allied equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000686",
+      "name": "Other Office Equipment",
+      "masterType": "Office Equipment",
+      "category": "Office Equipment Accessories"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000765",
+      "name": "Other Semi-trailers",
+      "masterType": "Transport",
+      "category": "Semi-trailers"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000988",
+      "name": "Pallet Truck",
+      "masterType": "Materials Handling",
+      "category": "Class III - Powered Walk Behin"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000456",
+      "name": "Patient Monitors",
+      "masterType": "Healthcare",
+      "category": "Monitoring"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000658",
+      "name": "Pedestrian Pallet Truck",
+      "masterType": "Materials Handling",
+      "category": "Non Powered"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000170",
+      "name": "Pneumatic Roller",
+      "masterType": "Construction",
+      "category": "Compaction Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000252",
+      "name": "Portable Site Lighting",
+      "masterType": "Construction",
+      "category": "Other Construction"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000487",
+      "name": "Portable Ultrasound",
+      "masterType": "Healthcare",
+      "category": "Ultrasound"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000673",
+      "name": "Production Printer",
+      "masterType": "Office Equipment",
+      "category": "Production Printer"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000250",
+      "name": "Pumps",
+      "masterType": "Construction",
+      "category": "Other Construction"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000654",
+      "name": "Racking Systems",
+      "masterType": "Materials Handling",
+      "category": "MH Allied equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000745",
+      "name": "Rail Car Movers",
+      "masterType": "Transport",
+      "category": "Rail"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000986",
+      "name": "Reach Truck",
+      "masterType": "Materials Handling",
+      "category": "Class II - Narrow Aisle"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000209",
+      "name": "Recycling Plant and Shredder",
+      "masterType": "Construction",
+      "category": "Aggregate"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000758",
+      "name": "Reefer Semi-trailers",
+      "masterType": "Transport",
+      "category": "Semi-trailers"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000773",
+      "name": "Refuse / Recycling Truck",
+      "masterType": "Transport",
+      "category": "Truck Body"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000167",
+      "name": "Road Planer",
+      "masterType": "Construction",
+      "category": "Asphalt / Paving Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000608",
+      "name": "Robotics",
+      "masterType": "Manufacturing",
+      "category": "Other Manufacturing"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000185",
+      "name": "Rough Terrain Crane",
+      "masterType": "Construction",
+      "category": "Cranes"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000233",
+      "name": "Rough Terrain Masted Forklift",
+      "masterType": "Construction",
+      "category": "Rough Terrain Forklift"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000655",
+      "name": "Runabouts / Burden Carrier",
+      "masterType": "Materials Handling",
+      "category": "MH Allied equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000932",
+      "name": "Scanner",
+      "masterType": "Office Equipment",
+      "category": "Office Equipment Accessories"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000711",
+      "name": "School Bus",
+      "masterType": "Transport",
+      "category": " Coaches"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000159",
+      "name": "Scissor Lift",
+      "masterType": "Construction",
+      "category": "Aerial Work Platforms"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000241",
+      "name": "Scrap / Material Handler",
+      "masterType": "Construction",
+      "category": "Scrap / Recycling Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000544",
+      "name": "Server Appliance",
+      "masterType": "ICT",
+      "category": "Servers"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000779",
+      "name": "Service / Mechanic Truck",
+      "masterType": "Transport",
+      "category": "Truck Body"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000631",
+      "name": "Sideways Seat Pallet Truck",
+      "masterType": "Materials Handling",
+      "category": "Class III - Powered Walk Behin"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000171",
+      "name": "Single Drum Roller Ride On",
+      "masterType": "Construction",
+      "category": "Compaction Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000622",
+      "name": "Single Reach Truck",
+      "masterType": "Materials Handling",
+      "category": "Class II - Narrow Aisle"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000255",
+      "name": "Site Dumpers",
+      "masterType": "Construction",
+      "category": "Other Construction"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000261",
+      "name": "Skidder",
+      "masterType": "Construction",
+      "category": "Forestry"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000675",
+      "name": "Software Document Production",
+      "masterType": "Office Equipment",
+      "category": "Software Document Production"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000222",
+      "name": "Standard Crawler Excavator",
+      "masterType": "Construction",
+      "category": "Excavator"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000621",
+      "name": "Standard Order Picker",
+      "masterType": "Materials Handling",
+      "category": "Class II - Narrow Aisle"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000212",
+      "name": "Stationary Washing Plant",
+      "masterType": "Construction",
+      "category": "Aggregate"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000615",
+      "name": "Straddle / Pallet",
+      "masterType": "Materials Handling",
+      "category": "AGV"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000239",
+      "name": "Stump Cutters",
+      "masterType": "Construction",
+      "category": "Scrap / Recycling Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000108",
+      "name": "Stump Grinder",
+      "masterType": "Agri",
+      "category": " Turf"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000474",
+      "name": "Surgical Instrumentation",
+      "masterType": "Healthcare",
+      "category": "Surgical Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000656",
+      "name": "Sweeper / Scrubber",
+      "masterType": "Materials Handling",
+      "category": "MH Allied equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000774",
+      "name": "Sweeping truck",
+      "masterType": "Transport",
+      "category": "Truck Body"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000172",
+      "name": "Tandem Roller Ride On",
+      "masterType": "Construction",
+      "category": "Compaction Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000760",
+      "name": "Tank Semi-trailers",
+      "masterType": "Transport",
+      "category": "Semi-trailers"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000160",
+      "name": "Telescopic Booms",
+      "masterType": "Construction",
+      "category": "Aerial Work Platforms"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000161",
+      "name": "Telescopic Handler",
+      "masterType": "Construction",
+      "category": "Aerial Work Platforms"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000705",
+      "name": "Terminal Truck",
+      "masterType": "Transport",
+      "category": "Truck Tractor"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000762",
+      "name": "Tipper / Dump Semi-trailers",
+      "masterType": "Transport",
+      "category": "Semi-trailers"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000647",
+      "name": "Tow Tractor",
+      "masterType": "Materials Handling",
+      "category": "Class VII - Tow Tractor"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000187",
+      "name": "Tower Crane",
+      "masterType": "Construction",
+      "category": "Cranes"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000228",
+      "name": "Track Skid Steer Loader",
+      "masterType": "Construction",
+      "category": "Skid Steer Loader"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000197",
+      "name": "Tracked Cone Crusher",
+      "masterType": "Construction",
+      "category": "Aggregate"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000259",
+      "name": "Tracked Harvester / Processor",
+      "masterType": "Construction",
+      "category": "Forestry"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000205",
+      "name": "Tracked Jaw Crusher",
+      "masterType": "Construction",
+      "category": "Aggregate"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000210",
+      "name": "Tracked Screening",
+      "masterType": "Construction",
+      "category": "Aggregate"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000162",
+      "name": "Trailer Mounted Boom",
+      "masterType": "Construction",
+      "category": "Aerial Work Platforms"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000173",
+      "name": "Trench Roller / Compactor",
+      "masterType": "Construction",
+      "category": "Compaction Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000247",
+      "name": "Trenchers",
+      "masterType": "Construction",
+      "category": "Trenchers / Cable Plows"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000240",
+      "name": "Trommel Screens",
+      "masterType": "Construction",
+      "category": "Scrap / Recycling Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000700",
+      "name": "Truck Chassis GVW 13-20 tons",
+      "masterType": "Transport",
+      "category": "Truck Chassis"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000699",
+      "name": "Truck Chassis GVW 7-12 tons",
+      "masterType": "Transport",
+      "category": "Truck Chassis"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000775",
+      "name": "Truck Mounted Crane",
+      "masterType": "Transport",
+      "category": "Truck Body"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000641",
+      "name": "Truck Mounted Forklift",
+      "masterType": "Materials Handling",
+      "category": "Class V - Pneumatic Tire ICE"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000236",
+      "name": "Tub Grinders",
+      "masterType": "Construction",
+      "category": "Scrap / Recycling Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000646",
+      "name": "Unladen Masted Container Handl",
+      "masterType": "Materials Handling",
+      "category": "Class V - Pneumatic Tire ICE"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000644",
+      "name": "Unladen Reach Stacker",
+      "masterType": "Materials Handling",
+      "category": "Class V - Pneumatic Tire ICE"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000257",
+      "name": "Utility Tractors",
+      "masterType": "Construction",
+      "category": "Other Construction"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000116",
+      "name": "Utility Vehicle - Electric",
+      "masterType": "Agri",
+      "category": " Turf"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000117",
+      "name": "Utility Vehicle - Gas",
+      "masterType": "Agri",
+      "category": " Turf"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000776",
+      "name": "Vacuum Tank",
+      "masterType": "Transport",
+      "category": "Truck Body"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000215",
+      "name": "Vertical Drills",
+      "masterType": "Construction",
+      "category": "Drills"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000163",
+      "name": "Vertical Lift",
+      "masterType": "Construction",
+      "category": "Aerial Work Platforms"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000573",
+      "name": "Vertical Machine",
+      "masterType": "Manufacturing",
+      "category": "Machine Tools"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000619",
+      "name": "Very Narrow Aisle Turret",
+      "masterType": "Materials Handling",
+      "category": "Class II - Narrow Aisle"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000174",
+      "name": "Vibrating Plates",
+      "masterType": "Construction",
+      "category": "Compaction Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000667",
+      "name": "W Multifunctionals",
+      "masterType": "Office Equipment",
+      "category": "Multifunctionals"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000670",
+      "name": "W Printer",
+      "masterType": "Office Equipment",
+      "category": "Printers"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000628",
+      "name": "Walkie Center Rider",
+      "masterType": "Materials Handling",
+      "category": "Class III - Powered Walk Behin"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000629",
+      "name": "Walkie End Rider",
+      "masterType": "Materials Handling",
+      "category": "Class III - Powered Walk Behin"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000630",
+      "name": "Walkie Pallet Truck",
+      "masterType": "Materials Handling",
+      "category": "Class III - Powered Walk Behin"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000632",
+      "name": "Walkie Reach Stacker",
+      "masterType": "Materials Handling",
+      "category": "Class III - Powered Walk Behin"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000633",
+      "name": "Walkie Stackers",
+      "masterType": "Materials Handling",
+      "category": "Class III - Powered Walk Behin"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000634",
+      "name": "Walkie Straddle Stacker",
+      "masterType": "Materials Handling",
+      "category": "Class III - Powered Walk Behin"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000242",
+      "name": "Waste Compacter / Baler",
+      "masterType": "Construction",
+      "category": "Scrap / Recycling Equipment"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000610",
+      "name": "Welding",
+      "masterType": "Manufacturing",
+      "category": "Other Manufacturing"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000230",
+      "name": "Wheel Loader",
+      "masterType": "Construction",
+      "category": "Loaders"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000229",
+      "name": "Wheel Skid Steer Loader",
+      "masterType": "Construction",
+      "category": "Skid Steer Loader"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000642",
+      "name": "Wheeled Container Carriers",
+      "masterType": "Materials Handling",
+      "category": "Class V - Pneumatic Tire ICE"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000224",
+      "name": "Wheeled Excavator",
+      "masterType": "Construction",
+      "category": "Excavator"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000260",
+      "name": "Wheeled Forwarder",
+      "masterType": "Construction",
+      "category": "Forestry"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000258",
+      "name": "Wheeled Harvester / Processor",
+      "masterType": "Construction",
+      "category": "Forestry"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000193",
+      "name": "Yard Crane",
+      "masterType": "Construction",
+      "category": "Cranes"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.40000265",
+      "name": "Yarder",
+      "masterType": "Construction",
+      "category": "Forestry"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pageSize": 1000,
+    "pageCount": 1,
+    "itemCount": 185,
+    "links": {
+      "self": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/asset-types?feature=Credit-Application-Documents&page=1&pageSize=1000&sort=name",
+      "first": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/asset-types?feature=Credit-Application-Documents&page=1&pageSize=1000&sort=name",
+      "next": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/asset-types?feature=Credit-Application-Documents&page=1&pageSize=1000&sort=name",
+      "prev": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/asset-types?feature=Credit-Application-Documents&page=1&pageSize=1000&sort=name",
+      "last": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/asset-types?feature=Credit-Application-Documents&page=1&pageSize=1000&sort=name"
+    }
+  }
+}

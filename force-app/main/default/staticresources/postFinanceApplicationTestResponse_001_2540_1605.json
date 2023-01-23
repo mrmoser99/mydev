@@ -1,0 +1,79 @@
+{
+  "data": {
+    "proposals": [
+      {
+        "isPreferred": true,
+        "financialProduct": {
+          "id": "1.NA.PI.0000431884-0001.2540.1605."
+        },
+        "finance": {
+          "financeAmount": 12500,
+          "numberOfMonths": 36,
+          "purchaseOption": "dollar-out",
+          "paymentFrequency": "monthly",
+          "paymentTiming": "in-arrears",
+          "initialDelay": 0,
+          "initialPaymentMultiplier": 0,
+          "securityDepositMultiplier": 0
+        },
+        "externalReferences": {
+          "pricingQuote": {
+            "url": "https://dllgroupwayne2.my.salesforce.com/0Q05G000001HVeySSS",
+            "id": "2208-95125"
+          }
+        },
+        "description": "Invacare Equipment",
+        "assets": [
+          {
+            "finance": {
+              "salePrice": 12500,
+              "residualValue": {
+                "adjustments": {
+                  "operatingHoursPerYear": "0.00"
+                }
+              },
+              "quantity": 1
+            },
+            "condition": "new",
+            "catalog": {
+              "identifiers": {
+                "structure": {
+                  "type": "Camera",
+                  "model": "100mm Master Prime",
+                  "masterType": "Office Equipment",
+                  "category": "Camera Equipment",
+                  "brand": "ARRI"
+                }
+              }
+            },
+            "id": "1.NA.MOSAIC.500-60003104.ASSETS.1"
+          }
+        ]
+      }
+    ],
+    "lessee": {
+      "universalBeneficialOwnership": [],
+      "identifiers": {
+        "tcaPartyId": "18439075"
+      },
+      "countryOfRegistration": "US",
+      "contacts": [
+        {
+          "phoneNumbers": [
+            {
+              "type": "business",
+              "number": "(513)315-1492"
+            }
+          ],
+          "name": "Dan Klingenberg",
+          "email": "dan.klingenberg@eqdepot.com"
+        }
+      ]
+    },
+    "externalReference": "John11-02-2022L",
+    "id": "1.NA.MOSAIC.500-60003104",
+    "status": "assessment",
+    "creationDate": "2022-12-16T18:25:11Z",
+    "modificationDate": ""
+  }
+}

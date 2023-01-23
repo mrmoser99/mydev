@@ -1,0 +1,132 @@
+<!--
+ - Created by Adam Tolbert on 11/29/2022.
+ -->
+
+<!-- AssetCreationBase -->
+<template>
+    <div class="exampleHolder">
+        <template if:true={loading}>
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        </template>
+        <template if:false={loading}>
+            <!-- Put loaded content here -->
+        </template>
+    </div>
+
+    <div class="assetBody">
+        <lightning-layout multiple-rows>
+            <lightning-layout-item size=6 padding="around-small" class="layoutItemWithSpinner">
+                <c-reusable-custom-dropdown-with-search 
+                    bold-label="false"
+                    error-message="Select a Make" 
+                    auto-complete-off="off" 
+                    options={makePicklist}
+                    field-required-off="false" 
+                    field-label="Make" 
+                    disabled={isMakeDisabled}
+                    placeholder="Search for a Make" 
+                    onchange={handleChangeMake}
+                    default-value={makeId}>
+                </c-reusable-custom-dropdown-with-search>
+                <!-- <lightning-combobox name="make" label="Make"
+                                    value={asset.makeId}
+                                    options={makePicklist} onchange={handleDependentChange} 
+                                    field-level-help="test" disabled={isMakeDisabled}>
+                </lightning-combobox> -->
+            </lightning-layout-item>
+            <lightning-layout-item size=6 padding="around-small" class="layoutItemWithSpinner">
+                <template if:true={loadingAssetTypes}>
+                    <div class="spinnerContainer">
+                        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                    </div>
+                </template>
+                <lightning-combobox name="assetType" label="Asset Type / ITA Class"
+                                    value={assetTypeId}
+                                    options={assetTypePicklist} 
+                                    onchange={handleChangeAssetType}
+                                    field-level-help="test" 
+                                    disabled={isAssetTypeDisabled}>
+                </lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item size=6 padding="around-small" class="layoutItemWithSpinner">
+                <template if:true={loadingModels}>
+                    <div class="spinnerContainer">
+                        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                    </div>
+                </template>
+                <lightning-combobox name="model" label="Model"
+                                    value={modelId}
+                                    options={modelPicklistFiltered} onchange={handleChangeModel}
+                                    field-level-help="test" disabled={isModelDisabled}>
+                </lightning-combobox>
+            </lightning-layout-item>
+            <!-- <lightning-layout-item size=6 padding="around-small">
+                <lightning-combobox name="mastType" label="Mast Type"
+                                    value={asset.mastType}
+                                    options={mastList} onchange={handleChange}
+                                    field-level-help="test" disabled={isRestDisabled}>
+                </lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item size=6 padding="around-small" class="layoutItemWithSpinner">
+                <lightning-combobox name="assetOperating" label="Asset Operating Environment"
+                                    value={asset.assetOperating}
+                                    options={assetOperatingList}
+                                    onchange={handleChange} field-level-help="test" disabled={isRestDisabled}>
+                </lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item size=6 padding="around-small">
+                <lightning-combobox name="annualHours" label="Annual Hours"
+                                    value={asset.annualHours}
+                                    options={annualHoursList}
+                                    onchange={handleChange} field-level-help="test" disabled={isRestDisabled}>
+                </lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item size=6 padding="around-small" class="layoutItemWithSpinner">
+                <lightning-combobox name="batteryIncluded" label="Battery Included"
+                                    value={asset.batteryIncluded}
+                                    options={batteryIncludedList}
+                                    onchange={handleChange} field-level-help="test" disabled={isBatteryIncludedDisabled}>
+                </lightning-combobox>
+            </lightning-layout-item> -->
+            <lightning-layout-item size=6 padding="around-small">
+                <lightning-input type="number"
+                                 name="numberOfUnits"
+                                 label="Number of Units"
+                                 required="true"
+                                 value={asset.numberOfUnits}
+                                 onchange={handleChange}
+                                 disabled={isRestDisabled}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size=6 padding="around-small">
+                <lightning-input type="number"
+                                 name="unitSalesPrice"
+                                 label="Unit Sales Price"
+                                 required="true"
+                                 formatter="currency"
+                                 step=".01"
+                                 value={asset.unitSalesPrice}
+                                 onchange={handleChangeSalesPrice}
+                                 disabled={isRestDisabled}></lightning-input><!--onblur={callSubsidies}-->
+            </lightning-layout-item>
+            <!-- <lightning-layout-item size=6 padding="around-small">
+                <lightning-combobox name="subsidy" label="Subsidy"
+                                    value={asset.subsidy}
+                                    options={subsidyList}
+                                    onchange={handleChangeSubsidy} 
+                                    field-level-help="This field populates when you edit Unit Sales Price and then click somewhere else." 
+                                    disabled={isSubsidyDisabled}>
+                </lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item size=6 padding="around-small" class="layoutItemWithSpinner">
+                &nbsp;
+            </lightning-layout-item>
+            <lightning-layout-item size=6 padding="around-small">
+                <lightning-button label="Get Subsidy" onclick={callSubsidies}></lightning-button>
+            </lightning-layout-item>-->
+            <!-- <lightning-layout-item size=12>
+                <lightning-button class="slds-m-right_small" variant="base" label="+ Add Asset" title="+ Add Asset" onclick={handleAddAsset}></lightning-button>
+                <lightning-button variant="base" label="- Delete Asset" title="- Delete Asset" onclick={handleDeleteAsset} if:false={asset.isFirst} class="destructiveButton"></lightning-button>
+            </lightning-layout-item> -->
+        </lightning-layout>
+    </div>
+</template>

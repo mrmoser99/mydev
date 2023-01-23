@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>55.0</apiVersion><isExposed>true</isExposed>
-    <masterLabel>Price Quote Page Replacement</masterLabel>
+    <apiVersion>51.0</apiVersion>
+    <description>Price Quote Page Container</description>
+    <isExposed>true</isExposed>
+    <masterLabel>Price Quote Page Container</masterLabel>
     <targets>
         <target>lightning__AppPage</target>
         <target>lightningCommunity__Page</target>
@@ -12,8 +14,7 @@
         <targetConfig targets="lightningCommunity__Default">
             <property label="Section Title" name="sectionTitle" type="String" default="New Quote" />
             <property label="Section Sub Title" name="sectionSubTitle" type="String" default="Details &amp; Add Ons" />
-            <property label="opp id" name="oppid" type="String" default="00678000003eJ6mAAE" />
-            <property label="option" name="option" type="String" default="" />
-        </targetConfig>  
+            <property label="opp id" name="oppid" type="String" default="No Input Provided" />
+        </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

@@ -3,6 +3,9 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 //apex 
 //import getTest from "@salesforce/apex/PricingUtils.getTest";
+
+import checkPermission from 'c/dodJSUtility';
+
 import getUserSite from "@salesforce/apex/PricingUtils.getUserSite";
 import getPrograms from "@salesforce/apex/PricingUtils.getPrograms";
 import getMakes from "@salesforce/apex/PricingUtils.getMakes";  
@@ -227,9 +230,21 @@ export default class dDAPITestHarness extends LightningElement {
 
     // Initializes the component
     connectedCallback() {
+
+        console.log('dog1a');
+         
+        try{
+            let result = checkPermission('Create Quote Button');
+            console.log('permission is: ' + result);
+        }
+        catch (err){
+            alert(err);
+        }
+        
+        console.log('dog1b');
         // Register error listener
         this.registerErrorListener();
-        console.log('dog1');
+    
         this.handleSubscribe();
     }
 
@@ -309,7 +324,8 @@ export default class dDAPITestHarness extends LightningElement {
         wiredgetUserSite({error, data}){
 
             console.log('getting sites');
-
+         
+ 
             this.advance = '0'
             this.frequency=  'monthly';
 

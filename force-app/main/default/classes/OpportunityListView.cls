@@ -153,6 +153,7 @@ public with sharing class OpportunityListView {
         }  
 
         if(String.isNotBlank(partnerStatus)){
+            system.debug('FNS condition::'+ condition);
             if(partnerStatus=='Cancelled'){
                 if(String.isNotBlank(condition)){
                     condition += ' AND ' + '(Sub_Stage__c =  \'' + 'Cancelled' + '\'' + ' OR ' + 'Sub_Stage__c =  \'' + 'Cash' + '\'' + ' OR ' + 'Sub_Stage__c =  \'' + 'Competitor' + '\'' + ' OR ' + 'Sub_Stage__c =  \'' + 'Customer Not Ready' + '\')';
@@ -164,9 +165,11 @@ public with sharing class OpportunityListView {
             else{
                 if(String.isNotBlank(condition)){
                     condition += ' AND ' + 'Sub_Stage__c =  \'' + partnerStatus + '\'';
+                    system.debug('FNS condition::'+ condition);
                 }
                 else{
                     condition += 'Sub_Stage__c =  \'' + partnerStatus + '\'';
+                    system.debug('FNS condition::'+ condition);
                 }
             }
         }

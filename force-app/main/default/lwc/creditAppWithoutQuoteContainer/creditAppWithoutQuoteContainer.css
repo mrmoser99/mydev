@@ -1,0 +1,102 @@
+/**
+ * Created by Kritika Sharma & Surbhi Goyal 
+ * Date : 09/02/2022
+ */
+
+ .topSpace {
+    margin-top: 2%;
+  }
+  .Header{
+    background:     white !important;
+  }
+  .body-top{
+    background:white!important;
+    border:1px solid #D4D4D4;
+    border-left:0px!important;
+  }
+  .tab-class{
+    border-top:none!important;
+    border-radius:0px!important;
+  }
+  .quote-header{
+    border-bottom:none!important;
+  }
+  .header-field-section{
+    padding:      20px 20px 20px 0px;
+    width:        200px;
+  }
+  .header-field-section-credit-check{
+    padding:      20px 20px 20px 0px;
+    width:        250px;
+  }
+  .tab-background{
+    background:#dddbda!important;
+    margin-right:-1px;
+  }
+  .slds-tabs_default__nav{
+    background:white!important
+  }
+  .proposal-container{
+    background: white;
+    height:1000px;
+  }
+  .no-padding{
+    padding:0px!important;
+  }
+  .body-bottom{
+    background:white!important;
+    border-bottom:1px solid #D4D4D4;
+    border-left: 1px solid #D4D4D4;
+    border-right: 1px solid #D4D4D4;
+  }
+  .display-field{
+    display:grid;
+  }
+  .summary{
+    background: #FFFFFF;
+  }
+  label.slds-form-element__label {
+    font-weight: bolder!important;
+    color: black!important;
+  }
+  .labelpadding{
+    padding: 2%;
+  }
+  .contentMargin{
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .requiredField{
+    color: red;
+    margin-bottom: 10px;
+  }
+  .marginBottom{
+    margin-bottom: 10px;
+  }
+  .addAssetStyle{
+    text-align: end;
+    padding: 2%;
+  }
+  .color{
+    color:red;
+  }
+  .paddingCss{
+    padding: 2%;
+  }
+  .fontStyle{
+    font-weight: bold;
+  }
+  .fontColor{
+    color:#0099FF;
+  }
+  .marginPaddingStylOnCustInfo{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-right: 15px;
+  }
+  .summarySection{
+    border-top: 4px solid #0099FF;
+  }
+  .labelColor{
+    color:#666666;
+  }

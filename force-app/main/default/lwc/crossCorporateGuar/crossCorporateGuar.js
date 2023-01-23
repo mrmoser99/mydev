@@ -112,11 +112,12 @@ export default class CustomerQuickSearch extends LightningElement {
         Email__c: '',
         BillingStreet: '',
         BillingCity: '',
-        BillingCountry: '',
+        BillingCountry: 'US',
         BillingPostalCode: '',
         BillingCounty__c:'',
         Tax_ID__c: '',
-        BillingState:''
+        BillingState:'',
+        addressline2:''
               
     }; 
     isOpportunity;
@@ -192,6 +193,8 @@ export default class CustomerQuickSearch extends LightningElement {
                     this.Customer.BillingCounty__c = resultParsed.County__c;
                     this.Customer.BillingCountry = resultParsed.Country_Code__c;
                     this.Customer.Tax_ID__c = resultParsed.SSN_Encrypted__c;
+                    this.Customer.BillingPostalCode = resultParsed.Postal_Code__c;
+                   
                 }
             })
     }
@@ -207,11 +210,11 @@ export default class CustomerQuickSearch extends LightningElement {
     }
 
     closeModalpopup(event){
-     
+        console.log('in crossguar closepopup' +JSON.stringify(this.Customer));
         this.isModalOpen = false;
-        
-        this.Customer = event.detail;
-        this.updateCustomer();
+      
+       this.Customer = event.detail;
+      //  this.updateCustomer();
         if(this.Customer != '' && this.Customer != null){
             console.log('inside closepopup guar' +JSON.stringify(this.Customer));
             this.showCustomer=true;
@@ -219,6 +222,13 @@ export default class CustomerQuickSearch extends LightningElement {
             //this.isLoading = false;
         }
         
+    }
+
+    closeModalnodata(event){
+        this.Customer = event.detail;
+        this.isModalOpen = false;
+        this.showCustomer = true;
+        this.customerInfoShowParent();
     }
 
     handleAccountName(event) {
@@ -478,11 +488,12 @@ export default class CustomerQuickSearch extends LightningElement {
     
     customerInfoShowParent() {
         console.log('inside guar ' +JSON.stringify(this.Customer));
-        const selectedEvent = new CustomEvent('customerinfoshow',{
-            detail: this.Customer
-        });
+        const selectedEvent = new CustomEvent('customerinfoshow',{detail: this.Customer});
         this.dispatchEvent(selectedEvent);
     }
 
-    
+    handlenodata(event){
+        this.showCustomer = false;
+        this.isModalOpen = false;
+    }
 }

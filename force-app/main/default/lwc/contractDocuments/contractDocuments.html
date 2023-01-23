@@ -1,11 +1,12 @@
 <template>  
-    <div class="slds-box" style="height: 250px;">
-        <lightning-datatable key-field="id" data={dataPlaceHolder} columns={columns} hide-checkbox-column="true">
+    <lightning-record-view-form record-id={recordId} object-api-name="Contract"></lightning-record-view-form>
+    <div class="slds-box" style="height: 250px;" if:true={tableControl}>
+        <lightning-datatable key-field="id" data={dataForm} columns={columns} onrowaction={downloadFile} hide-checkbox-column="true">
 
         </lightning-datatable>
     </div>    
 
-    <div class="slds-box">
+    <div class="slds-box" if:false={tableControl}>
         <lightning-datatable key-field="id" data={dataEmpty} columns={columns} hide-checkbox-column="true">
         </lightning-datatable>
         <div class="slds-box slds-align_absolute-center" style="background: rgb(236, 236, 236)">No documents to display</div>   

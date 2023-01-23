@@ -3,286 +3,286 @@
 //
 public class JSONSubmitCreditAppRequest {
 
-public Data data;
-
-
-
-public class Address {
-public String id;
-public String addressType;
-public String addressLine;
-public String city;
-public String postalCode;
-public String country;
-public String region;
-public String county;
-
-}
-
-public class Principals {
-public String familyName;
-public String givenName;
-public String middleName;
-public List<Jurisdiction> identifiers;
-public Address_Z address;
-public String title;
-
-}
-
-public class ExternalReferences {
-public PricingQuote pricingQuote;
-
-}
-
-public class Payments {
-public String paymentFrequency;
-public String paymentTiming;
-public Integer initialDelay;
-public Integer initialPaymentMultiplier;
-public Integer securityDepositMultiplier;
-public Rentals rentals;
-
-}
-
-public class Adjustments {
-public String industrialBattery;
-public String mastType;
-public String operatingEnvironment;
-public String operatingHoursPerYear;
-
-}
-
-public class ResidualValue {
-public Adjustments adjustments;
-
-}
-
-public class Proposals {
-public ExternalReferences externalReferences;
-public String description;
-public Boolean isPreferred;
-public FinancialProduct financialProduct;
-public Duration duration;
-public Finance finance;
-public Payments payments;
-public List<Assets> assets;
-
-}
-
-public class Components {
-public Integer quantity;
-public Catalog catalog;
-public Finance_Z finance;
-public String condition;
-public Integer manufacturerYear;
-
-}
-
-public class UniversalBeneficialOwnership {
-public String ownershipType;
-public String givenName;
-public String middleInitials;
-public String familyName;
-public String title;
-public String dateOfBirth;
-public String countryOfResidence;
-public Integer ownershipPercentage;
-
-}
-
-public class Finance_Z {
-public Integer quantity;
-public Decimal salePrice;
-public OtherCosts otherCosts;
-public ResidualValue residualValue;
-
-
-}
-
-public class Assets {
-public Integer quantity;
-public Catalog catalog;
-public Finance_Z finance;   //don't provide this
-public String condition;
-public Integer manufacturerYear;
-public Address address;
-public List<Components> components;
-
-}
-
-public class Structure {
-public String masterType;
-public String category;
-public String type;
-public String brand;
-public String model;
-
-}
-
-public class OtherCosts {
-public Integer rollover;
-public Integer buyout;
-public Integer softWare;
-public Integer maintenance;
-public Integer shipping;
-public Integer installation;
-public Integer wiring;
-public Integer warranty;
-public Integer miscellaneous;
-
-}
-
-public class Business {
-public String legalEntityType;
-public Sic sic;
-public Sic naics;
-
-
-}
-
-public class PricingQuote {
-public String id;
-public String url;
-
-}
-
-public class Guarantors {
-public List<PersonalGuarantors> personalGuarantors;
-public List<Principals> principals;
-
-}
-
-public class PersonalGuarantors {
-public String familyName;
-public String givenName;
-public String middleName;
-public List<Jurisdiction> identifiers;
-public Address_Z address;
-
-}
-
-public class ConsolidatedRegulars {
-public Integer numberOfPayments;    //payments from pricing call
-public Decimal amount;    //total of the lines; total should be on the quote header
-
-}
-
-public class Finance {
-public String purchaseOption;
-public String paymentFrequency;
-public String paymentTiming;
-public Integer numberOfMonths;
-}
-
-public class FinancialProduct {
-public String id;
-
-}
-
-public class Duration {
-
-public String startDate;
-
-}
-
-public class Data {
-public String externalReference;
-public Lessee lessee;
-public List<String> notes;
-public Guarantors guarantors;
-public List<Proposals> proposals;
-
-public String id;
-public String status;
-public String creationDate;
-public String modificationDate;
-
-}
-
-public class Sic {
-public String code;
-public String name;
-
-}
-
-public class Lessee {
-public String countryOfRegistration;
-public Identifiers identifiers;
-public String name;
-public String legalName;
-public List<String> dbaName;
-public Address address;
-public Address invoiceAddress;
-public PrimaryPhoneNumber primaryPhoneNumber;
-public Business business;
-public List<Contacts> contacts;
-public List<UniversalBeneficialOwnership> universalBeneficialOwnership;
-
-}
-
-public class Catalog {
-public Identifiers_Z identifiers;
-public Integer listPrice;
-
-}
-
-public class Jurisdiction {
-public String id;
-public String type;
-
-}
-
-public class Identifiers_Z {
-public Structure structure;
-
-}
-
-public class Rentals {
-public List<ConsolidatedRegulars> consolidatedRegulars;
-
-}
-
-public class Contacts {
-public String name;
-public String email;
-public List<PrimaryPhoneNumber> phoneNumbers;
-
-}
-
-public class PrimaryPhoneNumber {
-public String type;
-public String phone_number;                 // in json: number
-
-}
-
-public class Identifiers {
-public String dunsNumber;
-public List<Jurisdiction> jurisdiction;
-public String tcaPartyId;
-
-}
-
-public class Address_Z {
-public String streetNumber;
-public String streetName;
-public String streetType;
-public String suiteOrApartment;
-public String city;
-public String postalCode;
-public String county;
-public String region;
-public String country;
-
-}
-
-public static void testRun(){
-	Integer i = 0;
-	i++;
-
-}
-
-
-
-
-
-}
+    public Data data;
+    
+    
+    
+    public class Address {
+    public String id;
+    public String addressType;
+    public String addressLine;
+    public String city;
+    public String postalCode;
+    public String country;
+    public String region;
+    public String county;
+    
+    }
+    
+    public class Principals {
+    public String familyName;
+    public String givenName;
+    public String middleName;
+    public List<Jurisdiction> identifiers;
+    public Address_Z address;
+    public String title;
+    
+    }
+    
+    public class ExternalReferences {
+    public PricingQuote pricingQuote;
+    
+    }
+    
+    public class Payments {
+    public String paymentFrequency;
+    public String paymentTiming;
+    public Integer initialDelay;
+    public Integer initialPaymentMultiplier;
+    public Integer securityDepositMultiplier;
+    public Rentals rentals;
+    
+    }
+    
+    public class Adjustments {
+    public String industrialBattery;
+    public String mastType;
+    public String operatingEnvironment;
+    public String operatingHoursPerYear;
+    
+    }
+    
+    public class ResidualValue {
+    public Adjustments adjustments;
+    
+    }
+    
+    public class Proposals {
+    public ExternalReferences externalReferences;
+    public String description;
+    public Boolean isPreferred;
+    public FinancialProduct financialProduct;
+    public Duration duration;
+    public Finance finance;
+    public Payments payments;
+    public List<Assets> assets;
+    
+    }
+    
+    public class Components {
+    public Integer quantity;
+    public Catalog catalog;
+    public Finance_Z finance;
+    public String condition;
+    public Integer manufacturerYear;
+    
+    }
+    
+    public class UniversalBeneficialOwnership {
+    public String ownershipType;
+    public String givenName;
+    public String middleInitials;
+    public String familyName;
+    public String title;
+    public String dateOfBirth;
+    public String countryOfResidence;
+    public Integer ownershipPercentage;
+    
+    }
+    
+    public class Finance_Z {
+    public Integer quantity;
+    public Decimal salePrice;
+    public OtherCosts otherCosts;
+    public ResidualValue residualValue;
+    
+    
+    }
+    
+    public class Assets {
+    public Integer quantity;
+    public Catalog catalog;
+    public Finance_Z finance;   //don't provide this
+    public String condition;
+    public Integer manufacturerYear;
+    public Address address;
+    public List<Components> components;
+    
+    }
+    
+    public class Structure {
+    public String masterType;
+    public String category;
+    public String type;
+    public String brand;
+    public String model;
+    
+    }
+    
+    public class OtherCosts {
+    public Integer rollover;
+    public Integer buyout;
+    public Integer softWare;
+    public Integer maintenance;
+    public Integer shipping;
+    public Integer installation;
+    public Integer wiring;
+    public Integer warranty;
+    public Integer miscellaneous;
+    
+    }
+    
+    public class Business {
+    public String legalEntityType;
+    public Sic sic;
+    public Sic naics;
+    
+    
+    }
+    
+    public class PricingQuote {
+    public String id;
+    public String url;
+    
+    }
+    
+    public class Guarantors {
+    public List<PersonalGuarantors> personalGuarantors;
+    public List<Principals> principals;
+    
+    }
+    
+    public class PersonalGuarantors {
+    public String familyName;
+    public String givenName;
+    public String middleName;
+    public List<Jurisdiction> identifiers;
+    public Address_Z address;
+    
+    }
+    
+    public class ConsolidatedRegulars {
+    public Integer numberOfPayments;    //payments from pricing call
+    public Decimal amount;    //total of the lines; total should be on the quote header
+    
+    }
+    
+    public class Finance {
+    public String purchaseOption;
+    public String paymentFrequency;
+    public String paymentTiming;
+    public Integer numberOfMonths;
+    }
+    
+    public class FinancialProduct {
+    public String id;
+    
+    }
+    
+    public class Duration {
+    
+    public String startDate;
+    
+    }
+    
+    public class Data {
+    public String externalReference;
+    public Lessee lessee;
+    public List<String> notes;
+    public Guarantors guarantors;
+    public List<Proposals> proposals;
+    
+    public String id;
+    public String status;
+    public String creationDate;
+    public String modificationDate;
+    
+    }
+    
+    public class Sic {
+    public String code;
+    public String name;
+    
+    }
+    
+    public class Lessee {
+    public String countryOfRegistration;
+    public Identifiers identifiers;
+    public String name;
+    public String legalName;
+    public List<String> dbaName;
+    public Address address;
+    public Address invoiceAddress;
+    public PrimaryPhoneNumber primaryPhoneNumber;
+    public Business business;
+    public List<Contacts> contacts;
+    public List<UniversalBeneficialOwnership> universalBeneficialOwnership;
+    
+    }
+    
+    public class Catalog {
+    public Identifiers_Z identifiers;
+    public Integer listPrice;
+    
+    }
+    
+    public class Jurisdiction {
+    public String id;
+    public String type;
+    
+    }
+    
+    public class Identifiers_Z {
+    public Structure structure;
+    
+    }
+    
+    public class Rentals {
+    public List<ConsolidatedRegulars> consolidatedRegulars;
+    
+    }
+    
+    public class Contacts {
+    public String name;
+    public String email;
+    public List<PrimaryPhoneNumber> phoneNumbers;
+    
+    }
+    
+    public class PrimaryPhoneNumber {
+    public String type;
+    public String phone_number;                 // in json: number
+    
+    }
+    
+    public class Identifiers {
+    public String dunsNumber;
+    public List<Jurisdiction> jurisdiction;
+    public String tcaPartyId;
+    
+    }
+    
+    public class Address_Z {
+    public String streetNumber;
+    public String streetName;
+    public String streetType;
+    public String suiteOrApartment;
+    public String city;
+    public String postalCode;
+    public String county;
+    public String region;
+    public String country;
+    
+    }
+    
+    public static void testRun(){
+      Integer i = 0;
+      i++;
+    
+    }
+    
+    
+    
+    
+    
+    }

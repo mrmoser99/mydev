@@ -9,23 +9,26 @@
    PI-22-Q3-19		866653 - Canada Business Unit errors
    PI-22-Q4-21		855444 - As a DSM, CA, & Ag CA Sales Rep, I do not want to see multiple stage and substages with the same date/time stamp.
    PI-22-Q4-22		889196 - Add apex sharing for dealer user (mark moser 10/27/2022)
+   PI-22-Q4-22		845477 - Solution design for holistic authorization model (Dibyendu  11/16/2022)
+   PI-22-Q4-25		920446 - Rollback Translation Logic for Des Moines
  ***********************************************************************************************************/
 public class OpportunityTriggerHelper {
 public static Boolean flagForProgram = true;
+
+public static String BUSINESSDESC_CTI = 'Construction, Transportation & Infrastructure (CTI)';//Added as a part of change for PBI 845477
 
 public static void helpBeforeInsert(List<Opportunity> newOpps) {
 	Id profileId = UserInfo.getProfileId();
 	Profile apiProfile = [SELECT Id FROM Profile WHERE Name = 'API Integration' LIMIT 1];
 	setInitialValues(newOpps);
 	setProgram(newOpps);         //PBI724685 : Changed the sequence of setProgram so that Program value is set before Oppty BU
-	//PBI841446 : Skip Stage/Substage translation
-	/*List<Opportunity> newFilterOpps = new List<Opportunity>();	//PBI855444 : Skip Stage/Substage translation in Salesforce
-	   for(Opportunity opp: newOpps){
-	    if(opp.Source_System__c == 'GDW_Wayne'){
-	        continue;
-	    }
-	    newFilterOpps.add(opp);
-	   }*/
+	//PBI920446 : Rollback Translation Logic for Des Moines
+	List<Opportunity> newFilterOpps = new List<Opportunity>();
+	for(Opportunity opp: newOpps){
+		if(opp.Source_System__c == 'GDW_US_DesMoines'){
+        	newFilterOpps.add(opp);
+        }
+	}
 	//ONLY RUN FOR API INTEGRATION PROFILE
 	if (profileId == apiProfile.Id) {
 		setSystemUpdateFlag(newOpps);
@@ -34,9 +37,11 @@ public static void helpBeforeInsert(List<Opportunity> newOpps) {
 		setOwner(newOpps);
 		setAccountAndEndUser(newOpps);
 		setBusinessUnit(newOpps);
-		//setStage(newOpps);	//PBI855444 : Skip Stage/Substage translation in Salesforce
+		setStage(newFilterOpps);   //PBI920446 setStage(newOpps);
 		//PBI:522080:Commenting this method as Opp type need not set to 'Renewal' anymore:Geetha
 		//setType(newOpps);
+		setShareWithAccountValue(newOpps);	//Added as a part of change for PBI 845477
+		
 	} else {
 		setNonAPILocationInfo(newOpps);
 	}
@@ -82,9 +87,9 @@ public static void helpBeforeUpdate(Map<Id, Opportunity> oldOppMap, Map<Id, Oppo
 	List<Opportunity> stageChanged = new List<Opportunity>();
 	Map<Id, Id> vendorMap = new Map<Id, Id>();
 	Map<Id, Id> endUserMap = new Map<Id, Id>();
-	//PBI841446 : Skip Stage Substage translation for Wayne
-	//Map<Id, Opportunity> oldOppFilterMap = new Map<Id, Opportunity>();	//PBI855444 : Skip Stage/Substage translation in Salesforce
-	//Map<Id, Opportunity> newOppFilterMap = new Map<Id, Opportunity>();	//PBI855444 : Skip Stage/Substage translation in Salesforce
+	//PBI920446 : Rollback Translation Logic for Des Moines
+	Map<Id, Opportunity> oldOppFilterMap = new Map<Id, Opportunity>();
+	Map<Id, Opportunity> newOppFilterMap = new Map<Id, Opportunity>();
 
 	for (Opportunity oldOpp : oldOppMap.values()) {
 		Opportunity newOpp = newOppMap.get(oldOpp.Id);
@@ -104,10 +109,10 @@ public static void helpBeforeUpdate(Map<Id, Opportunity> oldOppMap, Map<Id, Oppo
 		if((oldOpp.End_User__c != newOpp.End_User__c)) {
 			endUserMap.put(newOpp.Id, newOpp.End_User__c);
 		}
-		/*if(newOpp.Source_System__c !='GDW_Wayne'){	//PBI855444 : Skip Stage/Substage translation in Salesforce
-		    oldOppFilterMap.put(oldOpp.Id, oldOpp);
-		    newOppFilterMap.put(newOpp.Id, newOpp);
-		   }*/
+		if(newOpp.Source_System__c =='GDW_US_DesMoines'){    //PBI920446
+            oldOppFilterMap.put(oldOpp.Id, oldOpp);
+            newOppFilterMap.put(newOpp.Id, newOpp);
+        }
 	}
 
 	//Only passing Opportunities where End User has changed and is not null
@@ -124,11 +129,38 @@ public static void helpBeforeUpdate(Map<Id, Opportunity> oldOppMap, Map<Id, Oppo
 		deleteOldTeamMembers(oldOppMap,newOppMap);
 		changeOppOwner(oldOppMap,newOppMap);
 		revertBusinessUnit(oldOppMap, newOppMap);
-		//updateStage(oldOppFilterMap,newOppFilterMap); //updateStage(oldOppMap,newOppMap);	//PBI855444 : Skip Stage/Substage translation in Salesforce
+		updateStage(oldOppFilterMap,newOppFilterMap); //PBI920446 //updateStage(oldOppMap,newOppMap);
 		setSystemUpdateFlag(newOppMap.values());
+        updateShareWithAccountValue(oldOppMap,newOppMap);//Added as a part of change for PBI 845477
 	}
 	updateRelatedAccounts(vendorMap, endUserMap);
 }
+    
+// Start of Code for change PBI-845477  
+// - If the opp record type is or becomes retail and Business Unit Description is Construction, Transportation & Infrastructure (CTI), then populate the share_with_account__c value;
+@TestVisible
+private static void setShareWithAccountValue(List<Opportunity> opps) {
+    for (Opportunity opp : opps){
+        if(opp.Business_Unit_Description__c == BUSINESSDESC_CTI && opp.RecordType.DeveloperName=='Retail')
+            opp.Share_With_Account__c = opp.AccountId;
+    }
+}
+
+@TestVisible
+private static void updateShareWithAccountValue(Map<Id, Opportunity> oldOppMap, Map<Id, Opportunity> newOppMap) {
+    Recordtype rectyp = [select id,developername from recordtype where DeveloperName='Retail' and SobjectType='Opportunity' Limit 1];
+    for (Opportunity oldOpp : oldOppMap.values()) {
+		Opportunity newOpp = newOppMap.get(oldOpp.Id);
+      
+		if (newOpp.Business_Unit_Description__c == BUSINESSDESC_CTI && newOpp.RecordTypeId == rectyp.Id) {
+			newOpp.Share_With_Account__c = oldOpp.AccountId;
+		}
+        else if((newOpp.Business_Unit_Description__c <> BUSINESSDESC_CTI || newOpp.RecordTypeId <> rectyp.Id) && newOpp.Share_With_Account__c<>null){
+            newOpp.Share_With_Account__c = null;
+        }
+	}
+}
+// End of Code for change PBI-845477
 
 // - Assign Opportunities to the Sales Rep from the Associated Sales Rep Id record
 // - if there isn't a matching record, assign the Opportunity to Label.IntegrationUserId
@@ -247,7 +279,6 @@ private static void changeOppOwner(Map<Id, Opportunity> oldOppMap, Map<Id, Oppor
 
 	Map<ID,ID> oppOwnerMap = new Map<ID,ID>();
 	Set<ID> oldOwner = new Set<ID>();
-
 
 	List<Opportunity> oppsWithChangedOwners = new List<Opportunity>();
 	List<Opportunity> oppsWithChangedRep2 = new List<Opportunity>();
@@ -1331,7 +1362,6 @@ private static void setOwner(List<Opportunity> opps) {
 }
 
 // - Map the Stage to a Stage in Salesforce to clean the values
-/* PBI855444 : Commenting this method as Stage translation is now happening in Azure, not in Salesforce
    @TestVisible
    private static void setStage(List<Opportunity> opps) {
 
@@ -1353,9 +1383,8 @@ private static void setOwner(List<Opportunity> opps) {
                 }
         }
    }
- */
+    
 // - if the Stage set to approved and pending when current stage is Docs Out, Docs Back, PO Sent; set to priorvalue
-/* PBI855444 : Commenting this method as Stage translation is now happening in Azure, not in Salesforce
    @TestVisible
    private static void updateStage(Map<Id, Opportunity> oldOppMap, Map<Id, Opportunity> newOppMap) {
 
@@ -1387,8 +1416,7 @@ private static void setOwner(List<Opportunity> opps) {
                 }
         }
    }
- */
-/* PBI855444 : Commenting this method as Stage translation is now happening in Azure, not in Salesforce
+    
    @TestVisible
    private static void updateStage(Map<String, Sub_Stage_Mapping__mdt> stageMap,Opportunity oldOpp, Opportunity newOpp){
         String mappedStage = String.isBlank(newOpp.Sub_Stage__c) ? null :(stageMap.containsKey(newOpp.Sub_Stage__c.toUpperCase()) ? stageMap.get(newOpp.Sub_Stage__c.toUpperCase()).value__c: null);
@@ -1407,7 +1435,7 @@ private static void setOwner(List<Opportunity> opps) {
                 }
         }
    }
- */
+
 // - if the Business Unit changed, revert to the old Business Unit
 @TestVisible
 private static void revertBusinessUnit(Map<Id, Opportunity> oldOppMap, Map<Id, Opportunity> newOppMap) {

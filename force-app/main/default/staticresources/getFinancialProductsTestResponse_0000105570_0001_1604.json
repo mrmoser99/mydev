@@ -1,0 +1,41 @@
+{
+  "data": [
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.1360.2846",
+      "name": "10 Pay 90",
+      "purchaseOptions": [
+        "dollar-out"
+      ],
+      "url": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/financialproducts/1.NA.PI.0000105570-0001.1604.1360.2846?feature=Credit-Application-Documents"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.1360.3080",
+      "name": "120 Day Deferred",
+      "purchaseOptions": [
+        "dollar-out"
+      ],
+      "url": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/financialproducts/1.NA.PI.0000105570-0001.1604.1360.3080?feature=Credit-Application-Documents"
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.1360.3342",
+      "name": "180 Day Deferred-Straumann",
+      "purchaseOptions": [
+        "dollar-out"
+      ],
+      "url": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/financialproducts/1.NA.PI.0000105570-0001.1604.1360.3342?feature=Credit-Application-Documents"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pageSize": 3,
+    "pageCount": 26,
+    "itemCount": 78,
+    "links": {
+      "self": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/financialProducts?feature=Credit-Application-Documents&page=1&pageSize=3&sort=name",
+      "first": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/financialProducts?feature=Credit-Application-Documents&page=1&pageSize=3&sort=name",
+      "next": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/financialProducts?feature=Credit-Application-Documents&page=2&pageSize=3&sort=name",
+      "prev": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/financialProducts?feature=Credit-Application-Documents&page=1&pageSize=3&sort=name",
+      "last": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/financialProducts?feature=Credit-Application-Documents&page=26&pageSize=3&sort=name"
+    }
+  }
+}

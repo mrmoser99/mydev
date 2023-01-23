@@ -13,6 +13,7 @@ import billingcountry from '@salesforce/schema/Account.BillingCounty__c';
 import billingcity from '@salesforce/schema/Account.billingcity';
 import billingPostalCode from '@salesforce/schema/Account.billingPostalCode';
 import billingtaxId from '@salesforce/schema/Account.Tax_ID__c';
+import getRelatedParty_onload from '@salesforce/apex/CreditApplicationHeaderController.getRelatedParty_onload';
 
 export default class AddressStandardization extends LightningElement {
     
@@ -27,7 +28,8 @@ export default class AddressStandardization extends LightningElement {
         BillingPostalCode: billingPostalCode,
         BillingCounty__c:'',
         Tax_ID__c: '',
-        BillingState:''
+        BillingState:'',
+        addressline2:''
               
     }; 
 
@@ -42,13 +44,14 @@ export default class AddressStandardization extends LightningElement {
         BillingPostalCode: billingPostalCode,
         BillingCounty__c:'',
         Tax_ID__c: '',
-        BillingState:''
+        BillingState:'',
+        addressline2:''
               
     }; 
 
     @api showmodel;
     @api isModalOpen;
-    @api recordID;
+    @api recordid;
     @track phoneFilled=false;
     @track stateOptions =[];
     @track stateList=  stateLabel.split(','); 
@@ -83,11 +86,13 @@ export default class AddressStandardization extends LightningElement {
 
  account ={};
  connectedCallback(){
+    console.log('first line connected callback' +this.recordid);
     if(this.cusdata){
-        this.Customer = this.cusdata;
+        console.log('in connected callback cust' +JSON.stringify(this.cusdata));
+        this.Customer = {...this.cusdata};
     }
 
-   
+   console.log('tst' +JSON.stringify(this.Customer));
  getAllstates().then(result =>{
 if(result){
 this.data = result;
@@ -141,6 +146,7 @@ onCustNamechange (event){
  onAdd2change (event){
     if(event.target.value) {
         this.billingAddressLine2 = event.target.value;
+        this.Customer.addressline2 = this.billingAddressLine2;
     }
  }
 
@@ -164,6 +170,7 @@ onCustNamechange (event){
  }
 
  onCountrychange (event){
+    console.log('tst1' +JSON.stringify(event.target.value));
      this.Customer.BillingCountry = event.target.value;
  }
 
@@ -188,6 +195,7 @@ statuslist = [
     isInputValid() {
         let isValid = true;
         console.log('this.errorMsg:::'+this.errorMsg);
+        console.log('cust ' +JSON.stringify(this.Customer));
         if(this.Customer.BillingState=='') {
             this.errorMsg='Complete this field.';
             this.template.querySelector('c-reusable-custom-dropdown-with-search-lwc').addErrorBorder();
@@ -199,14 +207,24 @@ statuslist = [
             this.template.querySelector('c-reusable-custom-dropdown-with-search-lwc').removeErrorBorder();
         }
         let inputFields = this.template.querySelectorAll('.validate');
+        console.log(inputFields.length);
         inputFields.forEach(inputField => {
+            console.log('inputfield' +inputField.checkValidity());
             if(!inputField.checkValidity()) {
                 inputField.reportValidity();
                 isValid = false;
             }
+            console.log('above value' +inputField.value ) ;
+            console.log('above name ' +inputField.name );
+            console.log('above cust' +JSON.stringify(this.Customer));
             this.Customer[inputField.name] = inputField.value;
+            console.log(' below value' +inputField.value ) ;
+            console.log(' below name' +inputField.name );
+            console.log(' below cust' +JSON.stringify(this.Customer));
         });
+        console.log('isvalid' +isValid);
         return isValid;
+        
     }
  
     handleValidateAddress (){   
@@ -316,18 +334,33 @@ this.showNextButton = true;
     }
 
     handlecancel(event){
-        
-       // const eventCancel = new CustomEvent('cancelevent',{detail:null});
-       const eventCancel = new CustomEvent('cancelevent',{detail:null});
-        this.dispatchEvent(eventCancel);
-        console.log('fired');
+      
+        //calling apex method
+        getRelatedParty_onload({
+            oppId : this.recordid,
+            conType: "CrossCorporate"
+        })
+        .then(result=>{
+
+            console.log('corp add handle cancel ' +JSON.stringify(result));
+            this.Customer.Name = result.First_Name__c;
+            const eventCancel = new CustomEvent('cancelevent',{detail:this.Customer});
+            this.dispatchEvent(eventCancel);
+            console.log('fired');
+        })
+        .catch(error => {
+            const eventCancel = new CustomEvent('nodataevent',{detail:this.Customer});
+            this.dispatchEvent(eventCancel);
+            console.log('no data fired');
+        })
+      
     }
 
     handelCloseDropDown() {
         this.template.querySelector('c-reusable-custom-dropdown-with-search-lwc').toggleOpenDropDown(false);
     }
 
-    
+   
 
 
 }

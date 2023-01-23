@@ -21,12 +21,12 @@
                 </lightning-combobox>
             </lightning-layout-item>
             <lightning-layout-item size=6 class="slds-p-right_small">
-                <lightning-input type="number" name="noOfUnits" label="Number of Units" value={accessory.noOfUnits}
+                <lightning-input type="number" name="noOfUnits" label="Number of Units" value={accessory.noOfUnits} autocomplete="off" 
                     onchange={handleChange}>
                 </lightning-input>
             </lightning-layout-item>
             <lightning-layout-item size=6>
-                <lightning-input type="text" name="unitSalesPrice" data-id="unitSalesPrice" label="Unit Sales Price"
+                <lightning-input type="text" name="unitSalesPrice" data-id="unitSalesPrice" label="Unit Sales Price" autocomplete="off" 
                     value={accessory.unitSalesPrice} onchange={handleChangeSalesPrice} onblur={formatCurrencyForInput}
                     field-level-help='test'>
                 </lightning-input>

@@ -3,6 +3,8 @@
  * 
  * Change Log:
  * 07/13/2022 - MRM Fixed Alignment for amount; in the usa dollars are right aligned.
+ * 10/05/2022 - FNS Bug 879195 Sales Rep Values not getting populate in the list views
+ * 14/12/2022 - Dibyendu - Bug 893493 Selecting an application from the application list view should always land to the same page layout
  */
 
 import {LightningElement, track, wire, api} from 'lwc';
@@ -30,8 +32,7 @@ const columns = [
         label: 'Application #',
         fieldName: 'ApplicationNumberUrl',
         type: 'url',
-        sortable: true,
-        standardCellLayout: true,
+        sortable: true,        
         typeAttributes: {
             label: {
                 fieldName: 'Application_Number__c'
@@ -46,7 +47,7 @@ const columns = [
      typeAttributes: {label: {fieldName: 'End_User_Company_Name__c'}, target: '_self'}
     },
     {label: 'Sales Rep', fieldName: 'SalesRepValue', type: 'text'},
-    {label: 'Amount', fieldName: 'Amount', type: 'currency', fixedWidth: 100, typeAttributes: { currencyCode: 'USD' }, sortable: true,
+    {label: 'Amount', fieldName: 'Amount', type: 'currency', typeAttributes: { currencyCode: 'USD' }, sortable: true,
         cellAttributes: { alignment: 'right' }},   
     {label: 'Submitted', fieldName: 'Application_Date__c', type: 'date-local', typeAttributes:{
         month: "2-digit",
@@ -56,7 +57,7 @@ const columns = [
         month: "2-digit",
         day: "2-digit"
     }, sortable: true},
-    {label: 'Status', fieldName: 'Sub_Stage__c', type: 'text', sortable: true},
+    {label: 'Status', fieldName: 'Sub_Stage__c', type: 'text', sortable: true, fixedWidth: 150},
     {label: '',type: 'action',typeAttributes: {
             rowActions: actions
         }
@@ -85,6 +86,7 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
     applicationDate='';
     applicationDatePickListValues =[];
     partnerStatus='';
+    allValues = [];
     partnerStatusPickListValues = [
         {label: 'All', value: ''},
         {label: 'Application Draft', value: 'Application Draft'},
@@ -189,9 +191,18 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                     }*/
 
                     //Start: BUG  - Lucas Silva - 
-                    if(this.partnerStatus == 'Application Pending'){
+                    //if(this.partnerStatus == 'Application Pending'){
+                    //Changed the condition for the defect - 893493
+                    if(tempOpportunity.Sub_Stage__c == 'Application Pending' || tempOpportunity.Sub_Stage__c == 'Additional Information requested'){
                         tempOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/creditappadditionalinfo?opptid=' + tempOpportunity.Id;
                     }
+                    //Changed the condition for the defect - 893493
+                    else if(tempOpportunity.Nickname__c == 'Credit Check' && tempOpportunity.Sub_Stage__c != 'Application Draft')
+                    {
+                        tempOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/creditappwithoutquotecontainer?opptid=' + tempOpportunity.Id;
+                        //tempOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/opportunity/' + tempOpportunity.Id;
+                    }
+                    //Changed the condition for the defect - 893493
                     else{
                         tempOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/opportunity/' + tempOpportunity.Id;
                     }
@@ -325,12 +336,31 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
     }
 
     handleChangeStatus(event) {
+        if(!this.allValues.includes(event.target.value)){
+            if(this.allValues.length > 0) {
+                this.allValues.push("Clear All");                
+            }            
+            this.allValues.push(event.target.value);
+            this.allValues.push(this.allValues.splice(this.allValues.indexOf('Clear All'), 1)[0]);
+            console.log("allValues::"+this.allValues);
+            this.allValuesSelected = this.allValues.toString();
+            console.log("allValuesSelected::"+ this.allValuesSelected);
+        }
         this.partnerStatus = event.target.value;
         this.enableInfiniteLoading = true;
         this.isLoading =true;
         this.opportunities = [];
         this.rowOffset = 0;
         this.getInitialOpportunities();
+    }
+
+    handleRemove(event){
+        const valueRemoved = event.target.name;
+        console.log("valueRemoved::"+valueRemoved);
+        if(valueRemoved == 'Clear All') {
+            this.allValues = [];    
+        }
+        this.allValues.splice(this.allValues.indexOf(valueRemoved),1);
     }
 
     handleKeyUp(event) {
@@ -425,6 +455,131 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
            }
        });
    }
+
+    /*Download ListView*/
+    /*code to download listView */
+    handleDownload(event) {
+       
+        let date = new Date()
+        let day = date.getDate();
+        let month = date.getMonth()+1;
+        let year = date.getFullYear();
+        let fullDate = month + "-" + day + "-" + year;
+        getdownloadRecords({months:this.searchDate, status:this.searchStatus, filter:this.filter})
+        .then(res => {
+            console.log('toast for download p');
+            const evt = new ShowToastEvent({
+               // title: 'Download Portfolio',
+                message: 'Downloading....',
+                variant: 'success',
+                duration:10000,
+            });
+            this.dispatchEvent(evt);
+            console.log('res' +JSON.stringify(res));
+           this.downloaddata= res.map(dt=>{
+                let tmp = {...dt};
+                if(!tmp.customerLegalName){ tmp.customerLegalName = ' '; }
+                if(!tmp.contractNumber){ tmp.contractNumber = ' '; }
+                if(!tmp.assetNumber){tmp.assetNumber = ' '; }
+                if(!tmp.assetOriginalCost) { tmp.assetOriginalCost = ' ';}
+                if(!tmp.assetEquipmentPayment) {tmp.assetEquipmentPayment = ' '; }
+                if(!tmp.contractOriginalCost) {tmp.contractOriginalCost = ' ';}
+                if(!tmp.totalEquipmentPayment) {tmp.totalEquipmentPayment = ' ';}
+                if(!tmp.servicePayment) {tmp.servicePayment = ' ' ;}
+                if(!tmp.assetBrand) {tmp.assetBrand = ' ';}
+                if(!tmp.assetModel) {tmp.assetModel = ' ';}
+                if(!tmp.assetSerialNumber) {tmp.assetSerialNumber = ' ';}
+                if(!tmp.assetDescription) {tmp.assetDescription = ' ';}
+                if(!tmp.assetStatus) {tmp.assetStatus = ' ';}
+                if(!tmp.contractStartDate) {tmp.contractStartDate = ' ';}
+                if(!tmp.contractTerm) {tmp.contractTerm = ' ';}
+                if(!tmp.contractMaturityDate) {tmp.contractMaturityDate = ' ';}
+                if(!tmp.numofPaymentRemaining) {tmp.numofPaymentRemaining = ' ';}
+                if(!tmp.conPurchaseOpt) {tmp.conPurchaseOpt = ' ';}
+                if(!tmp.conPaymentfreq) {tmp.conPaymentfreq = ' ';}
+                if(!tmp.conType) {tmp.conType = ' ';}
+                if(!tmp.conSignerName) {tmp.conSignerName = ' ';}
+                if(!tmp.daysPastdue) {tmp.daysPastdue = ' ';}
+                if(!tmp.lastpayRcdDate) {tmp.lastpayRcdDate = ' ';}
+                if(!tmp.custAddressline1) {tmp.custAddressline1 = ' ';}
+                if(!tmp.custCity) {tmp.custCity = ' ';}
+                if(!tmp.custState) {tmp.custState = ' ';}
+                if(!tmp.custPostalcode) {tmp.custPostalcode = ' ';}
+                if(!tmp.custPhnum) {tmp.custPhnum = ' ';}
+                if(!tmp.astAddress1) {tmp.astAddress1 = ' ';}
+                if(!tmp.astAddress2) {tmp.astAddress2 = ' ';}
+                if(!tmp.astCity) {tmp.astCity = ' ';}
+                if(!tmp.astState) {tmp.astState = ' ';}
+                if(!tmp.astPostalCode) {tmp.astPostalCode = ' ';}
+                if(!tmp.astBillingAdd1) {tmp.astBillingAdd1 = ' ';}
+                if(!tmp.astBillingAdd2) {tmp.astBillingAdd2 = ' ';}
+                if(!tmp.astBillingCity) {tmp.astBillingCity = ' ';}
+                if(!tmp.astBillingState) {tmp.astBillingState = ' ';}
+                if(!tmp.astBillingPstCode) {tmp.astBillingPstCode = ' ';}
+                if(!tmp.salesRep) {tmp.salesRep = ' ';}
+                return tmp;
+           });     
+       
+        if(!this.downloaddata || !this.downloaddata.length){
+            
+            return null
+        }
+        const jsonObject = JSON.stringify(this.downloaddata);
+        const result = this.convertToCSV(jsonObject, this.headers);
+        if(result === null) return
+        const blob = new Blob([result])
+        const exportedFilename = 'Applications' + fullDate +'.csv';
+        if(navigator.msSaveBlob){
+            navigator.msSaveBlob(blob, exportedFilename)
+        } else if (navigator.userAgent.match(/iPhone|iPad|iPod/i)){
+            const link = window.document.createElement('a')
+            link.href='data:text/csv;charset=utf-8,' + encodeURI(result);
+            link.target="_blank"
+            link.download=exportedFilename
+            link.click()
+        } else {
+            const link = document.createElement("a")
+            if(link.download !== undefined){
+                const url = URL.createObjectURL(blob)
+                link.setAttribute("href", url)
+                link.setAttribute("download", exportedFilename)
+                link.style.visibility='hidden'
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+            }
+        }
+
+    }) 
+    }
+
+
+     convertToCSV(objArray, headers){
+        
+        const columnDelimiter = ','
+        const lineDelimiter = '\r\n'
+        const actualHeaderKey = Object.keys(headers)
+        const headerToShow = Object.values(headers) 
+        let str = ''
+        str+=headerToShow.join(columnDelimiter) 
+        str+=lineDelimiter
+        const data = typeof objArray !=='object' ? JSON.parse(objArray):objArray
+    
+        data.forEach(obj=>{
+            let line = ''
+            actualHeaderKey.forEach(key=>{
+                if(line !=''){
+                    line+=columnDelimiter
+                }
+                let strItem = obj[key]+''
+                line+=strItem? strItem.replace(/,/g, ''):strItem
+            })
+            str+=line+lineDelimiter
+        })
+      
+        return str
+    } 
+    /* end of Download Applications */
 
     // Submit Credit Application on click of Create New Application button
     /*

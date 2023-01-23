@@ -542,10 +542,10 @@ export default class assetcreation extends LightningElement {
             if (typeof this.asset.unitSalesPrice === 'undefined') {
                 missingDataNames.push('Unit Sales Price');
             }
-            
             if (typeof this.asset.numberOfUnits === 'undefined' || this.asset.numberOfUnits == '') {
                 missingDataNames.push('Number of Units');
             }
+            
             this.showToast('Missing data for subsidies', missingDataNames.join(', '), 'error');
             return;
         }
@@ -575,8 +575,9 @@ export default class assetcreation extends LightningElement {
             paymentFrequency: this.quoteObject.paymentFrequency.toLowerCase(), financeAmount : this.asset.numberOfUnits * this.asset.unitSalesPrice,
             assetCondition: this.quoteObject.assetTypeQuote, paymentTiming : 'in-arrears', financeType : financeTypeTranslated}) 
             .then(result => {
+                console.log('this condition:' + this.quoteObject.assetTypeQuote);
                 //console.log('Apex has finished with getSubsidies');
-                ////console.log(result);
+                console.log(JSON.stringify(result));
                 let data = JSON.parse(result);
                 //console.log(JSON.parse(JSON.stringify(data)));
                 let subsidyFound = 'false';
@@ -584,7 +585,7 @@ export default class assetcreation extends LightningElement {
                 if (data.data.subsidies.manufacturer[0].interest.nominalRate.percentages.length > 0)
                     subsidyFound = 'true';
                 
-                //console.log('subsidy: ' + subsidyFound);
+                console.log('subsidy: ' + subsidyFound);
 
 
                 if (subsidyFound === 'true') { //remember to add subsidy name (this.subsidyName)
@@ -661,11 +662,11 @@ export default class assetcreation extends LightningElement {
 
         this.dispatchEvent(assetEvent);
 
-        setTimeout(() => {
+        /* setTimeout(() => {
             console.log('handle change' + JSON.stringify(this.asset));
             this.callSubsidies(event);
         }, 1500);
-
+        */
     
 
         

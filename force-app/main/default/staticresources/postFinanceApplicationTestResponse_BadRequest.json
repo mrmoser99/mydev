@@ -1,0 +1,13 @@
+{
+  "error": {
+    "status": 400,
+    "title": "Bad_request",
+    "type": "https://developer.dllgroup.com/problems/bad_request",
+    "details": [
+      {
+        "detail": "instance.data.lessee.contacts[0].phoneNumbers[0] requires property \"number\"",
+        "type": "1.NA.COM.400.00001"
+      }
+    ]
+  }
+}

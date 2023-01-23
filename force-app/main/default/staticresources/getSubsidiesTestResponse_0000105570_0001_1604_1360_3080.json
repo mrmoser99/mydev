@@ -1,0 +1,39 @@
+{
+  "data": {
+    "name": "Q1185",
+    "id": "1.NA.PI.0000105570-0001.1604.1008.1000.FMV",
+    "contractType": "operating-lease",
+    "modifiedDate": "2021-11-16T20:29:08.937Z",
+    "subsidies": {
+      "manufacturer": [
+        {
+          "id": "NA.PI.0000105570-0001.1604.1008..fair-market-value.1103",
+          "name": "1.99% Interest for 48 Months",
+          "description": "1.99% interest isother durations",
+          "maximumAmount": 25000,
+          "interest": {
+            "nominalRate": {
+              "percentages": [
+                {
+                  "inputs": {
+                    "paymentFrequency": "monthly",
+                    "paymentTiming": "in-advance",
+                    "numberOfMonths": 48,
+                    "initialDelay": 0,
+                    "initialPaymentMultiplier": 0,
+                    "securityDepositMultiplier": 0,
+                    "financeAmount": 500000,
+                    "assetConditions": [],
+                    "assetBrandNames": ["Yale"],
+                    "assetModelNames": []
+                  },
+                  "outputs": { "default": 1.99 }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

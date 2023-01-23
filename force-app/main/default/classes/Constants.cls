@@ -35,6 +35,7 @@ public with sharing class Constants {
     public static final String NORDICS_INTERNAL_DLL_MEMBER = 'Nordics Internal MVP';
     public static final String SYSTEM_ADMIN_PROFILE_NAME = 'System Administrator';
     public static final String LIFE_PROFILE = 'LIFE Profile';
+    public static final String 	GLOBAL_BUSINESS_ADMINISTRATION = 'Global Business Administration';
     
     // Record types for Account object   
     public static final String VENDOR_ACCOUNT_RECORDTYPE_DEVELOPER_NAME = 'Vendor';

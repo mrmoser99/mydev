@@ -24,7 +24,7 @@
 
         <template if:true={isModalOpen}>
             <div class="slds-box" style = "height: 600px;">
-                <c-cross-corporate-address oncancelevent={closeModalpopup} recordid={recordId}>
+                <c-cross-corporate-address oncancelevent={closeModalpopup} onnodataevent ={handlenodata} recordid={recordId} cusdata={Customer}>
                 </c-cross-corporate-address>
             </div>
         </template>
@@ -34,18 +34,22 @@
     <template if:true={showCustomer}>
 
                 <div class="slds-box slds-theme_default">
+                  
+
                     <div>
                           <b> <lightning-formatted-text value={Customer.Name}></lightning-formatted-text> </b>
                     </div>
                    
+                  
+                   
                     <div>
                             <lightning-formatted-text value={Customer.Phone}></lightning-formatted-text>
                     </div> 
-                    
+               
                     <div>
                         <lightning-formatted-text value={Customer.Email__c}></lightning-formatted-text>
                     </div> <br>
-                   
+               
                     <div>
                          <lightning-formatted-text value={Customer.BillingStreet}></lightning-formatted-text> <br>
                          <lightning-formatted-text value={Customer.BillingCity}></lightning-formatted-text>,
@@ -55,18 +59,27 @@
                          </template>
                          <lightning-formatted-text value={Customer.BillingCountry}></lightning-formatted-text> 
                         </div> 
+                 
                 </div>
-
+                
                 <div>
                     <br> <label class="slds-form-element__label" style="font-weight: bold;"
                         for="form-element-05">EIN : </label>
                      <lightning-formatted-text value={Customer.Tax_ID__c}></lightning-formatted-text>
                     
             </div>
+       
 
             <p style="color: #33ccff;font-weight: bold;cursor: pointer;" class="slds-var-m-around_small"
                 onclick={addCustomer}>
                 Edit Cross Corporate Guarantee</p>
+
+                <template if:true={isModalOpen}>
+                    <div class="slds-box" style = "height: 600px;">
+                        <c-cross-corporate-address oncancelevent={closeModalpopup} onnodataevent={closeModalnodata}  recordid={recordId} cusdata={Customer}>
+                        </c-cross-corporate-address>
+                    </div>
+                </template>
                
     </template>
 </template>

@@ -4,6 +4,13 @@
  * @group             : 
  * @last modified on  : 22-04-2022
  * @last modified by  : Kritika Sharma
+ * @Changes Log        :
+ * Date       - BUG/PBI    - Author                   - Description
+ * 09/22/2022 - BUG 862084 - Fernando Nereu de Souza  - Empty Related Party being created in the Credit Application
+ * 10/05/2022   BUG 860568 - Fernando Nereu de Souza  - As a credit check I want to create an opportunity only when save or submit is selected 
+ * 11/18/2022 : Added methods for Credit Add Additional Info feature: Geetha
+ * 12/11/2022 - PBI 768016 - Fernando Nereu de Souza - Delete Beneficial Owner from Credit Application
+ * 02/01/2023 : PBI 930611 - Dibyendu                - Sharing rules Field population 
 **/
 public with sharing class CreditApplicationHeaderController {
 
@@ -18,8 +25,7 @@ public with sharing class CreditApplicationHeaderController {
         }
         oppRecord.Customer_Story__c=customerStory.get('story');
 
-        if(customerStory.get('amount')!=null && customerStory.get('amount')!='') {
-            system.debug('FNS Amount::'+customerStory.get('amount'));
+        if(customerStory.get('amount')!=null && customerStory.get('amount')!='') {            
             
             oppRecord.Amount = Decimal.valueOf(customerStory.get('amount'));
         }
@@ -46,6 +52,15 @@ public with sharing class CreditApplicationHeaderController {
         database.update(oppRecord);
         return true;
     }
+    
+    //Delete UBO from Credit Application
+    @AuraEnabled
+    public static Boolean DeleteBenefitOwnerData(String benefitOwner, Id opportunityId){
+        Set<Id> contactId=new Set<Id>();              
+        List<Contact> contactList=[select Id from Contact where Id = :benefitOwner];        
+        delete contactList;
+    return true;        
+    }
 
     @AuraEnabled // Don't make it cacheable
     public static Boolean UpdateBenefitOwnerData(List<Map<String,string>> benefitOwner, Id opportunityId ){
@@ -56,7 +71,7 @@ public with sharing class CreditApplicationHeaderController {
         }
         
         List<Contact> contactList=[select Id,Account_Ownership_Percentage__c from Contact where Id In :contactId];
-		      
+          
         // Update existing contacts
         for(integer i=0;i<contactList.size();i++) {
             for(integer j=0;j<benefitOwner.size();j++) {
@@ -84,11 +99,11 @@ public with sharing class CreditApplicationHeaderController {
                 }
             }
         }
-		        
+            
         // Update existing contacts
         system.debug('update contactList');
         update contactList;
-		        
+            
         // Add new contacts
         Contact c = new Contact();
         List<Contact> newContacts = new List<Contact>();
@@ -119,13 +134,13 @@ public with sharing class CreditApplicationHeaderController {
                 newContacts.add(c);
             }
         }
-		        
+            
         // Add new contacts
         if(newContacts.size() > 0) {
             system.debug('insert newContacts');
             insert newContacts;
         }
-		       
+           
         // Add the contact roles
         List<OpportunityContactRole> newContactRoles = new List<OpportunityContactRole>();
         OpportunityContactRole newCR = new OpportunityContactRole();
@@ -140,13 +155,13 @@ public with sharing class CreditApplicationHeaderController {
         if(newContactRoles.size() > 0){
             system.debug('insert newContactRoles');
             insert newContactRoles;
-        }		
+        }    
         return true;
     }
     
     @AuraEnabled(cacheable=true)
     public static List<Contact> getContactField(Id opportunityId){
-		system.debug('In GetContact FIeld');
+    system.debug('In GetContact FIeld');
         system.debug('OpportunityContactRole: ' + opportunityId);
 
         List<OpportunityContactRole> contactRole = [
@@ -231,7 +246,8 @@ public with sharing class CreditApplicationHeaderController {
                 Term__c,
                 Type,
                 Years_in_Business__c,
-            	Opportunity_Number__c
+              Opportunity_Number__c,
+              Resubmit_Comments__c
             FROM Opportunity
             WHERE Id = :opportunityId
             LIMIT 1
@@ -345,7 +361,8 @@ public with sharing class CreditApplicationHeaderController {
         database.update(oppRecord);
         return true;
     }
-
+    
+ //Retrieve Personal guarantor - Creditapp Additional info 
     @AuraEnabled(cacheable=false)
     public static String getRelatedPartyForOpp(String oppId) {
         try {
@@ -361,11 +378,11 @@ public with sharing class CreditApplicationHeaderController {
 
             return JSON.serialize(relatedPartyReturn);
         } catch (QueryException e) {
-			return null;
+      return null;
         }
     }
 
-    //Retrieve cross corporate guarantor for creditapp additional info feature
+    //Retrieve cross corporate guarantor - Creditapp Additional info 
      @AuraEnabled(cacheable=false)
     public static String getCrossRelatedPartyForOpp(String oppId) {
         system.debug('cross oppid here' +oppId);
@@ -390,15 +407,15 @@ public with sharing class CreditApplicationHeaderController {
 
             return JSON.serialize(relatedPartyReturn);
         } catch (QueryException e) {
-			return null;
+      return null;
         }
     }
     
-    
+    //Method to insert/update RelatedParty (Personal Guarantor) - Creditapp Additional info 
     @AuraEnabled(cacheable=false)
     public static Boolean saveRelatedPartyForOpp(String oppId, String firstName, String middleName, String lastName, String ssn) {
         Related_Party__c relatedPartyUpdate;
-		if (!String.isEmpty(firstName) && !String.isEmpty(lastName) && !String.isEmpty(ssn)) {
+    if (!String.isEmpty(firstName) && !String.isEmpty(lastName) && !String.isEmpty(ssn)) {
             system.debug('inside if 370');
             try {
                 relatedPartyUpdate = [
@@ -434,18 +451,28 @@ public with sharing class CreditApplicationHeaderController {
                 relatedPartyUpdate.Type__c = 'Guarantor';
                 insert relatedPartyUpdate;
             }
-    	}
+      }
 
         return true;
     }
 
+    //Method to insert/update RelatedParty (CrossCorporate Guarantor) - Creditapp Additional info 
     @AuraEnabled(cacheable=false)
-     public static Boolean saveRelatedPartyForOpp1(String oppId, String firstName, String middleName, String lastName, String ssn) {
+     public static Boolean saveRelatedPartyForOpp1(String oppId, Object crossCorp) {
+        Map<String, String>  crossCorpMap = (Map<String, String>) JSON.deserialize(JSON.serialize(crossCorp), Map<String, String>.class);
         Related_Party__c relatedPartyUpdate;
-         system.debug('string fn' +firstName +ssn);
-         ssn = ssn.replace('-','');
-          system.debug('string fn' +firstName +ssn);
-		if (!String.isEmpty(firstName) && !String.isEmpty(ssn)) {
+        
+        String ssn = crossCorpMap.get('Tax_ID__c'); //.replace('-','')
+        ssn = ssn.replace('-','');
+        String crossName = crossCorpMap.get('Name');
+        String phone = crossCorpMap.get('Phone');
+        String email = crossCorpMap.get('Email__c');
+        String billingcity = crossCorpMap.get('BillingCity');       
+        String billingstate =  crossCorpMap.get('BillingState');
+        String postalcode = crossCorpMap.get('BillingPostalCode');
+        String billingcountry = crossCorpMap.get('BillingCountry');
+        String fullAddress = crossCorpMap.get('BillingStreet');
+    if (!String.isEmpty(crossName) && !String.isEmpty(ssn)) {
             system.debug('inside if cross');
             try {
                 relatedPartyUpdate = [
@@ -460,31 +487,43 @@ public with sharing class CreditApplicationHeaderController {
                     WHERE (Opportunity__c = :oppId) AND (Type__c = 'CrossCorporate')
                     LIMIT 1
                 ];
-                if (String.isBlank(firstName) && String.isBlank(ssn)) {
+                if (String.isBlank(crossName) && String.isBlank(ssn)) {
                     delete relatedPartyUpdate;
                     return true;
                 }
-                relatedPartyUpdate.First_Name__c = firstName;
-               
+                relatedPartyUpdate.First_Name__c =crossName;
+                relatedPartyUpdate.Phone__c = phone;
+                relatedPartyUpdate.Email__c = email;
                 relatedPartyUpdate.SSN_Encrypted__c = ssn;
-                relatedPartyUpdate.Name = firstName;
+                relatedPartyUpdate.Name = crossName;
+                relatedPartyUpdate.City__c = billingcity;
+                relatedPartyUpdate.State__c = billingstate;
+                relatedPartyUpdate.Postal_Code__c = postalcode;
+                relatedPartyUpdate.Country_Code__c = billingcountry;
+                 relatedPartyUpdate.Address_Line__c = fullAddress;
                 update relatedPartyUpdate;
             } catch (Exception e) {
                 relatedPartyUpdate = new Related_Party__c();
-                relatedPartyUpdate.First_Name__c = firstName;
-               
+                relatedPartyUpdate.First_Name__c = crossName;
+                relatedPartyUpdate.Phone__c = phone;
+                relatedPartyUpdate.Email__c = email;
                 relatedPartyUpdate.SSN_Encrypted__c = ssn;
                 relatedPartyUpdate.Opportunity__c = oppId;
-                relatedPartyUpdate.Name = firstName;
+                relatedPartyUpdate.Name = crossName;
+                relatedPartyUpdate.City__c = billingcity;
+                relatedPartyUpdate.State__c = billingstate;
+                relatedPartyUpdate.Postal_Code__c = postalcode;
+                relatedPartyUpdate.Country_Code__c = billingcountry;
+                relatedPartyUpdate.Address_Line__c = fullAddress;
                 relatedPartyUpdate.Type__c = 'CrossCorporate';
                 insert relatedPartyUpdate;
             }
-    	}
+      }
 
         return true;
     }
     
-    //Method to save comments in Addinfo section
+    //Method to save comments in Addinfo section - Creditapp Additional info //Geetha
     @AuraEnabled(cacheable=false)
     public static boolean saveComments(String comments, Id oppId){
         system.debug('savecomm ' +comments +oppId);
@@ -505,6 +544,11 @@ public with sharing class CreditApplicationHeaderController {
         if (!String.isBlank(location)) {
             newOpp.AccountId = [SELECT Id, Originating_Site_ID__c from Account where Originating_Site_ID__c = :location Limit 1].Id;
         }
+        //Start Of Change for PBI 930611-Sharing Rule Field Population
+        newOpp.Business_Unit1__c = [select id,label,Business_Unit__c from Contact_Support__mdt where label='Contact Support DLL CTI' Limit 1].Business_Unit__c;
+        newOpp.Business_Unit_Description__c = System.Label.CTI_BUSINESS_UNIT;
+        newOpp.Legal_Entity_Description__c = 'DLL';
+        //End Of Start Of Change for PBI 930611 - -Sharing Rule Field Population
         newOpp.CloseDate = System.today() + 30;
         newOpp.StageName = 'Quoting';
         newOpp.Sub_Stage__c = 'Application Draft';
@@ -520,5 +564,22 @@ public with sharing class CreditApplicationHeaderController {
         }
 
         return newOpp.Id;
+    }
+    
+    //New method to query Cross corp guar record
+    
+    @AuraEnabled
+    public static Related_Party__c getRelatedParty_onload(Id oppId, String conType){
+        system.debug('seeoppid' +oppId +' ' +conType);
+        return [
+             SELECT
+                    First_Name__c,
+                    Last_Name__c,
+                    Middle_Name__c,
+                    SSN_Encrypted__c,
+                    Opportunity__c,
+                    Type__c
+                    FROM Related_Party__c
+                    WHERE Opportunity__c = :oppId AND Type__c = :conType limit 1];
     }
 }

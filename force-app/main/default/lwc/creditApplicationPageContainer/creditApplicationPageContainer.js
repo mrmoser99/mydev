@@ -26,12 +26,14 @@ import getUserSite from "@salesforce/apex/PricingUtils.getUserSite";
 import submitCreditApp from '@salesforce/apex/CreditAppUtils.submitCreditApp';
 import submitPreQualCreditApp from '@salesforce/apex/CreditAppUtils.submitPreQualCreditApp';
 import UpdateBenefitOwnerData from '@salesforce/apex/CreditApplicationHeaderController.UpdateBenefitOwnerData';
+import DeleteBenefitOwnerData from '@salesforce/apex/CreditApplicationHeaderController.DeleteBenefitOwnerData';
 import UpdateQuoteData from '@salesforce/apex/CreditApplicationHeaderController.UpdateQuoteData';
 import {api, track, LightningElement, wire} from 'lwc';
 import {CurrentPageReference} from 'lightning/navigation';
 import {NavigationMixin} from 'lightning/navigation';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
+import LightningConfirm from 'lightning/confirm';
 
 
 // Custom Labels
@@ -62,6 +64,7 @@ import ENROLL_ENABLED from '@salesforce/label/c.ENROLL_ENABLED';
 import { loadScript } from 'lightning/platformResourceLoader';
 import cometd from '@salesforce/resourceUrl/cometd';
 import getSessionId from '@salesforce/apex/GenericUtilityClass.getSessionId';
+import SystemModstamp from '@salesforce/schema/Account.SystemModstamp';
 
 export default class CreditApplicationPageContainer extends NavigationMixin(LightningElement){
     label = {
@@ -160,6 +163,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     submittedStatus='';
     //Model Pop-up on click of cancel button
     isModalOpen = false;
+    isModalBOOpen = false;
     // public property
     @api sectionTitle;
     @api sectionSubTitle;
@@ -186,6 +190,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     salesReplist=[];
     accordionSection = 0;
     createOpportunity = 0;
+    tempBeneficialOwner=[];
 
     benefitOwner;
     //finance structure
@@ -365,6 +370,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         //this.advance = '0';
         //this.frequency = 'monthly';
         console.log('in getUserSite');
+        
 
         if (data) {
             let parsedData = JSON.parse(data);
@@ -420,7 +426,8 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     }
 
     @wire(getContactField, {opportunityId: '$oppId', loadCount: '$contactRolesReloaded'})
-    wiredGetContact({ error, data }){
+    wiredGetContact({ error, data }){      
+        console.log('wiredGetContact');  
         if (data) {
             this.beneficialOwner = [];
             var ownerLen=0;
@@ -445,6 +452,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 });
                 this.hasBeneficialOwner = ownerLen;
             }
+                        
         }else if (error) {
             this.beneficialOwner = [];
         }
@@ -457,13 +465,13 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
 
             this.assets = [];
             var assetLen=0;
-
+            
             const formatter = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',
                 minimumFractionDigits: 2
             })
-
+            
             for(var i=0;i<data.length;i++) {
                 assetLen=i+1;
                 this.assets.push({
@@ -486,8 +494,9 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 });
             }
 
-        } else if (error) {
-
+        }
+        else if (error) {
+                    
         }
     }
     @wire(getQuoteLineForAccessoryField, {opportunityId: '$oppId'})
@@ -676,7 +685,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             console.log('Sales Rep: ' + this.salesRepValue);
 
             if(data.Opportunity_Number__c != null){
-                this.quoteNumberValue = data.Opportunity_Number__c;
+                    this.quoteNumberValue = data.Opportunity_Number__c;  
             } else {
                 this.quoteNumberValue = '';
             }
@@ -708,17 +717,49 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             if (startSalesRep) {
                 startSalesRep.value = this.salesRepValue;
             }
-
+            
             // Credit Check
-            if (data.Type === 'Credit Check') {
+            if (data.Type === 'Credit Check') {  
                 console.log('in data isCreditCheck');
                 this.isCreditCheck = true;
                 this.totalPrice = data.Amount;
                 this.salesRep = this.salesRepValue;
+                
                 //this.applicationNameValue = data.Pre_Qualification_Application_Number__c;
                 if (data.Account) {
                     this.location = data.Account.Originating_Site_ID__c;
                 }
+
+                getContactField({opportunityId: this.oppId, loadCount: this.opportunityDataReloaded})         
+                .then(data=> 
+                {
+                    console.log('INSIDE GETCONTACTFIELD this.oppId::' + this.oppId);            
+                    this.beneficialOwner = [];
+                    var ownerLen=0;
+            
+                    for(var i=0;i<data.length;i++) {
+                        ownerLen=i+1;
+                        var auxDOBcheck = data[i].Birthdate_Encrypted__c == null ?  true : false; // BUG 855965 - Lucas Silva
+                        this.beneficialOwner.push({
+                            ownerHeading:                   'Beneficial Owner '+ownerLen,
+                            endUserAccount:                 data[i].AccountId,
+                            ownerNo:                        ownerLen,
+                            firstName:                      data[i].FirstName,
+                            middleName:                     data[i].MiddleName,
+                            lastName:                       data[i].LastName,
+                            titleValue:                     data[i].Title,
+                            dateOfBirthValue:               data[i].Birthdate_Encrypted__c,
+                            dateOfBirthValueForMasking:     '********',
+                            dobEmptyCheck:                  auxDOBcheck,
+                            countryOfResidenceValue:        data[i].UBO_Country_of_Residence__c,
+                            ownershipPercentageValue:       data[i].Account_Ownership_Percentage__c,
+                            uboID:                          data[i].Id
+                        });
+                        this.hasBeneficialOwner = ownerLen;
+                    }                                
+                    console.log('thendata' +JSON.stringify(data));
+                })
+        
             } else {
                 this.isCreditCheck = false;
                 //this.loading = true;
@@ -752,10 +793,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         }
     }
 
-    connectedCallback(){
-
-     
-
+    connectedCallback(){        
         // All three of the following arrays have to maintain their exact order and count as they map to the same index in each array.
         var fieldOptions=['Rate_Type__c','Finance_Term_Month__c','Lease_Type__c','Payment_Frequency__c','Advance_Payments__c',
             'Make__c','Asset_Type_ITA_Class__c','Model__c','Mast_Type__c','Operating_Environment__c','Battery_Included__c','Number_of_Units__c','Subsidy__c',
@@ -852,7 +890,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
 
     handleChangeSalesRep(event) {        
         this.salesRep = '';
-        this.salesRepList = this.salesRepListBackup;
+        //this.salesRepList = this.salesRepListBackup;
         event.target.inputValue = '';
         this.salesRep = this.salesRepList.find(element => element.value === event.target.value).label;
         this.salesRepId = event.target.value;
@@ -931,6 +969,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 console.log('getSalesReps Done');
                 this.accordionSection = 1;
                 console.log(JSON.parse(JSON.stringify(sList)));
+                this.salesRepList = sList;
                 this.loading = false;
 
 
@@ -1189,6 +1228,16 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     clearCustomer(){
         //delete customer information by apex
     }
+
+    openBOModal() {
+        // to open modal set isModalOpen tarck value as true
+        this.isModalBOOpen = true;
+    }
+    closeBOModal() {
+        // to close modal set isModalOpen tarck value as false
+        this.isModalBOOpen = false;
+    }
+
 
     // --------------------------------- model pop-up on click of cancel button--------------------------//
     openModal() {
@@ -2158,6 +2207,47 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 this.beneficialOwner[i].ownershipPercentageValue=event.detail.value;
             }
         }
+    }
+
+    async handleDeleteBO(event){ 
+        var boTarget = event.target.name;
+        console.log('boTarget::'+boTarget);
+        const result = await LightningConfirm.open({
+            message: 'Are you sure you want delete Beneficial Owner ?',
+            label: 'Are you sure ?',
+            // label value isn't visible in the headerless variant
+        });        
+        if (result == true) {
+            for(var i=0;i<this.beneficialOwner.length;i++) {
+                if(this.beneficialOwner[i].ownerNo==boTarget) {
+                    
+                    this.loading = true;
+                    this.tempBeneficialOwner = this.beneficialOwner[i];                    
+                    console.log('this.beneficialOwner[i]::'+this.beneficialOwner[i]);
+                    this.beneficialOwner.splice(i,1);
+                    
+                    if (this.oppId != undefined) {
+                        console.log('this.tempBeneficialOwner.uboID::'+this.tempBeneficialOwner.uboID);
+                        DeleteBenefitOwnerData({
+                            benefitOwner: this.tempBeneficialOwner.uboID,
+                            opportunityId: this.oppId
+                        }).then(result => {
+                            if (result) {
+                                const evt = new ShowToastEvent({
+                                    title: "Beneficial Owner Removed",
+                                    message: "Beneficial Owner Removed",
+                                    variant: 'success',
+                                    duration: 10000,
+                                });
+                                this.dispatchEvent(evt);
+                            }
+                        })
+                    }
+                    this.loading = false;
+                }
+            }
+        }
+        
     }
 
     // Tag along with the customer story.

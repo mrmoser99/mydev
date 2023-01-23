@@ -116,8 +116,14 @@ export default class CustomerQuickSearch extends LightningElement {
     objectName='Account';
     isModalOpen=false;
     errorStateMsg='';
+    
+    connectedCallback() {
 
-    /***********************************************************************************************************
+        console.log('FB');
+        fillBufferLWC();
+
+
+    }    /***********************************************************************************************************
     * getCustomerId
     ************************************************************************************************************/
     @wire(getCustomerId,{ recordId: '$recordId', refreshExecute : '$refreshExecute'}) 
@@ -317,6 +323,11 @@ export default class CustomerQuickSearch extends LightningElement {
             });
             this.dispatchEvent(selectedEvent);
             */
+            const successEvent = new CustomEvent('updatecomplete',{
+                detail:'success'
+            });
+            this.dispatchEvent(successEvent);
+
         })
         .catch(error => {
             this.searchData = undefined;
@@ -357,7 +368,7 @@ export default class CustomerQuickSearch extends LightningElement {
         
         this.strSearchAccName = null;
         this.city = null;
-        this.state = '';
+        this.state = null;
         this.showDataTable = false;
         this.searchDataContract = [];
         this.showQuickSearch = true;
@@ -441,12 +452,6 @@ export default class CustomerQuickSearch extends LightningElement {
         this.dispatchEvent(selectedEvent);
     }
 
-    connectedCallback() {
 
-        console.log('FB');
-        fillBufferLWC();
-
-
-    }
 
 }

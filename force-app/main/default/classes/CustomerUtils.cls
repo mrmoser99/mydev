@@ -192,6 +192,7 @@ static List<Account> quickSearchDynamic(String strAccName, String city, String s
 
 	city = '%' + city + '%';
 
+
 	//List<Contract__c> checkList = [select name from Contract__c];
 	//system.debug('Checklist size is: ' + checkList.size());
 
@@ -729,7 +730,8 @@ public static void saveErrorLog(String e) {
 @AuraEnabled
 public static void fillBufferLWC(){
     //having some intial load performanc issues for searching....addedit this to fire up the buffers and speed customer
-    //search; MRM 10/31/2022; revised on 12/9/2022;
+    //search; MRM 10/31/2022; 
+	// revised on 12/9/2022;
 
     CustomerUtils.fillBuffer();
 }
@@ -751,17 +753,13 @@ public without sharing class fillNoShare {
     List<Account> b2 = [SELECT id, name FROM Account where name like '% %' limit 5000 ];
 
 	List<Contract__c> c1 = [Select end_user__r.name, end_user__r.billingstate from Contract__c limit 5000];
-
-
     }
-
 }
-
 
 //some extra lines to cover test of 75%
 public static void coverTest(){
 	integer i = 0;
-
+  
 	i++;
 	i++;
 	i++;
@@ -1451,8 +1449,7 @@ public static void coverTest(){
 	i++;
 	i++;
 	i++;
-
-
+  
 }
 
 

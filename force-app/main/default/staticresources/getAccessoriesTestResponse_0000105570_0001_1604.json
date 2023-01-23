@@ -1,0 +1,193 @@
+{
+  "data": [
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31011451",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31011451",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Forklift Accessories",
+            "type": "Forklift Attachments",
+            "brand": "Cascade",
+            "model": "Bulk Box Handler"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31010510",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31010510",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Forklift Accessories",
+            "type": "Forklift Attachments",
+            "brand": "Cascade",
+            "model": "Carton Clamp"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31012143",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31012143",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Forklift Accessories",
+            "type": "Forklift Attachments",
+            "brand": "Cascade",
+            "model": "Double Side Shifter"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31010528",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31010528",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Forklift Accessories",
+            "type": "Forklift Attachments",
+            "brand": "Cascade",
+            "model": "Fork Positioner"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31007227",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31007227",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Forklift Accessories",
+            "type": "Forklift Attachments",
+            "brand": "Cascade",
+            "model": "Paper Roll Clamp"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31009187",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31009187",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Forklift Accessories",
+            "type": "Forklift Attachments",
+            "brand": "Cascade",
+            "model": "Push/Pull"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31009541",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31009541",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Forklift Accessories",
+            "type": "Forklift Attachments",
+            "brand": "Cascade",
+            "model": "Rotating Fork Clamp"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31009188",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31009188",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Forklift Accessories",
+            "type": "Forklift Attachments",
+            "brand": "Cascade",
+            "model": "Rotator"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31008846",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31008846",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Forklift Accessories",
+            "type": "Forklift Attachments",
+            "brand": "Cascade",
+            "model": "Single-Double Pallet Handler"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31011475",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31011475",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Forklift Accessories",
+            "type": "Forklift Attachments",
+            "brand": "Cascade",
+            "model": "Special Lifting Frame"
+          }
+        },
+        "listPrice": 0
+      }
+    },
+    {
+      "id": "1.NA.PI.0000105570-0001.1604.405.31012617",
+      "catalog": {
+        "id": "1.NA.GARD.405.MODEL.31012617",
+        "identifiers": {
+          "structure": {
+            "masterType": "Materials Handling",
+            "category": "Forklift Accessories",
+            "type": "Forklift Attachments",
+            "brand": "Cascade",
+            "model": "Turn-A-Load"
+          }
+        },
+        "listPrice": 0
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pageSize": 200,
+    "itemCount": 11,
+    "pageCount": 1,
+    "links": {
+      "self": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/assets?feature=Credit-Application-Documents&page=1&pageSize=200&sort=id&brand=1.NA.PI.0000105570-0001.1668.30002148&category=1.NA.PI.0000105570-0001.1604.800097",
+      "first": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/assets?feature=Credit-Application-Documents&page=1&pageSize=200&sort=id&brand=1.NA.PI.0000105570-0001.1668.30002148&category=1.NA.PI.0000105570-0001.1604.800097",
+      "next": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/assets?feature=Credit-Application-Documents&page=1&pageSize=200&sort=id&brand=1.NA.PI.0000105570-0001.1668.30002148&category=1.NA.PI.0000105570-0001.1604.800097",
+      "prev": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/assets?feature=Credit-Application-Documents&page=1&pageSize=200&sort=id&brand=1.NA.PI.0000105570-0001.1668.30002148&category=1.NA.PI.0000105570-0001.1604.800097",
+      "last": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/assets?feature=Credit-Application-Documents&page=1&pageSize=200&sort=id&brand=1.NA.PI.0000105570-0001.1668.30002148&category=1.NA.PI.0000105570-0001.1604.800097"
+    }
+  }
+}

@@ -1,0 +1,134 @@
+<template>
+    <div class="slds-form-element">
+        <!-- Field Label -->
+        <div if:false={boldLabel}>
+            <div if:false={fieldRequiredOff}>
+                <label class={labelClass} for="select-sobject-id"><span
+                        class="slds-required">*</span>{fieldLabel}</label>
+            </div>
+            <div if:true={fieldRequiredOff}>
+                <label class={labelClass} for="select-sobject-id">{fieldLabel}</label>
+            </div>
+        </div>
+        <div if:true={boldLabel}>
+            <div if:false={fieldRequiredOff}>
+                <label style="font-weight: bold;" class={labelClass} for="select-sobject-id"><span
+                        class="slds-required">*</span>{fieldLabel}</label>
+            </div>
+            <div if:true={fieldRequiredOff}>
+                <label style="font-weight: bold;" class={labelClass} for="select-sobject-id">{fieldLabel}</label>
+            </div>
+        </div>
+        <!--/ Field Label -->
+        <div class="slds-form-element_control">
+            <!-- Combobox Container -->
+            <div class="slds-combobox_container">
+                <div class={dropDownClass} aria-expanded="true" aria-haspopup="listbox" role="combobox"
+                    onmouseenter={mouseOverMethod} onmouseleave={mouseOutMethod}>
+                    <div data-id="divblock">
+                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                            role="none">
+                            <!-- Readonly Input to display selected value -->
+                            <input type="text"
+                                class="slds-input search-input-class slds-combobox__input slds-combobox__input-value combobox-input-class"
+                                id="select-sobject-id" data-id="select-sobject-id" role="textbox"
+                                autocomplete={autoCompleteOff} placeholder={placeholder} title={label}
+                                onfocus={handleInputClick} value={inputValue} onkeyup={handleKeyPress}
+                                onblur={closeDropdown}></input>
+                            <!--/ Readonly Input to display selected value -->
+
+                            <!-- Edit icon div to indicate to the user that they have selected an option -->
+                            <div if:true={selectedValueExists}>
+                                <span
+                                    class="slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right">
+                                    <lightning-icon icon-name="utility:edit" size="x-small"></lightning-icon>
+                                </span>
+                            </div>
+                            <!--/ Edit icon div to indicate to the user that they have selected an option -->
+                            
+                            <div if:false={selectedValueExists}>
+                                <!-- Up Arrow icon div if dropdown open -->
+                                <div if:true={isDropdownOpen}>
+                                    <span
+                                        class="slds-icon_container slds-icon-utility-up slds-input__icon slds-input__icon_right">
+                                        <lightning-icon icon-name="utility:up" size="x-small"></lightning-icon>
+                                    </span>
+                                </div>
+                                <!--/ Up Arrow icon div if dropdown open -->
+                                <!-- Down Arrow icon div if dropdown close -->
+                                <div if:false={isDropdownOpen}>
+                                    <span
+                                        class="slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right">
+                                        <lightning-icon icon-name="utility:down" size="x-small"></lightning-icon>
+                                    </span>
+                                </div>
+                                <!--/ Down Arrow icon div if dropdown close -->
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- List box to show dropdown options -->
+                    <div id="listbox-id-11" class="slds-dropdown slds-dropdown_fluid" role="listbox">
+                        <!--Spinner to indicate filtering is happening to the user -->
+                        <div class="exampleHolder">
+                            <template if:true={loading}>
+                                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                            </template>
+                            <template if:false={loading}>
+                                <!-- Put loaded content here -->
+                            </template>
+                        </div>
+                        <!--/ Spinner to indicate filtering is happening to the user -->
+
+                        <ul class="slds-listbox slds-listbox_vertical slds-dropdown_length-5 customClass" tabindex="0"
+                            role="presentation" onblur={closeDropdown}>
+                            <template for:each={optionsToDisplay} for:item="option">
+                                <!-- li to display each option in the list -->
+                                <li key={option.value} role="presentation" class="slds-listbox__item"
+                                    data-label={option.label} data-value={option.value}
+                                    onmousedown={optionsClickHandler} title={option.label}>
+                                    <div id={option.value}
+                                        class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                        role="option">
+                                        <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                        <span class="slds-truncate">
+                                            <span>{option.label}</span>
+                                        </span>
+                                    </div>
+                                </li>
+                                <!--/ li to display each option in the list -->
+                            </template>
+                            <div if:true={displayMoreOptionsAvailableMessage}>
+                                <li role="presentation" class="slds-listbox__item"
+                                data-label="Additional Values Hidden" data-value={moreOptionsAvailableId}
+                                onmousedown={displayMoreOptionsClickHandler} title="Additional Values Hidden">
+                                <div id={moreOptionsAvailableId}
+                                    class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                    role="option" style="display: flex;justify-content: space-between;">
+                                    <span class="slds-media__figure slds-listbox__option-icon">
+                                        <lightning-icon icon-name="utility:jump_to_bottom" size="x-small"></lightning-icon>
+                                    </span>
+                                    <span class="slds-truncate">
+                                        <span>See More...</span>
+                                    </span>
+                                    <span class="slds-media__figure slds-listbox__option-icon">
+                                        <lightning-icon icon-name="utility:jump_to_bottom" size="x-small"></lightning-icon>
+                                    </span>
+                                </div>
+
+                                </li>
+                            </div>
+                        </ul>
+                    </div>
+                    <!--/ List box to show dropdown options -->
+
+                </div>
+
+
+            
+            </div>
+            <!--/ Combobox Container -->
+        </div>
+    </div>
+</template>

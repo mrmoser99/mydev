@@ -1,0 +1,11 @@
+{
+  "status": 500,
+  "title": "Internal_server_error",
+  "type": "https://developer.dllgroup.com/problems/internal_server_error",
+  "details": [
+    {
+      "detail": "An unexpected internal error was detected. Please contact support.",
+      "type": "1.NA.COM.500.00001"
+    }
+  ]
+}

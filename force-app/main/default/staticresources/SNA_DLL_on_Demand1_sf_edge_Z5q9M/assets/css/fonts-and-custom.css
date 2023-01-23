@@ -301,4 +301,12 @@ span[force-recordAvatar_recordAvatar]
 .comm-page-detail-a0n .slds-resizable__divider {
     display:none!important;
 }
+
+.slds-resizable__divider {
+    display: none!important;
+}
+
+a.tabHeader:hover {
+    color: black!important;
+}
 :root { --dxp-c-section-columns-max-width: 1440px; }

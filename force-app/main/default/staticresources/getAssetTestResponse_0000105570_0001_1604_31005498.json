@@ -1,0 +1,24 @@
+{
+  "data": {
+    "id": "1.NA.PI.0000105570-0001.1604.405.31005498",
+    "catalog": {
+      "id": "1.NA.GARD.405.MODEL.31005498",
+      "identifiers": {
+        "structure": {
+          "masterType": "Materials Handling",
+          "category": "Class V - Pneumatic Tire ICE",
+          "type": "Diesel Pneumatic Forklift",
+          "brand": "Yale",
+          "model": "GP060VX Diesel"
+        }
+      },
+      "economicLife": null,
+      "listPrice": 32388
+    },
+    "finance": {
+      "residualValue": {
+        "adjustments": {}
+      }
+    }
+  }
+}

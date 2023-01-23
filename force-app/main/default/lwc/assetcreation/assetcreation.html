@@ -50,11 +50,12 @@
             </lightning-layout-item>
             <lightning-layout-item size=6>
                 <lightning-input type="number" name="numberOfUnits" label="Number of Units" required="true"
-                    value={asset.numberOfUnits} onchange={handleChange}></lightning-input>
+                    autocomplete="off" value={asset.numberOfUnits} onchange={handleChange}
+                    onblur={callSubsidies}></lightning-input>
             </lightning-layout-item>
             <lightning-layout-item size=6 class="slds-p-right_small">
                 <lightning-input type="text" name="unitSalesPrice" data-id="unitSalesPrice" label="Unit Sales Price"
-                    required="true" value={asset.unitSalesPrice} onblur={callSubsidies}
+                    autocomplete="off" required="true" value={asset.unitSalesPrice} onblur={callSubsidies}
                     onchange={handleChangeSalesPrice} field-level-help='test'></lightning-input>
                 <!--onblur={callSubsidies}-->
             </lightning-layout-item>

@@ -53,28 +53,28 @@
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">First Name</label>
                                                 <lightning-input-field variant="label-hidden" field-name="Primary_Contact__c" disabled={editMode}> </lightning-input-field>-->
-                                                <lightning-input name="firstName" value={contactData.firstName} onchange={handleOnChangeContactData} label="First Name" required="true" disabled={editMode}></lightning-input>
+                                                <lightning-input name="firstName" autocomplete="off" value={contactData.firstName} onchange={handleOnChangeContactData} label="First Name" required="true" disabled={editMode}></lightning-input>
                                             </div>
                                             <div class="slds-col slds-size_6-of-12 paddingWithGrid">
                                                 <!--<abbr title="required" class="slds-required">* </abbr>
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">Last Name</label>
                                                 <lightning-input-field variant="label-hidden" field-name="Primary_Contact__c" disabled={editMode}> </lightning-input-field>-->
-                                                <lightning-input name="lastName" value={contactData.lastName} onchange={handleOnChangeContactData} label="Last Name" required="true" disabled={editMode}></lightning-input>
+                                                <lightning-input name="lastName" autocomplete="off" value={contactData.lastName} onchange={handleOnChangeContactData} label="Last Name" required="true" disabled={editMode}></lightning-input>
                                             </div>
                                             <div class="slds-col slds-size_6-of-12 paddingWithGrid">
                                                 <!--<abbr title="required" class="slds-required">* </abbr>
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">Phone Number</label>
                                                 <lightning-input-field variant="label-hidden" field-name="Phone" disabled={editMode}> </lightning-input-field>-->
-                                                <lightning-input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="phone" value={contactData.phone} onchange={handleOnChangeContactData} label="Phone Number" required="true" disabled={editMode}></lightning-input>
+                                                <lightning-input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="phone" autocomplete="off" value={contactData.phone} onchange={handleOnChangeContactData} label="Phone Number" required="true" disabled={editMode}></lightning-input>
                                             </div>
                                             <div class="slds-col slds-size_6-of-12 paddingWithGrid">
                                                 <!--<abbr title="required" class="slds-required">* </abbr>
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">Email</label>
                                                 <lightning-input-field type="text" variant="label-hidden" field-name="Email__c" disabled={editMode}></lightning-input-field>-->
-                                                <lightning-input type="email" name="email" value={contactData.email} onchange={handleOnChangeContactData} label="Email" required="true" disabled={editMode}></lightning-input>
+                                                <lightning-input type="email" name="email" value={contactData.email} autocomplete="off" onchange={handleOnChangeContactData} label="Email" required="true" disabled={editMode}></lightning-input>
                                             </div>
                                         </div>
                                     <!--</lightning-record-edit-form>-->
@@ -90,21 +90,21 @@
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">Address Line 1</label>
                                                 <lightning-input-field variant="label-hidden"  field-name="BillingStreet" disabled="true" > </lightning-input-field>-->
-                                                <lightning-input name="addressLineOne" value={accountData.addressLineOne} onchange={handleOnChangeAccountData} label="Address Line 1" required="true" disabled="true"></lightning-input>
+                                                <lightning-input name="addressLineOne" value={accountData.addressLineOne} autocomplete="off" onchange={handleOnChangeAccountData} label="Address Line 1" required="true" disabled="true"></lightning-input>
                                             </div>
                                             <div class="slds-col slds-size_6-of-12 paddingWithGrid">
                                                 <!--<abbr title="required" class="slds-required">* </abbr>-->
                                                 <!--<label class="slds-form-element__label requiredField"
                                                     for="form-element-04">Address Line 2</label>
                                                 <lightning-input-field variant="label-hidden"  field-name="BillingStreet" disabled="true" > </lightning-input-field>-->
-                                                <lightning-input name="addressLineTwo" value={accountData.addressLineTwo} onchange={handleOnChangeAccountData} label="Address Line 2" disabled="true"></lightning-input>
+                                                <lightning-input name="addressLineTwo" value={accountData.addressLineTwo} autocomplete="off" onchange={handleOnChangeAccountData} label="Address Line 2" disabled="true"></lightning-input>
                                             </div>
                                             <div class="slds-col slds-size_6-of-12 paddingWithGrid">
                                                 <!--<abbr title="required" class="slds-required">* </abbr>
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">City</label>
                                                 <lightning-input-field variant="label-hidden"  field-name="BillingCity" disabled="true" > </lightning-input-field>-->
-                                                <lightning-input name="city" value={accountData.city} onchange={handleOnChangeAccountData} label="City" required="true" disabled="true"></lightning-input>
+                                                <lightning-input name="city" value={accountData.city} onchange={handleOnChangeAccountData} autocomplete="off" label="City" required="true" disabled="true"></lightning-input>
                                             </div>
                                             <div class="slds-col slds-size_6-of-12 paddingWithGrid">
                                                 <!--<abbr title="required" class="slds-required">* </abbr>
@@ -118,14 +118,14 @@
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">Country</label>
                                                 <lightning-input-field variant="label-hidden"  field-name="BillingCountry" disabled="true" > </lightning-input-field>-->
-                                                <lightning-input name="country" value={accountData.country} onchange={handleOnChangeAccountData} label="Country" required="true" disabled="true"></lightning-input>
+                                                <lightning-input name="country" value={accountData.country} onchange={handleOnChangeAccountData} autocomplete="off" label="Country" required="true" disabled="true"></lightning-input>
                                             </div>
                                              <div class="slds-col slds-size_6-of-12 paddingWithGrid">
                                                 <!--<abbr title="required" class="slds-required">* </abbr>
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">ZIP Code</label>
                                                 <lightning-input-field variant="label-hidden"  field-name="BillingPostalCode" disabled="true" > </lightning-input-field>-->
-                                                <lightning-input name="ZIPCode" value={accountData.ZIPCode} onchange={handleOnChangeAccountData} label="ZIP Code" required="true" disabled="true"></lightning-input>
+                                                <lightning-input name="ZIPCode" value={accountData.ZIPCode} onchange={handleOnChangeAccountData} autocomplete="off" label="ZIP Code" required="true" disabled="true"></lightning-input>
                                             </div>
                                         </div>
                                     <!--</lightning-record-edit-form>-->
@@ -175,28 +175,28 @@
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">First Name</label>
                                                 <lightning-input-field variant="label-hidden" field-name="Primary_Contact__c" disabled={editMode}> </lightning-input-field>-->
-                                                <lightning-input name="firstName" value={contactData.firstName} onchange={handleOnChangeContactData} label="First Name" required="true" disabled={editMode}></lightning-input>
+                                                <lightning-input name="firstName" autocomplete="off" value={contactData.firstName} onchange={handleOnChangeContactData} label="First Name" required="true" disabled={editMode}></lightning-input>
                                             </div>
                                             <div class="slds-col slds-size_6-of-12 paddingWithGrid">
                                                 <!--<abbr title="required" class="slds-required">* </abbr>
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">Last Name</label>
                                                 <lightning-input-field variant="label-hidden" field-name="Primary_Contact__c" disabled={editMode}> </lightning-input-field>-->
-                                                <lightning-input name="lastName" value={contactData.lastName} onchange={handleOnChangeContactData} label="Last Name" required="true" disabled={editMode}></lightning-input>
+                                                <lightning-input name="lastName" autocomplete="off" value={contactData.lastName} onchange={handleOnChangeContactData} label="Last Name" required="true" disabled={editMode}></lightning-input>
                                             </div>
                                             <div class="slds-col slds-size_6-of-12 paddingWithGrid">
                                                 <!--<abbr title="required" class="slds-required">* </abbr>
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">Phone Number</label>
                                                 <lightning-input-field variant="label-hidden" field-name="Phone" disabled={editMode}> </lightning-input-field>-->
-                                                <lightning-input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="phone" placeholder="Enter phone number 000-000-0000" value={contactData.phone} onchange={handleOnChangeContactData} label="Phone Number" required="true" disabled={editMode}></lightning-input>
+                                                <lightning-input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="phone" placeholder="Enter phone number 000-000-0000" autocomplete="off" value={contactData.phone} onchange={handleOnChangeContactData} label="Phone Number" required="true" disabled={editMode}></lightning-input>
                                             </div>
                                             <div class="slds-col slds-size_6-of-12 paddingWithGrid">
                                                 <!--<abbr title="required" class="slds-required">* </abbr>
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">Email</label>
                                                 <lightning-input-field type="text" variant="label-hidden" field-name="Email__c" disabled={editMode}></lightning-input-field>-->
-                                                <lightning-input type="email" name="email" value={contactData.email} onchange={handleOnChangeContactData} label="Email" required="true" disabled={editMode}></lightning-input>
+                                                <lightning-input type="email" name="email" autocomplete="off" value={contactData.email} onchange={handleOnChangeContactData} label="Email" required="true" disabled={editMode}></lightning-input>
                                             </div>
                                         </div>
                                     <!--</lightning-record-edit-form>-->
@@ -212,21 +212,21 @@
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">Address Line 1</label>
                                                 <lightning-input-field variant="label-hidden"  field-name="BillingStreet" disabled="true" > </lightning-input-field>-->
-                                                <lightning-input name="addressLineOne" value={newAccountData.addressLineOne} onchange={handleOnChangeNewAccountData} label="Address Line 1" required="true" disabled={editMode}></lightning-input>
+                                                <lightning-input name="addressLineOne" value={newAccountData.addressLineOne} onchange={handleOnChangeNewAccountData} autocomplete="off" label="Address Line 1" required="true" disabled={editMode}></lightning-input>
                                             </div>
                                             <div class="slds-col slds-size_6-of-12 paddingWithGrid">
                                                 <!--<abbr title="required" class="slds-required">* </abbr>-->
                                                 <!--<label class="slds-form-element__label requiredField"
                                                     for="form-element-04">Address Line 2</label>
                                                 <lightning-input-field variant="label-hidden"  field-name="BillingStreet" disabled="true" > </lightning-input-field>-->
-                                                <lightning-input name="addressLineTwo" value={newAccountData.addressLineTwo} onchange={handleOnChangeNewAccountData} label="Address Line 2" disabled={editMode}></lightning-input>
+                                                <lightning-input name="addressLineTwo" value={newAccountData.addressLineTwo} onchange={handleOnChangeNewAccountData} autocomplete="off" label="Address Line 2" disabled={editMode}></lightning-input>
                                             </div>
                                             <div class="slds-col slds-size_6-of-12 paddingWithGrid">
                                                 <!--<abbr title="required" class="slds-required">* </abbr>
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">City</label>
                                                 <lightning-input-field variant="label-hidden"  field-name="BillingCity" disabled="true" > </lightning-input-field>-->
-                                                <lightning-input name="city" value={newAccountData.city} onchange={handleOnChangeNewAccountData} label="City" required="true" disabled={editMode}></lightning-input>
+                                                <lightning-input name="city" value={newAccountData.city} onchange={handleOnChangeNewAccountData} autocomplete="off" label="City" required="true" disabled={editMode}></lightning-input>
                                             </div>
                                             <div class="slds-col slds-size_6-of-12 paddingWithGrid">
                                                 <!--<abbr title="required" class="slds-required">* </abbr>
@@ -244,14 +244,14 @@
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">Country</label>
                                                 <lightning-input-field variant="label-hidden"  field-name="BillingCountry" disabled="true" > </lightning-input-field>-->
-                                                <lightning-input name="country" value={newAccountData.country} onchange={handleOnChangeNewAccountData} label="Country" required="true" disabled={editMode}></lightning-input>
+                                                <lightning-input name="country" value={newAccountData.country} onchange={handleOnChangeNewAccountData} autocomplete="off" label="Country" required="true" disabled={editMode}></lightning-input>
                                             </div>
                                              <div class="slds-col slds-size_6-of-12 paddingWithGrid">
                                                 <!--<abbr title="required" class="slds-required">* </abbr>
                                                 <label class="slds-form-element__label requiredField"
                                                     for="form-element-04">ZIP Code</label>
                                                 <lightning-input-field variant="label-hidden"  field-name="BillingPostalCode" disabled="true" > </lightning-input-field>-->
-                                                <lightning-input name="ZIPCode" value={newAccountData.ZIPCode} maxlength="5" onchange={handleOnChangeNewAccountData} label="ZIP Code" required="true" disabled={editMode}></lightning-input>
+                                                <lightning-input name="ZIPCode" value={newAccountData.ZIPCode} maxlength="5" onchange={handleOnChangeNewAccountData} autocomplete="off" label="ZIP Code" required="true" disabled={editMode}></lightning-input>
                                             </div>
                                         </div>
                                     <!--</lightning-record-edit-form>-->

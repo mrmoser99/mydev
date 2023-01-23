@@ -9,14 +9,17 @@ Description : Helper Class for (Custom) Contract object.
 
 Date/Sprint		PBI/Description
 PI-22-Q4-20		870367 - Brazil Contract Not being assigned correct Business Unit
+PI-22-Q4-22		845477 - Solution design for holistic authorization model (Dibyendu  11/16/2022)
   
 ***********************************************************************************************************/
 public class CustomContractTriggerHelper {
+    public static String BUSINESSDESC_CTI = 'Construction, Transportation & Infrastructure (CTI)';//Added as a part of change for PBI 845477
     public static void helpBeforeInsert(List<Contract__c> newContracts){
         setInitialValues(newContracts);
         setAccAndEndUser(newContracts);
         setOpportunity(newContracts);
         setProgram(newContracts);
+        setShareWithAccount(newContracts);   //Added as a part of change for PBI 845477
     }
     
     public static void helpAfterInsert(Map<Id, Contract__c> newContractMap){
@@ -25,6 +28,47 @@ public class CustomContractTriggerHelper {
        /* //PBI:640593:DLLonDemand:When contract is inserted, it need to be inserted into ContractTeamMember obj 
         insertContractTeamMember(newContractMap.values());*/
     }
+    
+    // Start of Code for change PBI-845477  
+    // - If the opp record type is or becomes retail and Business Unit Description is Construction, Transportation & Infrastructure (CTI), then populate the share_with_account__c value;
+    public static void setShareWithAccount(List<Contract__c> contracts){
+        List<Program__c> directPrograms = Database.query('select id,name,Sales_Channel__c from Program__c');
+        Map<String, String> mapProgram = new Map<String, String>();
+        for (Program__c directProgramRec : directPrograms ) {
+            mapProgram.put(directProgramRec.name,directProgramRec.Sales_Channel__c);
+			}
+        List<Contract__c> contractsWithOutOpp = new List<Contract__c>();
+		List<String> oppNos = new List<String>();
+        for(Contract__c c : contracts){
+            if(String.isNotBlank(c.UNQ_Opportunity__c)) {
+                oppNos.add(c.UNQ_Opportunity__c);
+            }
+        }
+        Map<String, Opportunity> retailConOpp = new Map<String, Opportunity>();
+        for(Opportunity opp : [SELECT  Id, UNQ_Opportunity__c,RecordType.DeveloperName
+                                   FROM    Opportunity
+                                   WHERE   RecordType.DeveloperName='Retail' and UNQ_Opportunity__c IN: oppNos
+                                  ])
+            {
+                retailConOpp.put(opp.UNQ_Opportunity__c, opp);
+            }
+        
+        for(Contract__c c : contracts){
+            if(c.Business_Unit_Description__c==BUSINESSDESC_CTI){
+                /*if(String.isBlank(c.UNQ_Opportunity__c) && mapProgram.get(c.UNQ_Program__c)=='Direct' && c.Account__c!=null) {
+                	c.Share_With_Account__c = c.Account__c;
+            	}
+            	else*/ 
+                if(String.isNotBlank(c.UNQ_Opportunity__c)){
+                   // if((retailConOpp.containsKey(c.UNQ_Opportunity__c) || mapProgram.get(c.UNQ_Program__c)=='Direct') && c.Account__c!=null){
+                    if((retailConOpp.containsKey(c.UNQ_Opportunity__c)) && c.Account__c!=null){
+                        c.Share_With_Account__c = c.Account__c;
+                    }
+            	}
+            }
+        }
+    }
+    // End of Code for change PBI-845477
     
     public static void setInitialValues(List<Contract__c> contracts){
         for(Contract__c c : contracts){

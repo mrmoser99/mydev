@@ -1,0 +1,9 @@
+{
+  "token_type": "Bearer",
+  "expires_in": "1000003599",
+  "ext_expires_in": "1000003599",
+  "expires_on": "1771050575",
+  "not_before": "1671047703",
+  "resource": "https://management.azure.com/",
+  "access_token": "thisIsNotARealAccessToken"
+}
