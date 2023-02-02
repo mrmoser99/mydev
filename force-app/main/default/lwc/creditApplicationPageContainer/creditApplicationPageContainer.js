@@ -2,8 +2,8 @@
  * @description       : LWC component to Credit Application Page container. 
  * @author            : Kritika Sharma : Traction on Demand
  * @group             : Kritika Sharma & Surbhi Goyal :  Traction on Demand
- * @last modified on  : 11-09-2022
- * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+ * @last modified on  : 02-02-2023
+ * @last modified by  : Mark Moser
  * @Changes Log        :
  * Date       - BUG/PBI    - Author                   - Description
  * 09/14/2022 - BUG 860568 - Fernando Nereu de Souza  - As a credit check I want to create an opportunity only when save or submit is selected 
@@ -11,7 +11,13 @@
  * 09/22/2022 - BUG 855960 - Fernando Nereu de Souza  - Nothing should appear in the SSN box if no data was captured
  * 10/07/2022 - BUG 855965 - Lucas Silva              - The DOB appearing under the UBO section in "review" mode is not masked
  * 11/02/2022 -              Mark Moser               - Fix performance of waiting for credit response
+ * 12/15/2022 - PBI 886371 - Fernando Nereu de Souza  - when I select a location I want to be presented with a list of sales rep for that specific location
+ * 12/11/2022 - PBI 768016 - Fernando Nereu de Souza  - Delete BO from credit Application
+ * 02/02/2023 - MRM  Added logic for appeals
+ * 
 **/
+
+import currentUserId from '@salesforce/user/Id';
 import createNewOppForCreditCheck from '@salesforce/apex/CreditApplicationHeaderController.createNewOppForCreditCheck';
 import getRelatedPartyForOpp from '@salesforce/apex/CreditApplicationHeaderController.getRelatedPartyForOpp';
 import saveRelatedPartyForOpp from '@salesforce/apex/CreditApplicationHeaderController.saveRelatedPartyForOpp';
@@ -28,6 +34,11 @@ import submitPreQualCreditApp from '@salesforce/apex/CreditAppUtils.submitPreQua
 import UpdateBenefitOwnerData from '@salesforce/apex/CreditApplicationHeaderController.UpdateBenefitOwnerData';
 import DeleteBenefitOwnerData from '@salesforce/apex/CreditApplicationHeaderController.DeleteBenefitOwnerData';
 import UpdateQuoteData from '@salesforce/apex/CreditApplicationHeaderController.UpdateQuoteData';
+
+import generateAppealQuoteOption from '@salesforce/apex/AppUtility.generateAppealQuoteOption';
+import getQuoteOpportunityAndCount from '@salesforce/apex/AppUtility.getQuoteOpportunityAndCount';
+
+
 import {api, track, LightningElement, wire} from 'lwc';
 import {CurrentPageReference} from 'lightning/navigation';
 import {NavigationMixin} from 'lightning/navigation';
@@ -64,7 +75,7 @@ import ENROLL_ENABLED from '@salesforce/label/c.ENROLL_ENABLED';
 import { loadScript } from 'lightning/platformResourceLoader';
 import cometd from '@salesforce/resourceUrl/cometd';
 import getSessionId from '@salesforce/apex/GenericUtilityClass.getSessionId';
-import SystemModstamp from '@salesforce/schema/Account.SystemModstamp';
+import getUserInfoById from '@salesforce/apex/GenericUtilityClass.getUserInfoById';
 
 export default class CreditApplicationPageContainer extends NavigationMixin(LightningElement){
     label = {
@@ -99,17 +110,24 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     libInitialized = false;
     sessionId;
     error;
-
+    mode;   //cc = credit check 
+    quoteCount;
+    displayModal = false;
+    displayModal2 = false;
+    oppOwnerId;
 
     //active section
     //activeSections = ['Financing Structure','Beneficial Owner 1','asset 1','Customer Information','Customer Story (Optional)','qwnershipInformation','Personal Guarantee (Optional)']; 
     activeSections = ['Financing Structure']; 
     /* Params from Url */
     oppId = null;
+    option = null;
     opportunityDataId;
     opportunityId;
     creationDate;
-    errorResultSet
+    errorResultSet;
+    isApproved;
+    ccOppId;
 
     // A counter to load the opportunity data
     opportunityDataReloaded = 0;
@@ -163,7 +181,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     submittedStatus='';
     //Model Pop-up on click of cancel button
     isModalOpen = false;
-    isModalBOOpen = false;
+    //isModalBOOpen = false;
     // public property
     @api sectionTitle;
     @api sectionSubTitle;
@@ -261,7 +279,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         SocialSecurityNumber:'',
         SocialSecurityNumberForMasking:''
     };
-0
+
     // Beneficial Owner
     beneficialOwner=[{
         ownerHeading:'Beneficial Owner 1',
@@ -401,12 +419,15 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                         sList.push({label: 'None', value: ''});
 
                         this.salesRepList = sList;
-                        this.salesRepListBackup = sList;
+                        //this.salesRepListBackup = sList;
                         console.log('getSalesRepsOSID Done');
                         console.log(JSON.parse(JSON.stringify(sList)));
                         this.osidForSalesReps = osidList;
                         this.loading = false;
                         this.hasLocationSelectionSalesRep = false;
+                        event.target.value = this.salesRepId;
+                        this.handleChangeSalesRep(event);
+
                     }).catch(error => {
                     this.loading = false;
                     this.showToast('Something went wrong', error.body.message, 'error');
@@ -551,6 +572,13 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         if (data) {
             console.log('in get wired ');
             // Page Status
+            console.log('data is: ' + JSON.stringify(data));
+            this.quoteCount = data.Quote_Count__c;
+            console.log('qc:' + this.quoteCount);
+            this.oppOwnerId = data.OwnerId;
+            if (data.Sub_Stage__c == 'Application Approved')
+                this.isApproved = true;
+
             console.log('Sub-stage: ' + data.Sub_Stage__c);
             this.statusValue = data.Sub_Stage__c;
             this.submittedStatus = data.Sub_Stage__c;
@@ -679,6 +707,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
 
             if(data.Partner_Sales_Rep__r != null){
                 this.salesRepValue = data.Partner_Sales_Rep__r.Name;
+                this.salesRepId = data.Partner_Sales_Rep__r.Id;
             } else{
                 this.salesRepValue = '';
             }
@@ -724,42 +753,14 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 this.isCreditCheck = true;
                 this.totalPrice = data.Amount;
                 this.salesRep = this.salesRepValue;
-                
+                //this.salesRep = data.Partner_Sales_Rep__c; // Lucena Testing
                 //this.applicationNameValue = data.Pre_Qualification_Application_Number__c;
                 if (data.Account) {
                     this.location = data.Account.Originating_Site_ID__c;
                 }
-
-                getContactField({opportunityId: this.oppId, loadCount: this.opportunityDataReloaded})         
-                .then(data=> 
-                {
-                    console.log('INSIDE GETCONTACTFIELD this.oppId::' + this.oppId);            
-                    this.beneficialOwner = [];
-                    var ownerLen=0;
-            
-                    for(var i=0;i<data.length;i++) {
-                        ownerLen=i+1;
-                        var auxDOBcheck = data[i].Birthdate_Encrypted__c == null ?  true : false; // BUG 855965 - Lucas Silva
-                        this.beneficialOwner.push({
-                            ownerHeading:                   'Beneficial Owner '+ownerLen,
-                            endUserAccount:                 data[i].AccountId,
-                            ownerNo:                        ownerLen,
-                            firstName:                      data[i].FirstName,
-                            middleName:                     data[i].MiddleName,
-                            lastName:                       data[i].LastName,
-                            titleValue:                     data[i].Title,
-                            dateOfBirthValue:               data[i].Birthdate_Encrypted__c,
-                            dateOfBirthValueForMasking:     '********',
-                            dobEmptyCheck:                  auxDOBcheck,
-                            countryOfResidenceValue:        data[i].UBO_Country_of_Residence__c,
-                            ownershipPercentageValue:       data[i].Account_Ownership_Percentage__c,
-                            uboID:                          data[i].Id
-                        });
-                        this.hasBeneficialOwner = ownerLen;
-                    }                                
-                    console.log('thendata' +JSON.stringify(data));
-                })
-        
+                
+                refreshApex(this.wiredGetContact);
+                
             } else {
                 this.isCreditCheck = false;
                 //this.loading = true;
@@ -793,7 +794,8 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         }
     }
 
-    connectedCallback(){        
+    connectedCallback(){      
+
         // All three of the following arrays have to maintain their exact order and count as they map to the same index in each array.
         var fieldOptions=['Rate_Type__c','Finance_Term_Month__c','Lease_Type__c','Payment_Frequency__c','Advance_Payments__c',
             'Make__c','Asset_Type_ITA_Class__c','Model__c','Mast_Type__c','Operating_Environment__c','Battery_Included__c','Number_of_Units__c','Subsidy__c',
@@ -863,8 +865,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             });
            
         }
-        refreshApex(this.getContactField);
-        
+        refreshApex(this.wiredGetContact);                
     }
 
     handlePersonalGuaranteeFirstNameChange(event) {
@@ -895,11 +896,12 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         this.salesRep = this.salesRepList.find(element => element.value === event.target.value).label;
         this.salesRepId = event.target.value;
         this.salesRepValue = this.salesRep;
+        console.log('salesRepId: '+this.salesRepId);
+        console.log('salesRepValue: '+this.salesRepValue);
         this.customerStory.salesRepId = this.salesRepId;
         console.log(this.salesRepId);
         console.log('In change function');
         //console.log(JSON.parse(JSON.stringify(this.quoteObject)));
-
         if (this.isLoadedQuote) {
             return;
         }
@@ -1229,14 +1231,14 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         //delete customer information by apex
     }
 
-    openBOModal() {
+    /*openBOModal() {
         // to open modal set isModalOpen tarck value as true
         this.isModalBOOpen = true;
     }
     closeBOModal() {
         // to close modal set isModalOpen tarck value as false
         this.isModalBOOpen = false;
-    }
+    }*/
 
 
     // --------------------------------- model pop-up on click of cancel button--------------------------//
@@ -1465,7 +1467,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             this.loading=true;
             if (this.customerStory.customerStoryId) {
                 console.log('Has customerStoryId: ' + this.customerStory.customerStoryId);
-                if(typeof this.customerStory.amount != 'number') {
+                if(typeof this.customerStory.amount != 'number' && typeof this.customerStory.amount != 'undefined') {
                     if (this.customerStory.amount.substring(0,1) == "$") {
                         this.customerStory.amount = this.removeInvalidPriceCharacters(this.customerStory.amount);
                     }    
@@ -1517,7 +1519,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 });
             } else {
                 this.beneficialOwnerSave = this.beneficialOwner;
-                createNewOppForCreditCheck({'location' : this.customerStory.location, 'amount': this.customerStory.amount})
+                createNewOppForCreditCheck({'salesRep' : this.customerStory.salesRepId , 'location' : this.customerStory.location, 'amount': this.customerStory.amount})
                     .then(result => {
                         console.log('createNewOpp finished');
                         this.customerStory.customerStoryId = result;
@@ -1562,17 +1564,185 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         this.loading=false;
     }
 
-     handleAppeal(){
+    handleAppeal(){
 
-        console.log('handle appeal' + this.oppId);
+        console.log('handle appeal');
+
+        console.log(currentUserId);
+
+        if (this.oppOwnerId != currentUserId){
+
+            const evt = new ShowToastEvent({
+                            title:      'Error',
+                            message:    'You cannot appeal an application you do not own!',
+                            variant:    'error',
+                            duration:   20000
+                            });
+            this.dispatchEvent(evt);
+            return
+        }
+
+        if (this.quoteCount == 0){
+            this.mode = 'cc';
+            this.displayModal = true;
+            return;
+        }
+
+        generateAppealQuoteOption({sourceOppId: this.oppId, destinationOppId: this.oppId, quoteNumber: null, qCount: null})
+        .then(result => {
+            if (result) {
+
+                console.log('result is:' + JSON.stringify(result));
+                this.option = result;
+                console.log('returned ' + this.option);
+                this.option = this.option - 1;
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__webPage',
+                    attributes: {
+                    url: window.location.origin + '/dllondemand/s/appeal?oppid=' + this.oppId + '&option=' + this.option
+                }
+                })  
+            } else {
+                const evt = new ShowToastEvent({
+                            title:      'Fatal Error',
+                            message:    'Something went wrong!',
+                            variant:    'error',
+                            duration:   20000
+                            });
+                        this.dispatchEvent(evt);
+            }
+        });
+                    
+
+              
+    }
+
+    handleOptionSelected (event){
+
+        console.log('event detail q' + event.detail.quoteId);
+        console.log('event detail opp' + event.detail.oppId);
+        this.displayModal = false;
+        this.displayModal2 = false;
+
+        console.log('source is ' + event.detail.oppId);
+        console.log('dest is: ' + this.oppId);
+
+        generateAppealQuoteOption({sourceOppId: event.detail.oppId, destinationOppId: this.oppId, quoteNumber : event.detail.quoteId})
+        .then(result => {
+            if (result) {
+                console.log('result is ' + JSON.stringify(result));
+                
+                this.option = result;
+                this.option = this.option - 1;
+                console.log('result is a' + JSON.stringify(result));
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__webPage',
+                    attributes: {
+                    url: window.location.origin + '/dllondemand/s/appeal?oppid=' + this.oppId + '&option=' + this.option
+                }
+                })  
+
+                this.loading = false;
+            } else {
+                const evt = new ShowToastEvent({
+                            title:      'Fatal Error',
+                            message:    'Something went wrong!',
+                            variant:    'error',
+                            duration:   20000
+                            });
+                        this.dispatchEvent(evt);
+            }
+        });
+
+
+    }
+
+    handleChildSelect (event){
+
+        this.loading = true;
+
+        console.log('handle child select event contents: ' + event.detail.quoteNumber + ' oppid:' + this.oppId);
+        
+        //check to see if seleted quote has more than one option
+
+        getQuoteOpportunityAndCount ({quoteNumber: event.detail.quoteNumber})
+        .then(result => {
+            if (result) {
+                let qCount = Number(result.count);
+                if (qCount == 1){ //if there is only one option on the quote, then use that one
+                    this.ccOppId = result.opportunityId;
+                    this.displayModal2 = false;
+                    this.displayModal = false;
+                    this.loading = false;
+                }
+                else{  //if there is more than 1 then display the proposal page and let the user indicate which option
+                    this.ccOppId = result.opportunityId;  //this is the opp id that the proposal page uses to initiate
+                    this.displayModal2 = true;
+                    this.displayModal = false;
+                    return;
+                }
+                generateAppealQuoteOption({sourceOppId: result.opportunityId, destinationOppId: this.oppId, quoteNumber : event.detail.quoteNumber, qCount: qCount})
+                .then(result => {
+                if (result) {
+                    this.option = result;
+                    this.option = this.option - 1;
+                    this[NavigationMixin.Navigate]({
+                        type: 'standard__webPage',
+                            attributes: {
+                                url: window.location.origin + '/dllondemand/s/appeal?oppid=' + this.oppId + '&option=' + this.option
+                                }
+                })  
+                this.loading = false;
+            } else {
+                const evt = new ShowToastEvent({
+                            title:      'Fatal Error',
+                            message:    'Something went wrong!',
+                            variant:    'error',
+                            duration:   20000
+                            });
+                        this.dispatchEvent(evt);
+            }
+        });
+                
+        } else {
+                const evt = new ShowToastEvent({
+                            title:      'Fatal Error',
+                            message:    'Something went wrong!',
+                            variant:    'error',
+                            duration:   20000
+                            });
+                        this.dispatchEvent(evt);
+            }
+        });
+
+        
+
+        this.displayModal = false;
+        this.loading = false;
+
+    }
+
+    handleChildCreate (event){
+
+        //console.log('event contents: ' + event.detail.quoteNumber);
+        this.displayModal = false;
 
         this[NavigationMixin.Navigate]({
             type: 'standard__webPage',
             attributes: {
-                url: window.location.origin + '/dllondemand/s/appeal?oppid=' + this.oppId
+                url: window.location.origin + '/dllondemand/s/appeal?oppid=' + this.oppId + '&option=' + event.detail.quoteNumber
             }
-        })        
+        }) 
+
+        this.loading = false;
     }
+
+    handleChildCancel(event){
+
+        this.displayModal = false;
+
+    }
+
 
     /**
      * First validate and save the credit application in Salesforce
@@ -2459,12 +2629,17 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             }
 
             this.opportunityDataReloaded += 1;
+            this.contactRolesReloaded += 1;
             this.loading = false;
             this.appEditMode = false;
 
 
         }
+
+        
+        
     }
+
 
         
     

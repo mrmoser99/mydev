@@ -102,8 +102,8 @@
                 </lightning-layout>
                 <lightning-layout class="slds-p-around_medium" horizontal-align="space">
                     <lightning-layout-item padding="around-small" flexibility="auto">
-                        <lightning-input name="nickname" label="Nickname" required=true value={nickname} autocomplete="off"
-                            disabled={hasQuotes} onchange={onInputChange}>
+                        <lightning-input name="nickname" label="Nickname" required=true value={nickname}
+                            autocomplete="off" disabled={hasQuotes} onchange={onInputChange}>
                         </lightning-input>
                     </lightning-layout-item>
                     <lightning-layout-item padding="around-small" flexibility="auto">
@@ -292,7 +292,7 @@
                                     </template>
                                     <template if:false={loading} for:each={options} for:item="option">
                                         <c-quote-line-datatable key={option.quote.Id} options-sum={option.sumData}
-                                            option={option} onselectquote={handleQuoteSelectForCreditApp}
+                                            option={option} onselectquote={handleQuoteSelectForCreditApp} mode={mode}
                                             ontoggleproposalforquote={handleProposalToggleForQuote}
                                             oneditasset={handleAssetEdit} oncloneasset={handleAssetClone}
                                             ondeleteasset={handleAssetDelete}></c-quote-line-datatable>
@@ -353,9 +353,16 @@
                                 <!--Quote Proposal Document - Geetha-end-->
                                 <lightning-layout-item size="12">
                                     <!--<div class="body-bottom slds-p-around_medium slds-m-right_medium"> -->
-                                    <lightning-button class="slds-float_right" variant="brand"
-                                        disabled={hasNoActiveQuoteForCredApp} label="Continue to Credit Application"
-                                        onclick={stampIsPrimaryOnSelectedOption}></lightning-button>
+                                    <template if:true={isCCMode}>
+                                        <lightning-button class="slds-float_right" variant="brand"
+                                            disabled={hasNoActiveQuoteForCredApp} label="Continue to Appeal"
+                                            onclick={sendSelectOptionBackToAppeal}></lightning-button>
+                                    </template>
+                                    <template if:false={isCCMode}>
+                                        <lightning-button class="slds-float_right" variant="brand"
+                                            disabled={hasNoActiveQuoteForCredApp} label="Continue to Credit Application"
+                                            onclick={stampIsPrimaryOnSelectedOption}></lightning-button>
+                                    </template>
                                     <lightning-button class="slds-float_right slds-p-right_small" variant="brand"
                                         label="Save" onclick={saveCustomerComments}></lightning-button>
                                     <!--</div>-->

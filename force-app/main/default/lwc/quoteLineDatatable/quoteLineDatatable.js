@@ -6,8 +6,8 @@
  * @date 2021-12-01
  * 
  * 07/13/2022 - Make $ right aligned like they are in every screen in a billion customer sites
- *
- *******************************************************************************
+ * 02/02/2023 - Modified to make response in appeal mode to change lables and button name
+ ***************************************************************************************************************
  */
 
 import {LightningElement, api} from 'lwc';
@@ -51,6 +51,11 @@ export default class QuoteLineDatatable extends LightningElement {
     @api columns = COLUMS;
     columnsSum = COLUMSSUMMARY;
     @api optionsSum = [];
+    @api mode;
+
+    isCCMode = false;
+
+    inCCMode = false;
     onlyCallbackOnce = false;
     isProposalChecked = false;
     isCreditAppChecked = false;
@@ -62,6 +67,14 @@ export default class QuoteLineDatatable extends LightningElement {
     } ];*/
 
     connectedCallback() {
+
+         
+        if (this.mode == 'cc'){
+            this.isCCMode = true;
+        }
+        else{
+            this.isCCMode = false;
+        }
         if (this.onlyCallbackOnce) {
             return;
         }
@@ -83,6 +96,8 @@ export default class QuoteLineDatatable extends LightningElement {
     }
 
     handleCreditAppRadio(event) {
+
+        console.log('clicked radio quote is:' + event.target.value);
         const assetEvent = new CustomEvent("selectquote", {
             detail: event.target.value
         });

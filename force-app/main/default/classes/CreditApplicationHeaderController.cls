@@ -2,8 +2,8 @@
  * @description       : Apex class for Set the Credit Application Header fields values.
  * @author            : Kritika Sharma & Surbhi Goyal From Traction on Demand
  * @group             : 
- * @last modified on  : 22-04-2022
- * @last modified by  : Kritika Sharma
+ * @last modified on  : 01-27-2023
+ * @last modified by  : Mark Moser
  * @Changes Log        :
  * Date       - BUG/PBI    - Author                   - Description
  * 09/22/2022 - BUG 862084 - Fernando Nereu de Souza  - Empty Related Party being created in the Credit Application
@@ -11,6 +11,8 @@
  * 11/18/2022 : Added methods for Credit Add Additional Info feature: Geetha
  * 12/11/2022 - PBI 768016 - Fernando Nereu de Souza - Delete Beneficial Owner from Credit Application
  * 02/01/2023 : PBI 930611 - Dibyendu                - Sharing rules Field population 
+ * 01/25/2023  MRM - Added quote count, ownerid to opportunity query
+ * 
 **/
 public with sharing class CreditApplicationHeaderController {
 
@@ -247,7 +249,9 @@ public with sharing class CreditApplicationHeaderController {
                 Type,
                 Years_in_Business__c,
               Opportunity_Number__c,
-              Resubmit_Comments__c
+              Resubmit_Comments__c,
+              Quote_Count__c,
+              OwnerId
             FROM Opportunity
             WHERE Id = :opportunityId
             LIMIT 1

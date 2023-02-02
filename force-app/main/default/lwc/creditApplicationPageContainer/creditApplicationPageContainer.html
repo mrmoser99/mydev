@@ -21,6 +21,47 @@
         requests for technical support, and other communications relating to this website should be directed to Sophie
         McLachlan at smclachlan@leasedirect.com
     </div>
+    <div if:true={displayModal}>
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true"
+            aria-describedby="modal-content-id-2" class="slds-modal slds-fade-in-open slds-modal_medium">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                    <c-quote-list-view mode={mode} onchildcancel={handleChildCancel} onchildselect={handleChildSelect}
+                        onchildcreate={handleChildCreate}>
+                    </c-quote-list-view>
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+
+                </footer>
+
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+    <div if:true={displayModal2}>
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-03" aria-modal="true"
+            aria-describedby="modal-content-id-3" class="slds-modal slds-fade-in-open slds-modal_medium">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-3">
+                    <c-price-quote-page-container mode=cc onchildcancel={handleChildCancel} oppid={ccOppId}
+                        onchildselect={handleChildSelect} onchildcreate={handleChildCreate}
+                        onoptionselected={handleOptionSelected}>
+                    </c-price-quote-page-container>
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+
+                </footer>
+
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
     <div>
         <!--Use template if:true to display/hide popup based on isModalOpen value-->
         <template if:true={isModalOpen}>
@@ -67,10 +108,12 @@
                                 label="Enroll in Financing" onclick={handleOnEnrolment} disabled={disableEnrollButton}>
                             </lightning-button>
                         </template>
-                        <!--  </template> -->
-                        <lightning-button class="slds-float_right" variant="brand-outline" label="Edit(Appeals)"
-                            onclick={handleAppeal}>
-                        </lightning-button>
+                        <template if:true={isApproved}>
+                            <lightning-button class="slds-float_right" variant="brand-outline" label="Edit(Appeals)"
+                                onclick={handleAppeal}>
+                            </lightning-button>
+                        </template>
+
 
                     </lightning-layout-item>
 
@@ -129,7 +172,7 @@
                                 <div class="display-field">
                                     <template if:true={refreshSalesRepDropdown}>
                                         <c-reusable-custom-dropdown-with-search-lwc bold-label="true"
-                                            error-message="Enter a valid sales rep" auto-complete-off="off"
+                                            error-message="Enter a valid sales rep" autocomplete="off"
                                             options={salesRepList} field-required-off="true" value={salesRep}
                                             field-label="Sales Rep" placeholder="Enter Sales Rep"
                                             onchange={handleChangeSalesRep}>
@@ -137,7 +180,7 @@
                                     </template>
                                     <template if:false={refreshSalesRepDropdown}>
                                         <c-reusable-custom-dropdown-with-search-lwc bold-label="true"
-                                            error-message="Enter a valid sales rep" auto-complete-off="off"
+                                            error-message="Enter a valid sales rep" autocomplete="off"
                                             options={salesRepList} field-required-off="true" value={salesRep}
                                             field-label="Sales Rep" placeholder="Enter Sales Rep"
                                             onchange={handleChangeSalesRep}>
@@ -151,6 +194,11 @@
                                         class="locationComboboxWidth" disabled={hasQuotesCreditCheck} options={siteList}
                                         onchange={handleChangeLocation}>
                                     </lightning-combobox>
+
+                                    <!--<lightning-combobox name="salesRep2" label="salesRep2" required=true value={salesRep}
+                                        class="locationComboboxWidth" options={salesRepList}
+                                        onchange={handleChangeSalesRep}>
+                                    </lightning-combobox>-->
                                 </div>
                             </lightning-layout-item>
                             <lightning-layout-item class="header-field-section-credit-check" flexibility="auto">
@@ -172,7 +220,7 @@
                                 <lightning-layout-item class="header-field-section" flexibility="auto">
                                     <div class="display-field">
                                         <label>Quote Number</label>
-                                            <span><b><a onclick={openProposal}>{quoteNumberValue}</a></b></span>
+                                        <span><b><a onclick={openProposal}>{quoteNumberValue}</a></b></span>
                                     </div>
                                 </lightning-layout-item>
                             </template>
@@ -294,8 +342,7 @@
                                                                     data-id="Amount" step=".01" type="text"
                                                                     value={totalPrice} onblur={formatCurrencyForInput}
                                                                     onchange={handleChangeFinanceAmount}
-                                                                    autocomplete="off"
-                                                                    disabled={isAmountDisabled}>
+                                                                    autocomplete="off" disabled={isAmountDisabled}>
                                                                 </lightning-input>
                                                             </lightning-layout-item>
                                                         </lightning-layout>
@@ -493,8 +540,7 @@
                                                             <lightning-textarea name="Customer Story"
                                                                 label="Customer Story"
                                                                 placeholder="Example: This company has been in business for less than a year. The owner can provide a guarantee to help get this credit approved."
-                                                                value={customerStory.story}
-                                                                autocomplete="off"
+                                                                value={customerStory.story} autocomplete="off"
                                                                 onchange={handleStoryChange}>
                                                             </lightning-textarea>
                                                         </lightning-layout-item>
@@ -519,8 +565,7 @@
                                                                 <lightning-input name='personalGuaranteeFirstName'
                                                                     variant="label-hidden"
                                                                     placeholder=" Enter First Name"
-                                                                    value={personalGuar.firstName}
-                                                                    autocomplete="off"
+                                                                    value={personalGuar.firstName} autocomplete="off"
                                                                     onchange={handlePersonalGuaranteeFirstNameChange}>
                                                                 </lightning-input>
                                                             </lightning-layout-item>
@@ -540,8 +585,7 @@
                                                                 <lightning-input name='personalGuaranteeLastName'
                                                                     variant="label-hidden"
                                                                     placeholder=" Enter Last Name"
-                                                                    value={personalGuar.lastName}
-                                                                    autocomplete="off"
+                                                                    value={personalGuar.lastName} autocomplete="off"
                                                                     onchange={handlePersonalGuaranteeLastNameChange}>
                                                                 </lightning-input>
                                                             </lightning-layout-item>
@@ -627,8 +671,7 @@
                                                                     <lightning-input name={ownerItem.ownerNo}
                                                                         variant="label-hidden"
                                                                         placeholder=" Enter First Name"
-                                                                        value={ownerItem.firstName}
-                                                                        autocomplete="off"
+                                                                        value={ownerItem.firstName} autocomplete="off"
                                                                         onchange={handlePersonalFirstNameChange}>
                                                                     </lightning-input>
                                                                 </lightning-layout-item>
@@ -638,8 +681,7 @@
                                                                     <lightning-input name={ownerItem.ownerNo}
                                                                         label="Middle Name"
                                                                         placeholder=" Enter Middle Name"
-                                                                        value={ownerItem.middleName}
-                                                                        autocomplete="off"
+                                                                        value={ownerItem.middleName} autocomplete="off"
                                                                         onchange={handleMiddleNameChange}>
                                                                     </lightning-input>
                                                                 </lightning-layout-item>
@@ -652,8 +694,7 @@
                                                                     <lightning-input variant="label-hidden"
                                                                         name={ownerItem.ownerNo}
                                                                         placeholder=" Enter Last Name"
-                                                                        value={ownerItem.lastName}
-                                                                        autocomplete="off"
+                                                                        value={ownerItem.lastName} autocomplete="off"
                                                                         onchange={handleLastNameChange}>
                                                                     </lightning-input>
                                                                 </lightning-layout-item>
@@ -661,8 +702,7 @@
                                                                     class="marginBottom slds-p-right_small">
                                                                     <lightning-input name={ownerItem.ownerNo}
                                                                         label="Title" placeholder=" Select Title"
-                                                                        value={ownerItem.titleValue}
-                                                                        autocomplete="off"
+                                                                        value={ownerItem.titleValue} autocomplete="off"
                                                                         onchange={handleTitlePicklistChange}>
                                                                     </lightning-input>
                                                                 </lightning-layout-item>
@@ -700,10 +740,9 @@
                                                                     </lightning-input>
                                                                 </lightning-layout-item>
                                                                 <lightning-button name={ownerItem.ownerNo}
-                                                                    class="delete-button" 
-                                                                    variant="base" 
-                                                                    label="- Delete Beneficial Owner" 
-                                                                    title="- Delete Beneficial Owner" 
+                                                                    class="delete-button" variant="base"
+                                                                    label="- Delete Beneficial Owner"
+                                                                    title="- Delete Beneficial Owner"
                                                                     onclick={handleDeleteBO}>
                                                                 </lightning-button>
                                                             </lightning-layout>

@@ -1,6 +1,7 @@
 <!--
  - Created by ShiqiSun on 11/18/2021.
  - Fixed bug 870385 - Geetha on 10/6/2022
+ - 01/23/2023 - 552867 - Fernando Nereu de Souza - Add definition on data points specific to the quotes requirements
 -->
 
 <!-- assetcreation -->
@@ -12,57 +13,64 @@
         <lightning-layout multiple-rows>
             <lightning-layout-item size=6 class="slds-p-right_small">
                 <lightning-combobox name="make" label="Make" value={asset.makeId} options={makePicklist}
-                    onchange={handleDependentChange} field-level-help="test" disabled={isMakeDisabled}>
+                    onchange={handleDependentChange} field-level-help="Make of the desired asset"
+                    disabled={isMakeDisabled}>
                 </lightning-combobox>
             </lightning-layout-item>
             <lightning-layout-item size=6>
                 <lightning-combobox name="assetType" label="Asset Type / ITA Class" value={asset.assetTypeId}
-                    options={assetTypePicklist} onchange={handleDependentModelChange} field-level-help="test"
-                    disabled={isAssetTypeDisabled}>
+                    options={assetTypePicklist} onchange={handleDependentModelChange}
+                    field-level-help="Select the correct Asset Class" disabled={isAssetTypeDisabled}>
                 </lightning-combobox>
             </lightning-layout-item>
             <lightning-layout-item size=6 class="slds-p-right_small">
                 <lightning-combobox name="model" label="Model" value={asset.modelId} options={modelPicklist}
-                    onchange={handleDependentFieldsChange} field-level-help="test" disabled={isModelDisabled}>
+                    onchange={handleDependentFieldsChange} field-level-help="Model of desired asset"
+                    disabled={isModelDisabled}>
                 </lightning-combobox>
             </lightning-layout-item>
             <lightning-layout-item size=6>
                 <lightning-combobox name="mastType" label="Mast Type" value={asset.mastType} options={mastList}
-                    onchange={handleChange} field-level-help="test" disabled={isRestDisabled}>
+                    onchange={handleChange} field-level-help="Mast type of desired asset" disabled={isRestDisabled}>
                 </lightning-combobox>
             </lightning-layout-item>
             <lightning-layout-item size=6 class="slds-p-right_small">
                 <lightning-combobox name="assetOperating" label="Asset Operating Environment"
                     value={asset.assetOperating} options={assetOperatingList} onchange={handleChange}
-                    field-level-help="test" disabled={isRestDisabled}>
+                    field-level-help="What environment will the equipment will be used in?" disabled={isRestDisabled}>
                 </lightning-combobox>
             </lightning-layout-item>
             <lightning-layout-item size=6>
                 <lightning-combobox name="annualHours" label="Annual Hours" value={asset.annualHours}
-                    options={annualHoursList} onchange={handleChange} field-level-help="test" disabled={isRestDisabled}>
+                    options={annualHoursList} onchange={handleChange}
+                    field-level-help="Desired annual hours for the asset" disabled={isRestDisabled}>
                 </lightning-combobox>
             </lightning-layout-item>
+
+
+            <lightning-layout-item size=6 class="slds-p-right_small">
+                <lightning-input type="number" name="numberOfUnits" label="Number of Units" required="false"
+                    autocomplete="off" value={asset.numberOfUnits} field-level-help='Number of units for this asset'
+                    onchange={handleChange} onblur={callSubsidies}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size=6 class="slds-p-right_small">
+                <lightning-input type="number" formatter="currency" step=".01" name="unitSalesPrice"
+                    data-id="unitSalesPrice" label="Unit Sales Price" autocomplete="off" required="false"
+                    value={asset.unitSalesPrice} onblur={callSubsidies} onchange={handleChangeSalesPrice}
+                    field-level-help='Price of the selected unit'></lightning-input><!--onblur={callSubsidies}-->
+            </lightning-layout-item>
+
             <lightning-layout-item size=6 class="slds-p-right_small">
                 <lightning-combobox name="batteryIncluded" label="Battery Included" value={asset.batteryIncluded}
-                    options={batteryIncludedList} onchange={handleChange} field-level-help="test"
+                    options={batteryIncludedList} onchange={handleChange}
+                    field-level-help="If the asset is electric, is a battery included in the sale price shown in the system"
                     disabled={isBatteryIncludedDisabled}>
                 </lightning-combobox>
             </lightning-layout-item>
-            <lightning-layout-item size=6>
-                <lightning-input type="number" name="numberOfUnits" label="Number of Units" required="true"
-                    autocomplete="off" value={asset.numberOfUnits} onchange={handleChange}
-                    onblur={callSubsidies}></lightning-input>
-            </lightning-layout-item>
-            <lightning-layout-item size=6 class="slds-p-right_small">
-                <lightning-input type="text" name="unitSalesPrice" data-id="unitSalesPrice" label="Unit Sales Price"
-                    autocomplete="off" required="true" value={asset.unitSalesPrice} onblur={callSubsidies}
-                    onchange={handleChangeSalesPrice} field-level-help='test'></lightning-input>
-                <!--onblur={callSubsidies}-->
-            </lightning-layout-item>
+
             <lightning-layout-item size=6>
                 <lightning-combobox name="subsidy" label="Subsidy" data-id="subsidy" value={asset.subsidy}
-                    options={subsidyList} onchange={handleChangeSubsidy}
-                    field-level-help="This field populates when you edit Unit Sales Price and then click somewhere else."
+                    options={subsidyList} onchange={handleChangeSubsidy} field-level-help="If applicable"
                     disabled={isSubsidyDisabled}>
                 </lightning-combobox>
             </lightning-layout-item>

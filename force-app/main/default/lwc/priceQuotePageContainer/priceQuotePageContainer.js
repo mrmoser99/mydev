@@ -6,6 +6,7 @@
 *  10/6/2022 - Geetha - Fixed Bugs 870385, 868811
 *  10/20/2022 - Geetha - PBI 882069 - As a portal user I want to edit/copy the asset condition of an existing quote option
 *  11/17/2022 -0 MRM - Pricing 2.0; now reusable component for pricing
+*  02/01/2023 - MRM - Changed include in credit app label to be dynamic, changed save to do callback and changed button for appeal
 */
 
 import {api, track, LightningElement, wire} from 'lwc';
@@ -31,13 +32,14 @@ import getSmartCommDoc from "@salesforce/apex/SmartCommUtils.getSmartCommDoc";
 
 
 
-export default class PriceQuotePageContainerReplacment extends NavigationMixin(LightningElement) {
+export default class PriceQuotePageContainer extends NavigationMixin(LightningElement) {
 
     // public property
     @api sectionTitle;
     @api sectionSubTitle;
     @api oppid;
     @api option;
+    @api mode;  //cc means it is part of credit check appeal
 
     //Object model
     assets = [{
@@ -57,6 +59,7 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     show = false;
     opportunityId;
     optionFirstTime = true;
+    isCCMode = false;
 
     @track quoteObject = {
         deleteAssets: [],
@@ -74,8 +77,6 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         option: null,
         optionNum: null
     };
-
-
 
     quoteObjectSummary = [];
 
@@ -255,7 +256,12 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     *  
     ***************************************************************************************************************/
     setCurrentPageIdBasedOnUrl() {
-        this.oppid = this.currentPageReference.state.oppid;
+
+        if (this.oppid == null)
+            this.oppid = this.currentPageReference.state.oppid;
+
+        if (this.mode == null)
+            this.mode = this.currentPageReference.state.mode;
     }
 
     
@@ -264,8 +270,15 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     ***************************************************************************************************************/
     connectedCallback() {
         
-        //console.log(this.oppid);
+        console.log(this.oppid);
         this.loading = false;
+
+        //cc mode is used for the appeal process to make the page act differently
+
+        if (this.mode == 'cc')
+            this.isCCMode = true;
+        else
+            this.isCCMode = false;
 
         if (this.oppid) {
             this.loading = true;
@@ -302,14 +315,16 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                         for (let i = 0; i < this.options.length; i++) {
                             if (this.options[i].quote.Is_Primary__c) {
                                 this.creditAppId = this.options[i].quote.Id;
+                                console.log('set id to' + this.creditAppId);
                                 break;
                             }
                         }
                         if (!this.creditAppId) {
                             this.creditAppId = this.options[0].quote.Id;
                         }
+                        console.log('set id to 2' + this.creditAppId);
                         let loadsToGo = 2;
-
+                        console.log('this credit app id is:' + this.creditAppId);
                         if (this.location) {
                             this.loading = true;
                             getPrograms({siteName: this.location})
@@ -747,14 +762,17 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     *  
     ***************************************************************************************************************/
     handleQuoteSelectForCreditApp(event) {
+
+        console.log('in handle seelct for credit app');
         this.creditAppId = event.detail;
         this.hasNoActiveQuoteForCredApp = false;
          
         this.loading = true;
-        //console.log('event detail:' + event.detail);
+        console.log('event detail:' + event.detail);
 
         markQuoteOptionAsCreditAppSelection({quoteId : this.creditAppId, oppId : this.opportunityId})
             .then(result => {
+                console.log('result is' + JSON.stringify(result));
                 if (result == 'NoPayment'){
                     this.creditAppId = null;
                     this.hasNoActiveQuoteForCredApp = true;
@@ -764,17 +782,23 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                 }
                 this.showToast('Success saving selection', 'Success', 'success');
                 this.loading = false;
+                if (this.isCCMode == true){
+                    this.connectedCallback();
+                }
             }).catch(error => {
             this.showToast('Error in saving selection','Error', 'error');
             this.loading = false;
         });
 
-        this[NavigationMixin.Navigate]({
-            type: 'standard__webPage',
-            attributes: {
-                url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + this.oppid
-            }
-        });
+        
+        if (this.isCCMode == false){
+          this[NavigationMixin.Navigate]({
+              type: 'standard__webPage',
+              attributes: {
+                  url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + this.oppid
+              }
+          });
+        }
     }
 
     
@@ -1801,11 +1825,30 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         }
     }
 
+    /***************************************************************************************************************
+    *  Send message to appeal page with the chosen option.  this is related to selecting the include in appplicatio
+    * /appeal radio button
+    ***************************************************************************************************************/
+    sendSelectOptionBackToAppeal(event) {
+
+        console.log('send message to appeal' + this.creditAppId);
+
+         
+        const eventForAppeal = new CustomEvent("optionselected", {
+            detail: {quoteId :this.creditAppId,
+                    oppId : this.oppid }
+        });
+
+        this.dispatchEvent(eventForAppeal);
+    
+    }
     
     /***************************************************************************************************************
     *  
     ***************************************************************************************************************/
     stampIsPrimaryOnSelectedOption(event) {
+
+     
         if(this.customerInfoShow == false){
             // Immediate feedback
             const evt = new ShowToastEvent({
@@ -1822,12 +1865,19 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
                     //this.showToast('Saving', 'Continuing to credit application', 'success');
 
                     // Redirect to the credit application page
-                    this[NavigationMixin.Navigate]({
-                        type: 'standard__webPage',
-                        attributes: {
-                            url: '/dllondemand/s/opportunity/' + this.opportunityId 
-                        }
-                    });
+                    if (this.isCCMode == false){
+                        this[NavigationMixin.Navigate]({
+                            type: 'standard__webPage',                    
+                            attributes: {
+                                url: '/dllondemand/s/opportunity/' + this.opportunityId  
+                            }
+                        });
+                    }
+                    else{
+                        this.connectedCallback();
+                    }
+                    
+                    
                 }).catch(error => {
                 ////console.log('Error stamping Is_Primary__c');
                 ////console.log(JSON.parse(JSON.stringify(error)));

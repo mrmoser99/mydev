@@ -7,6 +7,8 @@
  * 10/11/2022 - MRM added temp logic to experiment with appeals
  * 10/21/2022 - Geetha added logic for not storing Yes/No for Subsidy Id(instead store blank if Subsidy is No)PBI:882069
  * 02/01/2023 : PBI 930611 - Sharing rules Field population :Dibyendu
+ * 01/19/2023 : MRM add application number to return values
+ * 01/27/2023 : MRM Added isAppeal and include in credit app in save logic 
  *********************************************************************************************************/
 
 
@@ -340,7 +342,9 @@ public static quoteOpportunityWrapper CloneQuoteOption(String jsonInput) {
 		Payment_Timing__c = paymentTiming,
 		Asset_Type__c = (String) (jsonInputMap.get('assetTypeQuote')),
 		Option_Number__c = newQuoteOptionNum,
-		Created_Date__c = Date.today()
+		Created_Date__c = Date.today(),
+		Is_Appeal__c = (Boolean) (jsonInputMap.get('isappeal')),
+		Current_Credit_App_Selection__c= (Boolean) (jsonInputMap.get('includeinapp'))
 		);
 	try {
 		insert newQuote;
@@ -1114,7 +1118,7 @@ public static quoteOpportunityWrapper QueryQuoteOpportunity(String oppId) {
 	//query opportunity
 	quoteWrapper.newOpp = [
 		Select
-		Id,Opportunity_Number__c,Nickname__c,AccountId,CloseDate,StageName,Sub_Stage__c, Comments__c,
+		Id,Application_Number__c ,Quote_Count__c, Opportunity_Number__c,Nickname__c,AccountId,CloseDate,StageName,Sub_Stage__c, Comments__c,
 		ForecastCategoryName,Amount,CurrencyIsoCode, Location__c, Account.Name
 		FROM Opportunity
 		WHERE Id = : oppId

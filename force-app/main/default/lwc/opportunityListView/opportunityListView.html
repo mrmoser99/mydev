@@ -67,6 +67,11 @@
                             </div>-->
                         </div>
                     </lightning-layout-item>
+                    <lightning-layout-item padding="around-small size=3">
+                        <div class="slds-var-p-around_small ">
+                            <lightning-button variant="brand-outline" label="Clear Filters" title="Clear Filters" onclick={handleClearFilters}></lightning-button>
+                        </div>
+                    </lightning-layout-item>
                 </lightning-layout>
                 <div class="slds-p-around_xx-small">
                     <template for:each={allValues} for:item="val">

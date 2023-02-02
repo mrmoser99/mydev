@@ -3,6 +3,7 @@
  * Author:Geetha
  * 5-31-2022: Modified the Quote list view query : Task 783855
  * 6-30-2022:DOD Home Page- As a portal user I have a section detailing the most recent quote I worked on: PBI 742007
+ * 1/31-2023 MRM - added credit check mode; only show primary quotes; also all means just the two
  */
 
 public class QuoteListView {
@@ -16,7 +17,8 @@ public class QuoteListView {
         String partnerStatus,
         String searchAllValue,
         String sortBy,
-        String sortDirection
+        String sortDirection,
+        Boolean ccMode   //credit check appeals process
         ){
             string querySQL;   
             string condition;
@@ -26,8 +28,22 @@ public class QuoteListView {
             
             Datetime ct;
             Datetime ct2;
-           
+
+            List<String> subStages = new List<String>{'Application Draft','Quoting & Proposal','Quote Draft'};
+            
+
             List<string> substagesEX = new List<string>{'Application Submitted','Quoting & Proposal','Quote Draft','Application Draft'};
+             
+            system.debug('ccmode is: ' + ccMode);
+
+            if (ccMode == true){
+                 substagesEX = subStages;
+
+                
+            }
+
+            system.debug('substagesEx' + substagesEX);
+            
             Id IntegratedRecType = Schema.SObjectType.Quote.getRecordTypeInfosByName().get('Integrated').getRecordTypeId();
         
             if(String.isNotBlank(sortDirection)){
@@ -78,35 +94,48 @@ public class QuoteListView {
             else{
                  condition= getCondition(rowLimit,rowOffset,submittedDate,partnerStatus,searchAllValue);  
             }
+
+            String ccCondition1 = '';
+            String ccCondition2 = '';
+
+            //if (ccMode == true){
+                //ccCondition1 = ' Current_Credit_App_Selection__c = true AND ';
+                ////ccCondition2 = ' AND Current_Credit_App_Selection__c = true ';
+                
+            //}
             
             if(String.isNotBlank(condition)){
                 if(String.isNotBlank(sortBy)){
-                    querySQL ='select OpportunityId, Opportunity.Opportunity_Number__c, RecordTypeId, Opportunity.End_User_Company_Name__c, Opportunity.End_User__r.name, Opportunity.Nickname__c, Opportunity.Sales_Rep_Name__c, Opportunity.CreatedBy.Name, Opportunity.CreatedBy.Full_Name__c, Opportunity.CreatedDate, '
+                    querySQL ='select OpportunityId, is_primary__c, Opportunity.Opportunity_Number__c, RecordTypeId, Opportunity.End_User_Company_Name__c, Opportunity.End_User__r.name, Opportunity.Nickname__c, Opportunity.Sales_Rep_Name__c, Opportunity.CreatedBy.Name, Opportunity.CreatedBy.Full_Name__c, Opportunity.CreatedDate, '
                               + 'Opportunity.LastModifiedDate, Opportunity.Sub_Stage__c, Opportunity.CreatedBy.FirstName, Opportunity.createdby.LastName, Partner_Sales_Rep__r.Name '
                               + 'from quote where OpportunityId!=null and RecordTypeId = :IntegratedRecType and Opportunity.Sub_Stage__c in :substagesEX AND '
-                        	  + condition + ' ORDER BY ' + sortByConvert  + ' ' + sortDirection + ' NULLS ' + nullSeq 
+                        	  + ccCondition1 + 
+                              + condition + ' ORDER BY ' + sortByConvert  + ' ' + sortDirection + ' NULLS ' + nullSeq 
                         	  + ' LIMIT ' + rowLimit + ' OFFSET ' + rowOffset;
                 }
                 else {
-                    querySQL ='select OpportunityId, Opportunity.Opportunity_Number__c, RecordTypeId, Opportunity.End_User_Company_Name__c, Opportunity.End_User__r.name, Opportunity.Nickname__c, Opportunity.Sales_Rep_Name__c, Opportunity.CreatedBy.Name, Opportunity.CreatedBy.Full_Name__c, Opportunity.CreatedDate, '
+                    querySQL ='select OpportunityId, is_primary__c, Opportunity.Opportunity_Number__c, RecordTypeId, Opportunity.End_User_Company_Name__c, Opportunity.End_User__r.name, Opportunity.Nickname__c, Opportunity.Sales_Rep_Name__c, Opportunity.CreatedBy.Name, Opportunity.CreatedBy.Full_Name__c, Opportunity.CreatedDate, '
                               + 'Opportunity.LastModifiedDate, Opportunity.Sub_Stage__c, Opportunity.CreatedBy.FirstName, Opportunity.createdby.LastName, Partner_Sales_Rep__r.Name '
                               + 'from quote where OpportunityId!=null and RecordTypeId = :IntegratedRecType and Opportunity.Sub_Stage__c in :substagesEX AND '
-                       		  + condition +' LIMIT ' + rowLimit + ' OFFSET ' + rowOffset;
+                       		  + ccCondition1 +
+                              + condition +' LIMIT ' + rowLimit + ' OFFSET ' + rowOffset;
                 }
             }
             else{
                 if(String.isNotBlank(sortBy)){
-                    querySQL = 'select OpportunityId, Opportunity.Opportunity_Number__c, RecordTypeId, Opportunity.End_User_Company_Name__c, Opportunity.End_User__r.name, Opportunity.Nickname__c, Opportunity.Sales_Rep_Name__c, Opportunity.CreatedBy.Name, Opportunity.CreatedBy.Full_Name__c, Opportunity.CreatedDate, '
+                    querySQL = 'select OpportunityId, is_primary__c ,Opportunity.Opportunity_Number__c, RecordTypeId, Opportunity.End_User_Company_Name__c, Opportunity.End_User__r.name, Opportunity.Nickname__c, Opportunity.Sales_Rep_Name__c, Opportunity.CreatedBy.Name, Opportunity.CreatedBy.Full_Name__c, Opportunity.CreatedDate, '
                               + 'Opportunity.LastModifiedDate, Opportunity.Sub_Stage__c, Opportunity.CreatedBy.FirstName, Opportunity.createdby.LastName, Partner_Sales_Rep__r.Name '
                               + 'from quote where OpportunityId!=null and RecordTypeId = :IntegratedRecType and Opportunity.Sub_Stage__c in :substagesEX '
+                              + ccCondition2 +
                               + 'ORDER BY  '
                        		  + sortByConvert + ' ' + sortDirection + ' NULLS ' + nullSeq 
                        		  + ' LIMIT ' + rowLimit + ' OFFSET ' + rowOffset;
                 }
                 else {
-                   querySQL = 'select OpportunityId, Opportunity.Opportunity_Number__c, RecordTypeId, Opportunity.End_User_Company_Name__c, Opportunity.End_User__r.name, Opportunity.Nickname__c, Opportunity.Sales_Rep_Name__c, Opportunity.CreatedBy.Name, Opportunity.CreatedBy.Full_Name__c, Opportunity.CreatedDate, '
+                   querySQL = 'select OpportunityId, is_primary__c, Opportunity.Opportunity_Number__c, RecordTypeId, Opportunity.End_User_Company_Name__c, Opportunity.End_User__r.name, Opportunity.Nickname__c, Opportunity.Sales_Rep_Name__c, Opportunity.CreatedBy.Name, Opportunity.CreatedBy.Full_Name__c, Opportunity.CreatedDate, '
                               + 'Opportunity.LastModifiedDate, Opportunity.Sub_Stage__c, Opportunity.CreatedBy.FirstName, Opportunity.createdby.LastName, Partner_Sales_Rep__r.Name '
                               + 'from quote where OpportunityId!=null and RecordTypeId = :IntegratedRecType and Opportunity.Sub_Stage__c in :substagesEX '
+                              + ccCondition2
                               + 'ORDER BY Opportunity.CreatedDate desc '
                               + ' LIMIT ' + rowLimit + ' OFFSET ' + rowOffset;
                    }
@@ -118,6 +147,7 @@ public class QuoteListView {
                 if(!qlistMap.containsKey(qt.OpportunityId)){
                     qlistMap.put(qt.OpportunityId,qt);
                 }
+            
             }
             
             
@@ -154,6 +184,7 @@ public class QuoteListView {
         String submittedDate,
         String partnerStatus,
         String searchAllValue
+         
     ){
         String condition = '';
         String startDate;
@@ -188,12 +219,12 @@ public class QuoteListView {
         }  
 
         if(String.isNotBlank(partnerStatus)){
-           if(String.isNotBlank(condition)){
+            if(String.isNotBlank(condition)){
                     condition += ' AND ' + 'Opportunity.Sub_Stage__c =  \'' + partnerStatus + '\'';
-                }
-                else{
-                    condition += 'Opportunity.Sub_Stage__c =  \'' + partnerStatus + '\'';
-                }
+            }
+            else{
+                condition += 'Opportunity.Sub_Stage__c =  \'' + partnerStatus + '\'';
+            }
             
         }
         

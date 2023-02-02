@@ -1,3 +1,9 @@
+/************************************************************************************************************
+*
+*  Change Log:
+*   01/25/2023 - MRM - added mode as an api;
+*
+*************************************************************************************************************/
 import {LightningElement,track, wire,api} from 'lwc';
 
 import {checkPermission} from 'c/dodJSUtility';
@@ -107,13 +113,20 @@ const columns = [{
 
 export default class quoteListView extends NavigationMixin(LightningElement) {
 
+    //API
+    @api mode;
+
+    regularMode = true;
+
+    ccMode = false;
+
     //Declare @tracks
     @track quotes = [];
     @track totalNumberOfRows;
     @track loader = false;
 
     //Button/Link Permissions
-    NQ01 = true;
+    NQ01 = false;
 
     //Declare properties
     error;
@@ -141,6 +154,29 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
             value: 'Application Submitted'
         },
 
+        {
+            label: 'Quote Draft',
+            value: 'Quote Draft'
+        },
+
+        {
+            label: 'Quoting & Proposal',
+            value: 'Quoting & Proposal'
+        }
+       
+    ];
+    partnerStatusPickListValuesCCMode = [
+        {
+            label: 'All',
+            value: ''
+        },
+
+        {
+            label: 'Application Draft',
+            value: 'Application Draft'
+        },
+
+        
         {
             label: 'Quote Draft',
             value: 'Quote Draft'
@@ -183,13 +219,22 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
     //method to check if the permission is true or false; this drives display of the button or link
     async setPermissions() {
 
-        //this.NQ01 = await checkPermission('DOD_NQ01_NEWQUOTE');  
-        //alert('DDT') ; 
-        //alert(this.NQ01);
+        this.NQ01 = await checkPermission('NQ01'); 
+        
     }
 
     //calling connectedCallback
     connectedCallback() {
+
+        console.log('mode is: ' + this.mode);
+
+        if (this.mode == 'cc'){
+            this.ccMode = true;
+            this.regularMode = false;
+        }else{
+            this.ccMode = false;   
+            this.regularMode = true;
+        }
 
         this.setPermissions();
         
@@ -242,6 +287,9 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
     //method to load data
     getInitialOpportunities() {
         //apex call to get Quotes
+        console.log('ccmode is : ' +this.ccMode);
+        console.log('mode is: ' + this.mode);
+        console.log('status: ' + this.partnerStatus);
         getQuotes({
                 rowLimit: this.rowLimit,
                 rowOffset: this.rowOffset,
@@ -249,7 +297,8 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
                 partnerStatus: this.partnerStatus,
                 searchAllValue: this.searchAllValue,
                 sortBy: this.sortBy,
-                sortDirection: this.sortDirection
+                sortDirection: this.sortDirection,
+                ccMode : this.ccMode
             }).then(result => {
                 //on success 
                 if (result) {
@@ -336,7 +385,8 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
                             rowOffset: this.rowOffset,
                             submittedDate: this.applicationDate,
                             partnerStatus: this.partnerStatus,
-                            searchAllValue: this.searchAllValue
+                            searchAllValue: this.searchAllValue,
+                            ccMode : this.ccMode
                         }).then(result => {
                             //On success
                             if (result) {
@@ -632,5 +682,54 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
         }
 
     }
+
+    handleSelectQuote(event){
+
+        console.log('dispatching childselect event');
+
+        var el = this.template.querySelector('lightning-datatable');
+        console.log(el);
+        var selected = el.getSelectedRows();
+        console.log('selected is: ' + selected);
+         
+
+        if (selected == '') {
+            const evt = new ShowToastEvent({
+                            title:      'Error',
+                            message:    'A quote must be selectred!',
+                            variant:    'error',
+                            duration:   20000
+                            });
+                        this.dispatchEvent(evt);
+
+        }
+            
+
+        const passEvent = new CustomEvent('childselect', {
+                detail: {quoteNumber: selected[0].Qnumber} 
+        });
+        this.dispatchEvent(passEvent);
+
+    }
+
+    handleCreateQuote(event){
+
+        console.log('dispatching childcreate event');
+
+        const passEvent = new CustomEvent('childcreate', {
+                detail: {quoteNumber: 'New Option'} 
+            });
+        this.dispatchEvent(passEvent);
+
+    }
+
+    handleCancel(event){
+
+            const passEvent = new CustomEvent('childcancel', {
+            });
+            this.dispatchEvent(passEvent);
+
+    }
+
 
 }

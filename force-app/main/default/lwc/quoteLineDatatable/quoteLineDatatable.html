@@ -1,6 +1,9 @@
 <!--
  - Created by ShiqiSun on 12/1/2021.
  -->
+Change Log:
+
+02/02/2023 - MRM - Added appeal reactive to change labels when in cc mode
 
 <!-- Quote Line Datatable -->
 <template>
@@ -25,7 +28,13 @@
                             <input id="includeInCreditApplication" checked={isCreditAppChecked} value={option.quote.Id}
                                 type="radio" name="creditApplicationRadio" onclick={handleCreditAppRadio}
                                 class="slds-m-right_small"></input>
-                            <label>Include in Credit Application</label>
+                            <template if:true={isCCMode}>
+                                <label>Include in Appeal</label>
+                            </template>
+                            <template if:false={isCCMode}>
+                                <label>Include in Credit Application</label>
+                            </template>
+
                         </lightning-layout-item>
                         <lightning-layout-item size="2">
                             <lightning-button class="slds-m-right_small delete-button slds-float_right" variant="base"

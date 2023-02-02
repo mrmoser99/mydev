@@ -6,6 +6,7 @@
 *  11/17/2022 - MRM - made pricing a reusable component to suppor appeals; Pricing 2.0
                 MRM - removed call pricing and save for all options. only save the option changed;
                       this saves tons of processing and was not required
+   01/26/2023   MRM - change of finance term was causing unit price to be set to null; fixed
                     -  
                 
 *
@@ -47,6 +48,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     @api newoption;
     @api program;
     @api clone;
+    @api isappeal;
 
     createdQuote = false;
 
@@ -247,11 +249,12 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
      * 
      ***************************************************************************************************************/
     @api childOption(option){
-        //console.log('called child option: ' +  option);
+        console.log('called child option: ' +  option);
        
         let wrapperEvent2 = {value: option};
         let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: false};
         this.handleOptionPicklist(wrapperEvent);
+         
     }
     /***************************************************************************************************************
      * childPricing - parent calls this to send in the nickname sales rep location and program
@@ -320,9 +323,11 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         if (this.oppid) {
             this.loading = true;
             this.isLoadedQuote = true;
-            
+            console.log('this option in pricing component is:' + this.option);
             queryQuoteOpportunity({'oppId' : this.oppid})
                 .then(result => {
+
+                    console.log('result is: ' + JSON.stringify(result));
                  
                     this.parseData(result);
                  
@@ -337,6 +342,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                         this.specificationTabActive = true;  ///mrm change 1
                         this.program = this.options[0].quote.Program_ID__c;
                         
+                        console.log('this option is: ' + this.newoption);
 
                         if (this.newoption == 'New Option'){
                             let wrapperEvent2 = {value: this.newoption};
@@ -348,8 +354,11 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                         }
                         else{
                             if (this.optionsPicklist.length > 1) {
+                                console.log('this new option is: ' + this.newoption);
                                 if (typeof this.newoption === 'undefined')
                                     this.newoption = 0;
+
+                                console.log('picking option: ' + this.newoption);
                                 let wrapperEvent2 = {value: this.newoption};
                                 let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: true};
                                 this.handleOptionPicklist(wrapperEvent);
@@ -667,20 +676,22 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     ***************************************************************************************************************/
     handleChange(event) {
 
-        console.log('event target value: ' + event.target.value);
+        console.log('event target name: ' + event.target.name);
 
         this[event.target.name] = event.target.value;
         //Geetha - new code for unitprice //edit/copy asset PBI 882069
         //MRM - was not working  from used to new
-        //if(event.target.value == 'Used'){
+        if (event.target.name != 'financeTerm'){
             this.template.querySelectorAll("c-assetcreation").forEach(element=>{
-                element.resetUnitPrice();
+            element.resetUnitPrice();
             })
             this.assets.forEach(a=>{
                 a.unitSalesPrice = undefined;
-          })
-          //callout for Leasetype and Ratetype
-          this.loadTerms();
+            })
+        }
+
+        //callout for Leasetype and Ratetype
+        this.loadTerms();
 
         //}
         this.quoteObject[event.target.name] = event.target.value;
@@ -865,6 +876,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     *  
     ***************************************************************************************************************/
     handleAddOption(event) {
+
+         
         this.loading = true;
 
         this.activeOption = undefined;
@@ -1032,6 +1045,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             this.showCreateInstead = false;
             this.activeOption = event.target.value;
             this.quoteObject.optionNum = (this.optionsPicklistVal - 0) + 1;
+            this.quoteObject.option = (this.optionsPicklistVal - 0) + 1;
             this.processAssets(this.options[event.target.value].quoteLines);
             this.processCurrentOption(this.options[event.target.value]);
         }
@@ -1275,7 +1289,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     //Save quote
     handleOnSave(event) {
 
-        //console.log('in save');
+        console.log('in save');
      
         if (!this.validateInputBeforeSave()) {
             return;
@@ -1291,30 +1305,46 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.quoteObject.assets = this.assets;
         this.quoteObject.accessories = this.validateAccessories(this.accessories);
         this.quoteObject.oppId = this.opportunityId;
+        console.log('this nickname is: ' + this.nickname);
         this.quoteObject.nickname = this.nickname;
+        
+        console.log('this appearl is: ' + this.isappeal);
+        if (this.isappeal == 'true'){
+            console.log('setting flags');
+            this.quoteObject.isappeal = true;
+            this.quoteObject.includeinapp = true;
+            this.quoteObject.Is_Appeal__c = true;
+            this.quoteObject.Current_Credit_App_Selection__c = true;
+        }
+        else{
+            this.quoteObject.isappeal = false;
+            this.quoteObject.includeinapp = false;
+        }
          
         let passingParam = JSON.stringify(this.quoteObject);
     
-        //console.log('this quoteobject is: ' +  this.passingParamnickname + '-' + JSON.stringify(this.quoteObject));
+        console.log('this quoteobject is: ' +  this.passingParamnickname + '-' + JSON.stringify(this.quoteObject));
+        console.log('is appeal in pricing is: ' + this.isappeal);
 
         if (this.clone == true){
             this.quoteObject.isEdit = false;
             this.quoteObject.isClone = true;
         }
         
-        if (this.quoteObject.isEdit) {
-             
+        if (this.quoteObject.isEdit) {this.nickname
+            console.log('is edit');
             this.triggerParentSave = true;
             this.editQuote(passingParam);
              
         } else if (this.quoteObject.isClone  || this.hasQuotes) {
-         
+            console.log('doing clone ' + this.hasQuotes + ' is clone is: ' + this.quoteObject.isClone);
             this.triggerParentSave = true;
             this.cloneQuote(passingParam);
          
         } else {
              
             this.createdQuote = true;
+            console.log('calling create quote');
             this.createQuote(passingParam);
              
         }
@@ -1333,7 +1363,12 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                     this.showToast('Quote option has been saved!', 'Quote was saved successfully', 'success');
                 }
                 else{
-                    this.showToast('Quote has been copied!', 'Quote was copied successfully', 'success');
+                    if (this.isappeal == false){
+                        this.showToast('Quote has been copied!', 'Quote was copied successfully', 'success');
+                    }
+                    else{
+                        this.showToast('Appeal has been saved!', 'Appeal was saved successfully', 'success');
+                    }
                 }
              
                 this.parseData(result);
@@ -1354,6 +1389,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     editQuote(passingParam) {
 
         //this.loading = true;
+        console.log('passing param:' + passingParam) ;
+
         editQuoteOption({jsonInput: passingParam})
             .then(result => {
                 this.showToast('Quote has been edited!', 'Quote was edited successfully', 'success');
@@ -1362,7 +1399,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 this.saveRunning = false;
             })
             .catch(error => {
-                ////console.log(JSON.stringify(error));
+                console.log(JSON.stringify(error));
                 this.showToast('An error has occurred trying to edit an option.', error, 'error');
                 this.loading = false;
                 this.saveRunning = false;
@@ -1379,6 +1416,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.showCreateInstead = false;
         this.activeOption = event.detail;
         this.quoteObject.optionNum = (event.detail - 0) + 1;
+        this.quoteObject.option = (event.detail - 0) + 1;
         this.processAssets(this.options[event.detail].quoteLines);
         this.processCurrentOption(this.options[event.detail]);
         setTimeout( () => {//options picklist does not load fast enough
@@ -1577,6 +1615,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 quotePricingAPIData.Interest__c = resultParsed.monthlyAPR;
                 quotePricingAPIData.Total_Payment__c = resultParsed.paymentAmount;
                 quotePricingAPIData.Residual__c = this.addPricingDataToQuoteLines(resultParsed, quoteObj, quotePricingAPIData);
+                
                 saveQuotePricingDataBackToServer({"quoteString" : JSON.stringify(quotePricingAPIData)})
                     .then(result => {
                         let newQuoteSummary = JSON.parse(JSON.stringify(quoteObj));
@@ -1728,6 +1767,8 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
     //save methods to backend For quote creation,edit,clone
     createQuote(passingParam) {
+
+        console.log('in create quote');
 
         this.loading = true;
         createQuoteOpportunity({jsonInput: passingParam})

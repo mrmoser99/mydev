@@ -21,6 +21,7 @@
         requests for technical support, and other communications relating to this website should be directed to Sophie
         McLachlan at smclachlan@leasedirect.com
     </div>
+
     <div if:true={displayModal}>
         <!-- Modal for when the cancel button is pressed and the user must confirm that the forum data is to be cleared-->
         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
@@ -43,7 +44,8 @@
                 </div>
                 <footer class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" onclick={displayModalToFalse}
-                        title="Return to Page">No, stay on page</button>
+                        title="Return to Page">No,
+                        stay on page</button>
                     <button class="slds-button slds-button_brand" onclick={handleCancel} title="Confirm Cancel">Yes,
                         cancel this quote</button>
                 </footer>
@@ -52,7 +54,10 @@
         <div class="slds-backdrop slds-backdrop_open"></div>
     </div>
 
+
     <lightning-layout multiple-rows=true horizontal-align="spread">
+
+        <!-- header section -->
         <lightning-layout-item size=12 class="slds-box_border quote-header">
             <div class="Header slds-p-around_medium">
                 <lightning-layout>
@@ -60,117 +65,92 @@
                         <h1 class="slds-text-heading_large">
                             {sectionTitle}
                         </h1>
-
                     </lightning-layout-item>
 
+                    <lightning-layout-item size=4>
+                        <lightning-button class="slds-float_right" variant="brand-outline" label="Submit Appeal"
+                            onclick={handleOnSaveOnlyHeader}></lightning-button>
+                    </lightning-layout-item>
                 </lightning-layout>
-                <lightning-layout class="slds-p-around_medium" horizontal-align="left">
-
-                    <lightning-layout-item class="header-field-section" flexibility="auto">
+                <lightning-layout class="slds-p-around_medium" horizontal-align="space">
+                    <lightning-layout-item padding="around-small" flexibility="auto">
                         <div class="display-field">
                             <label>Application Number</label>
-                            <span><b>{applicationNameValue}</b></span>
+                            <span><b>{appNumber}</b></span>
                         </div>
                     </lightning-layout-item>
-                    <template if:true={linkQuote}>
-                        <lightning-layout-item class="header-field-section" flexibility="auto">
+                    <lightning-layout-item padding="around-small" flexibility="auto">
+                        <div class="display-field">
+                            <label>Quote Number</label>
+                            <template if:true={showQuoteNumber}>
+                                <span><b>{quoteNumber}</b></span>
+                            </template>
+                        </div>
+                    </lightning-layout-item>
+                    <template if:false={newOption}>
+                        <lightning-layout-item padding="around-small" flexibility="auto">
+
                             <div class="display-field">
-                                <label>Quote Number</label>
-                                <span><b><a onclick={openProposal}>{quoteNumberValue}</a></b></span>
+                                <label>Sales Rep</label>
+                                <span><b>{salesRep}</b></span>
                             </div>
                         </lightning-layout-item>
+
+                        <lightning-layout-item padding="around-small" flexibility="auto">
+                            <div class="display-field">
+                                <label>Location</label>
+                                <span><b>{displayLocation}</b></span>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" flexibility="auto">
+                            <div class="display-field">
+                                <label>Program</label>
+                                <span><b>{displayProgram}</b></span>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" flexibility="auto">
+                            <lightning-combobox name="assetTypeQuote" label="Asset Condition" required=true
+                                value={assetTypeQuote} options={assetTypeListQuote} onchange={handleChange}>
+                            </lightning-combobox>
+                        </lightning-layout-item>
                     </template>
-                    <lightning-layout-item class="header-field-section" flexibility="auto">
-                        <div class="display-field">
-                            <label>Sales Rep</label>
-                            <span><b>{salesRepValue}</b></span>
-                        </div>
-                    </lightning-layout-item>
-                    <lightning-layout-item class="header-field-section" flexibility="auto">
-                        <div class="display-field">
-                            <label>Nickname</label>
-                            <span><b>{nicknameValue}</b></span>
-                        </div>
+                    <template if:true={newOption}>
+                        <lightning-layout-item padding="around-small" flexibility="auto">
+                            <c-reusable-custom-dropdown-with-search-lwc bold-label="true"
+                                error-message="Enter a valid sales rep" auto-complete-off="off" options={salesRepList}
+                                field-required-off="true" value={salesRep} field-label="Sales Rep"
+                                placeholder="Enter Sales Rep" onchange={handleChangeSalesRep}>
+                            </c-reusable-custom-dropdown-with-search-lwc>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" flexibility="auto">
+                            <lightning-combobox name="location" label="Location" required=true value={location}
+                                class="locationComboboxWidth" options={siteList} onchange={handleChangeLocation}>
+                            </lightning-combobox>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" flexibility="auto">
+                            <lightning-combobox name="program" label="Program" required=true value={program}
+                                disabled={hasLocationSelection} options={programPicklist}
+                                onchange={handleDependentRatesPicklistChange}>
+                            </lightning-combobox>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" flexibility="auto">
+                            <lightning-combobox name="assetTypeQuote" label="Asset Condition" required=true
+                                value={assetTypeQuote} options={assetTypeListQuote} onchange={handleChange}>
+                            </lightning-combobox>
+                        </lightning-layout-item>
+                    </template>
 
-                    </lightning-layout-item>
-                    <lightning-layout-item class="header-field-section" flexibility="auto">
-                        <div class="display-field">
-                            <label>Location</label>
-                            <span><b>{locationValue}</b></span>
-                        </div>
-                    </lightning-layout-item>
-                    <lightning-layout-item class="header-field-section" flexibility="auto">
-                        <div class="display-field">
-                            <label>Status</label>
-                            <span><b>{statusValue}</b></span>
-                        </div>
-                    </lightning-layout-item>
-                    <lightning-layout-item padding="around-small" flexibility="auto">
-                        <div class="display-field">
-                            <label>Asset Condition</label>
-                            <span>{assetTypeQuote}</span>
-                        </div>
-                    </lightning-layout-item>
+
+
                 </lightning-layout>
             </div>
         </lightning-layout-item>
-
-        <!-- header section -->
-
-        <lightning-layout-item size=12 class="slds-box_border quote-header" if:false={specificationTabActive}>
-            <div class="Header slds-p-around_medium">
-                <lightning-layout>
-                    <lightning-layout-item size=8>
-                        <h1 class="slds-text-heading_large">
-                            {sectionTitle}
-                        </h1>
-                        <span><b>Quote Number : </b>{quoteNumber}</span>
-                        <!-- <a onclick={redirectToOpportunityPage}></a> -->
-                    </lightning-layout-item>
-                </lightning-layout>
-                <lightning-layout class="slds-grid_align-spread" horizontal-align="space">
-                    <lightning-layout-item padding="around-small" flexibility="auto">
-                        <div class="display-field">
-                            <label>Nickname</label>
-                            <span>{nickname}</span>
-                        </div>
-                    </lightning-layout-item>
-                    <lightning-layout-item padding="around-small" flexibility="auto">
-                        <div class="display-field">
-                            <label>Sales Rep</label>
-                            <span>{salesRepDisplayName}</span>
-                        </div>
-                    </lightning-layout-item>
-                    <lightning-layout-item padding="around-small" flexibility="auto">
-                        <div class="display-field">
-                            <label>Location</label>
-                            <span>{displayLocation}</span>
-                        </div>
-
-                    </lightning-layout-item>
-                    <lightning-layout-item padding="around-small" flexibility="auto">
-                        <div class="display-field">
-                            <label>Program</label>
-                            <span>{displayProgram}</span>
-                        </div>
-                    </lightning-layout-item>
-                    <lightning-layout-item padding="around-small" flexibility="auto">
-                        <div class="display-field">
-                            <label>Asset Condition</label>
-                            <span>{assetTypeQuote}</span>
-                        </div>
-                    </lightning-layout-item>
-                </lightning-layout>
-            </div>
-        </lightning-layout-item>
-
-        <div>
-            <c-pricing-component oppid="00678000003eJ6mAAE">
-            </c-pricing-component>
-        </div>
-
-
-
-
     </lightning-layout>
+
+    <c-pricing-component onchildcancel={handleChildCancel} onchildsave={handleChildSave} oppid={oppid} isappeal=true
+        newoption={option} clone=false>
+    </c-pricing-component>
+
+
+
 </template>
