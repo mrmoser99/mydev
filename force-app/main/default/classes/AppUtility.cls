@@ -6,7 +6,7 @@
  * @last modified by  : Mark Moser
  * Modifications Log
  * Ver   Date         Author       Modification
- * 1.0   01-23-2023   Mark Moser   Initial Version
+ * 1.0   01-23-2023   Mark Moser   Initial Version Modified
 **/
 public with sharing class AppUtility{
 
