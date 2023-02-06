@@ -1,5 +1,9 @@
 /**
  * Created by ShiqiSun on 11/18/2021.
+ * 
+ * Change Log:
+ * 
+ * 02/03/2023 MRM -Changed the error message for subsidy
  */
 
 import {LightningElement, wire, api, track} from 'lwc';
