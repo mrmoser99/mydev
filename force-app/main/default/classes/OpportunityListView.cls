@@ -4,6 +4,8 @@
  *
  * change log:
  * 2022-07-01: HV patched the Application Number sorting column issue.
+ * 02/06/2023 - Lucas Lucena - BUG 942673 - TST ACC | On Application Listview - "Sales Rep" field not filtering correctly 
+ * 02/06/2023 - MRM - Added display quote number to page
  */
 
 public with sharing class OpportunityListView {
@@ -13,10 +15,11 @@ public with sharing class OpportunityListView {
         Integer rowLimit,
         Integer rowOffset,
         String submittedDate,
-        String partnerStatus,
+        List<String> partnerStatus,
         String searchAllValue,
         String sortBy,
-        String sortDirection
+        String sortDirection,
+        String salesRepFilter
         ){
             string querySQL;   
             string condition;
@@ -24,7 +27,8 @@ public with sharing class OpportunityListView {
             string sortByConvert;
             
             List<string> substagesEX = new List<string>{'Booked', 'Calculation', 'Cash', 'Competitor', 'Customer Not Ready', 'Quote Draft', 'Quoting & Proposal'};
-
+			String partnerStatusFormatter = String.join(new List<String>(partnerStatus), '\',\'');
+            
             if(String.isNotBlank(sortDirection)){
                 if(sortDirection == 'asc'){
                     nullSeq = 'first';
@@ -49,30 +53,31 @@ public with sharing class OpportunityListView {
                       
             list<Opportunity> oppList = new List<Opportunity>(); 
                      
-            condition= getCondition(rowLimit,rowOffset,submittedDate,partnerStatus,searchAllValue);  
+            condition= getCondition(rowLimit,rowOffset,submittedDate,partnerStatus,searchAllValue,salesRepFilter);  
+ 
             if(String.isNotBlank(condition)){
                 if(String.isNotBlank(sortBy)){
-                    querySQL ='SELECT Id,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name, Opportunity_Number__c '+
+                    querySQL ='SELECT Id,Display_Quote_Number__c,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name, Opportunity_Number__c, Quote_Count__c, Type, Funded_Date__c, Account.Name, Booked_Amount_FORMULA__c '+
                 ' FROM Opportunity WHERE Sub_Stage__c not in :substagesEX and ' + condition + ' ORDER BY ' + sortByConvert  + ' ' + sortDirection + ' NULLS ' + nullSeq +
                 ' LIMIT ' + rowLimit + ' OFFSET ' + rowOffset;
                 }
                 else {
-                    querySQL ='SELECT Id,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name, Opportunity_Number__c '+
+                    querySQL ='SELECT Id,Display_Quote_Number__c,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name, Opportunity_Number__c, Quote_Count__c, Type, Funded_Date__c, Account.Name, Booked_Amount_FORMULA__c '+
                 ' FROM Opportunity WHERE Sub_Stage__c not in :substagesEX and ' + condition + ' LIMIT ' + rowLimit + ' OFFSET ' + rowOffset;
                 }
             } 
             else{
                 if(String.isNotBlank(sortBy)){
-                    querySQL = 'SELECT Id,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name, Opportunity_Number__c '+
+                    querySQL = 'SELECT Id,Display_Quote_Number__c,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name, Opportunity_Number__c, Quote_Count__c, Type, Funded_Date__c, Account.Name, Booked_Amount_FORMULA__c '+
                 ' FROM Opportunity WHERE Sub_Stage__c not in :substagesEX '+ ' ORDER BY ' + sortByConvert + ' ' + sortDirection + ' NULLS ' + nullSeq +
                 ' LIMIT ' + rowLimit + ' OFFSET ' + rowOffset;
                 }
                 else {
-                    querySQL = 'SELECT Id,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name, Opportunity_Number__c '+
+                    querySQL = 'SELECT Id,Display_Quote_Number__c,Application_Number__c,Nickname__c,Amount,End_User__c,End_User_Company_Name__c,Sub_Stage__c,Application_Date__c,Approval_Letter_Expiration_Date__c,Partner_Sales_Rep__r.Name, Opportunity_Number__c, Quote_Count__c, Type, Funded_Date__c, Account.Name, Booked_Amount_FORMULA__c '+
                 ' FROM Opportunity WHERE Sub_Stage__c not in :substagesEX ' + ' LIMIT ' + rowLimit + ' OFFSET ' + rowOffset;
                 }
             }
-
+  
         oppList = Database.query(querySQL);
 
         // Default the Application # to the nickname if it's blank.
@@ -92,39 +97,46 @@ public with sharing class OpportunityListView {
         Integer rowLimit,
         Integer rowOffset,
         String submittedDate,
-        String partnerStatus,
-        String searchAllValue
+        List<String> partnerStatus,
+        String searchAllValue,
+        String salesRepFilter
         ){
             String querySQL;
             string condition;
-            Integer totalNumberOfRows;
-
-            condition= getCondition(rowLimit,rowOffset,submittedDate,partnerStatus,searchAllValue);  
+            Integer totalNumberOfRows;                
+            System.debug('getOpportunitiesNumTestPurpose FNS values' + partnerStatus);                    			                
+            
+            condition= getCondition(rowLimit,rowOffset,submittedDate,partnerStatus,searchAllValue,salesRepFilter);  
             if(String.isNotBlank(condition)){
                 querySQL = 'SELECT COUNT() FROM Opportunity WHERE ' + condition;
             }
             else{
                 querySQL = 'SELECT COUNT() FROM Opportunity';
             }
-            totalNumberOfRows = Database.countQuery(querySQL);
+            totalNumberOfRows = Database.countQuery(querySQL);                
             return totalNumberOfRows;
         }
-
 
     public static string getCondition(
         Integer rowLimit,
         Integer rowOffset,
         String submittedDate,
-        String partnerStatus,
-        String searchAllValue
+        List<String> partnerStatus,
+        String searchAllValue,
+        String salesRepFilter
     ){
         String condition = '';
         String startDate;
         String startDateFormat;
         String endDate;
         String endDateFormat;
+        List<String> salesRepFilterSplit = new List<String>();
 
         System.debug('submittedDate ' + submittedDate);
+        System.debug('getCondition FNS partnerStatus ' + partnerStatus);
+        
+        String partnerStatusFormatter = String.join(new List<String>(partnerStatus), '\',\'');
+        system.debug('VRS partnerStatusFormatter:'+partnerStatusFormatter);
 
         if(String.isNotBlank(submittedDate)){
             if(submittedDate=='30D'){
@@ -152,25 +164,37 @@ public with sharing class OpportunityListView {
             }
         }  
 
-        if(String.isNotBlank(partnerStatus)){
+        // Start: Lucas Lucena - PBI 942673
+        if(salesRepFilter != '' && salesRepFilter != null) salesRepFilterSplit = salesRepFilter.split(' ');
+        if(salesRepFilter != ''){
+            if(String.isNotBlank(condition)){
+                condition += 'AND ';
+                for(integer i=0 ; i < salesRepFilterSplit.size() ; i++){
+                    condition += '(Partner_Sales_Rep__r.FirstName = \'' + salesRepFilterSplit[i] +'\' OR Partner_Sales_Rep__r.MiddleName = \'' + salesRepFilterSplit[i] +'\' OR Partner_Sales_Rep__r.LastName = \'' + salesRepFilterSplit[i] +'\') ';
+                    if(i+1 != salesRepFilterSplit.size()){
+                        condition += 'AND ';
+                    }
+                }    
+            }else{
+                for(integer i=0 ; i < salesRepFilterSplit.size() ; i++){
+                    condition += '(Partner_Sales_Rep__r.FirstName = \'' + salesRepFilterSplit[i] +'\' OR Partner_Sales_Rep__r.MiddleName = \'' + salesRepFilterSplit[i] +'\' OR Partner_Sales_Rep__r.LastName = \'' + salesRepFilterSplit[i] +'\') ';
+                    if(i+1 != salesRepFilterSplit.size()){
+                        condition += 'AND ';
+                    }
+                }     
+            }
+        }
+        // End: Lucas Lucena - PBI 942673
+
+        if(!partnerStatus.isEmpty()){
             system.debug('FNS condition::'+ condition);
-            if(partnerStatus=='Cancelled'){
-                if(String.isNotBlank(condition)){
-                    condition += ' AND ' + '(Sub_Stage__c =  \'' + 'Cancelled' + '\'' + ' OR ' + 'Sub_Stage__c =  \'' + 'Cash' + '\'' + ' OR ' + 'Sub_Stage__c =  \'' + 'Competitor' + '\'' + ' OR ' + 'Sub_Stage__c =  \'' + 'Customer Not Ready' + '\')';
-                }
-                else{
-                    condition += '(Sub_Stage__c =  \'' + 'Cancelled' + '\'' + ' OR ' + 'Sub_Stage__c =  \'' + 'Cash' + '\'' + ' OR ' + 'Sub_Stage__c =  \'' + 'Competitor' + '\'' + ' OR ' + 'Sub_Stage__c =  \'' + 'Customer Not Ready' + '\')';
-                }
+            if(String.isNotBlank(condition)){
+                condition += ' AND ' + 'Sub_Stage__c IN (\'' + partnerStatusFormatter + '\')';
+                system.debug('FNS condition::'+ condition);
             }
             else{
-                if(String.isNotBlank(condition)){
-                    condition += ' AND ' + 'Sub_Stage__c =  \'' + partnerStatus + '\'';
-                    system.debug('FNS condition::'+ condition);
-                }
-                else{
-                    condition += 'Sub_Stage__c =  \'' + partnerStatus + '\'';
-                    system.debug('FNS condition::'+ condition);
-                }
+                condition += 'Sub_Stage__c IN (\'' + partnerStatusFormatter + '\')';
+                system.debug('FNS condition::'+ condition);
             }
         }
 
@@ -197,4 +221,5 @@ public with sharing class OpportunityListView {
         //End: PBI - 829854 - Author: Fernando Nereu de Souza
         return condition;
     }
+    
 }

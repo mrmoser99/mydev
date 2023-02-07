@@ -9,6 +9,7 @@
  * 02/01/2023 : PBI 930611 - Sharing rules Field population :Dibyendu
  * 01/19/2023 : MRM add application number to return values
  * 01/27/2023 : MRM Added isAppeal and include in credit app in save logic 
+ * 02/06/2023 - MRM Added display quote number to appeals page
  *********************************************************************************************************/
 
 
@@ -1118,7 +1119,7 @@ public static quoteOpportunityWrapper QueryQuoteOpportunity(String oppId) {
 	//query opportunity
 	quoteWrapper.newOpp = [
 		Select
-		Id,Application_Number__c ,Quote_Count__c, Opportunity_Number__c,Nickname__c,AccountId,CloseDate,StageName,Sub_Stage__c, Comments__c,
+		Id,Application_Number__c , Display_Quote_Number__c,Quote_Count__c, Opportunity_Number__c,Nickname__c,AccountId,CloseDate,StageName,Sub_Stage__c, Comments__c,
 		ForecastCategoryName,Amount,CurrencyIsoCode, Location__c, Account.Name
 		FROM Opportunity
 		WHERE Id = : oppId

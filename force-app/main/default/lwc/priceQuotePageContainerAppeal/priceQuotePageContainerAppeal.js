@@ -256,6 +256,7 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
 
         this.oppid = this.currentPageReference.state.oppid;
         this.option = this.currentPageReference.state.option;
+         
     
     }
 
@@ -281,8 +282,9 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
             this.isLoadedQuote = true;
             queryQuoteOpportunity({'oppId' : this.oppid})
                 .then(result => {
-        
-                    this.quoteNumber = result.newOpp.Opportunity_Number__c;
+                    console.log('dqn:' + result.newOpp.Display_Quote_Number__c);
+                    console.log('dqn:' + result.newOpp.Quote_Count__c);
+                    this.quoteNumber = result.newOpp.Display_Quote_Number__c;
                     this.appNumber = result.newOpp.Application_Number__c;
                     this.quoteCount = result.newOpp.Quote_Count__c;
 
@@ -1535,11 +1537,21 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
         console.log('this quoteobject: ' + JSON.stringify(this.quoteObject));
         
         console.log('this opp id is: ' + this.quoteObject.oppId);
+        
+        console.log('url option is: ' + this.option);
 
-        console.log('this opt is: ' + this.quoteObject.optionNum - 1);
         
         let id = this.quoteObject.oppId;
-        let opt = this.quoteObject.optionNum - 1;
+
+        let opt = null;
+        if (this.quoteObject.optionNum == this.option) {
+            opt = this.option;
+        }
+        else{
+            opt = this.quoteObject.optionNum - 1;
+        }
+        
+            
 
         this[NavigationMixin.Navigate]({
             type: 'standard__webPage',
@@ -1664,7 +1676,7 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
             }
             return 0;
         });
-        this.quoteNumber = result.newOpp.Opportunity_Number__c;
+        this.quoteNumber = result.newOpp.Display_Quote_Number__c;
 
         if (this.onlyValidateHeader) {
             this.hasQuotes = true;

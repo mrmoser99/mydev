@@ -3,16 +3,15 @@
  * 
  * Change Log:
  * 07/13/2022 - MRM Fixed Alignment for amount; in the usa dollars are right aligned.
- * 10/05/2022 - FNS Bug 879195 Sales Rep Values not getting populate in the list views
+ * 10/05/2022 - Fernando Nereu Souza Bug 879195 Sales Rep Values not getting populate in the list views
  * 14/12/2022 - Dibyendu - Bug 893493 Selecting an application from the application list view should always land to the same page layout
  * 01/25/2023 - MRM - Sent credit checks to same page as others.
+ * 02/06/2023 - Lucas Lucena - BUG 942673 - TST ACC | On Application Listview - "Sales Rep" field not filtering correctly 
  */
 
 import {LightningElement, track, wire, api} from 'lwc';
 import getOpportunities from '@salesforce/apex/OpportunityListView.getOpportunities';
 import getOpportunitiesNum from '@salesforce/apex/OpportunityListView.getOpportunitiesNum';
-import getOpportunitiesNumTestPurpose from '@salesforce/apex/OpportunityListView.getOpportunitiesNumTestPurpose';
-import getOpportunitiesTestPurpose from '@salesforce/apex/OpportunityListView.getOpportunitiesTestPurpose';
 //import getSalesRapMap from '@salesforce/apex/OpportunityListView.getOptionsByFieldObject';
 import {getObjectInfo, getPicklistValues} from "lightning/uiObjectInfoApi";
 import OPPORTUNITY_OBJECT from '@salesforce/schema/Opportunity';
@@ -44,8 +43,8 @@ const columns = [
             target: '_self'
         }
     },
-    {label: 'Quote No.', fieldName: 'quoteNumberURL', type: 'url', sortable: true,
-     typeAttributes: {label: {fieldName: 'Opportunity_Number__c'}, target:'_self'}
+    {label: 'Quote No.', fieldName: 'quoteNumberURL', type: 'url', sortable: true,  //mrm changed to this for appeals
+     typeAttributes: {label: {fieldName: 'Display_Quote_Number__c'}, target:'_self'}
     },
     {label: 'Customer Name', fieldName: 'EndUserURL', type: 'url', sortable: true, 
      typeAttributes: {label: {fieldName: 'End_User_Company_Name__c'}, target: '_self'}
@@ -78,17 +77,6 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
     // Credit Check
     creditCheckEnabled = false;
 
-    /*added header columns for excel- Download Application*/
-    headers = {
-        Application_Number__c : 'Application Number',
-        Nickname__c : 'Nickname__c',
-        Amount : 'Amount',
-        End_User_Company_Name__c : 'Company Name',
-        Sub_Stage__c : 'Sub Stage',
-        Opportunity_Number__c: 'Opportunity Number',
-        salesRep:'Sales Rep'
-    };    
-
     opportunities = [];
     totalNumberOfRows;
     error;
@@ -101,6 +89,7 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
     applicationDate='';
     applicationDatePickListValues =[];
     @track partnerStatus='';
+    @track salesRepFilter = '';
     @track allValues = [];
     partnerStatusPickListValues = [
         {label: 'All', value: ''},
@@ -167,14 +156,15 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
 
     getInitialOpportunities() {
         //FNS TEST
-        getOpportunitiesTestPurpose({
+        getOpportunities({
             rowLimit: this.rowLimit,
             rowOffset: this.rowOffset,
             submittedDate: this.applicationDate,
             partnerStatus: this.allValues,
             searchAllValue: this.searchAllValue,
             sortBy: this.sortBy,
-            sortDirection: this.sortDirection
+            sortDirection: this.sortDirection,
+            salesRepFilter: this.salesRepFilter
         }).then(result => {
 
             // CREDITCHECK_ENABLED
@@ -190,11 +180,12 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                 result.forEach((record) => {
                     let tempOpportunity = Object.assign({}, record);
 
-                    if(tempOpportunity.Nickname__c != 'Credit Check') {
-                        tempOpportunity.Opportunity_Number__c = tempOpportunity.Opportunity_Number__c;
+                    //if(tempOpportunity.Nickname__c != 'Credit Check') {
+                    if(tempOpportunity.Quote_Count__c > 0) {
+                        tempOpportunity.Display_Quote_Number__c = tempOpportunity.Display_Quote_Number__c;
                         tempOpportunity.quoteNumberURL = window.location.origin + '/dllondemand/s/new-quote?oppid=' + tempOpportunity.Id;
                     } else {
-                        tempOpportunity.Opportunity_Number__c = '';
+                        tempOpportunity.Display_Quote_Number__c = '';
                         tempOpportunity.quoteNumberURL = '';
                     }
 
@@ -247,12 +238,13 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
 
                 this.opportunities = tempOpportunitiesList;
                 //FNS TEST
-                getOpportunitiesNumTestPurpose({
+                getOpportunitiesNum({
                     rowLimit: this.rowLimit,
                     rowOffset: this.rowOffset,
                     submittedDate: this.applicationDate,
                     partnerStatus: this.allValues,
-                    searchAllValue: this.searchAllValue
+                    searchAllValue: this.searchAllValue,
+                    salesRepFilter: this.salesRepFilter
                 }).then(result => {
                     console.log(result);
                     if (result) {
@@ -273,28 +265,6 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                 console.error("Error", error);
             }
         })
-    
-    //FERNANDO TEST PURPOSE::::::
-    getOpportunitiesNumTestPurpose({
-        rowLimit: this.rowLimit,
-        rowOffset: this.rowOffset,
-        submittedDate: this.applicationDate,
-        partnerStatus: this.allValues,
-        searchAllValue: this.searchAllValue,
-        sortBy: this.sortBy,
-        sortDirection: this.sortDirection
-    }).then(result => {console.log('FERNANDO TEST PURPOSE::' + result);})
-
-    getOpportunitiesTestPurpose({
-        rowLimit: this.rowLimit,
-        rowOffset: this.rowOffset,
-        submittedDate: this.applicationDate,
-        partnerStatus: this.allValues,
-        searchAllValue: this.searchAllValue,
-        sortBy: this.sortBy,
-        sortDirection: this.sortDirection
-    }).then(result => {console.log('FERNANDO TEST PURPOSE222222222::' + result);})
-
     }
 
     // Event to handle onloadmore on lightning datatable markup
@@ -310,7 +280,7 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
 
             if (this.rowOffset <= this.totalNumberOfRows) {
                 //FNS TEST
-                getOpportunitiesTestPurpose({
+                getOpportunities({
                     rowLimit: this.rowLimit,
                     rowOffset: this.rowOffset,
                     submittedDate: this.applicationDate,
@@ -385,6 +355,21 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
         this.rowOffset = 0;
         this.getInitialOpportunities();
     }
+
+    // Start: Lucas Lucena - PBI 942673
+    handleChangeSalesRep(event) {
+        this.salesRepFilter = event.target.value;
+        clearTimeout(this.debounceTimeout);
+        this.debounceTimeout = setTimeout(() => {
+            this.enableInfiniteLoading = true;
+            this.isLoading =true;
+            this.opportunities = [];
+            this.rowOffset = 0;
+            this.getInitialOpportunities();
+         }, 2000);
+        
+    }
+    // End: Lucas Lucena - PBI 942673
 
     handleRemove(event){
         const valueRemoved = event.target.name;
@@ -496,15 +481,11 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
     /*code to download listView */
     handleDownload(event) {
        
-        let date = new Date()
-        let day = date.getDate();
-        let month = date.getMonth()+1;
-        let year = date.getFullYear();
-        let fullDate = month + "-" + day + "-" + year;
 
-        getOpportunitiesTestPurpose({
-            rowLimit: this.rowLimit,
-            rowOffset: this.rowOffset,
+
+        getOpportunities({
+            rowLimit: 9999,
+            rowOffset: 0,
             submittedDate: this.applicationDate,
             partnerStatus: this.allValues,
             searchAllValue: this.searchAllValue,
@@ -524,11 +505,18 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                 let tmp = {...dt};
                 if(!tmp.Application_Number__c) {tmp.Application_Number__c = ' ';}
                 if(!tmp.Nickname__c) {tmp.Nickname__c = ' ';}
-                if(!tmp.Amount) {tmp.Amount = ' ';}
-                if(!tmp.End_User_Company_Name__c) {tmp.End_User_Company_Name__c = ' ';}
+                if(!tmp.Type) {tmp.Type = ' ';}
                 if(!tmp.Sub_Stage__c) {tmp.Sub_Stage__c = ' ';}
-                if(!tmp.Opportunity_Number__c) {tmp.Opportunity_Number__c = ' ';}
-                if(!tmp.salesRep) {tmp.salesRep = ' ';}
+                if(!tmp.End_User_Company_Name__c) {tmp.End_User_Company_Name__c = ' ';}
+                if(!tmp.Application_Date__c) {tmp.Application_Date__c = ' ';}
+                if(!tmp.Funded_Date__c) {tmp.Funded_Date__c = ' ';}                                
+                if(tmp.Account) {tmp.AccountName = tmp.Account.Name;} 
+                else {tmp.AccountName = ' ';}                
+                if (tmp.Partner_Sales_Rep__r) {tmp.SalesRepValue = tmp.Partner_Sales_Rep__r.Name;} 
+                else {tmp.SalesRepValue = ' ';}
+               // if(!tmp.Partner_Sales_Rep__r) {tmp.Partner_Sales_Rep__r.Name = ' ';}
+                if(!tmp.Amount) {tmp.Amount = ' ';}
+                if(!tmp.Booked_Amount_FORMULA__c) {tmp.Booked_Amount_FORMULA__c = ' ';}
                 return tmp;
            });     
        
@@ -540,12 +528,13 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
         const result = this.convertToCSV(jsonObject, this.headers);
         if(result === null) return
         const blob = new Blob([result])
-        const exportedFilename = 'Applications' + fullDate +'.csv';
+        /*const exportedFilename = 'Applications' + fullDate +'.xls';
         if(navigator.msSaveBlob){
             navigator.msSaveBlob(blob, exportedFilename)
         } else if (navigator.userAgent.match(/iPhone|iPad|iPod/i)){
             const link = window.document.createElement('a')
-            link.href='data:text/csv;charset=utf-8,' + encodeURI(result);
+            //link.href='data:text/csv;charset=utf-8,' + encodeURI(result);
+            link.href= 'data:application/vnd.ms-excel,' + encodeURI(result);
             link.target="_blank"
             link.download=exportedFilename
             link.click()
@@ -560,13 +549,13 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                 link.click()
                 document.body.removeChild(link)
             }
-        }
+        }*/
 
     }) 
     }
 
 
-     convertToCSV(objArray, headers){
+     /*convertToCSV(objArray, headers){
         
         const columnDelimiter = ','
         const lineDelimiter = '\r\n'
@@ -574,7 +563,7 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
         const headerToShow = Object.values(headers) 
         let str = ''
         str+=headerToShow.join(columnDelimiter) 
-        str+=lineDelimiter
+        str+=lineDelimiter 
         const data = typeof objArray !=='object' ? JSON.parse(objArray):objArray
     
         data.forEach(obj=>{
@@ -590,7 +579,81 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
         })
       
         return str
-    } 
+    }*/
+    
+    convertToCSV(objArray, headers){
+        let date = new Date()
+        let day = date.getDate();
+        let month = date.getMonth()+1;
+        let year = date.getFullYear();
+        let fullDate = month + "-" + day + "-" + year;
+        
+        /*added header columns for excel- Download Application*/
+        let columnHeader = [
+            'Application Number', 
+            'Nickname', 
+            'Application Type', 
+            'Application Status', 
+            'Customer Name', 
+            'Received Date', 
+            'Booked Date', 
+            'Location', 
+            'Vendor Sales Rep', 
+            'Application Amount', 
+            'Booked Amount'];
+        // Prepare a html table
+        //let doc = '<style>'; 
+        // Add styles for the table
+        
+        //doc +='#customers {font-family: Arial, Helvetica, sans-serif; border-collapse: collapse; width: 100%;}';
+        //doc +='#customers td, #customers th {border: 1px solid #ddd; padding: 8px;}';
+        //doc +='#customers tr:nth-child(even){background-color: #f2f2f2;}';
+        //doc +='#customers th {padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4682B4; color: white;}'
+        //doc += 'table, th, td {';
+        //doc += '    border: 1px solid black;';
+        //doc += '    border-collapse: collapse;';
+        //doc += '}';          
+        //doc += '</style>';
+        
+        let doc = '<table>';
+        
+        // Add all the Table Headers
+        doc += '<tr>';
+        columnHeader.forEach(element => {            
+            doc += '<th>'+ element +'</th>'           
+        });
+        doc += '</tr>';
+        // Add the data rows
+        const data = typeof objArray !=='object' ? JSON.parse(objArray):objArray
+
+        data.forEach(record => {
+            doc += '<tr>';
+            doc += '<th>'+record.Application_Number__c+'</th>'; 
+            doc += '<th>'+record.Nickname__c+'</th>'; 
+            doc += '<th>'+record.Type+'</th>';
+            doc += '<th>'+record.Sub_Stage__c+'</th>';
+            doc += '<th>'+record.End_User_Company_Name__c+'</th>';
+            doc += '<th>'+record.Application_Date__c+'</th>';
+            doc += '<th>'+record.Funded_Date__c+'</th>';
+            doc += '<th>'+record.AccountName+'</th>';
+            doc += '<th>'+record.SalesRepValue+'</th>';
+            doc += '<th>'+record.Amount+'</th>';
+            doc += '<th>'+record.Booked_Amount_FORMULA__c+'</th>';
+            doc += '</tr>';
+
+
+
+        });
+        doc += '</table>';
+        var element = 'data:application/vnd.ms-excel,' + encodeURIComponent(doc);
+        let downloadElement = document.createElement('a');
+        downloadElement.href = element;
+        downloadElement.target = '_self';
+        // use .csv as extension on below line if you want to export data as csv
+        downloadElement.download = 'Applications' + fullDate +'.xls';
+        document.body.appendChild(downloadElement);
+        downloadElement.click();
+    }
     /* end of Download Applications */
 
     // Submit Credit Application on click of Create New Application button

@@ -1742,7 +1742,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
             }
             return 0;
         });
-        this.quoteNumber = result.newOpp.Opportunity_Number__c;
+        this.quoteNumber = result.newOpp.Display_Quote_Number__c;
 
         if (this.onlyValidateHeader) {
             this.hasQuotes = true;

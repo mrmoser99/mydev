@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : Mark Moser
  * @group             : 
- * @last modified on  : 02-02-2023
+ * @last modified on  : 02-06-2023
  * @last modified by  : Mark Moser
  * Modifications Log
  * Ver   Date         Author       Modification
@@ -747,6 +747,7 @@ public with sharing class AppUtility{
         qClone.is_appeal__c = true;
         qClone.Include_In_Proposal__c = true;
         qClone.Current_Credit_App_Selection__c = true;
+        
 
         insert qClone;
 
@@ -760,6 +761,10 @@ public with sharing class AppUtility{
         if (!qLineListClone.isEmpty()){
             insert qLineListClone;
         }
+
+        Opportunity o = [select id from Opportunity where id = :destinationOppId];
+        o.Originating_Quote_No__c = q.quote_number__c;
+        update o;
 
         return '1';
 
