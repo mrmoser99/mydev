@@ -10,6 +10,8 @@ import { LightningElement,api,wire } from 'lwc';
 import getOpportunityField from '@salesforce/apex/EnrollController.getOpportunityData';
 import sendDocsForFunding from '@salesforce/apex/EnrollRequestDocsIncoming.sendDocsForFunding';
 
+import {checkPermission} from 'c/dodJSUtility';//PBI-810432 - Dibyendu
+
 import saveFundingDate from '@salesforce/apex/EnrollController.saveFundingDate';
 import getPicklistOptions from '@salesforce/apex/EnrollController.picklistValues';
 import updateStep from '@salesforce/apex/EnrollController.updateStep';
@@ -46,6 +48,10 @@ export default class EnrollHeader extends LightningElement {
         ENROLL_ASSET_SAVED,
         ENROL_PRO_BAR_ASSET_DETAIL
     };
+
+    //Button/Link Permissions//PBI-810432 - Dibyendu
+    RD01 = false;
+    RD02 = false;
 
     // changes detail page by variable
     reviewSpecs=true;
@@ -120,6 +126,47 @@ export default class EnrollHeader extends LightningElement {
             } 
         });
     }
+
+    //Start of change PBI-810432-Dibyendu
+    //method to check if the permission is true or false; this drives display of the button or link//PBI-810432 - Dibyendu
+    async setPermissions() {    
+        this.RD01 = await checkPermission('RD01'); 
+        this.RD02 = await checkPermission('RD02');
+        //this.CQ01 =  checkPermission('CQ01'); 
+       // alert('CQ01:'+this.CQ01.value);
+
+   }
+   validateCondition() { 
+       if(this.RD01 == true && this.isReviewDoc == true){
+           this.isReviewDoc=true;
+           console.log('render isReviewDoc1',this.isReviewDoc);
+       }
+       else{
+           this.isReviewDoc=false;
+           console.log('render isReviewDoc2',this.isReviewDoc);
+       }
+
+       if(this.RD02 == true && this.submitDocuments == true){
+        this.submitDocuments=true;
+        console.log('render submitDocuments1',this.submitDocuments);
+    }
+    else{
+        this.submitDocuments=false;
+        console.log('render submitDocuments2',this.submitDocuments);
+    }
+   }
+
+   renderedCallback() {
+       console.log('render Value',this.isReviewDoc);
+       this.setPermissions();
+        this.validateCondition();
+       /*setTimeout(() => {
+           //this.loading = false;
+           this.validateCondition();
+           
+       }, 200);*/
+   }
+   //End of change PBI-810432-Dibyendu
 
     //Handling on click action on Edit Button.
     onActionBtnClick(){

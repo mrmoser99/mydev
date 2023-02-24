@@ -1,3 +1,7 @@
+<!--
+ - 01/23/2023 - 552867 - Fernando Nereu de Souza - Add definition on data points specific to the quotes requirements
+ -->
+
 <template>
     <template if:true={loader}>
         <lightning-spinner alternative-text="Loading" size="medium">
@@ -29,12 +33,12 @@
                          </lightning-layout-item>
                         <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
                             <div class="custom-box">
-                              <lightning-input autocomplete="abc" class="validate" type="text" name={customerName} label="Customer Name" placeholder="Enter Customer Name" value={Customer.Name} onchange={onCustNamechange} required="true" > </lightning-input> 
+                              <lightning-input autocomplete="abc" class="validate" type="text" name={customerName} label="Customer Name" placeholder="Enter Customer Name" value={Customer.Name} onchange={onCustNamechange} required="true" field-level-help="The company name of your customer" > </lightning-input> 
                             </div>
                         </lightning-layout-item>
                         <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
                             <div class="custom-box">
-                               <lightning-input autocomplete="abc" class="validate" type="text" name={primaryContact} label="Primary Contact" placeholder="Enter Primary Contact" value={Customer.Primary_Contact_Name__c} onchange={onPrimaryConchange} > </lightning-input>
+                               <lightning-input autocomplete="abc" class="validate" type="text" name={primaryContact} label="Primary Contact" placeholder="Enter Primary Contact" value={Customer.Primary_Contact_Name__c} onchange={onPrimaryConchange} field-level-help="Customer representative that will serve as primary contact"> </lightning-input>
                             </div>
                         </lightning-layout-item>
                         <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
@@ -87,7 +91,7 @@
                        
                         <lightning-layout-item padding="around-small" size="6" small-device-size="12" medium-device-size="6" large-device-size="6">
                             <div class="custom-box">
-                               <lightning-input autocomplete="abc" class="validate" type="text" name={TaxEIN} label="Tax Number(EIN)"  value={Customer.Tax_ID__c} onchange={onTaxIDchange} maxlength="10" minlength="10" pattern="[- +()0-9]+" message-when-pattern-mismatch="Enter a valid Tax Number" placeholder="Enter Tax Number"> </lightning-input>
+                               <lightning-input autocomplete="abc" class="validate" type="text" name={TaxEIN} label="Tax Number(EIN)"  value={Customer.Tax_ID__c} onchange={onTaxIDchange} maxlength="10" minlength="10" pattern="[- +()0-9]+" message-when-pattern-mismatch="Enter a valid Tax Number" placeholder="Enter Tax Number" field-level-help="Your customers tax identification number"> </lightning-input>
                             </div>
                         </lightning-layout-item>
                    

@@ -2,13 +2,13 @@
  * @description       : 
  * @author            : Mark Moser
  * @group             : 
- * @last modified on  : 02-06-2023
+ * @last modified on  : 02-08-2023
  * @last modified by  : Mark Moser
  * Modifications Log
  * Ver   Date         Author       Modification
  * 1.0   01-23-2023   Mark Moser   Initial Version Modified
 **/
-public with sharing class AppUtility{
+public without sharing class AppUtility{
 
     @AuraEnabled  
     public static Map<String,String> getQuoteOpportunityAndCount(String quoteNumber){
@@ -739,6 +739,7 @@ public with sharing class AppUtility{
                                         where quote__c = :q.id
                                         ] ;
 
+        system.debug('quote id is: ' + q.id);
         q.id = null;
         Quote qClone = q;
         qClone.opportunityId = destinationOppId;

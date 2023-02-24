@@ -12,6 +12,8 @@ import {api, track, LightningElement, wire} from 'lwc';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import {ShowToastEvent} from "lightning/platformShowToastEvent";
 
+import {checkPermission} from 'c/dodJSUtility';//PBI-810432 - Dibyendu
+
 //pricing stuff
 import getUserSite from "@salesforce/apex/PricingUtils.getUserSite"; 
 import getPrograms from "@salesforce/apex/PricingUtils.getPrograms";
@@ -38,6 +40,11 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
     @api sectionSubTitle;
     @api oppid;
     @api option;
+
+    //Button/Link Permissions//PBI-810432 - Dibyendu
+    DP01 = false;   
+    DP02 = false; 
+
 
     //Object model
     assets = [{
@@ -258,7 +265,29 @@ export default class PriceQuotePageContainerReplacment extends NavigationMixin(L
         this.oppid = this.currentPageReference.state.oppid;
     }
 
+    //method to check if the permission is true or false; this drives display of the button or link//PBI-810432 - Dibyendu
+    async setPermissions() {    
+            this.DP01 = await checkPermission('DP01'); 
+            this.DP02 = await checkPermission('DP02'); 
+            //this.CQ01 =  checkPermission('CQ01'); 
+           // alert('CQ01:'+this.CQ01.value);
     
+    }
+
+    renderedCallback() {
+        alert('CQ01:'+this.DP01);
+        console.log('render Value1',this.DP01);
+        console.log('render Value1',this.DP02);
+        this.setPermissions();
+       /* setTimeout(() => {
+            //this.loading = false;
+            console.log('render Value2',this.DP03);
+            
+        }, 2000);*/
+        console.log('render Value2',this.DP01);
+        console.log('render Value2',this.DP02);
+    }
+
     /***************************************************************************************************************
     *  
     ***************************************************************************************************************/

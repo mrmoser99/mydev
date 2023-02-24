@@ -1,0 +1,6 @@
+{
+    "errorMessage": "#/dataBody/customerInfo/address - Required properties [addressLine1, countryOfResidence] were not present. #/dataBody/customerInfo/contact/0 - Required properties [ContactTypeValue] were not present. ",
+    "salesforceId": null,
+    "success": false,
+    "tcaPartyId": null
+}

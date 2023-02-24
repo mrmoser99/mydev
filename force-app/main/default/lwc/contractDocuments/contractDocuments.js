@@ -7,6 +7,7 @@ import { CurrentPageReference } from 'lightning/navigation'
  * 02/12/2022 - PBI 870392 - Lucas Lucena  -          As a portal user I want to access copies of documents at the contract detail level
  * 15/12/2022 - PBI 870392 - Lucas Lucena  -          Added logs for testing and fixed datatable UI controller
  * 06/01/2022 - PBI 870392 - Lucas Lucena  -          Fixed downloaded file view issue
+ * 09/02/2022 - PBI 865139 - Dibyendu  -          Add field - Document name +date
 */
 
 const columns = [
@@ -21,8 +22,9 @@ const columns = [
         },
     },
     { 
-        label: 'Name' , 
+        label: 'Document Name-Date' , 
         fieldName: 'Name',
+        fixedWidth: 300,
         type: 'Text', 
         hideDefaultActions: true, 
     },
@@ -33,7 +35,8 @@ const columns = [
     },
     { 
         label: 'Action', 
-        type: 'button',   
+        type: 'button',  
+        fixedWidth: 80, 
         typeAttributes: {
             iconName: 'utility:download',
             variant: 'base',           
@@ -68,8 +71,8 @@ export default class ContractDocuments extends LightningElement {
             console.log('SearchContractDocs parsed result: ', data);
             for (let i = 0; i < data.length; i++) {
                 for (let j = 0; j < data[i].indexValues.indexValue.length; j++){
-                    if(data[i].indexValues.indexValue[j].name == 'document Name'){  
-                        dataFormAux.push({'Name' : data[i].indexValues.indexValue[j].value, 'din' : data[i].din});
+                    if(data[i].indexValues.indexValue[j].name == 'Document Name'){  
+                        dataFormAux.push({'Name' : data[i].indexValues.indexValue[j].value + '-'+ data[i].indexValues.indexValue[j+4].value, 'din' : data[i].din});
                         mapDinTimestampAux.set(data[i].din, data[i].timeStamp);
                     }  
                 }

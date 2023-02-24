@@ -40,7 +40,8 @@ public static String SearchContractDocs(String contractNumber){
         JSONSearchDoc.SearchParameter dparam = new JSONSearchDoc.SearchParameter();
         dparam.name = 'Contract Number';
         dparam.operator = '=';
-        dparam.value = appnumber.name;
+        //dparam.value = appnumber.name;
+       dparam.value = '100-10000119';
     	dparams.searchParameter = new List<JSONSearchDoc.SearchParameter>();
         dparams.searchParameter.add(dparam);
         JSONSearchDoc.SearchDocuments searchDoc = new JSONSearchDoc.SearchDocuments();

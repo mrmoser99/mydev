@@ -287,7 +287,8 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                     partnerStatus: this.allValues,
                     searchAllValue: this.searchAllValue,
                     sortBy: this.sortBy,
-                    sortDirection: this.sortDirection
+                    sortDirection: this.sortDirection,
+                    salesRepFilter: this.salesRepFilter
                 }).then(result => {
                         console.log(result);
                         
@@ -301,6 +302,15 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                             console.log('tempMoreOpportunity.ApplicationNumberUrl: '+ tempMoreOpportunity.ApplicationNumberUrl);
                             tempMoreOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/opportunity/' + record.Id;
                             tempMoreOpportunity.EndUserURL = window.location.origin + '/dllondemand/s/account/' + tempMoreOpportunity.End_User__c;
+                            
+                            //Start: Lucas Lucena - PBI 942673
+                            if (tempMoreOpportunity.Partner_Sales_Rep__r) {
+                                tempMoreOpportunity.SalesRepValue = tempMoreOpportunity.Partner_Sales_Rep__r.Name;
+                            } else {
+                                tempMoreOpportunity.SalesRepValue = '';
+                            }
+                            //End: Lucas Lucena - PBI 942673
+
                             console.log('EndUserURL: '+ tempMoreOpportunity.End_User__c);
                             tempMoreOpportunitiesList.push(tempMoreOpportunity);
                             console.log('oppList:' + tempMoreOpportunitiesList);
@@ -381,6 +391,7 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
         this.allValues = [];
         this.partnerStatus='';
         this.applicationDate='';
+        this.salesRepFilter='';
         this.getInitialOpportunities();
     }
 
@@ -490,7 +501,8 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
             partnerStatus: this.allValues,
             searchAllValue: this.searchAllValue,
             sortBy: this.sortBy,
-            sortDirection: this.sortDirection
+            sortDirection: this.sortDirection,
+            salesRepFilter: this.salesRepFilter
         }).then(res => {
             console.log('toast for download p');
             const evt = new ShowToastEvent({

@@ -20,7 +20,8 @@ public with sharing class TestInternalCreditAppUtils {
 		String vendorOriginatingSiteId = '0000105570_0001';
 		String vendorProgramId = '1604';
 		String vendorProductId = '1360.3080';
-	
+        String financialProductId = vendorOriginatingSiteId + '.' + vendorProgramId + '.' + vendorProductId;
+
 		String vendorContactFirstName = 'Rodrigo';
 		String vendorContactLastName = 'Bentancour';
 		
@@ -38,7 +39,7 @@ public with sharing class TestInternalCreditAppUtils {
 		String tcaPartyId = '52658243';
 
         Decimal paymentAmount = 123.45;
-        Decimal financeTermLength = 123.45;
+        Decimal financeTermLength = 36;
 
         Map<String, String> testCustomerStory = new Map<String, String>{
             'customerStoryId' => '',
@@ -65,28 +66,27 @@ public with sharing class TestInternalCreditAppUtils {
 		endUserAcct.recordTypeId = Schema.getGlobalDescribe().get('Account').getDescribe().getRecordTypeInfosByName().get('End User').getRecordTypeId();
 		insert endUserAcct;
 
-		System_ID__c s = new System_Id__c(Account__c = endUserAcct.id, DLL_External_Key_Source__c = 'ORACLE', DLL_External_id__c = tData.tcaPartyId, DLL_External_Key_Type__c = tData.tcaPartySystemIdType);
+		System_ID__c s = new System_Id__c(Account__c = endUserAcct.Id, DLL_External_Key_Source__c = 'ORACLE', DLL_External_id__c = tData.tcaPartyId, DLL_External_Key_Type__c = tData.tcaPartySystemIdType);
 		insert s;
 
-		Contact vendorContact = new Contact(firstName = tData.vendorContactFirstName, lastName = tData.vendorContactLastName, accountId = vendorAcct.id, Role__c='Partner Sales Rep');
-		insert vendorContact;
-
-		Contact endUserContact = new Contact(firstName = 'Test', lastName = 'Dog', accountId = endUserAcct.id, Role__c = 'Ultimate Beneficial Owner');
-		insert endUserContact;
+		// Contact vendorContact = new Contact(firstName = tData.vendorContactFirstName, lastName = tData.vendorContactLastName, accountId = vendorAcct.Id, Role__c='Partner Sales Rep');
+		// Contact endUserContact = new Contact(firstName = 'Test', lastName = 'Dog', accountId = endUserAcct.Id, Role__c = 'Ultimate Beneficial Owner');
+		
+        // insert new List<Contact>{vendorContact, endUserContact};
 
 		String oppRecordTypeId =  Schema.getGlobalDescribe().get('Opportunity').getDescribe().getRecordTypeInfosByName().get('Retail').getRecordTypeId();
 		Opportunity opp = dataFactory.buildOpportunity(tData.oppName ,tData.oppStage ,tData.oppCloseDate, tData.oppType , oppRecordTypeId, vendorAcct.Id, tData.oppAmount, Test.getStandardPricebookId());
 
-		Related_Party__c rp = new Related_Party__c(First_name__c = 'test', Last_name__c = 'cat', Address_line__c = '430 dog head lane', City__c = 'Pet Ville', SSN_encrypted__c = '989112222', Opportunity__c = opp.id);
-		insert rp;
+		// Related_Party__c rp = new Related_Party__c(First_name__c = 'test', Last_name__c = 'cat', Address_line__c = '430 dog head lane', City__c = 'Pet Ville', SSN_encrypted__c = '989112222', Opportunity__c = opp.Id);
+		// insert rp;
 
-		Quote q = new Quote (name = tData.quoteName, opportunityId = opp.id, End_User__c = endUserAcct.Id, lease_type__c = 'Fair Market Value (FMV)', term__c = '48', payment_frequency__c = 'monthly', payment_timing__c = 'in-arrears');
+		Quote q = new Quote (name = tData.quoteName, opportunityId = opp.Id, End_User__c = endUserAcct.Id, lease_type__c = 'Fair Market Value (FMV)', term__c = '48', payment_frequency__c = 'monthly', payment_timing__c = 'in-arrears');
 		insert q;
 	
-		Quote_Line__c assetLine = new Quote_Line__c(quote__c = q.id, Number_of_Units__c = 5, Base_Unit_Sales_Price__c = 10.21);
+		Quote_Line__c assetLine = new Quote_Line__c(quote__c = q.Id, Number_of_Units__c = 5, Base_Unit_Sales_Price__c = 10.21);
 		insert assetLine;
 
-		Quote_Line__c relatedAssetLine = new Quote_Line__c(quote__c = q.id, Related_Asset__c = assetLine.Id, Number_of_Units__c = 5, Base_Unit_Sales_Price__c = 10.21);
+		Quote_Line__c relatedAssetLine = new Quote_Line__c(quote__c = q.Id, Related_Asset__c = assetLine.Id, Number_of_Units__c = 5, Base_Unit_Sales_Price__c = 10.21);
 		insert relatedAssetLine;
 
 		opp.End_User__c = endUserAcct.Id;
@@ -101,28 +101,49 @@ public with sharing class TestInternalCreditAppUtils {
 	
 		TestData tData = new TestData();
 	
-		Account endUserAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.endUserAcctName];
-		System.assertNotEquals(null, endUserAcct.Id, 'Failed to create the test account as expected');
-		Account vendorAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.vendorAcctName];
-		System.assertNotEquals(null, vendorAcct.Id, 'Failed to create the test account as expected');
-	
-		Contact vendorContact = [SELECT Id, Name FROM Contact WHERE LastName = :tData.vendorContactLastName AND AccountId = :vendorAcct.Id];
-		System.assertNotEquals(null, vendorContact.Id, 'Failed to create the test account as expected');
-	
-		Opportunity testOpp = [SELECT Id, Name FROM Opportunity WHERE AccountId = :vendorAcct.Id AND End_User__c = :endUserAcct.Id LIMIT 1];
-		System.assertNotEquals(null, testOpp.Id, 'Failed to create the test opp as expected');
-	
-		Quote testQuote = [SELECT Id, Name FROM Quote WHERE Name = :tData.quoteName AND OpportunityId = :testOpp.Id];
-		System.assertNotEquals(null, testQuote.Id, 'Failed to create the test quote as expected');
-	
-		Quote_Line__c testQuoteLine = [SELECT Id, Name, Related_Asset__c FROM Quote_Line__c WHERE Quote__c = :testQuote.Id AND Related_Asset__c != null];
-		System.assertNotEquals(null, testQuoteLine.Id, 'Failed to create the test quote line as expected');
+        Test.startTest();
+            
+            Account endUserAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.endUserAcctName];
+            System.assertNotEquals(null, endUserAcct.Id, 'Failed to create the test account as expected');
 
-		Quote_Line__c relatedAssetQuoteLine = [SELECT Id, Name FROM Quote_Line__c WHERE Id = :testQuoteLine.Related_Asset__c];
-		System.assertNotEquals(null, relatedAssetQuoteLine.Id, 'Failed to create the related asset quote line as expected');
+            Account vendorAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.vendorAcctName];
+            System.assertNotEquals(null, vendorAcct.Id, 'Failed to create the test account as expected');
+        
+            // Contact vendorContact = [SELECT Id, Name FROM Contact WHERE LastName = :tData.vendorContactLastName AND AccountId = :vendorAcct.Id];
+            // System.assertNotEquals(null, vendorContact.Id, 'Failed to create the test account as expected');
+        
+            Opportunity testOpp = [SELECT Id, Name FROM Opportunity WHERE AccountId = :vendorAcct.Id AND End_User__c = :endUserAcct.Id LIMIT 1];
+            System.assertNotEquals(null, testOpp.Id, 'Failed to create the test opp as expected');
+        
+            Quote testQuote = [SELECT Id, Name FROM Quote WHERE Name = :tData.quoteName AND OpportunityId = :testOpp.Id];
+            System.assertNotEquals(null, testQuote.Id, 'Failed to create the test quote as expected');
+        
+            Quote_Line__c testQuoteLine = [SELECT Id, Name, Related_Asset__c FROM Quote_Line__c WHERE Quote__c = :testQuote.Id AND Related_Asset__c != null];
+            System.assertNotEquals(null, testQuoteLine.Id, 'Failed to create the test quote line as expected');
+
+            Quote_Line__c relatedAssetQuoteLine = [SELECT Id, Name FROM Quote_Line__c WHERE Id = :testQuoteLine.Related_Asset__c];
+            System.assertNotEquals(null, relatedAssetQuoteLine.Id, 'Failed to create the related asset quote line as expected');
+
+        Test.stopTest();
 	
 	}
 
+    // @isTest
+    // private static void testAccountNameById() {
+    //     TestData tData = new TestData();
+    
+    //     Account endUserAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.endUserAcctName];
+
+    //     Test.startTest();
+
+    //         String acctName = InternalCreditAppUtils.accountNameById(endUserAcct.Id);
+
+    //     Test.stopTest();
+
+
+    //     System.assertEquals(endUserAcct.Name, acctName, 'Failed to return the account name as expected');
+
+    // }
 
 	// @isTest
 	// private static void testGetCustomerId_Opp() {
@@ -357,7 +378,7 @@ public with sharing class TestInternalCreditAppUtils {
 
     //     Test.startTest();
         
-    //         String jsonResponseObject = InternalCreditAppUtils.submitCreditApp(testQuote.id);
+    //         String jsonResponseObject = InternalCreditAppUtils.submitCreditApp(testQuote.Id);
     //         System.assertEquals(2, Limits.getFutureCalls(), 'Failed to schedule a future call to create a credit app from the quote id');
 
     //     Test.stopTest();
@@ -383,13 +404,120 @@ public with sharing class TestInternalCreditAppUtils {
 
     //     Test.startTest();
         
-    //         InternalCreditAppUtils.submitCreditAppFuture(testQuote.id);
+    //         InternalCreditAppUtils.submitCreditAppFuture(testQuote.Id);
 
     //     Test.stopTest();
         
     //     Quote updatedQuote = [SELECT Id, Name, OpportunityId  FROM Quote WHERE Id = :testQuote.Id];
 
     // }
+
+    @isTest
+    private static void testSubmitCreditAppAsync(){
+
+        TestData tData = new TestData();
+
+        Account endUserAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.endUserAcctName];
+        Account vendorAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.vendorAcctName];
+        Opportunity testOpp = [SELECT Id, Name, Payment_Amount__c, Financial_Product_Id__c FROM Opportunity WHERE AccountId = :vendorAcct.Id AND End_User__c = :endUserAcct.Id LIMIT 1];
+
+        StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+        mock.setStaticResource('postFinanceApplicationAsyncResponse');
+        mock.setStatusCode(202);
+        mock.setHeader('Content-Type', 'application/json');
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+        
+            String jsonObjectString = InternalCreditAppUtils.submitCreditAppAsync(testOpp.Id);
+        
+        Test.stopTest();
+
+        InternalCreditAppUtils.ReturnStatus returnObject = (InternalCreditAppUtils.ReturnStatus)JSON.deserializeStrict(jsonObjectString, InternalCreditAppUtils.ReturnStatus.class);
+
+        System.assertEquals(202, returnObject.responseCode , 'Failed to return the expected status code of 202');
+
+        Opportunity updatedOpp = [SELECT Id, Name, SyncedQuoteId, Sub_Stage__c, Application_Date__c FROM Opportunity WHERE Id = :testOpp.Id];
+        System.assertEquals('Application Submitted', updatedOpp.Sub_Stage__c, 'Failed to set the opportunity Sub-Stage to the correct value on Application Submitted');
+        System.assertEquals(Date.today(), updatedOpp.Application_Date__c, 'Failed to set the opportunity Application Date to today as expected');
+
+
+    }
+
+    @isTest
+    private static void testSubmitCreditAppAsync_CustomerWithoutTCA(){
+
+        TestData tData = new TestData();
+
+        Account endUserAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.endUserAcctName];
+        Account vendorAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.vendorAcctName];
+        Opportunity testOpp = [SELECT Id, Name FROM Opportunity WHERE AccountId = :vendorAcct.Id AND End_User__c = :endUserAcct.Id LIMIT 1];
+        
+        List<System_Id__c> existingTCAIds = [SELECT Id, Name, DLL_External_id__c FROM System_Id__c WHERE Account__c = :endUserAcct.Id];
+        delete existingTCAIds;
+
+        StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+        mock.setStaticResource('postFinanceApplicationAsyncResponse');
+        mock.setStatusCode(202);
+        mock.setHeader('Content-Type', 'application/json');
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+        
+            String jsonObjectString = InternalCreditAppUtils.submitCreditAppAsync(testOpp.Id);
+            System.assertEquals(2, Limits.getCallouts(), 'Failed to execute 2 callouts when submitting an application for a customer missing a TCA Party Id');
+
+        Test.stopTest();
+
+        InternalCreditAppUtils.ReturnStatus returnObject = (InternalCreditAppUtils.ReturnStatus)JSON.deserializeStrict(jsonObjectString, InternalCreditAppUtils.ReturnStatus.class);
+
+        System.assertEquals(202, returnObject.responseCode , 'Failed to return the expected status code of 202');
+
+        Opportunity updatedOpp = [SELECT Id, Name, Sub_Stage__c FROM Opportunity WHERE Id = :testOpp.Id];
+
+        System.assertEquals('Application Submitted', updatedOpp.Sub_Stage__c, 'Failed to set the opportunity Sub-Stage to the correct value on Application Submitted');
+
+    }
+
+    @isTest
+    private static void testSubmitCreditAppAsync_BadRequest(){
+
+        TestData tData = new TestData();
+
+        Account endUserAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.endUserAcctName];
+        Account vendorAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.vendorAcctName];
+        Opportunity testOpp = [SELECT Id, Name FROM Opportunity WHERE AccountId = :vendorAcct.Id AND End_User__c = :endUserAcct.Id LIMIT 1];
+        Boolean errorDetected = false;
+
+        StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+        mock.setStaticResource('postFinanceApplicationAsyncResponse_BadRequest');
+        mock.setStatusCode(400);
+        mock.setHeader('Content-Type', 'application/json');
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+            
+            try {
+                String jsonObjectString = InternalCreditAppUtils.submitCreditAppAsync(testOpp.Id);
+            } catch(Exception err) {
+                System.debug(err);
+                errorDetected = true;
+                String customErrorMessage = err.getMessage();
+                System.debug(customErrorMessage);
+                // System.assert(customErrorMessage.contains('400'), 'customErrorMessage ' + customErrorMessage + ' doesnt contain the error http status code');
+            }
+        
+        Test.stopTest();
+
+        Opportunity updatedOpp = [SELECT Id, Name, Sub_Stage__c FROM Opportunity WHERE Id = :testOpp.Id];
+        System.assertEquals('Application Error', updatedOpp.Sub_Stage__c, 'Failed to set the opportunity Sub-Stage to the correct value on Application Submitted');
+
+        Error_Log__c errLog = [SELECT Id, Name, Status_Code__c, Response_Body__c FROM Error_Log__c WHERE Quote_Id__c = :testOpp.Id LIMIT 1];
+        System.assertEquals(400, errLog.Status_Code__c, 'Failed to add a status code to the stored error log as expected');
+        System.assertNotEquals(null, errLog.Response_Body__c, 'Failed to add a response body to the stored error log as expected');
+
+    }
+
 
     @isTest
     private static void testSubmitCreditAppRequest(){
@@ -408,7 +536,7 @@ public with sharing class TestInternalCreditAppUtils {
 
         Test.startTest();
         
-            String jsonObjectString = InternalCreditAppUtils.submitCreditAppRequest(testOpp.id);
+            String jsonObjectString = InternalCreditAppUtils.submitCreditAppRequest(testOpp.Id);
         
         Test.stopTest();
 
@@ -419,7 +547,7 @@ public with sharing class TestInternalCreditAppUtils {
     }
 
     @isTest
-    private static void testSubmitCreditAppBadRequest(){
+    private static void testSubmitCreditAppRequest_BadRequest(){
 
         TestData tData = new TestData();
 
@@ -435,9 +563,10 @@ public with sharing class TestInternalCreditAppUtils {
         mock.setHeader('Content-Type', 'application/json');
         Test.setMock(HttpCalloutMock.class, mock);
 
+         
         Test.startTest();
             try {
-                String jsonObjectString = InternalCreditAppUtils.submitCreditAppRequest(testOpp.id);
+                String jsonObjectString = InternalCreditAppUtils.submitCreditAppRequest(testOpp.Id);
             } catch(Exception err) {
                 System.debug(err);
                 errorDetected = true;
@@ -451,8 +580,10 @@ public with sharing class TestInternalCreditAppUtils {
         // InternalCreditAppUtils.ReturnStatus errorReturnStatusObj = (InternalCreditAppUtils.ReturnStatus)JSON.deserializeStrict(jsonObjectString, InternalCreditAppUtils.ReturnStatus.class);
 
         System.assert(errorDetected, 'Failed to throw an error on the 400 response');
-        // System.assertEquals(400, errorReturnStatusObj.responseCode, 'Failed to store the statuscode on the res.status field as expected');
-        // System.assertNotEquals(null, errorReturnStatusObj, 'Failed to store an error message that describes the nature of the error as expected');
+        
+        Error_Log__c errLog = [SELECT Id, Name, Status_Code__c, Response_Body__c FROM Error_Log__c WHERE Quote_Id__c = :testOpp.Id LIMIT 1];
+        System.assertEquals(400, errLog.Status_Code__c, 'Failed to add a status code to the stored error log as expected');
+        System.assertNotEquals(null, errLog.Response_Body__c, 'Failed to add a response body to the stored error log as expected');
 
     }
 
@@ -542,7 +673,7 @@ public with sharing class TestInternalCreditAppUtils {
 
 
     @isTest
-    private static void testDoCallout() {
+    private static void testPostCreditAppToAzure() {
 
         TestData tData = new TestData();
 
@@ -558,7 +689,7 @@ public with sharing class TestInternalCreditAppUtils {
 
         Test.startTest();
 
-            InternalCreditAppUtils.ReturnStatus returnStatus = InternalCreditAppUtils.doCallout('jsonGoesHere', 'method', testOpp.Id);
+            InternalCreditAppUtils.ReturnStatus returnStatus = InternalCreditAppUtils.postCreditAppToAzure('jsonGoesHere', 'method', testOpp.Id, false);
 
         Test.stopTest();
 
@@ -566,7 +697,7 @@ public with sharing class TestInternalCreditAppUtils {
     }
 
     @isTest
-    private static void testDoCallout_Error() {
+    private static void testPostCreditAppToAzure_Error() {
 
         TestData tData = new TestData();
 
@@ -584,7 +715,7 @@ public with sharing class TestInternalCreditAppUtils {
 
         Test.startTest();
 
-            InternalCreditAppUtils.ReturnStatus returnStatus = InternalCreditAppUtils.doCallout('jsonGoesHere', methodName, testOpp.Id);
+            InternalCreditAppUtils.ReturnStatus returnStatus = InternalCreditAppUtils.postCreditAppToAzure('jsonGoesHere', methodName, testOpp.Id, false);
 
         Test.stopTest();
 
@@ -593,7 +724,7 @@ public with sharing class TestInternalCreditAppUtils {
     }
 
     @isTest
-    private static void testDoCallout_Exception() {
+    private static void testPostCreditAppToAzure_Exception() {
 
         TestData tData = new TestData();
 
@@ -611,7 +742,7 @@ public with sharing class TestInternalCreditAppUtils {
 
         Test.startTest();
 
-            InternalCreditAppUtils.ReturnStatus returnStatus = InternalCreditAppUtils.doCallout('jsonGoesHere', methodName, testOpp.Id);
+            InternalCreditAppUtils.ReturnStatus returnStatus = InternalCreditAppUtils.postCreditAppToAzure('jsonGoesHere', methodName, testOpp.Id, false);
 
         Test.stopTest();
 
@@ -627,29 +758,48 @@ public with sharing class TestInternalCreditAppUtils {
         Map<String, String> customerStory = tData.testCustomerStory;
 
 		Account vendorAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.vendorAcctName];
-		Opportunity testOpp = [SELECT Id, Name, End_User__c FROM Opportunity WHERE AccountId = :vendorAcct.Id LIMIT 1];
-		Contact newVendorContact = new Contact(firstName = 'FirstName', lastName = 'LastName', accountId = vendorAcct.id, Role__c='Partner Sales Rep');
-		insert newVendorContact;
-
-        customerStory.put('salesRepId', newVendorContact.Id);
-        customerStory.put('amount', String.valueOf(tData.oppAmount));
-        customerStory.put('paymentAmount', String.valueOf(tData.paymentAmount));
-        customerStory.put('paymentFrequency', 'MONTHLY');
-        customerStory.put('financeTerm', String.valueOf(tData.financeTermLength));
-
+		Opportunity testOpp = [SELECT Id, Name, End_User__c, End_User__r.Phone, SyncedQuoteId, End_User_Phone__c FROM Opportunity WHERE AccountId = :vendorAcct.Id LIMIT 1];
+        System.assertEquals(null, testOpp.End_User__r.Phone, 'The end user phone should be null to test the auto-population from a submitted opp');
+        System.assertNotEquals(null, testOpp.SyncedQuoteId, 'Failed to setup the test opp with a current SyncedQuote as expected');
+        
+        String frequencyValue = 'monthly';
+        String endUserPhone = '4045556321';
 
         Test.startTest();
+
+            testOpp.End_User_Phone__c = endUserPhone;
+            update testOpp;
+
+            Contact newVendorContact = new Contact(firstName = 'FirstName', lastName = 'LastName', accountId = vendorAcct.Id, Role__c='Partner Sales Rep');
+            insert newVendorContact;
+
+            customerStory.put('salesRepId', newVendorContact.Id);
+            customerStory.put('amount', String.valueOf(tData.oppAmount));
+            customerStory.put('paymentAmount', String.valueOf(tData.paymentAmount));
+            customerStory.put('paymentFrequency', frequencyValue);
+            customerStory.put('financeTerm', String.valueOf(tData.financeTermLength));
+            customerStory.put('financialProduct', tData.financialProductId);
+
 
             Boolean updatedSuccessfully = InternalCreditAppUtils.updateOpportunityData(testOpp.Id, customerStory, null);
             System.assert(updatedSuccessfully, 'Failed to return true after attempting to update the opportunity');
 
         Test.stopTest();
 
-        Opportunity updatedTestOpp = [SELECT Id, Name, Frequency__c, Payment_Amount__c, Partner_Sales_Rep__c FROM Opportunity WHERE Id = :testOpp.Id];
+        Account endUserAfterUpdate = [SELECT Id, Name, Phone FROM Account WHERE Id = :testOpp.End_User__c];
+        System.assertEquals(endUserPhone, endUserAfterUpdate.Phone, 'Failed to place the phone number on the end user after subnitting as expected');
 
+        Opportunity updatedTestOpp = [SELECT Id, Name, Frequency__c, Payment_Amount__c, Partner_Sales_Rep__c, SyncedQuoteId FROM Opportunity WHERE Id = :testOpp.Id];
+        System.assertNotEquals(testOpp.SyncedQuoteId, updatedTestOpp.SyncedQuoteId, 'Failed to overwrite the old SyncedQuoteId with a new one after a new send attempt');
 		System.assertEquals(newVendorContact.Id, updatedTestOpp.Partner_Sales_Rep__c, 'Failed to update the Opportunity with the correct Partner Sales Rep details');
-		System.assertEquals('MONTHLY', updatedTestOpp.Frequency__c, 'Failed to update the Opportunity with the correct Frequency value');
+		System.assertEquals(frequencyValue, updatedTestOpp.Frequency__c.toLowerCase(), 'Failed to update the Opportunity with the correct Frequency value');
         System.assertEquals(updatedTestOpp.Payment_Amount__c, tData.paymentAmount, 'Failed to properly stamp the input payment amount on the Opportunity as expected');
+
+        Quote updatedQuote = [SELECT Id, Name, Payment_Frequency__c, Total_Payment__c, Financial_Product_Id__c FROM Quote WHERE Id = :updatedTestOpp.SyncedQuoteId];
+        System.assertEquals(frequencyValue, updatedQuote.Payment_Frequency__c.toLowerCase(), 'Failed to set the Quote Payment Frequency to the correct value on SyncedQuote');
+        System.assertEquals(tData.paymentAmount, updatedQuote.Total_Payment__c, 'Failed to set the Quote Total Payment to the correct value on SyncedQuote');
+        System.assertEquals(tData.financialProductId, updatedQuote.Financial_Product_Id__c, 'Failed to set the Quote Financial Product to the correct value on SyncedQuote');
+
     }
 
 
@@ -661,33 +811,174 @@ public with sharing class TestInternalCreditAppUtils {
 
 		Account vendorAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.vendorAcctName];
 		Opportunity testOpp = [SELECT Id, Name, End_User__c FROM Opportunity WHERE AccountId = :vendorAcct.Id LIMIT 1];
-		Contact newVendorContact = new Contact(firstName = 'FirstName', lastName = 'LastName', accountId = vendorAcct.id, Role__c='Partner Sales Rep');
-		insert newVendorContact;
-
-        customerStory.put('salesRepId', newVendorContact.Id);
-        customerStory.put('amount', String.valueOf(tData.oppAmount));
-        customerStory.put('paymentAmount', String.valueOf(tData.paymentAmount));
-        customerStory.put('paymentFrequency', 'quarterly');
-        customerStory.put('financeTerm', String.valueOf(tData.financeTermLength));
-
-        List<InternalCreditAppUtils.Asset> listOfNewAssets = new List<InternalCreditAppUtils.Asset>();
-        for (Integer i = 0; i < 10; i++) {
-
-        }
-
+        
         Test.startTest();
+        
+            Contact newVendorContact = new Contact(firstName = 'Arnaut', lastName = 'Danjuma', accountId = vendorAcct.Id, Role__c = 'Partner Sales Rep');
+            insert newVendorContact;
 
-            Boolean updatedSuccessfully = InternalCreditAppUtils.updateOpportunityData(testOpp.Id, customerStory, null);
+
+            customerStory.put('salesRepId', newVendorContact.Id);
+            customerStory.put('amount', String.valueOf(tData.oppAmount));
+            customerStory.put('paymentAmount', String.valueOf(tData.paymentAmount));
+            customerStory.put('paymentFrequency', 'quarterly');
+            customerStory.put('financeTerm', String.valueOf(tData.financeTermLength));
+
+            String makeName = 'Fake It Till You Make It';
+            String makeId = 'FAKEITTILLYOUNAKEIT';
+            String modelName = 'Model # ';
+            String modelId = 'MODEL_NUM_';
+            List<InternalCreditAppUtils.Asset> listOfNewAssets = new List<InternalCreditAppUtils.Asset>();
+            for (Integer i = 0; i < 10; i++) {
+                InternalCreditAppUtils.Asset newAsset = new InternalCreditAppUtils.Asset();
+                newAsset.sectionName = 'sectionName';
+                newAsset.assetHeading = 'assetHeading';
+                newAsset.assetNo = 'assetNo';
+                newAsset.isFirst = (i == 0 ? true : false);
+                InternalCreditAppUtils.PicklistValue makeValueObj = new InternalCreditAppUtils.PicklistValue();
+                makeValueObj.label = makeName;
+                makeValueObj.value = makeId;
+                newAsset.make = makeValueObj;
+                newAsset.assetType = null;
+
+                InternalCreditAppUtils.Model modelValueObj = new InternalCreditAppUtils.Model();
+                modelValueObj.label = modelName + i;
+                modelValueObj.value = modelId + i;
+                modelValueObj.modelId = modelId + i;
+
+                newAsset.model = modelValueObj;
+                newAsset.mastTypeValue = 'mastTypeValue';
+                newAsset.numberOfUnits = 1 + i;
+                newAsset.unitSalesPrice = 5.05 * newAsset.numberOfUnits;
+                newAsset.assetId = 'assetId';
+                newAsset.quoteId = 'quoteId';
+                listOfNewAssets.add(newAsset);
+            }
+
+
+            Boolean updatedSuccessfully = InternalCreditAppUtils.updateOpportunityData(testOpp.Id, customerStory, listOfNewAssets);
             System.assert(updatedSuccessfully, 'Failed to return true after attempting to update the opportunity');
 
         Test.stopTest();
 
-        Opportunity updatedTestOpp = [SELECT Id, Name, Frequency__c, Payment_Amount__c, Partner_Sales_Rep__c FROM Opportunity WHERE Id = :testOpp.Id];
+        Opportunity updatedTestOpp = [SELECT Id, Name, Frequency__c, Payment_Amount__c,  SyncedQuoteId FROM Opportunity WHERE Id = :testOpp.Id];
+		System.assertEquals('QUARTERLY', updatedTestOpp.Frequency__c, 'Failed to update the Opportunity with the correct Frequency value');
+        System.assertNotEquals(null, updatedTestOpp.SyncedQuoteId, 'Failed to create and/or update the Synced Quote data for the processed opportunity');
 
-		System.assertEquals(newVendorContact.Id, updatedTestOpp.Partner_Sales_Rep__c, 'Failed to update the Opportunity with the correct Partner Sales Rep details');
-		System.assertEquals('quarterly', updatedTestOpp.Frequency__c, 'Failed to update the Opportunity with the correct Frequency value');
-        System.assertEquals(updatedTestOpp.Payment_Amount__c, tData.paymentAmount, 'Failed to properly stamp the input payment amount on the Opportunity as expected');
+        List<Quote_Line__c> listOfSyncedQuoteLines = [SELECT Id, Name, Base_Unit_Sales_Price__c, Make__c, Make_Id__c, Model__c, Model_Id__c FROM Quote_Line__c WHERE Quote__c = :updatedTestOpp.SyncedQuoteId];
+
+		System.assertEquals(listOfNewAssets.size(), listOfSyncedQuoteLines.size(), 'Failed to proplerly create the expected number of Quote lines based on the number of input assets');
+        for(Quote_Line__c l : listOfSyncedQuoteLines) {
+            System.assertEquals(makeName, l.Make__c, 'Failed to proplerly stamp the Make Name on one or more quote lines as expected');
+            System.assertEquals(makeId, l.Make_Id__c, 'Failed to proplerly stamp the Make Id on one or more quote lines as expected');
+            System.assert(l.Model__c.contains(modelName), 'Failed to proplerly stamp the Model Name on one or more quote lines as expected');
+            System.assert(l.Model_Id__c.contains(modelId), 'Failed to proplerly stamp the Model Id on one or more quote lines as expected');
+        }
     }
+
+
+    @isTest
+    private static void testCreateExternalCustomer_WithExistingTCA() {
+
+        TestData tData = new TestData();
+
+        Account endUserAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.endUserAcctName];
+        Opportunity testOpp = [SELECT Id, Name FROM Opportunity WHERE End_User__c = :endUserAcct.Id LIMIT 1];
+        System_Id__c existingTCAId = [SELECT Id, Name, DLL_External_id__c FROM System_Id__c WHERE Account__c = :endUserAcct.Id AND DLL_External_id__c = :tData.tcaPartyId LIMIT 1];
+
+        System.assert(existingTCAId.Id != null, 'Failed to detect a pre-existing record as expected');
+
+        Test.startTest();
+
+            String jsonResponseString = InternalCreditAppUtils.createExternalCustomer(endUserAcct.Id);
+
+        Test.stopTest();
+
+		JSONCreateCustomerResponse parsedCreateCustomerResponseObj = (JSONCreateCustomerResponse)JSON.deserializeStrict(jsonResponseString, JSONCreateCustomerResponse.class);
+
+        System.assert(parsedCreateCustomerResponseObj.success, 'Failed to properly mark the response as a success as expected');
+        System.assertEquals(tData.tcaPartyId, parsedCreateCustomerResponseObj.tcaPartyId, 'Failed to properly return the Pre-Existing TCA Party Id as expected');
+
+    }
+
+
+    @isTest
+    private static void testCreateExternalCustomer_NewAccount() {
+
+        TestData tData = new TestData();
+		TestDataFactory dataFactory = TestDataFactory.getInstance();
+
+        Account newEndUserAcct = new Account(name = 'NewAccountMissingTCA', BillingStreet = '1111 Old Eagle School Rd', BillingCity = 'Wayne', BillingState = 'PA', BillingPostalCode = '19087');
+        newEndUserAcct.recordTypeId = Schema.getGlobalDescribe().get('Account').getDescribe().getRecordTypeInfosByName().get('End User').getRecordTypeId();
+        newEndUserAcct.Phone = '4045554321';
+        insert newEndUserAcct;
+
+        StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+        mock.setStaticResource('postCreateExternalCustomerResponse_TCA_123456');
+        mock.setStatusCode(200);
+        mock.setHeader('Content-Type', 'application/json');
+        Test.setMock(HttpCalloutMock.class, mock);
+
+        Test.startTest();
+
+            List<System_Id__c> existingTCAIds = [SELECT Id, Name, DLL_External_id__c FROM System_Id__c WHERE Account__c = :newEndUserAcct.Id];
+            System.assertEquals(0, existingTCAIds.size(), 'Should not have any existing System Ids on new account');
+
+            String jsonResponseString = InternalCreditAppUtils.createExternalCustomer(newEndUserAcct.Id);
+
+        Test.stopTest();
+
+		JSONCreateCustomerResponse parsedCreateCustomerResponseObj = (JSONCreateCustomerResponse)JSON.deserializeStrict(jsonResponseString, JSONCreateCustomerResponse.class);
+
+        System.assert(parsedCreateCustomerResponseObj.success, 'Failed to properly mark the response as a success as expected');
+        System.assertEquals('123456', parsedCreateCustomerResponseObj.tcaPartyId, 'Failed to properly return the Pre-Existing TCA Party Id as expected');
+
+    }
+
+    @isTest
+    private static void testCreateExternalCustomer_BadRequest() {
+
+        TestData tData = new TestData();
+		TestDataFactory dataFactory = TestDataFactory.getInstance();
+        
+        Account newEndUserAcct = new Account(name = 'NewAccountMissingTCA', BillingCity = 'NotARealCity', BillingState = 'ZX');
+        newEndUserAcct.recordTypeId = Schema.getGlobalDescribe().get('Account').getDescribe().getRecordTypeInfosByName().get('End User').getRecordTypeId();
+        newEndUserAcct.Phone = '4045553214';
+        insert newEndUserAcct;
+
+        Boolean errorDetected = false;
+        
+        StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+        mock.setStaticResource('postCreateExternalCustomerResponse_BadRequest');
+        mock.setStatusCode(400);
+        mock.setHeader('Content-Type', 'application/json');
+        Test.setMock(HttpCalloutMock.class, mock);
+
+         
+        Test.startTest();
+
+            List<System_Id__c> existingTCAIds = [SELECT Id, Name, DLL_External_id__c FROM System_Id__c WHERE Account__c = :newEndUserAcct.Id];
+            System.assertEquals(0, existingTCAIds.size(), 'Should not have any existing System Ids on new account');
+
+            try {
+                String jsonResponseString = InternalCreditAppUtils.createExternalCustomer(newEndUserAcct.Id);
+            } catch(Exception err) {
+                System.debug(err);
+                errorDetected = true;
+                String customErrorMessage = err.getMessage();
+                System.debug(customErrorMessage);
+                System.assert(customErrorMessage.contains('TCA Party'), 'customErrorMessage ' + customErrorMessage + ' doesnt contain an indication of the TCA Party Id');
+            }
+
+        Test.stopTest();
+
+        System.assert(errorDetected, 'Failed to throw an error on the 400 response');
+        
+        Error_Log__c errLog = [SELECT Id, Name, Status_Code__c, Request_Body__c FROM Error_Log__c WHERE Record_Id__c = :newEndUserAcct.Id LIMIT 1];
+        System.assertEquals(400, errLog.Status_Code__c, 'Failed to add a status code to the stored error log as expected');
+        System.assertNotEquals(null, errLog.Request_Body__c, 'Failed to add a response body to the stored error log as expected');
+    }
+
 
     @isTest
     private static void testGetOpportunity() {

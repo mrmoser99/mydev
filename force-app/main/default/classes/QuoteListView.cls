@@ -331,5 +331,24 @@ public class QuoteListView {
                                               ORDER BY LastModifiedDate desc limit 5];
         return retTop5QuoteList;
     }
+
+    // PBI 957175 - Every time I land on the home-page the Dashboard is going to refresh
+    @future(callout=true)
+    @AuraEnabled
+    public static void refreshDashboard(){
+        Id dashboardId = '01Z780000004y0hEAA';
+        HttpRequest req = new HttpRequest();
+        
+        req.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId());
+        req.setMethod('PUT');
+        req.setEndpoint(URL.getSalesforceBaseUrl().toExternalForm() + '/services/data/v35.0/analytics/dashboards/'+ dashboardId );
+        string requestBody = '{"statusUrl": /services/data/v31.0/analytics/dashboards/01Z780000004y0hEAA/status}';
+
+        req.setBody(requestBody);
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+        system.debug('VRS response -- '+ res);
+    
+    }
 	
 }

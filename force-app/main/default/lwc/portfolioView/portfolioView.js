@@ -14,6 +14,8 @@ import getTotalRecords from "@salesforce/apex/PortfolioViewController.getTotalRe
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getdownloadRecords from "@salesforce/apex/PortfolioViewController.getdownloadRecords";
 
+import {checkPermission} from 'c/dodJSUtility';//PBI-810432 - Dibyendu
+
 const columns = [
     { label: 'Contract', fieldName: 'contractUrl', wrapText:false, sortable: true,
         type: 'url',
@@ -52,6 +54,9 @@ const columns2 = [
 
 
 export default class PortfolioView extends LightningElement {
+
+    //Button/Link Permissions//PBI-810432 - Dibyendu
+    DP03 = false;
 
     refreshExecute = true;
     portfoliolist = [];
@@ -137,6 +142,7 @@ export default class PortfolioView extends LightningElement {
        };
     
 
+    
     connectedCallback() {
         //Get initial chunk of data with offset set at 0
         this.getRecords();
@@ -144,6 +150,23 @@ export default class PortfolioView extends LightningElement {
        // this.getDownloadRecords();
     }
 
+    //method to check if the permission is true or false; this drives display of the button or link//PBI-810432 - Dibyendu
+    async setPermissions() {    
+        this.DP03 = await checkPermission('DP03'); 
+        //this.CQ01 =  checkPermission('CQ01'); 
+       // alert('CQ01:'+this.CQ01.value);
+
+   }
+
+   renderedCallback() {
+    console.log('render Value1',this.DP03);
+    this.setPermissions();
+    setTimeout(() => {
+        //this.loading = false;
+        console.log('render Value2',this.DP03);
+        
+    }, 2000);
+    }
      
     getRecords() { 
         if (this.offSet == 0){

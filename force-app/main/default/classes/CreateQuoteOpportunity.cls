@@ -189,8 +189,9 @@ public static quoteOpportunityWrapper CreateQuoteOpportunity(String jsonInput) {
 					Operating_Environment__c = (String) (assetMap.get('assetOperating')),
 					Battery_Included__c = (String) (assetMap.get('batteryIncluded')),
 					Subsidy__c = (String) (assetMap.get('subsidyName')),
+					Subsidy_ID__c = (String) (assetMap.get('subsidy')),
                     //PBI:882069:Geetha
-					Subsidy_ID__c = (String) ((assetMap.get('subsidy') == 'Yes') ? (assetMap.get('subsidy')): '' ),
+					//Subsidy_ID__c = (String) ((assetMap.get('subsidy') == 'Yes') ? (assetMap.get('subsidy')): '' ),
 					MSRP__c = assetMap.get('msrp') == null ? 0 : Decimal.valueOf((String) assetMap.get('msrp')),
 					Asset_Type__c = (String) (assetMap.get('type'))
 					);
@@ -684,8 +685,9 @@ public static quoteOpportunityWrapper EditQuoteOption(String jsonInput) {
 			String quoteLineType = (String) (assetMap.get('type'));
 			Decimal msrp = assetMap.get('msrp') == null ? 0 : Decimal.valueOf((String) assetMap.get('msrp'));
 			String subsidy = (String) (assetMap.get('subsidyName'));
+			String subsidyId = (String) (assetMap.get('subsidy'));
 			//PBI:882069:Geetha
-            String subsidyId = (String) ((assetMap.get('subsidy') == 'Yes') ? (assetMap.get('subsidy')): '' );
+            //String subsidyId = (String) ((assetMap.get('subsidy') == 'Yes') ? (assetMap.get('subsidy')): '' );
 
 			if (String.isBlank(assetId)) {
 				sequenceIdCount++;

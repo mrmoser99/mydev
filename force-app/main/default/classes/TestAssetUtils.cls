@@ -60,24 +60,27 @@ public with sharing class TestAssetUtils {
     
         TestData tData = new TestData();
     
-        Account endUserAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.endUserAcctName];
-        System.assertNotEquals(null, endUserAcct.Id, 'Failed to create the test account as expected');
+        Test.startTest();
+
+            Account endUserAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.endUserAcctName];
+            System.assertNotEquals(null, endUserAcct.Id, 'Failed to create the test account as expected');
+            
+            Account vendorAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.vendorAcctName];
+            System.assertNotEquals(null, vendorAcct.Id, 'Failed to create the test account as expected');
         
-        Account vendorAcct = [SELECT Id, Name FROM Account WHERE Name = :tData.vendorAcctName];
-        System.assertNotEquals(null, vendorAcct.Id, 'Failed to create the test account as expected');
-    
-        Contact vendorContact = [SELECT Id, Name FROM Contact WHERE LastName = :tData.vendorContactLastName AND AccountId = :vendorAcct.Id];
-        System.assertNotEquals(null, vendorContact.Id, 'Failed to create the test account as expected');
-    
-        Opportunity testOpp = [SELECT Id, Name FROM Opportunity WHERE AccountId = :vendorAcct.Id LIMIT 1];
-        System.assertNotEquals(null, testOpp.Id, 'Failed to create the test opp as expected');
-    
-        Quote testQuote = [SELECT Id, Name FROM Quote WHERE Name = :tData.quoteName AND OpportunityId = :testOpp.Id];
-        System.assertNotEquals(null, testQuote.Id, 'Failed to create the test quote as expected');
-    
-        Quote_Line__c testQuoteLine = [SELECT Id, Name FROM Quote_Line__c WHERE Quote__c = :testQuote.Id];
-        System.assertNotEquals(null, testQuoteLine.Id, 'Failed to create the test quote line as expected');
-    
+            Contact vendorContact = [SELECT Id, Name FROM Contact WHERE LastName = :tData.vendorContactLastName AND AccountId = :vendorAcct.Id];
+            System.assertNotEquals(null, vendorContact.Id, 'Failed to create the test account as expected');
+        
+            Opportunity testOpp = [SELECT Id, Name FROM Opportunity WHERE AccountId = :vendorAcct.Id LIMIT 1];
+            System.assertNotEquals(null, testOpp.Id, 'Failed to create the test opp as expected');
+        
+            Quote testQuote = [SELECT Id, Name FROM Quote WHERE Name = :tData.quoteName AND OpportunityId = :testOpp.Id];
+            System.assertNotEquals(null, testQuote.Id, 'Failed to create the test quote as expected');
+        
+            Quote_Line__c testQuoteLine = [SELECT Id, Name FROM Quote_Line__c WHERE Quote__c = :testQuote.Id];
+            System.assertNotEquals(null, testQuoteLine.Id, 'Failed to create the test quote line as expected');
+        
+        Test.stopTest();
     }
     
     @isTest
@@ -93,11 +96,11 @@ public with sharing class TestAssetUtils {
     
         Test.startTest();
     
-            AssetUtils.tokenClass tokenObject = AssetUtils.getAuthToken();
+            AssetUtils.Token tokenObject = AssetUtils.getAuthToken();
     
         Test.stopTest();
     
-        System.assertNotEquals(null, tokenObject, 'Failed to properly return a properly formatted tokenClass as expected');
+        System.assertNotEquals(null, tokenObject, 'Failed to properly return a properly formatted Token as expected');
     
     }
 
@@ -122,22 +125,60 @@ public with sharing class TestAssetUtils {
     
         Test.stopTest();
     
-        List<AssetUtils.Program> parsedReturnSiteObj = (List<AssetUtils.Program>)JSON.deserializeStrict(jsonResponseString, List<AssetUtils.Program>.class);
+        List<AssetUtils.Program> listOfFormattedResponseObjects = (List<AssetUtils.Program>)JSON.deserializeStrict(jsonResponseString, List<AssetUtils.Program>.class);
         
-        System.assertEquals(10, parsedReturnSiteObj.size(), 'Failed to return an array of Program objects in the response as expected');
+        System.assertEquals(10, listOfFormattedResponseObjects.size(), 'Failed to return an array of Program objects in the response as expected');
     }
     
     
     
     @isTest
-    private static void testGetPrograms_Error() {
+    private static void testGetPrograms_RequestError() {
         
         TestData tData = new TestData();
     
         Boolean errorThrown = false;
     
         StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
-        mock.setStaticResource('internalServerErrorTestResponse');
+        mock.setStaticResource('azureRequestErrorTestResponse');
+        mock.setStatusCode(400);
+        mock.setHeader('Content-Type', 'application/json');
+        Test.setMock(HttpCalloutMock.class, mock);
+    
+
+        List<Error_Log__c> startingErrorLogList = [SELECT Id, Callout_Name__c, Exception_Message__c, Method_Name__c FROM Error_Log__c WHERE Method_Name__c = 'getPrograms' AND Class_Name__c = 'AssetUtils'];
+        System.assertEquals(0, startingErrorLogList.size(), 'Failed to go into the error testing execution with a clean error log');
+
+        Test.startTest();
+            
+            try {
+                String jsonResponseString = AssetUtils.getPrograms(tData.vendorOriginatingSiteId);
+
+            } catch(Exception err) {
+                System.debug(err);
+                System.assertEquals('Script-thrown exception', err.getMessage(), 'Failed to properly return a formatted error');
+                errorThrown = true;
+            }
+
+        Test.stopTest();
+
+        System.assert(errorThrown, 'Failed to throw an error on a 400 status as expected');
+
+        Error_Log__c errLog = [SELECT Id, Callout_Name__c, Exception_Message__c, Method_Name__c FROM Error_Log__c WHERE Method_Name__c = 'getPrograms' AND Class_Name__c = 'AssetUtils' LIMIT 1];
+        System.assertNotEquals(null, errLog.Exception_Message__c, 'Failed to properly set an Exception Message on the error log stored after a failed callout');
+        
+    }
+    
+    
+    @isTest
+    private static void testGetPrograms_ServerError() {
+        
+        TestData tData = new TestData();
+    
+        Boolean errorThrown = false;
+    
+        StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+        mock.setStaticResource('azureInternalServerErrorTestResponse');
         mock.setStatusCode(500);
         mock.setHeader('Content-Type', 'application/json');
         Test.setMock(HttpCalloutMock.class, mock);
@@ -163,6 +204,27 @@ public with sharing class TestAssetUtils {
     }
     
     
+
+    // @isTest
+    // private static void testGetFinancialProducts() {
+        
+    //     TestData tData = new TestData();
+    
+    //     StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+    //     mock.setStaticResource('getFinancialProductsTestResponse_0000105570_0001_1604');
+    //     mock.setStatusCode(200);
+    //     mock.setHeader('Content-Type', 'application/json');
+    //     Test.setMock(HttpCalloutMock.class, mock);
+    
+    //     Test.startTest();
+    //         String jsonResponseString = AssetUtils.getFinancialProducts(tData.vendorProgramId, null, null);
+    //     Test.stopTest();
+    
+    //     List<JSONFinancialProducts.Data> listOfFormattedResponseObjects = (List<JSONFinancialProducts.Data>)JSON.deserializeStrict(jsonResponseString, List<JSONFinancialProducts.Data>.class);
+        
+    //     System.assertEquals(3, listOfFormattedResponseObjects.size(), 'Failed to return an array of Financial Product objects in the response as expected');
+    // }
+
     @isTest
     private static void testGetFinancialProducts() {
         
@@ -175,14 +237,21 @@ public with sharing class TestAssetUtils {
         Test.setMock(HttpCalloutMock.class, mock);
     
         Test.startTest();
-            String jsonResponseString = AssetUtils.getFinancialProducts(tData.vendorProgramId, 'dollar-out', null);
+            String JSONString = AssetUtils.getFinancialProducts(tData.vendorProgramId, null, null);
+            String dollarOutJSONString = AssetUtils.getFinancialProducts(tData.vendorProgramId, 'dollar-out', null);
+            String fairMarketValueJSONString = AssetUtils.getFinancialProducts(tData.vendorProgramId, 'fair-market-value', null);
         Test.stopTest();
     
-        List<JSONPricingFinancialProducts.Data> parsedReturnSiteObj = (List<JSONPricingFinancialProducts.Data>)JSON.deserializeStrict(jsonResponseString, List<JSONPricingFinancialProducts.Data>.class);
+        List<JSONFinancialProducts.Data> listOfFormattedResponseObjects = (List<JSONFinancialProducts.Data>)JSON.deserializeStrict(JSONString, List<JSONFinancialProducts.Data>.class);
+        List<JSONFinancialProducts.Data> listOfFormattedDollarOutObjects = (List<JSONFinancialProducts.Data>)JSON.deserializeStrict(dollarOutJSONString, List<JSONFinancialProducts.Data>.class);
+        List<JSONFinancialProducts.Data> listOfFormattedFairMarketValueObjects = (List<JSONFinancialProducts.Data>)JSON.deserializeStrict(fairMarketValueJSONString, List<JSONFinancialProducts.Data>.class);
         
-        System.assertEquals(3, parsedReturnSiteObj.size(), 'Failed to return an array of Financial Product objects in the response as expected');
+        System.assertEquals(3, listOfFormattedResponseObjects.size(), 'Failed to return an array of Financial Product objects in the response as expected');
+        System.assertEquals(2, listOfFormattedDollarOutObjects.size(), 'Failed to return an array of Dollar Out Financial Product objects in the response as expected');
+        System.assertEquals(2, listOfFormattedFairMarketValueObjects.size(), 'Failed to return an array of Fair Market Value Financial Product objects in the response as expected');
     }
     
+
     @isTest
     private static void testGetFinancialProducts_Regression() {
         
@@ -195,24 +264,63 @@ public with sharing class TestAssetUtils {
         Test.setMock(HttpCalloutMock.class, mock);
     
         Test.startTest();
-            String jsonResponseString = AssetUtils.getFinancialProducts(tData.vendorProgramId, 'BO', 'New');
+
+            String jsonResponseStringOld = AssetUtils.getFinancialProducts(tData.vendorProgramId, 'BO', 'New');
+            String jsonResponseStringNew = AssetUtils.getFinancialProducts(tData.vendorProgramId, 'dollar-out', 'New');
+    
         Test.stopTest();
     
-        List<JSONPricingFinancialProducts.Data> parsedReturnSiteObj = (List<JSONPricingFinancialProducts.Data>)JSON.deserializeStrict(jsonResponseString, List<JSONPricingFinancialProducts.Data>.class);
+        List<JSONFinancialProducts.Data> listOfFormattedResponseObjectsOld = (List<JSONFinancialProducts.Data>)JSON.deserializeStrict(jsonResponseStringOld, List<JSONFinancialProducts.Data>.class);
+        List<JSONFinancialProducts.Data> listOfFormattedResponseObjectsNew = (List<JSONFinancialProducts.Data>)JSON.deserializeStrict(jsonResponseStringNew, List<JSONFinancialProducts.Data>.class);
         
-        System.assertEquals(3, parsedReturnSiteObj.size(), 'Failed to return an array of Financial Product objects in the response as expected');
+        System.assertEquals(2, listOfFormattedResponseObjectsOld.size(), 'Failed to return an array of Financial Product objects in the response as expected');
+        System.assertEquals(listOfFormattedResponseObjectsOld.size(), listOfFormattedResponseObjectsNew.size(), 'Failed to return an array of dollar-out objects as the old value for dollar-out "BO"');
     }
     
     
+
     @isTest
-    private static void testGetFinancialProducts_Error() {
+    private static void testGetFinancialProducts_RequestError() {
         
         TestData tData = new TestData();
     
         Boolean errorThrown = false;
     
         StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
-        mock.setStaticResource('internalServerErrorTestResponse');
+        mock.setStaticResource('azureRequestErrorTestResponse');
+        mock.setStatusCode(400);
+        mock.setHeader('Content-Type', 'application/json');
+        Test.setMock(HttpCalloutMock.class, mock);
+    
+        Test.startTest();
+            
+            try {
+                String jsonResponseString = AssetUtils.getFinancialProducts(tData.vendorProgramId, 'fair-market-value', null);
+
+            } catch(Exception err) {
+                System.debug(err);
+                System.assertEquals('Script-thrown exception', err.getMessage(), 'Failed to properly return a formatted error');
+                errorThrown = true;
+            }
+            
+        Test.stopTest();
+
+        System.assert(errorThrown, 'Failed to throw an error on a 400 status as expected');
+
+        Error_Log__c errLog = [SELECT Id, Callout_Name__c, Exception_Message__c, Method_Name__c FROM Error_Log__c WHERE Method_Name__c = 'getFinancialProducts' AND Class_Name__c = 'AssetUtils' LIMIT 1];
+        System.assertNotEquals(null, errLog.Exception_Message__c, 'Failed to properly set an Exception Message on the error log stored after a failed callout');
+        
+    }
+
+    @isTest
+    private static void testGetFinancialProducts_ServerError() {
+        
+        TestData tData = new TestData();
+    
+        Boolean errorThrown = false;
+    
+        StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+        mock.setStaticResource('azureInternalServerErrorTestResponse');
         mock.setStatusCode(500);
         mock.setHeader('Content-Type', 'application/json');
         Test.setMock(HttpCalloutMock.class, mock);
@@ -257,22 +365,49 @@ public with sharing class TestAssetUtils {
     
         System.debug(jsonResponseString);
     
-        JSONPricingFinancialProduct parsedReturnSiteObj = (JSONPricingFinancialProduct)JSON.deserializeStrict(jsonResponseString, JSONPricingFinancialProduct.class);
+        JSONFinancialProduct listOfFormattedResponseObjects = (JSONFinancialProduct)JSON.deserializeStrict(jsonResponseString, JSONFinancialProduct.class);
     
-        System.assertNotEquals(null, parsedReturnSiteObj.data, 'Failed to return a JSONPricingFinancialProduct.data object in the response as expected');
-        System.assertNotEquals(null, parsedReturnSiteObj.data.duration.numberOfMonths, 'Failed to return a JSONPricingFinancialProduct.data.duration.numberOfMonths object in the response as expected');
+        System.assertNotEquals(null, listOfFormattedResponseObjects.data, 'Failed to return a JSONFinancialProduct.data object in the response as expected');
+        System.assertNotEquals(null, listOfFormattedResponseObjects.data.duration.numberOfMonths, 'Failed to return a JSONFinancialProduct.data.duration.numberOfMonths object in the response as expected');
     }
+
+
+    // @isTest
+    // private static void testGetFinancialProduct_Specifics() {
     
+    //     TestData tData = new TestData();
+    
+    //     StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+    //     mock.setStaticResource('getFinancialProductTestResponse_0000105570_0001_1604_1360_3080');
+    //     mock.setStatusCode(200);
+    //     mock.setHeader('Content-Type', 'application/json');
+    //     Test.setMock(HttpCalloutMock.class, mock);
+    
+    //     Test.startTest();
+    
+    //         String jsonResponseString = AssetUtils.getFinancialProduct(tData.vendorProgramId, tData.vendorProductId, null);
+    
+    //     Test.stopTest();
+    
+    //     System.debug(jsonResponseString);
+    
+    //     JSONFinancialProduct listOfFormattedResponseObjects = (JSONFinancialProduct)JSON.deserializeStrict(jsonResponseString, JSONFinancialProduct.class);
+    
+    //     System.assertNotEquals(null, listOfFormattedResponseObjects.data, 'Failed to return a JSONFinancialProduct.data object in the response as expected');
+    //     System.assertNotEquals(null, listOfFormattedResponseObjects.data.duration.numberOfMonths, 'Failed to return a JSONFinancialProduct.data.duration.numberOfMonths object in the response as expected');
+    // }
+    
+
     @isTest
-    private static void testGetFinancialProduct_Error() {
+    private static void testGetFinancialProduct_RequestError() {
         
         TestData tData = new TestData();
     
         Boolean errorThrown = false;
     
         StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
-        mock.setStaticResource('internalServerErrorTestResponse');
-        mock.setStatusCode(500);
+        mock.setStaticResource('azureRequestErrorTestResponse');
+        mock.setStatusCode(400);
         mock.setHeader('Content-Type', 'application/json');
         Test.setMock(HttpCalloutMock.class, mock);
     
@@ -289,6 +424,43 @@ public with sharing class TestAssetUtils {
 
         Test.stopTest();
         
+        System.assert(errorThrown, 'Failed to throw an error on a 400 status as expected');
+
+        Error_Log__c errLog = [SELECT Id, Callout_Name__c, Exception_Message__c, Method_Name__c FROM Error_Log__c WHERE Method_Name__c = 'getFinancialProduct' AND Class_Name__c = 'AssetUtils' LIMIT 1];
+        System.assertNotEquals(null, errLog.Exception_Message__c, 'Failed to properly set an Exception Message on the error log stored after a failed callout');
+        
+    }
+
+
+    
+    @isTest
+    private static void testGetFinancialProduct_ServerError() {
+        
+        TestData tData = new TestData();
+    
+        Boolean errorThrown = false;
+    
+        StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+        mock.setStaticResource('azureInternalServerErrorTestResponse');
+        mock.setStatusCode(500);
+        mock.setHeader('Content-Type', 'application/json');
+        Test.setMock(HttpCalloutMock.class, mock);
+    
+        Test.startTest();
+    
+            try {
+                String jsonResponseString = AssetUtils.getFinancialProduct(tData.vendorProgramId, tData.vendorProductId, null);
+
+            } catch(Exception err) {
+                System.debug(err);
+                System.assertEquals('Script-thrown exception', err.getMessage(), 'Failed to properly return a formatted error');
+                errorThrown = true;
+            }
+
+        Test.stopTest();
+
+        System.assert(errorThrown, 'Failed to throw an error on a 500 status as expected');
+
         Error_Log__c errLog = [SELECT Id, Callout_Name__c, Exception_Message__c, Method_Name__c FROM Error_Log__c WHERE Method_Name__c = 'getFinancialProduct' AND Class_Name__c = 'AssetUtils' LIMIT 1];
         System.assertNotEquals(null, errLog.Exception_Message__c, 'Failed to properly set an Exception Message on the error log stored after a failed callout');
         
@@ -312,30 +484,73 @@ public with sharing class TestAssetUtils {
     
         Test.stopTest();
     
-        List<AssetUtils.Make> parsedReturnSiteObjArray = (List<AssetUtils.Make>)JSON.deserializeStrict(jsonResponseString, List<AssetUtils.Make>.class);
+        List<AssetUtils.Make> listOfFormattedResponseObjectsArray = (List<AssetUtils.Make>)JSON.deserializeStrict(jsonResponseString, List<AssetUtils.Make>.class);
     
-        System.assert(5 < parsedReturnSiteObjArray.size(), 'Failed to return JSONPricingFinancialProducts objects in the response as expected');
+        System.assert(5 < listOfFormattedResponseObjectsArray.size(), 'Failed to return JSONFinancialProducts objects in the response as expected');
     }
     
     @isTest
-    private static void testGetMakes_Error() {
+    private static void testGetMakes_RequestError() {
         
         TestData tData = new TestData();
     
         Boolean errorThrown = false;
     
         StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
-        mock.setStaticResource('internalServerErrorTestResponse');
+        mock.setStaticResource('azureRequestErrorTestResponse');
+        mock.setStatusCode(400);
+        mock.setHeader('Content-Type', 'application/json');
+        Test.setMock(HttpCalloutMock.class, mock);
+    
+        Test.startTest();
+
+            try {
+                String jsonResponseString = AssetUtils.getMakes(tData.vendorProgramId);
+
+            } catch(Exception err) {
+                System.debug(err);
+                System.assertEquals('Script-thrown exception', err.getMessage(), 'Failed to properly return a formatted error');
+                errorThrown = true;
+            }
+
+    
+        Test.stopTest();
+
+        System.assert(errorThrown, 'Failed to throw an error on a 400 status as expected');
+
+        Error_Log__c errLog = [SELECT Id, Callout_Name__c, Exception_Message__c, Method_Name__c FROM Error_Log__c WHERE Method_Name__c = 'getMakes' AND Class_Name__c = 'AssetUtils' LIMIT 1];
+        System.assertNotEquals(null, errLog.Exception_Message__c, 'Failed to properly set an Exception Message on the error log stored after a failed callout');
+        
+    }
+    
+    @isTest
+    private static void testGetMakes_ServerError() {
+        
+        TestData tData = new TestData();
+    
+        Boolean errorThrown = false;
+    
+        StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+        mock.setStaticResource('azureInternalServerErrorTestResponse');
         mock.setStatusCode(500);
         mock.setHeader('Content-Type', 'application/json');
         Test.setMock(HttpCalloutMock.class, mock);
     
         Test.startTest();
     
-            String jsonResponseString = AssetUtils.getMakes(tData.vendorProgramId);
-    
+            try {
+                String jsonResponseString = AssetUtils.getMakes(tData.vendorProgramId);
+
+            } catch(Exception err) {
+                System.debug(err);
+                System.assertEquals('Script-thrown exception', err.getMessage(), 'Failed to properly return a formatted error');
+                errorThrown = true;
+            }
+
         Test.stopTest();
         
+        System.assert(errorThrown, 'Failed to throw an error on a 500 status as expected');
+
         Error_Log__c errLog = [SELECT Id, Callout_Name__c, Exception_Message__c, Method_Name__c FROM Error_Log__c WHERE Method_Name__c = 'getMakes' AND Class_Name__c = 'AssetUtils' LIMIT 1];
         System.assertNotEquals(null, errLog.Exception_Message__c, 'Failed to properly set an Exception Message on the error log stored after a failed callout');
         
@@ -360,83 +575,135 @@ public with sharing class TestAssetUtils {
     
         System.debug(jsonResponseString);
     
-        List<JSONPricingAssets.data> parsedReturnSiteObjArray = (List<JSONPricingAssets.data>)JSON.deserializeStrict(jsonResponseString, List<JSONPricingAssets.data>.class);
+        List<JSONPricingAssets.data> listOfFormattedResponseObjectsArray = (List<JSONPricingAssets.data>)JSON.deserializeStrict(jsonResponseString, List<JSONPricingAssets.data>.class);
     
-        System.assert(5 < parsedReturnSiteObjArray.size(), 'Failed to return JSONPricingFinancialProducts objects in the response as expected');
+        System.assert(5 < listOfFormattedResponseObjectsArray.size(), 'Failed to return JSONFinancialProducts objects in the response as expected');
     }
     
     @isTest
-    private static void testGetModels_Error() {
+    private static void testGetModels_RequestError() {
         
         TestData tData = new TestData();
     
         Boolean errorThrown = false;
     
         StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
-        mock.setStaticResource('internalServerErrorTestResponse');
-        mock.setStatusCode(500);
+        mock.setStaticResource('azureRequestErrorTestResponse');
+        mock.setStatusCode(400);
         mock.setHeader('Content-Type', 'application/json');
         Test.setMock(HttpCalloutMock.class, mock);
     
         Test.startTest();
     
-            String jsonResponseString = AssetUtils.getModels(tData.vendorProgramId, tData.testMakeId, null);
-    
+            try {
+                String jsonResponseString = AssetUtils.getModels(tData.vendorProgramId, tData.testMakeId, null);
+
+            } catch(Exception err) {
+                System.debug(err);
+                System.assertEquals('Script-thrown exception', err.getMessage(), 'Failed to properly return a formatted error');
+                errorThrown = true;
+            }
+
         Test.stopTest();
         
+        System.assert(errorThrown, 'Failed to throw an error on a 400 status as expected');
+
         Error_Log__c errLog = [SELECT Id, Callout_Name__c, Exception_Message__c, Method_Name__c FROM Error_Log__c WHERE Method_Name__c = 'getModels' AND Class_Name__c = 'AssetUtils' LIMIT 1];
         System.assertNotEquals(null, errLog.Exception_Message__c, 'Failed to properly set an Exception Message on the error log stored after a failed callout');
         
     }
     
     @isTest
-    private static void testGetAsset() {
-    
-        TestData tData = new TestData();
-        
-        StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
-        mock.setStaticResource('getAssetTestResponse_0000105570_0001_1604_31005498');
-        mock.setStatusCode(200);
-        mock.setHeader('Content-Type', 'application/json');
-        Test.setMock(HttpCalloutMock.class, mock);
-    
-        Test.startTest();
-    
-            String jsonResponseString = AssetUtils.getAsset(tData.vendorProgramId, tData.testAssetId);
-    
-        Test.stopTest();
-    
-        JSONPricingAsset parsedReturnSiteObjArray = (JSONPricingAsset)JSON.deserializeStrict(jsonResponseString, JSONPricingAsset.class);
-    
-        System.assert(parsedReturnSiteObjArray.data.id.contains(tData.testAssetId), 'Failed to return JSONPricingFinancialProducts objects in the response as expected');
-    }
-    
-    
-    @isTest
-    private static void testGetAsset_Error() {
+    private static void testGetModels_ServerError() {
         
         TestData tData = new TestData();
     
         Boolean errorThrown = false;
     
         StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
-        mock.setStaticResource('internalServerErrorTestResponse');
+        mock.setStaticResource('azureInternalServerErrorTestResponse');
         mock.setStatusCode(500);
         mock.setHeader('Content-Type', 'application/json');
         Test.setMock(HttpCalloutMock.class, mock);
     
         Test.startTest();
     
-            String jsonResponseString = AssetUtils.getAsset(tData.vendorProgramId, tData.testAssetId);
+        try {
+            String jsonResponseString = AssetUtils.getModels(tData.vendorProgramId, tData.testMakeId, null);
+
+        } catch(Exception err) {
+            System.debug(err);
+            System.assertEquals('Script-thrown exception', err.getMessage(), 'Failed to properly return a formatted error');
+            errorThrown = true;
+        }
+            
     
         Test.stopTest();
         
-        Error_Log__c errLog = [SELECT Id, Callout_Name__c, Exception_Message__c, Method_Name__c FROM Error_Log__c WHERE Method_Name__c = 'getAsset' AND Class_Name__c = 'AssetUtils' LIMIT 1];
+        System.assert(errorThrown, 'Failed to throw an error on a 500 status as expected');
+
+        Error_Log__c errLog = [SELECT Id, Callout_Name__c, Exception_Message__c, Method_Name__c FROM Error_Log__c WHERE Method_Name__c = 'getModels' AND Class_Name__c = 'AssetUtils' LIMIT 1];
         System.assertNotEquals(null, errLog.Exception_Message__c, 'Failed to properly set an Exception Message on the error log stored after a failed callout');
         
     }
     
+    // @isTest
+    // private static void testGetAsset() {
+    
+    //     TestData tData = new TestData();
+        
+    //     StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+    //     mock.setStaticResource('getAssetTestResponse_0000105570_0001_1604_31005498');
+    //     mock.setStatusCode(200);
+    //     mock.setHeader('Content-Type', 'application/json');
+    //     Test.setMock(HttpCalloutMock.class, mock);
+    
+    //     Test.startTest();
+    
+    //         String jsonResponseString = AssetUtils.getAsset(tData.vendorProgramId, tData.testAssetId);
+    
+    //     Test.stopTest();
+    
+    //     JSONPricingAsset listOfFormattedResponseObjectsArray = (JSONPricingAsset)JSON.deserializeStrict(jsonResponseString, JSONPricingAsset.class);
+    
+    //     System.assert(listOfFormattedResponseObjectsArray.data.id.contains(tData.testAssetId), 'Failed to return JSONFinancialProducts objects in the response as expected');
+    // }
+    
+    
+    // @isTest
+    // private static void testGetAsset_Error() {
+        
+    //     TestData tData = new TestData();
+    
+    //     Boolean errorThrown = false;
+    
+    //     StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
+    //     mock.setStaticResource('azureInternalServerErrorTestResponse');
+    //     mock.setStatusCode(500);
+    //     mock.setHeader('Content-Type', 'application/json');
+    //     Test.setMock(HttpCalloutMock.class, mock);
+    
+    //     Test.startTest();
 
+            
+    //         try {
+    //             String jsonResponseString = AssetUtils.getAsset(tData.vendorProgramId, tData.testAssetId);
+
+    //         } catch(Exception err) {
+    //             System.debug(err);
+    //             System.assertEquals('Script-thrown exception', err.getMessage(), 'Failed to properly return a formatted error');
+    //             errorThrown = true;
+    //         }
+    
+    //     Test.stopTest();
+        
+    //     System.assert(errorThrown, 'Failed to throw an error on a 500 status as expected');
+
+    //     Error_Log__c errLog = [SELECT Id, Callout_Name__c, Exception_Message__c, Method_Name__c FROM Error_Log__c WHERE Method_Name__c = 'getAsset' AND Class_Name__c = 'AssetUtils' LIMIT 1];
+    //     System.assertNotEquals(null, errLog.Exception_Message__c, 'Failed to properly set an Exception Message on the error log stored after a failed callout');
+        
+    // }
+    
     // @isTest
     // private static void testGetAssetTypes() {
     
@@ -452,9 +719,9 @@ public with sharing class TestAssetUtils {
     //         String jsonResponseString = AssetUtils.getAssetTypes(tData.vendorProgramId, '0.01');
     //     Test.stopTest();
     
-    //     List<AssetUtils.AssetType> parsedReturnSiteObjArray = (List<AssetUtils.AssetType>)JSON.deserializeStrict(jsonResponseString, List<AssetUtils.AssetType>.class);
+    //     List<AssetUtils.AssetType> listOfFormattedResponseObjectsArray = (List<AssetUtils.AssetType>)JSON.deserializeStrict(jsonResponseString, List<AssetUtils.AssetType>.class);
     
-    //     System.assert(5 < parsedReturnSiteObjArray.size(), 'Failed to return JSONPricingFinancialProducts objects in the response as expected');
+    //     System.assert(5 < listOfFormattedResponseObjectsArray.size(), 'Failed to return JSONFinancialProducts objects in the response as expected');
     // }
     
     // @isTest
@@ -465,7 +732,7 @@ public with sharing class TestAssetUtils {
     //     Boolean errorThrown = false;
     
     //     StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
-    //     mock.setStaticResource('internalServerErrorTestResponse');
+    //     mock.setStaticResource('azureInternalServerErrorTestResponse');
     //     mock.setStatusCode(500);
     //     mock.setHeader('Content-Type', 'application/json');
     //     Test.setMock(HttpCalloutMock.class, mock);
@@ -499,9 +766,9 @@ public with sharing class TestAssetUtils {
     
     //     Test.stopTest();
     
-    //     List<AssetUtils.Model> parsedReturnSiteObjArray = (List<AssetUtils.Model>)JSON.deserializeStrict(jsonResponseString, List<AssetUtils.Model>.class);
+    //     List<AssetUtils.Model> listOfFormattedResponseObjectsArray = (List<AssetUtils.Model>)JSON.deserializeStrict(jsonResponseString, List<AssetUtils.Model>.class);
     
-    //     System.assert(2 < parsedReturnSiteObjArray.size(), 'Failed to return AssetUtils.Model objects in the response as expected');
+    //     System.assert(2 < listOfFormattedResponseObjectsArray.size(), 'Failed to return AssetUtils.Model objects in the response as expected');
     // }
     
     
@@ -513,7 +780,7 @@ public with sharing class TestAssetUtils {
     //     Boolean errorThrown = false;
     
     //     StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
-    //     mock.setStaticResource('internalServerErrorTestResponse');
+    //     mock.setStaticResource('azureInternalServerErrorTestResponse');
     //     mock.setStatusCode(500);
     //     mock.setHeader('Content-Type', 'application/json');
     //     Test.setMock(HttpCalloutMock.class, mock);
@@ -563,7 +830,7 @@ public with sharing class TestAssetUtils {
     //     Quote quote = [SELECT Id, Name FROM Quote WHERE Name = :tData.quoteName];
     
     //     StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
-    //     mock.setStaticResource('internalServerErrorTestResponse');
+    //     mock.setStaticResource('azureInternalServerErrorTestResponse');
     //     mock.setStatusCode(500);
     //     mock.setHeader('Content-Type', 'application/json');
     //     Test.setMock(HttpCalloutMock.class, mock);
@@ -616,11 +883,11 @@ public with sharing class TestAssetUtils {
     //         String jsonResponseString = AssetUtils.getSubsidies(tData.vendorProgramId, tData.vendorProductId, '12', tData.testMakeId, 'monthly', 12000.00, 'new', 'in-advance', 'fair-market-value');
     //     Test.stopTest();
     
-    //     // JSONPricingSubsidies parsedReturnSiteObj = (JSONPricingSubsidies)JSON.deserializeStrict(jsonResponseString, JSONPricingSubsidies.class);
+    //     // JSONPricingSubsidies listOfFormattedResponseObjects = (JSONPricingSubsidies)JSON.deserializeStrict(jsonResponseString, JSONPricingSubsidies.class);
     
     //     System.assertNotEquals(null, jsonResponseString, 'Failed to return a jsonResponseString object in the response as expected');
-    //     // System.assertNotEquals(null, parsedReturnSiteObj.data, 'Failed to return a JSONPricingFinancialProduct.data object in the response as expected');
-    //     // System.assertNotEquals(null, parsedReturnSiteObj.data.duration.numberOfMonths, 'Failed to return a JSONPricingFinancialProduct.data.duration.numberOfMonths object in the response as expected');
+    //     // System.assertNotEquals(null, listOfFormattedResponseObjects.data, 'Failed to return a JSONFinancialProduct.data object in the response as expected');
+    //     // System.assertNotEquals(null, listOfFormattedResponseObjects.data.duration.numberOfMonths, 'Failed to return a JSONFinancialProduct.data.duration.numberOfMonths object in the response as expected');
     // }
     
     
@@ -632,7 +899,7 @@ public with sharing class TestAssetUtils {
     //     Boolean errorThrown = false;
     
     //     StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
-    //     mock.setStaticResource('internalServerErrorTestResponse');
+    //     mock.setStaticResource('azureInternalServerErrorTestResponse');
     //     mock.setStatusCode(500);
     //     mock.setHeader('Content-Type', 'application/json');
     //     Test.setMock(HttpCalloutMock.class, mock);

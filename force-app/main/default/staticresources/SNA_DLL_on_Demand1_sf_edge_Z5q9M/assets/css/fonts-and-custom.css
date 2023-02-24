@@ -309,4 +309,16 @@ span[force-recordAvatar_recordAvatar]
 a.tabHeader:hover {
     color: black!important;
 }
+
+.slds-tabs_default__item.slds-is-active {
+    color: black!important;    
+}
+
+.slds-tabs_default__link {
+    text-decoration: none!important;
+}
+
+.slds-tabs_default__item.slds-active .slds-tabs_default__link, .slds-tabs_default__item.slds-active .slds-tabs--default__link, .slds-tabs_default__item.slds-is-active .slds-tabs_default__link, .slds-tabs_default__item.slds-is-active .slds-tabs--default__link, .slds-tabs--default__item.slds-active .slds-tabs_default__link, .slds-tabs--default__item.slds-active .slds-tabs--default__link, .slds-tabs--default__item.slds-is-active .slds-tabs_default__link, .slds-tabs--default__item.slds-is-active .slds-tabs--default__link {
+ font-weight: bold!important;   
+}
 :root { --dxp-c-section-columns-max-width: 1440px; }

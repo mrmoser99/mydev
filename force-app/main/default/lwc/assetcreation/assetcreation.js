@@ -111,7 +111,7 @@ export default class assetcreation extends LightningElement {
 
     /***********************************************************************************************************
      * getMakes
-     ************************************************************************************************************/
+     *****************************************************************wiredgetMakes*******************************************/
     @wire(getMakes, {programId: '$programId'})
     wiredgetMakes({error, data}) {
         console.log('he hit here');
@@ -124,6 +124,7 @@ export default class assetcreation extends LightningElement {
 
         if (this.data) {
 
+            console.log('data 100 is: ' + JSON.stringify(data));
             //Code to fetch subsidy on edit - Geetha :
             let labelValue = (this.asset.subsidy) == "No" ? 'No' : 'Yes'; 
             this.subsidyList = [
@@ -554,15 +555,15 @@ export default class assetcreation extends LightningElement {
                 //console.log(result);
                 let data = JSON.parse(result);
                 console.log(JSON.parse(JSON.stringify(data)));
-                let subsidyFound = 'false';
+                let subsidyFound = false;
             
                 if (data.data.subsidies.manufacturer[0].interest.nominalRate.percentages.length > 0)
-                    subsidyFound = 'true';
+                    subsidyFound = true;
                 
                 console.log('subsidy: ' + subsidyFound);
 
 
-                if (subsidyFound === 'true') { //remember to add subsidy name (this.subsidyName)
+                if (subsidyFound == true) { //remember to add subsidy name (this.subsidyName)
                     this.subsidyList = [
                         {label: 'Yes', value: data.data.subsidies.manufacturer[0].id},
                         {label: 'No', value: ''}];
@@ -676,12 +677,17 @@ export default class assetcreation extends LightningElement {
 
     handleChangeSubsidy(event) {
         let tempAsset = JSON.parse(JSON.stringify(this.asset));
+        
+        console.log('subsidy' + event.target.value);
+        console.log('subsidy' + event.target.name);
         tempAsset[event.target.name] = event.target.value;
         if (event.target.value !== '') {
             tempAsset.subsidyName = this.subsidyName;
         } else {
             tempAsset.subsidyName = '';
         }
+
+        console.log('tempasset = ' + JSON.stringify(tempAsset));
         const assetEvent = new CustomEvent("updateasset", {
             detail: tempAsset
         })

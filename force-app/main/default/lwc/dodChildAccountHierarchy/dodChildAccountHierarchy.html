@@ -1,0 +1,53 @@
+<template>
+    <c-partner-o-b-account-header accountid = {account}></c-partner-o-b-account-header>
+   <template if:true = {showfirstTable}>
+    <br/>
+    <div class="slds-grid slds-gutters slds-wrap slds-m-buttom_small">
+   <div  class ="slds-col slds-size_1-of-6 slds-p-buttom_x-small">
+    <lightning-input type="search" label="Name" name="name" autocomplete="off"
+    onchange={handleAllSearch} onblur={handleAllSearch}></lightning-input> 
+  </div>
+  <div class="slds-col slds-size_1-of-6 slds-p-buttom_x-small">
+    <lightning-input type="search" label="Role" name="role" autocomplete="off"
+    onchange={handleAllSearch} onblur={handleAllSearch}></lightning-input>
+  </div>
+   <div class="slds-col slds-size_1-of-6 slds-p-buttom_x-small">
+    <lightning-input type="search" label="Location" name="loc" autocomplete="off"
+    onchange={handleAllSearch} onblur={handleAllSearch}></lightning-input>
+   </div> 
+   <div class="slds-col slds-size_1-of-6 slds-p-buttom_x-small">
+   <lightning-input type="checkbox" label="Portal User?" checked> </lightning-input>
+    </div>
+</div> <br/>
+    <div style="height: 430px;" class="slds-box">
+        <lightning-datatable
+                key-field="Id"
+                data={data}
+                columns={columns}
+                enable-infinite-loading="true"
+                onloadmore={loadMoreData} 
+                load-more-offset="20"
+                show-row-number-column
+                onrowselection={getSelectedRows}>
+        </lightning-datatable>
+    </div>
+</template>
+            <template if:false = {showfirstTable}> 
+                <c-partner-o-b-create-user tddata = {selectedRows}>
+                </c-partner-o-b-create-user>
+
+                <lightning-button variant="brand" title="Back" label="Back"
+                    onclick={handleBack}>
+                </lightning-button>
+
+                <lightning-button variant="neutral"  class="slds-float_left" title="Create User" label="Create User"
+                onclick={handleCreateUser}>
+            </lightning-button>
+            </template>
+<br/>
+<template if:true = {showfirstTable}>
+            <lightning-button variant="brand" class="slds-float--right" title="Continue" label="Continue"
+            onclick={handleContinue}>
+        </lightning-button>
+    </template>
+</template>

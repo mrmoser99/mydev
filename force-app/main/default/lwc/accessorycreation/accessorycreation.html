@@ -1,5 +1,6 @@
 <!--
  - Created by ShiqiSun on 11/18/2021.
+ - 01/23/2023 - 552867 - Fernando Nereu de Souza - Add definition on data points specific to the quotes requirements
  -->
 
 <!-- assetcreation -->
@@ -10,32 +11,45 @@
     <div class="accessoryBody">
         <lightning-layout multiple-rows>
             <lightning-layout-item size=6 class="slds-p-right_small">
-                <lightning-combobox name="relatedAssetTotal" label="Related Asset" value={accessory.relatedAssetTotal}
-                    options={relatedAssetPicklist} onchange={handleRelatedAssetChange} field-level-help="test">
+                <lightning-combobox name="relatedAssetTotal" label="Related Asset"
+                                    value={accessory.relatedAssetTotal} 
+                                    options={relatedAssetPicklist} onchange={handleRelatedAssetChange}
+                                    field-level-help="Which asset is this accessory related to?">
                 </lightning-combobox>
             </lightning-layout-item>
             <lightning-layout-item size=6>
                 <lightning-combobox name="accessoryPicklistValue" label="Accessory"
-                    value={accessory.accessoryPicklistValue} options={accessoryPicklist}
-                    onchange={handleAccessoryChange} disabled={isAccessoryPicklistActive} field-level-help="test">
+                                    value={accessory.accessoryPicklistValue}
+                                    options={accessoryPicklist} onchange={handleAccessoryChange}
+                                    disabled={isAccessoryPicklistActive}
+                                    field-level-help="An attachment to the asset">
                 </lightning-combobox>
             </lightning-layout-item>
             <lightning-layout-item size=6 class="slds-p-right_small">
-                <lightning-input type="number" name="noOfUnits" label="Number of Units" value={accessory.noOfUnits} autocomplete="off" 
-                    onchange={handleChange}>
+                <lightning-input type="number"
+                                 name="noOfUnits"
+                                 label="Number of Units"
+                                 field-level-help='Number of units for this accessory'
+                                 autocomplete="off"
+                                 value={accessory.noOfUnits}
+                                 onchange={handleChange}>
                 </lightning-input>
             </lightning-layout-item>
             <lightning-layout-item size=6>
-                <lightning-input type="text" name="unitSalesPrice" data-id="unitSalesPrice" label="Unit Sales Price" autocomplete="off" 
-                    value={accessory.unitSalesPrice} onchange={handleChangeSalesPrice} onblur={formatCurrencyForInput}
-                    field-level-help='test'>
+                <lightning-input type="text"
+                                 name="unitSalesPrice"
+                                 data-id="unitSalesPrice"
+                                 label="Unit Sales Price"
+                                 autocomplete="off"                                 
+                                 value={accessory.unitSalesPrice}
+                                 onchange={handleChangeSalesPrice}
+                                 onblur={formatCurrencyForInput}
+                                 field-level-help='Price of the selected unit'>
                 </lightning-input>
             </lightning-layout-item>
             <lightning-layout-item size=12>
-                <lightning-button variant="base" label="+ Add Accessory" title="+ Add Accessory"
-                    onclick={handleAddAccessory}></lightning-button>
-                <lightning-button class="delete-button" variant="base" label="- Delete Accessory" title="- Delete Asset"
-                    onclick={handleDeleteAccessory}></lightning-button> <!-- if:false={accessory.isFirst} -->
+                <lightning-button variant="base" label="+ Add Accessory" title="+ Add Accessory" onclick={handleAddAccessory}></lightning-button>
+                <lightning-button class="delete-button" variant="base" label="- Delete Accessory" title="- Delete Asset" onclick={handleDeleteAccessory}></lightning-button> <!-- if:false={accessory.isFirst} -->
             </lightning-layout-item>
         </lightning-layout>
     </div>

@@ -38,32 +38,32 @@
                                     <lightning-combobox name="financeType" label="Lease Type" value={financeType}
                                         options={financeTypePicklist} disabled={isRateDisabled}
                                         onchange={handleDependentRatesPicklistChange2}
-                                        field-level-help="The header (see above) needs to be filled out to make a Lease Type selection."
+                                        field-level-help="Desired lease type."
                                         required>
                                     </lightning-combobox>
                                 </lightning-layout-item>
                                 <lightning-layout-item size=6>
                                     <lightning-combobox name="financeTerm" label="Finance Term" value={financeTerm}
-                                        options={financeTermPicklist} onchange={handleChange} field-level-help="test"
+                                        options={financeTermPicklist} onchange={handleChange} field-level-help="How long does the customer want to lease the unit for."
                                         required>
                                     </lightning-combobox>
                                 </lightning-layout-item>
                                 <lightning-layout-item size=6 class="slds-p-right_small">
                                     <lightning-combobox name="rateType" label="Rate Type" value={rateType}
                                         options={rateTypePicklist} disabled={isRateDisabled}
-                                        onchange={handleDependentTermsPicklistChange} field-level-help="test" required>
+                                        onchange={handleDependentTermsPicklistChange} field-level-help="What type of rate is the customer looking for?" required>
                                     </lightning-combobox>
                                 </lightning-layout-item>
                                 <lightning-layout-item size=6>
                                     <lightning-combobox name="paymentFrequency" label="Payment Frequency"
                                         value={paymentFrequency} options={frequencyPicklist} onchange={handleChange}
-                                        field-level-help="" required>
+                                        field-level-help="Payment will be monthly, quarterly or annually" required>
                                     </lightning-combobox>
                                 </lightning-layout-item>
                                 <lightning-layout-item size=6 class="slds-p-right_small">
                                     <lightning-combobox name="advPayments" label="Advanced Payments (Optional)"
                                         value={advPayments} options={advancedPaymentsPicklist} onchange={handleChange}
-                                        field-level-help="">
+                                        field-level-help="Would you like to opt for advanced payments?">
                                     </lightning-combobox>
                                 </lightning-layout-item>
                             </lightning-layout>

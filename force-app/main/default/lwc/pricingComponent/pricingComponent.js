@@ -1150,6 +1150,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             }
         }
 
+        console.log('event detai:' + JSON.stringify(event.detail));
         this.assets[event.detail.assetNo] = event.detail;
 
         this.updateAssetPicklist();
@@ -2167,12 +2168,17 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             tempAsset.msrp = String(assets[i].MSRP__c);
             tempAsset.batteryIncluded = assets[i].Battery_Included__c;
             tempAsset.subsidyName = assets[i].Subsidy__c;
-            ////console.log('subsidy stuf: ' + assets[i].Subsidy_ID__c);
+            tempAsset.subsidy = assets[i].Subsidy_ID__c;
+
+            console.log('subsidy stuf: ' + assets[i].Subsidy_ID__c);
+
             if (typeof assets[i].Subsidy_ID__c === 'undefined') {
                 tempAsset.subsidy = 'No';
             } else {
                 tempAsset.subsidy = assets[i].Subsidy_ID__c;
             }
+
+            console.log('tempasset.subsidy ' + tempAsset.subsidy);
             tempAsset.Id = assets[i].Id;
             tempAsset.assetNo = currentAssetNum;
             tempAsset.assetHeading = 'Asset ' + (currentAssetNum + 1) + ' | ' + tempAsset.make + ' ' + tempAsset.model;

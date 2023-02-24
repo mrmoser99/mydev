@@ -25,7 +25,7 @@ public with sharing class permissionUtility {
         List<SetupEntityAccess> setupEntities =  [SELECT SetupEntityId FROM SetupEntityAccess WHERE SetupEntityId =:customPermissions.id AND  ParentId IN (SELECT PermissionSetId FROM PermissionSetAssignment WHERE AssigneeId = :UserInfo.getUserId())];
         system.debug('DDT1'+setupEntities);
         if(setupEntities!=null){
-            system.debug('DDT1'+setupEntities[0]);
+            system.debug('DDT2TRUE'+setupEntities[0]);
               return true;
         }
         /*psAssignment = Database.query('select id,AssigneeId, PermissionSet.Name,IsActive, PermissionSetGroup.DeveloperName,PermissionSetGroupId from PermissionSetAssignment where AssigneeId=:currentUserID and PermissionSet.Name=:permissionName');

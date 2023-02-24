@@ -2,8 +2,8 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 11-11-2022
- * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+ * @last modified on  : 02-08-2023
+ * @last modified by  : Mark Moser
 **/
 @isTest
 private class TestCreditAppUtils {
@@ -31,9 +31,13 @@ static void setup(){
 	Opportunity o = new Opportunity( nickname__c = 'dog1', amount = 10000.00,
 	 Name='jack', accountId = v.id, StageName = 'Quoting', CloseDate = date.today().addDays(30));
 	o.recordtypeId =  Schema.getGlobalDescribe().get('Opportunity').getDescribe().getRecordTypeInfosByName().get('Retail').getRecordTypeId();
-	system.debug('o is: ' + o);
+	
+	
+	
 	insert o;
 
+	system.debug('o is: ' + o);
+	
 	Related_Party__c rp = new Related_Party__c(first_name__c = 'test'
 	                                           ,last_name__c = 'cat'
 	                                           ,address_line__c = '430 dog head lane '
@@ -63,6 +67,8 @@ Static testmethod void test1(){
 
 	CreditAppUtils.submitPreQualCreditApp(o.id);
 
+
+	
 	CreditAppUtils.submitPreQualCreditAppFuture(o.id);
 
 
@@ -94,8 +100,6 @@ Static testmethod void test2(){
 	system.debug('o is: ' + o);
 	insert o;
 
-
-
 	Account_Account_Relationship__c aar = new Account_Account_Relationship__c(account_2__c = a2.id, account_1__c = a1.Id, role__c = 'End User');
 	insert aar;
 
@@ -124,4 +128,165 @@ Static testmethod void test2(){
 
 
 }
+Static testmethod void test3(){
+
+	//test to get opp and quote
+
+	Quote q = [select id, opportunityId, quote_number__c from quote];
+	Quote_Line__c ql = new Quote_Line__c (quote__c = q.id);
+	insert ql;
+
+	AppUtility.getQuoteOpportunityAndCount(q.quote_number__c);
+
+}
+
+Static testmethod void test3a(){
+
+	//test to just return the appeal option number
+
+	Opportunity o = [Select id, quote_count__c, StageName, CloseDate from Opportunity where nickname__c = 'dog1'];  //source
+
+	system.debug('opp is: ' + o.id);
+
+	Quote q = [select id, opportunityId, quote_number__c from quote];
+	
+	Quote_Line__c ql = new Quote_Line__c (quote__c = q.id);
+	insert ql;
+	 
+	system.debug('quote is: ' + q.opportunityId);
+
+	system.debug('option is: ' + AppUtility.generateAppealQuoteOption(o.id, o.id, q.quote_number__c, 1));
+
+}
+
+Static testmethod void test4(){
+
+	//test to just return the appeal option number
+
+	Opportunity o = [Select id, quote_count__c, StageName, CloseDate from Opportunity where nickname__c = 'dog1'];  //source
+
+	system.debug('opp is: ' + o.id);
+
+	Quote q = [select id, opportunityId, quote_number__c from quote];
+	q.is_Appeal__c = true;
+	update 	q;
+	Quote_Line__c ql = new Quote_Line__c (quote__c = q.id);
+	insert ql;
+
+	system.debug('quote is: ' + q.opportunityId);
+
+	system.debug('option is: ' + AppUtility.generateAppealQuoteOption(o.id, o.id, q.quote_number__c, 1));
+
+}
+
+Static testmethod void test4a(){
+
+	
+	//one quote with primary set to true;
+	Opportunity o = [Select id, quote_count__c, StageName, CloseDate from Opportunity where nickname__c = 'dog1'];  //source
+
+	system.debug('opp is: ' + o.id);
+
+	Quote q = [select id, opportunityId, quote_number__c from quote];
+	q.is_Primary__c = true;
+	update 	q;
+	Quote_Line__c ql = new Quote_Line__c (quote__c = q.id);
+	insert ql;
+
+	system.debug('quote is: ' + q.opportunityId);
+
+	system.debug('option is: ' + AppUtility.generateAppealQuoteOption(o.id, o.id, q.quote_number__c, 1));
+
+}
+Static testmethod void test4b(){
+
+	
+
+	Opportunity o = [Select id, quote_count__c, StageName, CloseDate from Opportunity where nickname__c = 'dog1'];  //source
+
+	system.debug('opp is: ' + o.id);
+	
+
+	Quote q = [select id, name, opportunityId, quote_number__c from quote];
+	q.current_credit_app_selection__c = true;
+	update 	q;
+	Quote_Line__c ql = new Quote_Line__c (quote__c = q.id);
+	insert ql;
+
+	Quote q2 = q;
+	q2.id = null;
+	q.current_credit_app_selection__c = false;
+	insert q2;
+	Quote_Line__c ql2 = new Quote_Line__c (quote__c = q2.id);
+	insert ql2;
+
+	system.debug('quote is: ' + q.opportunityId);
+
+	system.debug('option is: ' + AppUtility.generateAppealQuoteOption(o.id, o.id, q.quote_number__c, 2));
+
+}
+
+
+Static testmethod void test5(){
+
+	//test to just return a single primary quote
+	Opportunity o = [Select id, quote_count__c, StageName, CloseDate from Opportunity where nickname__c = 'dog1'];  //source
+
+	system.debug('opp id is: ' + o.id);
+
+	ID originalQuoteID = o.id;
+	
+	 
+	Opportunity o2 = o;
+	o2.nickname__c = 'Destination';
+	o2.id = null;
+	insert o2;
+
+	system.debug('opp is: ' + o.id);
+
+	Quote q = [select id, opportunityId, quote_number__c from quote];
+	system.debug('q.opp id is: ' + q.opportunityId);
+	
+	
+	q.current_credit_app_selection__c = false;
+	update q;
+
+	Quote_Line__c ql = new Quote_Line__c (quote__c = q.id);
+	insert ql;
+	 
+	 
+
+	system.debug('option is: ' + AppUtility.generateAppealQuoteOption(originalQuoteId, o2.id,q.quote_number__c, 1));
+
+}
+
+Static testmethod void test6(){
+
+	//test to just multiple
+	Opportunity o = [Select id, quote_count__c, StageName, CloseDate from Opportunity where nickname__c = 'dog1'];  //source
+	Opportunity o2 = o;
+	o2.nickname__c = 'Destination';
+	o2.id = null;
+	insert o2;
+
+	system.debug('opp is: ' + o.id);
+
+	Quote q = [select id, name,opportunityId, quote_number__c from quote];
+	Quote q2 = q;
+	q2.id = null;
+	insert q2;
+
+	Quote_Line__c ql = new Quote_Line__c (quote__c = q.id);
+	insert ql;
+
+	Quote_Line__c ql2 = new Quote_Line__c (quote__c = q2.id);
+	insert ql2;
+	 
+	 
+	//system.debug('option is: ' + AppUtility.generateAppealQuoteOption(o.id, o2.id, q.quote_number__c, 1));
+
+	system.debug('option is: ' + AppUtility.generateAppealQuoteOption(o.id, o2.id, q.quote_number__c, 2));
+
+}
+
 }

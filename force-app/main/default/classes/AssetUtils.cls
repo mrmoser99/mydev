@@ -32,9 +32,8 @@ public with sharing class AssetUtils {
 		public String modelName;
 	}
 	
-	public class tokenClass {
+	public class Token {
 		public String token;
-
 		public dateTime expires;
 	}	
 
@@ -58,16 +57,6 @@ public with sharing class AssetUtils {
 	}
 
 	
-	/************************************************************************************************************************************************
-	 * @getUserSite - gets the site the user is logged in for
-	 *
-	 * change log:
-	 *
-	 * 10/10/2021 - MRM Created
-	 *
-	 *
-	 * @return   return site
-	 *****************************************************************************************************************************************************/
 	public class Site {
 		public String name;
 		public String originatingSiteId;
@@ -165,8 +154,9 @@ public with sharing class AssetUtils {
 
 		}
 		catch (Exception e) {
+			System.debug(e);
 			if(ErrorMsg == null)
-				ErrorMsg = 'Exception in getPrograms:' + string.valueOf(e) + '-' + e.getMessage() + '-' + e.getStackTraceString() + '-' + e.getLineNumber();
+				ErrorMsg = e.getTypeName() + ' in getPrograms: ' + e.getMessage() + '. ' + e.getStackTraceString();
 			error=true;
 			Error_Log__c el = new Error_Log__c();
 	
@@ -186,10 +176,10 @@ public with sharing class AssetUtils {
 			saveErrorLog(JSON.serialize(el));
 	
 		}	
+
 		if (error) {
 			throw new AuraHandledException(ErrorMsg);
-		}
-		else {
+		} else {
 			return JSON.serialize(pList);
 		}
 		
@@ -204,7 +194,7 @@ public with sharing class AssetUtils {
 	 * 01/05/2023 - ATolbert created to enhance functionality of getPrograms
 	 *
 	 *
-	 * @return   return JSON.serialize(List<JSONPricingFinancialProducts.Data>);
+	 * @return   return JSON.serialize(List<JSONFinancialProducts.Data>);
 	 *****************************************************************************************************************************************************/
 	
 	@AuraEnabled (Cacheable=true)
@@ -213,7 +203,7 @@ public with sharing class AssetUtils {
 		String endpoint;
 		HttpResponse res1;
 	
-		List<JSONPricingFinancialProducts.Data> pList = new List<JSONPricingFinancialProducts.Data>();
+		List<JSONFinancialProducts.Data> pList = new List<JSONFinancialProducts.Data>();
 		Boolean error=false;
 		String ErrorMsg = null;
 		HttpRequest reqAPI;
@@ -284,7 +274,7 @@ public with sharing class AssetUtils {
 			String bodyString = res1.getBody();
             System.debug(bodyString);
 
-			JSONPricingFinancialProducts myResponse = (JSONPricingFinancialProducts) System.JSON.deserialize(bodyString,JSONPricingFinancialProducts.class);             
+			JSONFinancialProducts myResponse = (JSONFinancialProducts) System.JSON.deserialize(bodyString,JSONFinancialProducts.class);             
             System.debug(myResponse);
             if(myResponse.pagination != null && myResponse.pagination.itemCount == 0) {
                 error= true;
@@ -301,8 +291,8 @@ public with sharing class AssetUtils {
 			}
             System.debug(financeType);
 
-			for (JSONPricingFinancialProducts.Data p : myResponse.data) {         //list of products from call out
-				JSONPricingFinancialProducts.Data data = new JSONPricingFinancialProducts.Data();
+			for (JSONFinancialProducts.Data p : myResponse.data) {         //list of products from call out
+				JSONFinancialProducts.Data data = new JSONFinancialProducts.Data();
                 System.debug(p);
 				if(financetype != null) {
 					for (String ft : p.purchaseOptions) {
@@ -329,7 +319,7 @@ public with sharing class AssetUtils {
 		}
 		catch (Exception e) {
 			if(ErrorMsg == null)
-				ErrorMsg = 'Exception in getFinancialProducts:' + string.valueOf(e) + '-' + e.getMessage() + '-' + e.getStackTraceString() + '-' + e.getLineNumber();
+				ErrorMsg = e.getTypeName() + ' in getFinancialProducts: ' + e.getMessage() + '. ' + e.getStackTraceString();
 			error=true;
 			Error_Log__c el = new Error_Log__c();
 	
@@ -349,10 +339,10 @@ public with sharing class AssetUtils {
 			System.debug('**** save the error log');
 			saveErrorLog(JSON.serialize(el));
 		}
+
 		if (error) {
 			throw new AuraHandledException(ErrorMsg);
-		}
-		else {
+		} else {
 			return JSON.serialize(pList);
 		}
 
@@ -367,7 +357,7 @@ public with sharing class AssetUtils {
 	 * 01/05/2023 - ATolbert created to enhance functionality of getFinancialProduct
 	 *
 	 *
-	 * @return   return JSON.serialize(JSONPricingFinancialProduct);
+	 * @return   return JSON.serialize(JSONFinancialProduct);
 	 *****************************************************************************************************************************************************/
 
 	@AuraEnabled (Cacheable=true)
@@ -376,7 +366,7 @@ public with sharing class AssetUtils {
 	
 		Boolean error=false;
 		String ErrorMsg = null;
-		JSONPricingFinancialProduct myResponse;
+		JSONFinancialProduct myResponse;
 		HTTPResponse res1;
 		String endpoint;
 	
@@ -438,13 +428,13 @@ public with sharing class AssetUtils {
 				throw new AuraHandledException(ErrorMsg);
 			}
 	
-			myResponse = (JSONPricingFinancialProduct) System.JSON.deserialize(res1.getBody(), JSONPricingFinancialProduct.class);             
+			myResponse = (JSONFinancialProduct) System.JSON.deserialize(res1.getBody(), JSONFinancialProduct.class);             
 			System.debug(myResponse);
 			
 		}
 		catch (Exception e) {
 			if(ErrorMsg == null)
-				ErrorMsg = 'Exception in getFinancialProduct by Id:' + string.valueOf(e) + '-' + e.getMessage() + '-' + e.getStackTraceString() + '-' + e.getLineNumber();
+				ErrorMsg = e.getTypeName() + ' in getFinancialProduct: ' + e.getMessage() + '-' + e.getStackTraceString();
 			error=true;
 			System.debug('e is: ' + e);
 			Error_Log__c el = new Error_Log__c();
@@ -474,89 +464,91 @@ public with sharing class AssetUtils {
 	}
 	
 
-	/************************************************************************************************************************************************
-	 * @getAsset- get specific asset
-	 *
-	 * change log:
-	 *
-	 * 10/10/2021 - MRM Created
-	 *
-	 *
-	 * @return   return list of asset models
-	 *****************************************************************************************************************************************************/
-	@AuraEnabled (Cacheable=true)
-	public static String getAsset(String programId, String assetId){
+	// /************************************************************************************************************************************************
+	//  * @getAsset- get specific asset
+	//  *
+	//  * change log:
+	//  *
+	//  * 01/05/2023 - ATolbert created to enhance functionality of getAsset
+	//  *
+	//  *
+	//  * @return   return list of asset models
+	//  *****************************************************************************************************************************************************/
+	// @AuraEnabled (Cacheable=true)
+	// public static String getAsset(String programId, String assetId){
 	
 	
-		Boolean error=false;
-		String ErrorMsg = null;
-		HTTPResponse res1;
-		JSONPricingAsset pricingAsset;
-		String endpoint;
+	// 	Boolean error=false;
+	// 	String ErrorMsg = null;
+	// 	HTTPResponse res1;
+	// 	JSONPricingAsset pricingAsset;
+	// 	String endpoint;
 	
-		if(programId == null || assetId == null) return null;
+	// 	if(programId == null || assetId == null) return null;
 	
-		try{
+	// 	try{
 	
-			PartnerPortal__mdt pp = getPartnerPortalSettings();
+	// 		PartnerPortal__mdt pp = getPartnerPortalSettings();
 	
-			endpoint = 'https://msc-apm-wcrm-' + pp.Azure_Api_Environment__c +  '.azure-api.net/globalcrmdata/PriceQuote/programs/' + programId +
-					   '/assets/' + assetId + '?feature=Credit-Application-Documents';
-	
-	
-			HttpRequest reqAPI = buildHttpRequest(endpoint);
-	
-			Http http1 = new Http();
-			res1 = http1.send(reqAPI);
-	
-			System.debug(res1.getStatus()  + '  ' + res1.getStatusCode() + res1.getBody());
-	
-			if (res1.getStatusCode() != 200) {
-				ErrorMsg = 'getAsset: ' + res1.getStatus()  + '  ' + res1.getStatusCode() + res1.getBody();
-				error=true;
-				throw new AuraHandledException(ErrorMsg);
-			}
-	
-			pricingAsset = (JSONPricingAsset) System.JSON.deserialize(res1.getBody(),JSONPricingAsset.class);
+	// 		endpoint = 'https://msc-apm-wcrm-' + pp.Azure_Api_Environment__c +  '.azure-api.net/globalcrmdata/PriceQuote/programs/' + programId +
+	// 				   '/assets/' + assetId + '?feature=Credit-Application-Documents';
 	
 	
-			System.debug(res1.getBody());
+	// 		HttpRequest reqAPI = buildHttpRequest(endpoint);
 	
-		}
-		catch (Exception e) {
-			if (ErrorMsg == null)
-				ErrorMsg = 'Exception in getAsset:' + string.valueOf(e) + '-' + e.getMessage() + '-' + e.getStackTraceString() + '-' + e.getLineNumber();
-			error=true;
-			Error_Log__c el = new Error_Log__c();
+	// 		Http http1 = new Http();
+	// 		res1 = http1.send(reqAPI);
 	
-			el.callout_name__c = 'getAsset';
-			el.recordTypeId = Schema.getGlobalDescribe().get('Error_Log__c').getDescribe().getRecordTypeInfosByName().get('Integration Error Log').getRecordTypeId();
-			el.Class_name__c = 'AssetUtils';
-			el.Request_body__c = endPoint;
-			el.Method_Name__c = 'getAsset';
-			if (res1 != null)
-				el.Response_body__c = res1.getBody();
-			el.status_code__c = null;
-			el.stack_trace__c = e.getStackTraceString();
-			el.exception_message__c = ErrorMsg;
-			el.quote_id__c = null;
+	// 		System.debug(res1.getStatus()  + '  ' + res1.getStatusCode() + res1.getBody());
 	
-			saveErrorLog(JSON.serialize(el));
+	// 		if (res1.getStatusCode() != 200) {
+	// 			ErrorMsg = 'getAsset: ' + res1.getStatus()  + '  ' + res1.getStatusCode() + res1.getBody();
+	// 			error=true;
+	// 			throw new AuraHandledException(ErrorMsg);
+	// 		}
 	
-		}
-		if (error)
-			return null;
-		else
-			return JSON.serialize(pricingAsset);
+	// 		pricingAsset = (JSONPricingAsset) System.JSON.deserialize(res1.getBody(),JSONPricingAsset.class);
+	
+	
+	// 		System.debug(res1.getBody());
+	
+	// 	}
+	// 	catch (Exception e) {
+	// 		if (ErrorMsg == null)
+	// 			ErrorMsg = 'Exception in getAsset: ' + e.getMessage() + '-' + e.getStackTraceString();
+	// 		error=true;
+	// 		Error_Log__c el = new Error_Log__c();
+	
+	// 		el.callout_name__c = 'getAsset';
+	// 		el.recordTypeId = Schema.getGlobalDescribe().get('Error_Log__c').getDescribe().getRecordTypeInfosByName().get('Integration Error Log').getRecordTypeId();
+	// 		el.Class_name__c = 'AssetUtils';
+	// 		el.Request_body__c = endPoint;
+	// 		el.Method_Name__c = 'getAsset';
+	// 		if (res1 != null)
+	// 			el.Response_body__c = res1.getBody();
+	// 		el.status_code__c = null;
+	// 		el.stack_trace__c = e.getStackTraceString();
+	// 		el.exception_message__c = ErrorMsg;
+	// 		el.quote_id__c = null;
+	
+	// 		saveErrorLog(JSON.serialize(el));
+	
+	// 	}
+	// 	if (error) {
+	// 		throw new AuraHandledException(ErrorMsg);
+	// 	} else {
+	// 		return JSON.serialize(pricingAsset);
+	// 	}
 		
-	}
+	// }
 	
 	/************************************************************************************************************************************************
 	 * @getMakes - callout service 
 	 *
 	 * change log:
 	 *
-	 * 10/10/2021 - MRM Created
+	 * 01/05/2023 - ATolbert created to enhance functionality of getMakes
+
 	 *
 	 *
 	 * @return   return list of makes
@@ -625,7 +617,7 @@ public with sharing class AssetUtils {
 		}
 		catch (Exception e) {
 			if(ErrorMsg == null)
-				ErrorMsg = 'Exception in getMakes:' + string.valueOf(e) + '-' + e.getMessage() + '-' + e.getStackTraceString() + '-' + e.getLineNumber();
+				ErrorMsg = e.getTypeName() + ' in getMakes: ' + e.getMessage() + '-' + e.getStackTraceString();
 			error=true;
 			Error_Log__c el = new Error_Log__c();
 	
@@ -644,11 +636,11 @@ public with sharing class AssetUtils {
 			System.debug('**** save the error log');
 			saveErrorLog(JSON.serialize(el));
 		}
-		if (error) 
-			return null;
-		else
+		if (error) {
+			throw new AuraHandledException(ErrorMsg);
+		} else {
 			return JSON.serialize(mList);
-		
+		}
 	}
 
 	/************************************************************************************************************************************************
@@ -725,7 +717,7 @@ public with sharing class AssetUtils {
 		}
 		catch (Exception e) {
 			if (ErrorMsg == null)
-				ErrorMsg = 'Exception in getModels:' + string.valueOf(e) + '-' + e.getMessage() + '-' + e.getStackTraceString() + '-' + e.getLineNumber();
+				ErrorMsg = e.getTypeName() + ' in getModels: ' + e.getMessage() + '-' + e.getStackTraceString();
 			error=true;
 			Error_Log__c el = new Error_Log__c();
 	
@@ -747,7 +739,7 @@ public with sharing class AssetUtils {
 	
 		}
 		if (error) {
-			return null;
+			throw new AuraHandledException(ErrorMsg);
 		}
 		else {
 			return JSON.serialize(resModelObjects);
@@ -762,10 +754,10 @@ public with sharing class AssetUtils {
 	 *
 	 * change log:
 	 *
-	 * 10/10/2021 - MRM Created
+	 * 01/05/2023 - ATolbert created to facilitate the construction of formatted HTTP Requests
 	 *
 	 *
-	 * @return   httprequest
+	 * @return   HttpRequest
 	 *****************************************************************************************************************************************************/
 	public static HttpRequest buildHttpRequest(String endpoint){
 	
@@ -783,6 +775,7 @@ public with sharing class AssetUtils {
 	
 		System.debug('reqapi:' + reqAPI);
 	
+		
 		return reqAPI;
 	
 	}
@@ -793,7 +786,7 @@ public with sharing class AssetUtils {
      *
      * change log:
      *
-     * 10/10/2021 - MRM Created
+	 * 01/05/2023 - ATolbert created to facilitate the fetching/requesting of potentially cached API accessToken value
      *
      *
      * @return   token
@@ -813,7 +806,7 @@ public with sharing class AssetUtils {
 
                 DDCacheUtilityPartition.clearCache(PARTITION, KEY);                 //expired  expired  aunt problems
 
-                tokenClass t = new tokenClass();
+                Token t = new Token();
                 t = getAuthToken();
 
 
@@ -835,7 +828,7 @@ public with sharing class AssetUtils {
         }
         else{
 
-            tokenClass t = new tokenClass();
+            Token t = new Token();
             t = getAuthToken();
 
 
@@ -857,16 +850,16 @@ public with sharing class AssetUtils {
      *
      * change log:
      *
-     * 11/2/2021 - MRM Created
+	 * 01/05/2023 - ATolbert created to facilitate the creation of a new API accessToken value
      *
      *
-     * @return   return token
+     * @return   return Token
      *****************************************************************************************************************************************************/
 
-    public static tokenClass getAuthToken(){
+    public static Token getAuthToken(){
 
 
-        tokenClass t = new tokenClass();
+        Token t = new Token();
 
         HttpRequest reqAPI = new HttpRequest();
         Http http = new Http();
@@ -924,6 +917,7 @@ public with sharing class AssetUtils {
         return t;
 
     }
+
 	/************************************************************************************************************************************************
 	 *   get partner portal settings
 	 *****************************************************************************************************************************************************/
@@ -948,16 +942,5 @@ public with sharing class AssetUtils {
 		insert el;
 	}
 	
-	@AuraEnabled (Cacheable=true)
-    public static String accountNameById(String acctId){
-        try {   
-            if(acctId == null) {
-                return null;
-            } else {
-                return [SELECT Id, Name FROM Account WHERE Id = :acctId].Name;
-            }            
-        } catch (Exception e) {
-            return null;
-        }
-    }
+
 }

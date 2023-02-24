@@ -118,12 +118,11 @@ export default class CustomerQuickSearch extends LightningElement {
     errorStateMsg='';
     
     connectedCallback() {
-
         console.log('FB');
         fillBufferLWC();
-
-
-    }    /***********************************************************************************************************
+    }    
+    
+    /***********************************************************************************************************
     * getCustomerId
     ************************************************************************************************************/
     @wire(getCustomerId,{ recordId: '$recordId', refreshExecute : '$refreshExecute'}) 
@@ -368,7 +367,7 @@ export default class CustomerQuickSearch extends LightningElement {
         
         this.strSearchAccName = null;
         this.city = null;
-        this.state = null;
+        this.state = '';
         this.showDataTable = false;
         this.searchDataContract = [];
         this.showQuickSearch = true;

@@ -1,16 +1,22 @@
 /**
  * @Created by Traction Team on 09/30/2020.
  */
+/**********************************************************************************************************
+   Class :  CaseTriggerHelperTest
+   Description : Test Class for CaseTriggerHelper
+
+   Date/Sprint		PBI/Description
+   PI-23-Q1-1		857117 - Rework: Automation - Updated Case Type and Sub-Type
+**********************************************************************************************************/
 @isTest
 private class CaseTriggerHelperTest {
     
     @isTest static void testAllMilestonesAreClosed() {
 
         Test.startTest();
-        
         List<RecordType> accrt = [SELECT ID, name FROM RecordType where SobjectType = 'Account' and name = 'End User'];
         List<RecordType> rt = [SELECT Id FROM RecordType where SobjectType = 'Case' and DeveloperName = 'Canada'];
-                
+        
         Account acc = new Account();
         acc.Name = 'Test Account';
         acc.RecordTypeId = accrt[0].id;
@@ -22,25 +28,21 @@ private class CaseTriggerHelperTest {
         rg.Description__c = 'Canada Region';
         insert rg;
         
-        Region_Assignment__c rsa = new Region_Assignment__c();
+        Region_Assignment__c rsa = new Region_Assignment__c();//Added Region Assignment to fix Test Class failure
         rsa.Active__c = true;
         rsa.Region__c = rg.Id;
         rsa.User__c = System.UserInfo.getUserId();
         Insert rsa;
         
-        Contact cont = new Contact(FirstName = 'Test', LastName = 'LastName', phone='4567890999', accountid = acc.id, Email='test@test123.com');
-		insert cont;
-        
         Case cs = new Case();
         cs.RecordTypeId = rt[0].Id;
-        cs.Type = 'Contract Activation & Changes';
-        cs.Sub_Type__c = 'Contract Activation';
+        cs.Type = 'Contract Change';
+        cs.Sub_Type__c = 'Update';
         cs.Department__c = 'Portfolio Services';
         cs.End_User_First_Name__c = 'Test First Name';
         cs.End_User_Last_Name__c = 'Test Last Name';
         cs.End_User_Email__c = 'test@test.com';
         cs.Region__c = rg.id;
-        cs.ContactId = cont.Id;//test
         insert cs;
         
         cs.Status = 'Closed';
@@ -64,7 +66,7 @@ private class CaseTriggerHelperTest {
         rg.Description__c = 'Canada Region';
         insert rg;
         
-        Region_Assignment__c rsa = new Region_Assignment__c();
+        Region_Assignment__c rsa = new Region_Assignment__c();//Added Region Assignment to fix Test Class failure
         rsa.Active__c = true;
         rsa.Region__c = rg.Id;
         rsa.User__c = System.UserInfo.getUserId();
@@ -72,8 +74,8 @@ private class CaseTriggerHelperTest {
         
         Case cs = new Case();
         cs.RecordTypeId = rt[0].Id;
-        cs.Type = 'Contract Activation & Changes';
-        cs.Sub_Type__c = 'Contract Activation';
+        cs.Type = 'Contract Change';
+        cs.Sub_Type__c = 'Update';
         cs.Department__c = 'Portfolio Services';
         cs.End_User_First_Name__c = 'Test First Name';
         cs.End_User_Last_Name__c = 'Test Last Name';

@@ -11,6 +11,7 @@
    PI-22-Q4-22		889196 - Add apex sharing for dealer user (mark moser 10/27/2022)
    PI-22-Q4-22		845477 - Solution design for holistic authorization model (Dibyendu  11/16/2022)
    PI-22-Q4-25		920446 - Rollback Translation Logic for Des Moines
+   PI-23-Q1-02		922613 - Modify Opp Trigger and Develop async process(Dibyendu)
  ***********************************************************************************************************/
 public class OpportunityTriggerHelper {
 public static Boolean flagForProgram = true;
@@ -132,9 +133,99 @@ public static void helpBeforeUpdate(Map<Id, Opportunity> oldOppMap, Map<Id, Oppo
 		updateStage(oldOppFilterMap,newOppFilterMap); //PBI920446 //updateStage(oldOppMap,newOppMap);
 		setSystemUpdateFlag(newOppMap.values());
         updateShareWithAccountValue(oldOppMap,newOppMap);//Added as a part of change for PBI 845477
+        
 	}
+    addToWorkTable(oldOppMap,newOppMap);//Added as a part of change for PBI 922613
+    
 	updateRelatedAccounts(vendorMap, endUserMap);
 }
+
+// Start of Code for change PBI-922613  
+// 
+	@TestVisible
+   private static void addToWorkTable(Map<Id, Opportunity> oldOppMap, Map<Id, Opportunity> newOppMap){
+        for (Opportunity oldOpp : oldOppMap.values()) {
+		Opportunity newOpp = newOppMap.get(oldOpp.Id);
+            if (newOpp.Business_Unit_Description__c == BUSINESSDESC_CTI){
+               //addtoWorkTableCalloutAsset(newOpp.Application_Number__c,newOpp.id);
+               addtoWorkTableCalloutAsset(newOpp.Application_Number__c,newOpp.id);
+            }
+        }
+    }
+    
+    @future(callout=true)
+    private static void addtoWorkTableCalloutApplication(string applicationNumber, string opportunityId){
+               // string applicationResponse = AppealsUtility.getApplication('500-60001329');
+        		//system.debug('JSONDODGetApplicationUpdate'+applicationResponse);
+        	//string assetResponse = AppealsUtility.getAssets(applicationNumber);
+       //system.debug('JSONDODGetApplicationUpdate'+assetResponse);
+    }
+    
+    @future(callout=true)
+    private static void addtoWorkTableCalloutAsset(string applicationNumber, string opportunityId){ 
+    List<DOD_API_Worktable__c> getApptoUpdate = [select id,name,Application_Number__c from DOD_API_Worktable__c where Application_Number__c=:applicationNumber and Updated__c=false limit 1];
+     system.debug('DDT Call Response'+applicationNumber);
+    if(getApptoUpdate.size()<=0){
+    JSONDODGetAssetsUpdate assestUpdate = new JSONDODGetAssetsUpdate(); 
+    //string assetResponse = AppealsUtility.getAssets(applicationNumber.trim());
+    string assetResponse = AppealsUtility.getAssets(applicationNumber);
+    system.debug('DDT Call Response'+assetResponse);
+    assestUpdate = (JSONDODGetAssetsUpdate) System.JSON.deserialize(assetResponse,JSONDODGetAssetsUpdate.class);
+    JSONDODGetAssetsUpdate.Data assetResponseList = new JSONDODGetAssetsUpdate.Data();
+    system.debug('DDT Call Response'+assestUpdate);
+    //List<Opportunity_Line_Item__c> oppLineList = [select id,Model__c,Asset_Type_ITA_Class__c,Base_Unit_Sales_Price__c, Number_of_Units__c,Opportunity__c,Opportunity__r.Application_Number__c from Opportunity_Line_Item__c where Opportunity__c=:opportunityId];
+        /*Map<String, JSONDODGetAssetsUpdate.Data> assestResMap = new Map<String, JSONDODGetAssetsUpdate.Data>();
+        for(JSONDODGetAssetsUpdate.Data assetres : assestUpdate.data){
+            assestResMap.put(assetres.catalog.identifiers.structure.type+assetres.catalog.identifiers.structure.model,assetres);
+        }*/
+        
+        List<DOD_API_Worktable__c> updateAssetList = new List<DOD_API_Worktable__c>();
+        
+        system.debug('DDT Response'+assetResponse);
+        system.debug('DDT Size'+assestUpdate.data.size());
+       
+        for(JSONDODGetAssetsUpdate.Data assetres : assestUpdate.data){
+            system.debug('DDT assetres'+assetres);
+                    if(assetres.id1.indexOf(applicationNumber)!=-1){
+                        //if(assetres.catalog.identifiers.structure.type==oppl.Asset_Type_ITA_Class__c && assetres.catalog.identifiers.structure.model==oppl.Model__c && (assetres.finance.salePrice != oppl.Base_Unit_Sales_Price__c || assetres.finance.quantity != oppl.Number_of_Units__c)){
+                            DOD_API_Worktable__c updateAsset = new DOD_API_Worktable__c();
+                        	updateAsset.Asset_Base_Unit_Sales_Price__c = assetres.finance.salePrice;
+                            updateAsset.Asset_Model__c = assetres.catalog.identifiers.structure.model;
+                            updateAsset.Asset_Number_of_Units__c = assetres.finance.quantity;
+                            updateAsset.Asset_Brand__c = assetres.catalog.identifiers.structure.brand;
+                            updateAsset.Update_Type__c = 'Asset';
+							updateAsset.Updated__c     = false;  
+                        	updateAsset.OpportunityID__c = opportunityId;
+                        	updateAsset.Application_Number__c = applicationNumber;
+                            updateAssetList.add(updateAsset);
+                        //}
+                    }
+                }
+        if(updateAssetList.size()>0){
+            insert updateAssetList;
+        }
+        
+        /*if(oppLineList!=null && assestUpdate.data.size()>0){
+            for (Opportunity_Line_Item__c oppl : oppLineList){
+                for(JSONDODGetAssetsUpdate.Data assetres : assestUpdate.data){
+                    if(assetres.id.indexOf(oppl.Opportunity__r.Application_Number__c)!=-1){
+                        //if(assetres.catalog.identifiers.structure.type==oppl.Asset_Type_ITA_Class__c && assetres.catalog.identifiers.structure.model==oppl.Model__c && (assetres.finance.salePrice != oppl.Base_Unit_Sales_Price__c || assetres.finance.quantity != oppl.Number_of_Units__c)){
+                            
+                        //}
+                    }
+                }
+        }
+        }*/
+   
+    system.debug('JSONDODGetAssetsUpdate'+assestUpdate.data[0].catalog.identifiers.structure.type);
+    system.debug('JSONDODGetAssetsUpdate'+assestUpdate.data[0].catalog.identifiers.structure.model);
+        
+        
+        //system.debug('JSONDODGetAssetsUpdate'+myResponse);
+        }
+    }
+    
+// End of Code for change PBI-922613
     
 // Start of Code for change PBI-845477  
 // - If the opp record type is or becomes retail and Business Unit Description is Construction, Transportation & Infrastructure (CTI), then populate the share_with_account__c value;

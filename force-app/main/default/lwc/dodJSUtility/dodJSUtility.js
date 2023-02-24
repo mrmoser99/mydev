@@ -6,7 +6,7 @@ function checkPermission (pName) {
 
     //call an apex class to check for userid/permission existence
         
-    let myResult = null;
+    let myResult = false;
     
     check({ permissionName : pName})  //call apex and tell me true or false
     .then(result => {

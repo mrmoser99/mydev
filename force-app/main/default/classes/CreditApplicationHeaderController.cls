@@ -541,7 +541,7 @@ public with sharing class CreditApplicationHeaderController {
 
     
     @AuraEnabled(cacheable=false)
-    public static String createNewOppForCreditCheck(String location, String amount) {
+    public static String createNewOppForCreditCheck(String salesRep, String location, String amount) {
         Opportunity newOpp = new Opportunity();
         newOpp.RecordTypeId = [select Id from RecordType where DeveloperName = 'Retail' AND sObjectType = 'Opportunity' limit 1].Id;
         newOpp.Nickname__c = 'Credit Check';
@@ -559,7 +559,8 @@ public with sharing class CreditApplicationHeaderController {
         newOpp.ForecastCategoryName = 'Omitted';
         newOpp.Amount = decimal.valueOf(amount);
         newOpp.CurrencyIsoCode = 'USD';
-        newOpp.Type = 'Credit Check';
+        newOpp.Type = 'Credit Check';   
+        newOpp.Partner_Sales_Rep__c = salesRep;   
 
         try {
             insert newOpp;

@@ -1,0 +1,9 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,lightning:isUrlAddressable" access="global" >
+
+    <aura:attribute type="List" name="contactlist"/>
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>    
+    <div class="slds-card">
+        <c:partnerOBCreateUser tddata="{!v.contactlist}"/>
+    </div>
+   
+</aura:component>

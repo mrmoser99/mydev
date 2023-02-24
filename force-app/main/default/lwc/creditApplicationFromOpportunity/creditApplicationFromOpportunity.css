@@ -1,6 +1,6 @@
 /**
- * Created by Kritika Sharma & Surbhi Goyal 
- * Date : 09/02/2022
+ * Created by Adam Tolbert
+ * Date : 01/10/2023
  */
 
 .topSpace {
@@ -94,9 +94,7 @@ label.slds-form-element__label {
   margin-bottom: 10px;
   padding-right: 15px;
 }
-/* .summarySection{
-  border-top: 4px solid #0099FF;
-} */
+
 .labelColor{
   color:#666666;
 }
@@ -112,14 +110,6 @@ label.slds-form-element__label {
 }
 .layoutItemWithSpinner lightning-input {
   width: 100%;
-}
-
-.spinnerContainer {
-  position: absolute;
-  width: -webkit-fill-available;
-  min-width: 75px;
-  height: auto;
-  min-height: 75px;
 }
 
 .currencyNumber {
@@ -150,12 +140,38 @@ label.slds-form-element__label {
   border-color: red;
 }
 
+.spinnerContainer {
+  position: absolute;
+  width: -webkit-fill-available;
+  min-width: 75px;
+  height: auto;
+  min-height: 75px;
+  z-index: 6495 !important;
+}
+
 .masterSpinnerContainer {
+  position: absolute;
   width: 100%;
   height: 60%;
-  position: absolute;
   max-height: 900px;
 }
+
+.masterLoadingTextContainer {
+  position: absolute;
+  text-align: center;
+  height: min-content;
+  top: 60%;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  font-weight: bolder;
+  z-index: 9065;
+  margin-left: 25%;
+  margin-right: 25%;
+  background-color: rgb(255 255 255 / 80%);
+  box-shadow: 0px 0px 20px 10px rgb(255 255 255 / 80%);
+}
+
 .loadingTextContainer {
   position: relative;
   margin-left: auto;
@@ -163,5 +179,20 @@ label.slds-form-element__label {
   padding-top: 80px;
   text-align: center;
   height: max-content;
-  z-index: 9999;
+  z-index: 9055;
+}
+
+.financialProductsCombobox {
+  z-index: 9060;
+}
+
+.cancelModal {
+  height: 67vh;
+  max-height: 959px;
+  position: fixed;
+  background: rgba(8, 7, 7, 0.6);
+  z-index: 9750;
+  visibility: visible;
+  opacity: 1;
+  width: 100%;
 }

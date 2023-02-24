@@ -1,3 +1,11 @@
+/**********************************************************************************************************
+   Class :  GetContractInfoleaseTestClass
+   Description : Test Class for GetContractInfolease
+
+   Date/Sprint		PBI/Description
+   PI-23-Q1-1		857117 - Rework: Automation - Updated Case Type and Sub-Type
+**********************************************************************************************************/
+
 @isTest(SeeAllData=True)
 public class GetContractInfoleaseTestClass {
     
@@ -34,8 +42,8 @@ public class GetContractInfoleaseTestClass {
         insert cont;   
         
         Case cs = new Case();
-        cs.Type = 'Contract Activation & Changes';
-        cs.Sub_Type__c = 'Contract Activation';
+        cs.Type = 'Processing - Other';
+        cs.Sub_Type__c = 'Other';
         cs.Department__c = 'Portfolio Services';
         cs.End_User_First_Name__c = 'Test First Name';
         cs.End_User_Last_Name__c = 'Test Last Name';
@@ -46,7 +54,7 @@ public class GetContractInfoleaseTestClass {
         
         // Insert Contract whse Parent is Case Id
         
-      //  Test.setMock(HttpCalloutMock.class, new Infolease_AccessTokenMockCallout());
+        Test.setMock(HttpCalloutMock.class, new Infolease_AccessTokenMockCallout());
         Test.setMock(HttpCalloutMock.class, new GetContractGenerateResponseMockCallout());
         
         Test.startTest();

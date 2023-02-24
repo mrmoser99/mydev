@@ -59,7 +59,7 @@
                     <lightning-layout-item padding="around-small size=3">
                         <div class="slds-var-p-around_small ">
                             <lightning-input type="text" name="salesRep" label="Sales Rep"
-                                autocomplete="off" onchange={handleChangeSalesRep} class="input"></lightning-input>
+                                autocomplete="off" value={salesRepFilter} onchange={handleChangeSalesRep} class="input"></lightning-input>
                            <!-- <c-reusable-custom-dropdown-with-search-lwc field-required-off="true"  bold-label="false" auto-complete-off="nope" options={saleRapOptions} error-message="Enter a valid sales rep" value={saleRapValue} field-label="Sales Rep" placeholder="Enter Sales Rep" onchange={onSalesRepChange} >
                             </c-reusable-custom-dropdown-with-search-lwc>
                             <div style="color:rgb(234, 0, 30)">

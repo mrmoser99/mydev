@@ -1,3 +1,10 @@
+/**********************************************************************************************************
+   Class :  invocableEmailAttachmentTestClass
+   Description : Test Class for invocableEmailAttachment
+
+   Date/Sprint		PBI/Description
+   PI-23-Q1-1		857117 - Rework: Automation - Updated Case Type and Sub-Type
+**********************************************************************************************************/
 @isTest
 global class invocableEmailAttachmentTestClass {
     
@@ -11,8 +18,8 @@ global class invocableEmailAttachmentTestClass {
         insert rg;
        
        Case cs = new Case();
-       cs.Type = 'Contract Activation & Changes';
-       cs.Sub_Type__c = 'Contract Activation';
+       cs.Type = 'Processing - Other';
+       cs.Sub_Type__c = 'Other';
        cs.Department__c = 'Portfolio Services';
        cs.End_User_First_Name__c = 'Test First Name';
        cs.End_User_Last_Name__c = 'Test Last Name';

@@ -1,0 +1,28 @@
+<template>
+    <div class="slds-scrollable_y slds-box" style = "height:400px">
+        <lightning-datatable
+                key-field="Id"
+                data={tddata}
+                columns={columns}
+                show-row-number-column
+                hide-checkbox-column="true">
+        </lightning-datatable>
+       
+    </div>
+
+    <lightning-tabset>
+        <lightning-tab label="User"> 
+            <lightning-combobox  class = "slds-size_2-of-12"
+            name="Profile"
+            label="Profile"
+            value={strProfile}
+            placeholder="Select Profile"
+            options={options}
+            onchange={selectProfile} ></lightning-combobox>
+        </lightning-tab>
+        <lightning-tab label="Location">  </lightning-tab>
+        <lightning-tab label="Permission">  </lightning-tab>
+
+        
+    </lightning-tabset>
+</template>

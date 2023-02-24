@@ -1,6 +1,6 @@
 <!--
- - Author: Kritika Sharma & Surbhi Goyal: Traction on Demand
- - Date : 09/02/2022.
+ - Author: Adam Tolbert
+ - Date : 01/10/2023
  -->
 
 <!-- Credit Application Page Container -->
@@ -11,14 +11,17 @@
         
         <template if:true={loading}>
             <div class="masterSpinnerContainer">
-                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                <lightning-spinner alternative-text="Loading" size="large" variant="brand" ></lightning-spinner>
+                <div class="masterLoadingTextContainer">
+                    {loadingText}
+                </div>
             </div>
         </template>
     
         <template if:true={isModalOpen}>
             <!-- Modal/Popup Box LWC starts here -->
             <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
-                aria-describedby="modal-content-id-1" class="slds-modal slds-backdrop slds-backdrop_open slds-fade-in-open">
+                aria-describedby="modal-content-id-1" class="modal-container slds-modal__container cancelModal">
                 <div class="slds-modal__container">
                     <!-- Modal/Popup Box LWC body starts here -->
                     <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
@@ -74,7 +77,7 @@
                                         <!-- onhidecustominformation={customerInfoSectionHide} -->
                                         <!-- <c-customer-quick-search record-id={oppId} search-hide="Not"></c-customer-quick-search> -->
                                         <template if:true={refreshCustomerQuickSearch}> 
-                                            <c-customer-quick-search onupdatecomplete={handleCreditAppRedirect}
+                                            <c-customer-quick-search onupdatecomplete={handleUpdateEndUserCompleted}
                                                                         oncustomerinfoshow={handleCustomerInfoShow} 
                                                                         record-id={oppId}>
                                             </c-customer-quick-search>
@@ -131,7 +134,7 @@
                                                 <lightning-combobox name="financeType"
                                                     label="Finance Type" value={selectedFinanceTypeId}
                                                     options={financeTypePicklist}
-                                                    disabled={missingProgramSelection}
+                                                    disabled={disableFinanceTypePicklist}
                                                     onchange={handleFinanceTypeChange}
                                                     field-level-help="The header (see above) needs to be filled out to make a Lease Type selection."
                                                     required>
@@ -150,7 +153,7 @@
                                                 <lightning-combobox name="products" 
                                                     label="Financial Product" 
                                                     required=true value={selectedProductId}
-                                                    disabled={missingFinanceTypeSelection} 
+                                                    disabled={disableFinancialProductPicklist} 
                                                     options={financialProductsPicklist}
                                                     onchange={handleFinancialProductChange}>
                                                 </lightning-combobox>
@@ -170,7 +173,7 @@
                                         
                                                 <lightning-combobox name="paymentFrequency" disabled={missingProductSelection}
                                                     label="Payment Frequency" value={selectedPaymentFrequencyId}
-                                                    options={frequencyPicklist} onchange={handlePaymentFrequencyChange}
+                                                    options={paymentFrequencyPicklist} onchange={handlePaymentFrequencyChange}
                                                     field-level-help="" required>
                                                 </lightning-combobox>
                                             </lightning-layout-item>
@@ -210,7 +213,7 @@
                                                     onchange={handlePaymentAmountChange}
                                                     formatter="currency" 
                                                     step="0.01"
-                                                    field-level-help="Amount of the desired monthly payment amount. If provided, MOSAIC will use this payment amount and calculate a yield using this paymnent value, and the provided terms, even if the yield calculates to a negative number.">
+                                                    field-level-help={paymentAmountHelpText}>
                                                 </lightning-input>
 
                                             </lightning-layout-item>

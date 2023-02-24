@@ -8,7 +8,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 //apex
 import getModels from "@salesforce/apex/AssetUtils.getModels";
-import getAsset from "@salesforce/apex/AssetUtils.getAsset";
+// import getAsset from "@salesforce/apex/AssetUtils.getAsset";
 
 export default class AssetCreationBase extends LightningElement {
     @api asset = {};
@@ -41,31 +41,6 @@ export default class AssetCreationBase extends LightningElement {
 
     connectedCallbackLoopPrevention = true;
 
-    //Controls for disable
-    @api
-    get isMakeDisabled() {
-        return (!this.programId || this.programId === '') ? true : false;
-    }
-    @api
-    get isAssetTypeDisabled() {
-        return (!this.makeId || this.makeId === '') ? true : false;
-    }
-    @api
-    get isModelDisabled() {
-        return (this.makeId && this.assetTypeId) ? false : true;
-    }
-    @api
-    get isRestDisabled() {
-        return (this.modelId) ? false : true;
-    }
-    @api
-    get isBatteryIncludedDisabled() {
-        return this.batteryIncludedList.length < 2;
-    }
-    @api
-    get isSubsidyDisabled() {
-        return this.subsidyList.length === 0;
-    }
 
     showToast(title, message, variant) {
         const event = new ShowToastEvent({
@@ -132,13 +107,16 @@ export default class AssetCreationBase extends LightningElement {
             console.log('getModels returned an error');
             //console.log(error);
             let errorMessage = (error.body && error.body.message) ? error.body.message : 'API request Failre detected';
-            this.showToast('ERROR: Failed to request Models for Selected Make', errorMessage, 'error');
+            this.showToast('ERROR: getModels request failed', errorMessage, 'error');
+            this.resetMake();
         } else {
             console.log('getModels failed to return data or an error');
         }
     
     }
     
+
+
     processModelObjects(dataArray) {
         let allModelObjects = [];
         if(dataArray && dataArray.length && dataArray.length > 0) {
@@ -193,125 +171,127 @@ export default class AssetCreationBase extends LightningElement {
         }
     }
     
-    getOtherInformation() {
+    // getOtherInformation() {
 
-        getAsset({  programId: this.programId, assetId: this.modelId })
-            .then(result => {
-                console.log('getAsset returned some data')
-                this.loading=true;
+    //     getAsset({  programId: this.programId, assetId: this.modelId })
+    //         .then(result => {
+    //             console.log('getAsset returned some data')
+    //             this.loading=true;
 
-                //console.log(JSON.parse(result));
+    //             //console.log(JSON.parse(result));
 
-                this.data = result;
-                let elist = [];
-                let hlist = [];
-                let mlist = [];
-                let blist = [];
+    //             this.data = result;
+    //             let elist = [];
+    //             let hlist = [];
+    //             let mlist = [];
+    //             let blist = [];
 
-                if (this.data) {
+    //             if (this.data) {
 
-                    let obj = JSON.parse(this.data);
-
-
-                    var ob =  obj["data"]["finance"]["residualValue"]["adjustments"]["industrialBattery"];
-                    if (ob != null){
-                        for (let i = 0; i < ob.length; i++) {
-
-                            let lab = obj["data"]["finance"]["residualValue"]["adjustments"]["industrialBattery"][i];
-                            let val = obj["data"]["finance"]["residualValue"]["adjustments"]["industrialBattery"][i];
-
-                            blist.push({label: lab, value: val});
-                        }
-                    }
-
-                    var om =  obj["data"]["finance"]["residualValue"]["adjustments"]["mastType"];
-                    if (om != null){
-                        for (let i = 0; i < om.length; i++) {
-
-                            let lab = obj["data"]["finance"]["residualValue"]["adjustments"]["mastType"][i];
-                            let val =obj["data"]["finance"]["residualValue"]["adjustments"]["mastType"][i];
+    //                 let obj = JSON.parse(this.data);
 
 
-                            mlist.push({label: lab, value: val});
-                        }
-                    }
+    //                 let ob =  obj["data"]["finance"]["residualValue"]["adjustments"]["industrialBattery"];
+    //                 if (ob != null){
+    //                     for (let i = 0; i < ob.length; i++) {
 
-                    var oe = obj["data"]["finance"]["residualValue"]["adjustments"]["operatingEnvironment"];
+    //                         let lab = obj["data"]["finance"]["residualValue"]["adjustments"]["industrialBattery"][i];
+    //                         let val = obj["data"]["finance"]["residualValue"]["adjustments"]["industrialBattery"][i];
 
+    //                         blist.push({label: lab, value: val});
+    //                     }
+    //                 }
 
-                    if (oe != null){
-                        for (let i = 0; i < oe.length; i++) {
+    //                 let om =  obj["data"]["finance"]["residualValue"]["adjustments"]["mastType"];
+    //                 if (om != null){
+    //                     for (let i = 0; i < om.length; i++) {
 
-                            let lab = obj["data"]["finance"]["residualValue"]["adjustments"]["operatingEnvironment"][i];
-                            let val= obj["data"]["finance"]["residualValue"]["adjustments"]["operatingEnvironment"][i];
-
-
-                            elist.push({label: lab, value: val});
-                        }
-                    }
-
-                    var oh = obj["data"]["finance"]["residualValue"]["adjustments"]["operatingHoursPerYear"];
-
-                    if (oh != null){
-                        for (let i = 0; i < oh.length; i++) {
-
-                            let lab = obj["data"]["finance"]["residualValue"]["adjustments"]["operatingHoursPerYear"][i];
-                            let val= obj["data"]["finance"]["residualValue"]["adjustments"]["operatingHoursPerYear"][i];
+    //                         let lab = obj["data"]["finance"]["residualValue"]["adjustments"]["mastType"][i];
+    //                         let val =obj["data"]["finance"]["residualValue"]["adjustments"]["mastType"][i];
 
 
-                            hlist.push({label: lab, value: val});
-                        }
-                    }
+    //                         mlist.push({label: lab, value: val});
+    //                     }
+    //                 }
 
-                    let tempAsset = JSON.parse(JSON.stringify(this.asset));
-                    tempAsset.type = obj['data']['catalog']['identifiers']['structure']['type'];
-                    tempAsset.msrp = String(obj['data']['catalog']['listPrice']);
-                    if (blist.length !== 0) {
-                        if (blist.length === 1) {
-                            tempAsset.batteryIncluded = blist[0].value;
-                        } else if (blist.length === 2) {
-                            tempAsset.batteryIncluded = 'Yes';
-                        }
-                    }
-                    const assetEvent = new CustomEvent("updateasset", {
-                        detail: tempAsset
-                    })
+    //                 let oe = obj["data"]["finance"]["residualValue"]["adjustments"]["operatingEnvironment"];
 
-                    this.dispatchEvent(assetEvent);
 
-                }
-                this.assetOperatingList = elist;
-                this.annualHoursList = hlist;
-                //console.log(this.annualHoursList);
-                this.mastList = mlist;
-                this.batteryIncludedList = blist;
-                loadsToGo--;
-                if (loadsToGo === 0) {
-                    this.loading = false;
-                }
+    //                 if (oe != null){
+    //                     for (let i = 0; i < oe.length; i++) {
 
-            }).catch(error => {
-            console.log('getOtherInformation threw an error');
-            let errorMessage = (error.body && error.body.message) ? error.body.message : 'API request Failre detected';
+    //                         let lab = obj["data"]["finance"]["residualValue"]["adjustments"]["operatingEnvironment"][i];
+    //                         let val= obj["data"]["finance"]["residualValue"]["adjustments"]["operatingEnvironment"][i];
 
-            this.showToast('Error getting other info for an Asset', errorMessage, 'error');
 
-            loadsToGo--;
-            if (loadsToGo === 0) {
-                this.loading = false;
-            }
-        });
+    //                         elist.push({label: lab, value: val});
+    //                     }
+    //                 }
 
-    }
+    //                 let oh = obj["data"]["finance"]["residualValue"]["adjustments"]["operatingHoursPerYear"];
+
+    //                 if (oh != null){
+    //                     for (let i = 0; i < oh.length; i++) {
+
+    //                         let lab = obj["data"]["finance"]["residualValue"]["adjustments"]["operatingHoursPerYear"][i];
+    //                         let val= obj["data"]["finance"]["residualValue"]["adjustments"]["operatingHoursPerYear"][i];
+
+
+    //                         hlist.push({label: lab, value: val});
+    //                     }
+    //                 }
+
+    //                 let tempAsset = JSON.parse(JSON.stringify(this.asset));
+    //                 tempAsset.type = obj['data']['catalog']['identifiers']['structure']['type'];
+    //                 tempAsset.msrp = String(obj['data']['catalog']['listPrice']);
+    //                 if (blist.length !== 0) {
+    //                     if (blist.length === 1) {
+    //                         tempAsset.batteryIncluded = blist[0].value;
+    //                     } else if (blist.length === 2) {
+    //                         tempAsset.batteryIncluded = 'Yes';
+    //                     }
+    //                 }
+    //                 const assetEvent = new CustomEvent("updateasset", {
+    //                     detail: tempAsset
+    //                 })
+
+    //                 this.dispatchEvent(assetEvent);
+
+    //             }
+    //             this.assetOperatingList = elist;
+    //             this.annualHoursList = hlist;
+    //             //console.log(this.annualHoursList);
+    //             this.mastList = mlist;
+    //             this.batteryIncludedList = blist;
+    //             loadsToGo--;
+    //             if (loadsToGo === 0) {
+    //                 this.loading = false;
+    //             }
+
+    //         }).catch(error => {
+    //         console.log('getOtherInformation threw an error');
+    //         let errorMessage = (error.body && error.body.message) ? error.body.message : 'API request Failre detected';
+
+    //         this.showToast('Error getting other info for an Asset', errorMessage, 'error');
+
+    //         loadsToGo--;
+    //         if (loadsToGo === 0) {
+    //             this.loading = false;
+    //         }
+    //     });
+
+    // }
 
 
     //HANDLERS
     handleAddAsset(event) {
+        console.log(event);
         const assetEvent = new CustomEvent("createasset");
         this.dispatchEvent(assetEvent);
     }
 
     handleDeleteAsset(event) {
+        console.log(event);
         const assetEvent = new CustomEvent("deleteasset", {
             detail: this.asset.assetNo
         });
@@ -335,7 +315,7 @@ export default class AssetCreationBase extends LightningElement {
         if (trimmedPrice.length === 0) {
             trimmedPrice = 0;
         } else if (trimmedPrice.length === 1) {
-            trimmedPrice = parseInt(trimmedPrice[0]);
+            trimmedPrice = parseInt(trimmedPrice[0], 10);
         } else {
             if (trimmedPrice[1].length > 1) {
                 trimmedPrice = trimmedPrice[0] + '.' + trimmedPrice[1].substring(0, 2);
@@ -580,6 +560,11 @@ export default class AssetCreationBase extends LightningElement {
 
 
 
+    resetMake() {
+        this.selectedMakeValue = null;
+        this.assetTypePicklist = [];
+        this.loadingAssetTypes = false;
+    }
 
     triggerModelRequestIfNeeded() {
         
@@ -639,6 +624,26 @@ export default class AssetCreationBase extends LightningElement {
 
     get modelId() {
         return (this.asset && this.asset.model && this.asset.model.value) ? this.asset.model.value : null;
+    }
+
+    //Controls for disable
+    get isMakeDisabled() {
+        return (!this.programId || this.programId === '') ? true : false;
+    }
+    get isAssetTypeDisabled() {
+        return (!this.makeId || this.makeId === '' || (this.assetTypePicklist && this.assetTypePicklist.length < 2)) ? true : false;
+    }
+    get isModelDisabled() {
+        return (!this.assetTypeId || this.assetTypeId === '' || (this.modelPicklist && this.modelPicklist.length < 2)) ? true : false;
+    }
+    get isRestDisabled() {
+        return (this.modelId) ? false : true;
+    }
+    get isBatteryIncludedDisabled() {
+        return this.batteryIncludedList.length < 2;
+    }
+    get isSubsidyDisabled() {
+        return this.subsidyList.length === 0;
     }
 
 }

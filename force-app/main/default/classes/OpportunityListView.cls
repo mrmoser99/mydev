@@ -182,7 +182,7 @@ public with sharing class OpportunityListView {
                         condition += 'AND ';
                     }
                 }     
-            }
+            }  
         }
         // End: Lucas Lucena - PBI 942673
 

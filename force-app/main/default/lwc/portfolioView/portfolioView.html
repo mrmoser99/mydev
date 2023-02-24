@@ -17,9 +17,11 @@
 
                 <div class="slds-grid" slot="actions">
                     <div class="slds-col">
+                        <template if:true={DP03}>
                         <lightning-button variant="brand" title="Download Portfolio" label="Download Portfolio"
                             sandbox="allow-downloads" onclick={handleDownload}>
                         </lightning-button>
+                        </template>
                     </div>
                 </div>
 

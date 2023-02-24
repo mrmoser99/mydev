@@ -2,6 +2,7 @@ import { LightningElement, track } from 'lwc';
 import deleteOpp from '@salesforce/apex/QuoteListView.deleteOpp';
 import {ShowToastEvent} from "lightning/platformShowToastEvent";
 import getTop5Quotes from '@salesforce/apex/QuoteListView.getTop5Quotes'; 
+import refreshDashboard from '@salesforce/apex/QuoteListView.refreshDashboard';
 import {NavigationMixin} from 'lightning/navigation';
 
 //Declare constants
@@ -101,6 +102,8 @@ export default class HomeQuoteListView extends NavigationMixin(LightningElement)
 
     connectedCallback() {
 
+        refreshDashboard();
+        
         getTop5Quotes({
 
         })

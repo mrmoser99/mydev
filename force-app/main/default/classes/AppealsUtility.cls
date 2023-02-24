@@ -28,7 +28,7 @@ public with sharing class AppealsUtility{
                 ErrorMsg = 'AppealsUtility getApplication: ' + response.getStatus()  + '  ' + response.getStatusCode() + response.getBody();
                 error=true;
                 throw new AuraHandledException(ErrorMsg);
-            }      
+              }      
         }catch (Exception e) {
             if (ErrorMsg == null) ErrorMsg = 'Exception in SearchContractDocs:' + string.valueOf(e) + '-' + e.getMessage() + '-' + e.getStackTraceString() + '-' + e.getLineNumber();
             system.debug('ERROR AppealsUtility getApplication'+ErrorMsg);

@@ -4,7 +4,8 @@
       "id": "1.NA.PI.0000105570-0001.1604.1360.2846",
       "name": "10 Pay 90",
       "purchaseOptions": [
-        "dollar-out"
+        "dollar-out",
+        "fair-market-value"
       ],
       "url": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/financialproducts/1.NA.PI.0000105570-0001.1604.1360.2846?feature=Credit-Application-Documents"
     },
@@ -20,7 +21,7 @@
       "id": "1.NA.PI.0000105570-0001.1604.1360.3342",
       "name": "180 Day Deferred-Straumann",
       "purchaseOptions": [
-        "dollar-out"
+        "fair-market-value"
       ],
       "url": "https://msc-apm-gapi-crp1.azure-api.net/programs/1.NA.PI.0000105570-0001.1604/financialproducts/1.NA.PI.0000105570-0001.1604.1360.3342?feature=Credit-Application-Documents"
     }

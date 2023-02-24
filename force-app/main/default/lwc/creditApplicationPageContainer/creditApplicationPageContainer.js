@@ -135,6 +135,9 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
 
     // A counter to load contact roles
     contactRolesReloaded = 0;
+    
+    //A Counter to load get Users Wired
+    userSitesReloaded = 0;
 
     // Beneficial owner type
     individualCheck;
@@ -377,19 +380,18 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     salesRepList = [];
     osidForSalesReps = [];
 
-    @wire(getUserSite, {userId: null})
+    @wire(getUserSite, {userId: null })
     wiredgetUserSite({error, data}) {
         this.loading = true;
         console.log('hasBeneficialOwner::'+ this.hasBeneficialOwner);
+        
         if(this.hasBeneficialOwner == 0) {
             this.beneficialOwner = [];
         }
         this.beneficialOwnerType = null;
         //this.advance = '0';
         //this.frequency = 'monthly';
-        console.log('in getUserSite');
-        
-
+        console.log('wiredgetUserSite data: '+data);
         if (data) {
             let parsedData = JSON.parse(data);
             console.log(JSON.parse(JSON.stringify(data)));
@@ -401,6 +403,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 osidObj.osidArray.push(parsedData.returnSiteList[i].originatingSiteId);
             }
             this.siteList = JSON.parse(JSON.stringify(this.siteList));
+            
             if ((this.salesRepList.length === 0) && !this.isLoadedQuote) {
                 getSalesRepsFromReturnedOSID({osidJSON:  JSON.stringify(osidObj)})
                     .then(result => {
@@ -417,7 +420,6 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                         });
 
                         sList.push({label: 'None', value: ''});
-
                         this.salesRepList = sList;
                         //this.salesRepListBackup = sList;
                         console.log('getSalesRepsOSID Done');
@@ -425,9 +427,11 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                         this.osidForSalesReps = osidList;
                         this.loading = false;
                         this.hasLocationSelectionSalesRep = false;
-                        event.target.value = this.salesRepId;
-                        this.handleChangeSalesRep(event);
 
+                        if (this.osidForSalesReps.length !== 0) {
+                            this.salesRepPopulated();                           
+                        }
+                        
                     }).catch(error => {
                     this.loading = false;
                     this.showToast('Something went wrong', error.body.message, 'error');
@@ -441,9 +445,10 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         }
         setTimeout(() => {
             this.loading = false;
-
+            
             console.log('wiredGetUserSite done');
         }, 1500);
+    
     }
 
     @wire(getContactField, {opportunityId: '$oppId', loadCount: '$contactRolesReloaded'})
@@ -477,7 +482,8 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         }else if (error) {
             this.beneficialOwner = [];
         }
-        //setTimeout(() => {location.reload()}, 1000);      
+        //setTimeout(() => {location.reload()}, 1000); 
+          
     }
 
     @wire(getQuoteLineField, {opportunityId: '$oppId'})
@@ -514,11 +520,13 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                     quoteId: data[i].Quote__c // Used to map to submitCreditApp()
                 });
             }
+            
 
         }
         else if (error) {
                     
         }
+        
     }
     @wire(getQuoteLineForAccessoryField, {opportunityId: '$oppId'})
     wiredGetQuoteLineForAccessory({ error, data }){
@@ -568,7 +576,6 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
 
     @wire(getOpportunityField, {opportunityId: '$oppId', loadCount: '$opportunityDataReloaded'})
     wiredgetQuoteRecord({ error, data }) {
-
         if (data) {
             console.log('in get wired ');
             // Page Status
@@ -711,7 +718,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             } else{
                 this.salesRepValue = '';
             }
-            console.log('Sales Rep: ' + this.salesRepValue);
+            console.log('Sales Rep value input: ' + this.salesRepValue);
 
             if(data.Opportunity_Number__c != null){
                     this.quoteNumberValue = data.Opportunity_Number__c;  
@@ -791,11 +798,16 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                         //this.loading = false;
                     });
             }
+            
+            if (this.osidForSalesReps.length !== 0) {
+                this.salesRepPopulated();
+            }
         }
     }
 
-    connectedCallback(){      
 
+    connectedCallback(){      
+        console.log('Inicio connectedCallback: ' );
         // All three of the following arrays have to maintain their exact order and count as they map to the same index in each array.
         var fieldOptions=['Rate_Type__c','Finance_Term_Month__c','Lease_Type__c','Payment_Frequency__c','Advance_Payments__c',
             'Make__c','Asset_Type_ITA_Class__c','Model__c','Mast_Type__c','Operating_Environment__c','Battery_Included__c','Number_of_Units__c','Subsidy__c',
@@ -865,7 +877,8 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             });
            
         }
-        refreshApex(this.wiredGetContact);                
+        console.log('Fim  connectedCallback: ' );   
+                       
     }
 
     handlePersonalGuaranteeFirstNameChange(event) {
@@ -889,7 +902,9 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
 
     location = '';
 
-    handleChangeSalesRep(event) {        
+    
+    handleChangeSalesRep(event) { 
+        console.log('entrou:handleChangeSalesRep ');       
         this.salesRep = '';
         //this.salesRepList = this.salesRepListBackup;
         event.target.inputValue = '';
@@ -936,7 +951,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         this.customerStory.location = event.target.value;
 
         this.loading = true;
-
+        console.log('salesRepValuepp: '+this.salesRepValue);    
         this.refreshSalesRepDropdown = false;
 
         getSalesReps({ originatingSiteId: event.target.value })
@@ -1281,6 +1296,23 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         }
     }
     //End: BUG 855960 - Fernando Nereu de Souza - Nothing should appear in the SSN box if no data was captured
+
+    //Start: BUG 946516 - Vinicio Ramos Silva - After user saves Credit check and comes back to the draft from Application List view, Sales rep Name is not seen retained in application
+    salesRepPopulated(){
+        for (let i = 0; i < this.osidForSalesReps.length; i++) {
+            if (this.salesRepId === this.osidForSalesReps[i].value) {
+                this.location = this.osidForSalesReps[i].osid;
+                this.customerStory.location = this.location;
+                this.customerStory.salesRepId = this.salesRepId;
+                let dummyEventSecond = {value: this.osidForSalesReps[i].osid, name: 'location'};
+                let dummyEvent = {target: dummyEventSecond};
+                this.handleChangeLocation(dummyEvent);
+            }
+        }
+    }
+    //End: BUG 946516 - Vinicio Ramos Silva - After user saves Credit check and comes back to the draft from Application List view, Sales rep Name is not seen retained in application
+
+
 
     // Save content show toast message and data store in js variable
     handleOnSave(){

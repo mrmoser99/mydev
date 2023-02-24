@@ -1,17 +1,109 @@
 /* Created by ilu on 2021-10-04.
-New logic for experience cloud PBI #628135 -- Sync Partner account to external account hierarchy*/
+New logic for experience cloud PBI #628135 -- Sync Partner account to external account hierarchy
+   Class :  UserTriggerHelper
+   Description : Helper Class for User
+   Date/Sprint		PBI/Description
+   PI-23-Q1-03	834525 - Partner Users: Automated Report Folder Sharing(Dibyendu)*/
 
 public with sharing class UserTriggerHelper {
+public static String DOD_PUBLIC_GROUP = 'DLL_on_Demand_Users';//Added as a part of change for PBI 834525
+public static String DOD_Partner_Admin = 'Partner Admin';//Added as a part of change for PBI 834525
+public static String DOD_Sales_Rep1 = 'DOD Partner Sales Rep 1';//Added as a part of change for PBI 834525
 
     public static void helperAfterInsert(List<User> newUsers){
-        List<Id> newUserIds = new List<Id>();
+        /*List<Id> newUserIds = new List<Id>();
         for(User u: newUsers){
             newUserIds.add(u.Id);
         }
-        insertExternalAccountHierarchy(newUserIds);
+        insertExternalAccountHierarchy(newUsers);*/
+        addToPublicGroup(newUsers);
+        
     }
-
-    @future
+    
+    @TestVisible
+   private static void addToPublicGroup(List<User> newListUsers){
+       List<GroupMember> addMemeberToGroup = new List<GroupMember>();
+       List<Group> pgList = [select Id,DeveloperName from Group where DeveloperName =: DOD_PUBLIC_GROUP];
+       List<Profile> pList = [select Id,Name from Profile where name =:DOD_Partner_Admin   or name =:DOD_Sales_Rep1];
+       Map<String,Profile> mapPIds = new Map<String,Profile>();
+       for(Profile assingeP:pList){
+           mapPIds.put(assingeP.id,assingeP);
+       }
+       for (User newUser : newListUsers){
+           if(mapPIds.get(newUser.ProfileId)!=null){
+               GroupMember addMemeber = new GroupMember();
+               if(pgList.size()>0){
+                   addMemeber.GroupId = pgList[0].id;
+                   addMemeber.UserOrGroupId = newUser.id;
+                   addMemeberToGroup.add(addMemeber);
+               }
+              // addMemeber.UserOrGroupId
+           }
+       }
+       if(addMemeberToGroup.size()>0){
+           insert addMemeberToGroup;
+       }
+       
+   }
+    
+    
+    public static void helpAfterUpdate(Map<Id, User> oldUserMap, Map<Id, User> newUserMap){
+        /*List<Id> newUserIds = new List<Id>();
+        for(User u: newUsers){
+            newUserIds.add(u.Id);
+        }
+        insertExternalAccountHierarchy(newUsers);*/
+        addToPublicGroupAfterUpdate(oldUserMap, newUserMap);
+        
+    }
+    
+   @TestVisible
+   private static void addToPublicGroupAfterUpdate(Map<Id, User> oldUserMap, Map<Id, User> newUserMap){
+       List<GroupMember> addMemeberToGroup = new List<GroupMember>();
+       List<GroupMember> removeMemeberToGroup = new List<GroupMember>();
+       List<Group> pgList = [select Id,DeveloperName from Group where DeveloperName =: DOD_PUBLIC_GROUP];
+       List<Profile> pList = [select Id,Name from Profile where name =:DOD_Partner_Admin   or name =:DOD_Sales_Rep1];
+       Map<String,Profile> mapPIds = new Map<String,Profile>();
+       for(Profile assingeP:pList){
+           mapPIds.put(assingeP.id,assingeP);
+       }
+       List<String> updatedIds = new List<String>();
+       system.debug('DDT not test1');
+       for (User newUser : newUserMap.values()) {
+           updatedIds.add(newUser.id);
+           system.debug('DDT not added'+newUser);
+       }
+       List<GroupMember> assignedPg = [select id,UserOrGroupId, Group.DeveloperName from GroupMember where UserOrGroupId IN:updatedIds and Group.DeveloperName =: DOD_PUBLIC_GROUP];
+       Map<String,GroupMember> mapPGIds = new Map<String,GroupMember>();
+       for(GroupMember assingedM:assignedPg){
+           mapPGIds.put(assingedM.UserOrGroupId,assingedM);
+       }
+       
+       for (User newUser : newUserMap.values()) {
+           system.debug('DDT User'+mapPGIds.get(newUser.id)+mapPIds.get(newUser.ProfileId));
+           if(mapPIds.get(newUser.ProfileId)!=null && mapPGIds.get(newUser.id)==null){
+               system.debug('DDT userAssigned added'+mapPGIds.get(newUser.id));
+               GroupMember addMemeber = new GroupMember();
+               addMemeber.GroupId = pgList[0].id;
+               addMemeber.UserOrGroupId = newUser.id;
+               addMemeberToGroup.add(addMemeber);
+           }
+           else if(mapPIds.get(newUser.ProfileId)==null && mapPGIds.get(newUser.id)!=null)
+           {
+               system.debug('DDT userAssigned removed'+mapPGIds.get(newUser.id).id);
+               GroupMember deleteMemeber = new GroupMember();
+               deleteMemeber.id = mapPGIds.get(newUser.id).id;
+               removeMemeberToGroup.add(deleteMemeber);
+           }
+       }
+        if(addMemeberToGroup.size()>0){
+               insert addMemeberToGroup;
+           }
+        if(removeMemeberToGroup.size()>0){
+               delete removeMemeberToGroup;
+           }
+   }
+    /*@future
     private static void insertExternalAccountHierarchy(List<Id> newUserIds){
         
         List<User> newUsers = [SELECT Id,ProfileId,ContactId from User WHERE Id IN:newUserIds];
@@ -79,5 +171,5 @@ public with sharing class UserTriggerHelper {
                 System.debug('The following exception has occurred: ' + e.getMessage());
             }
         }
-	}
+	}*/
 }
