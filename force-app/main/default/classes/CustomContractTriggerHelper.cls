@@ -406,7 +406,8 @@ public class CustomContractTriggerHelper {
         }
         
         if(accountIdset != null){
-            List<User> uslist = [Select Id, ContactId,Contact.AccountId,Name from User where ContactId in: ([Select Id from Contact  Where AccountId in: accountIdset]) AND Profile.Name = :partnerAdmin ];
+            List<User> uslist = [Select Id, ContactId,Contact.AccountId,Name from User where ContactId in:
+             ([Select Id from Contact  Where AccountId in: accountIdset]) AND Profile.Name = :partnerAdmin ];
             
             if(!uslist.isEmpty()){
                 for(Contract__c cont: newContracts){

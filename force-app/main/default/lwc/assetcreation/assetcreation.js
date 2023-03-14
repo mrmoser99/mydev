@@ -5,6 +5,7 @@
  * 
  * 02/03/2023 MRM -Changed the error message for subsidy
  * 02/24/2023 MRM -Changed to use search select model component
+ * 02/24/2023 MRM - PBI 957090 - as a portal user i want to type a model id instead of selecting from dropdown
  */
 
 import {LightningElement, wire, api, track} from 'lwc';
@@ -42,16 +43,17 @@ export default class assetcreation extends LightningElement {
     annualHours;
     batteryIncluded;
     numberOfUnits;
-    unitSalesPrice;i
+    unitSalesPrice;
     subsidy;
     subsidyName;
     make = {};
     assetType = {};
     model = {};
-    defaultModelId;
+     
 
     @api quoteObject;
 
+    skipModelChange = false;
     subsidyTry = 0;
 
     //Lists
@@ -159,12 +161,7 @@ export default class assetcreation extends LightningElement {
             return;
 
         }
-
-
-
         this.makePicklist = mlist;
-
-
     }
 
     /*getMakesNotWired(programId) {
@@ -242,7 +239,7 @@ export default class assetcreation extends LightningElement {
                 let res = JSON.parse(results);
 
                 console.log('getModels');
-                console.log(res);
+                console.log(JSON.stringify(res));
 
                 let mlist = [];
 
@@ -251,13 +248,21 @@ export default class assetcreation extends LightningElement {
                 });
 
                 this.modelPicklist = mlist;
-
+                
+                console.log('modelpicklist is:' + this.modelPicklist);
                 //MRM added to set the selection once the modelPicklist is available/accessorycreation
+                this.skipModelChange = true;
 
                 this.template.querySelector('c-reusable-custom-dropdown-with-search').setSelected(this.modelPicklist);
+                this.template.querySelector('c-reusable-custom-dropdown-with-search').refresh(this.modelPicklist);
+                
 
+                this.skipModelChange = false;
+             
                 if(typeof this.asset.modelId !== 'undefined'){
+                    console.log('returning');
                     this.getOtherInformation(this.asset.modelId);
+                    this.loading = false;
                     return;
                 }
                 
@@ -428,15 +433,7 @@ export default class assetcreation extends LightningElement {
 
     callSubsidies(event) {
 
-        console.log('call sub' + 'unit price: ' + this.asset.unitSalesPrice + ' units: ' + this.asset.numberOfUnits);
         
-
-        //if (event.target.value.length !== 0) {
-            //console.log('squirell');
-            //this.template.querySelector(`[data-id="${event.target.name}"]`).value = '$' + this.formatCurrency(event.target.value);
-            //console.log('squirell end');
-        //}
-
         if ((typeof this.quoteObject.programId === 'undefined') ||
             (typeof this.quoteObject.financeType === 'undefined') ||
             (typeof this.quoteObject.financeTerm === 'undefined') ||
@@ -484,7 +481,7 @@ export default class assetcreation extends LightningElement {
         }
 
         this.loading = true;
-        console.log('go tet em');
+     
         console.log(this.quoteObject.programId);
         console.log(this.quoteObject.rateTypeId);
         console.log(this.quoteObject.financeTerm);
@@ -499,14 +496,14 @@ export default class assetcreation extends LightningElement {
         } else if (financeTypeTranslated === 'BO') {
             financeTypeTranslated = 'dollar-out';
         }
-        console.log('abc' + this.quoteObject.assetTypeQuote);
+        console.log('Asset new/used:' + this.quoteObject.assetTypeQuote);
         
         getSubsidies({ programId: this.quoteObject.programId, productId: this.quoteObject.rateTypeId,
             numberOfMonths: this.quoteObject.financeTerm, make : this.makePicklist.find(opt => opt.value === this.asset.makeId).label,
             paymentFrequency: this.quoteObject.paymentFrequency.toLowerCase(), financeAmount : this.asset.numberOfUnits * this.asset.unitSalesPrice,
             assetCondition: this.quoteObject.assetTypeQuote, paymentTiming : 'in-arrears', financeType : financeTypeTranslated}) 
             .then(result => {
-                console.log('Apex has finished with getSubsidies');
+                console.log('Finished with getSubsidies');
                 //console.log(result);
                 let data = JSON.parse(result);
                 console.log(JSON.parse(JSON.stringify(data)));
@@ -647,7 +644,7 @@ export default class assetcreation extends LightningElement {
 
 
     handleDependentChange(event) {
-        console.log('in handleDependentchagne');
+         
         this.loading = true;
         //this.asset.assetHeading = 'Asset Details - ' + event.target.options.find(opt => opt.value === event.detail.value).label;
         //console.log('Made it past new changes');
@@ -665,6 +662,7 @@ export default class assetcreation extends LightningElement {
         this.assetType = {};
         tempAsset.model = undefined;
         tempAsset.modelId = undefined;
+         
         this.model = {};
         tempAsset.mastType = undefined;
         tempAsset.assetOperating = undefined;
@@ -678,12 +676,11 @@ export default class assetcreation extends LightningElement {
         this.subsidyList = [];
         this.loading = true;
         this.getAssetTypes(this.programId, this.make.value);
-         
-
+     
         if(typeof tempAsset.assetType !== 'undefined') {
-            
             this.getModels();
         }
+         
         console.log('here man');
         const assetEvent = new CustomEvent("updateasset", {
             detail: tempAsset
@@ -694,6 +691,8 @@ export default class assetcreation extends LightningElement {
     }
 
     handleDependentModelChange(event) {
+
+     
         this.loading = true;
         this[event.target.name].value = event.target.value;
         this[event.target.name].label = event.target.options.find(opt => opt.value === event.detail.value).label;
@@ -706,6 +705,9 @@ export default class assetcreation extends LightningElement {
         if (typeof tempAsset.model !== 'undefined') {
             tempAsset.assetHeading = tempAsset.assetHeading + ' ' + tempAsset.model;
         }
+
+        this.template.querySelector('c-reusable-custom-dropdown-with-search').clearSelectedObject();
+
         tempAsset.model = undefined;
         tempAsset.modelId = undefined;
         this.model = {};
@@ -721,6 +723,8 @@ export default class assetcreation extends LightningElement {
         this.subsidyList = [];
         this.loading = true;
         this.getModels();
+
+
         const assetEvent = new CustomEvent("updateasset", {
             detail: tempAsset
         })
@@ -730,8 +734,11 @@ export default class assetcreation extends LightningElement {
     }
 
     handleModelChange(event){
-        console.log('model change' + JSON.stringify(event));
-        console.log('asset model is' + this.asset.modelId);
+         
+        if (this.skipModelChange){
+            return;
+        }
+         
         this.loading = true;
 
         this[event.target.name].value = event.detail.value;
@@ -740,7 +747,7 @@ export default class assetcreation extends LightningElement {
         tempAsset[event.target.name] = event.detail.label; 
         tempAsset[event.target.name + 'Id'] = event.detail.value;
         
-        console.log('tempasset:' + tempAsset);
+        console.log('tempasset:' + JSON.stringify(tempAsset));
 
         let selectedModel = event.detail.label;
         if (selectedModel) {
@@ -757,7 +764,7 @@ export default class assetcreation extends LightningElement {
         tempAsset.subsidyName = undefined;
         this.subsidyList = [];
         this.loading = true;
-        console.log('got here');
+     
         this.getOtherInformation(event.detail.value);
         const assetEvent = new CustomEvent("updateasset", {
             detail: tempAsset
@@ -789,7 +796,7 @@ export default class assetcreation extends LightningElement {
         tempAsset.subsidyName = undefined;
         this.subsidyList = [];
         this.loading = true;
-        console.log('got here');
+         
         this.getOtherInformation(event.target.value);
         const assetEvent = new CustomEvent("updateasset", {
             detail: tempAsset

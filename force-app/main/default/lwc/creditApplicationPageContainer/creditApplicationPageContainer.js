@@ -2,7 +2,7 @@
  * @description       : LWC component to Credit Application Page container. 
  * @author            : Kritika Sharma : Traction on Demand
  * @group             : Kritika Sharma & Surbhi Goyal :  Traction on Demand
- * @last modified on  : 02-21-2023
+ * @last modified on  : 03-10-2023
  * @last modified by  : Mark Moser
  * @Changes Log        :
  * Date       - BUG/PBI    - Author                   - Description
@@ -14,7 +14,9 @@
  * 12/15/2022 - PBI 886371 - Fernando Nereu de Souza  - when I select a location I want to be presented with a list of sales rep for that specific location
  * 12/11/2022 - PBI 768016 - Fernando Nereu de Souza  - Delete BO from credit Application
  * 02/02/2023 - MRM  Added logic for appeals
+ * 02/10/2023 - BUG 946516 - Vinicio Ramos Silva      - After user saves Credit check and comes back to the draft from Application List view, Sales rep Name is not seen retained in application
  * 02/17/2023 - Geetha commented edit-Appeal as per Mark's suggestion
+ * 03/03/2023 - PBI 866664 - Fernando Nereu de Souza  - Add PG object to Credit Check page - consistency with credit application page
  * 
 **/
 
@@ -77,6 +79,7 @@ import { loadScript } from 'lightning/platformResourceLoader';
 import cometd from '@salesforce/resourceUrl/cometd';
 import getSessionId from '@salesforce/apex/GenericUtilityClass.getSessionId';
 import getUserInfoById from '@salesforce/apex/GenericUtilityClass.getUserInfoById';
+import IsPortalEnabled from "@salesforce/apex/PricingUtils.isPortalEnabled";
 
 export default class CreditApplicationPageContainer extends NavigationMixin(LightningElement){
     label = {
@@ -129,6 +132,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     errorResultSet;
     isApproved;
     ccOppId;
+    isPortalUser = false;
 
     // A counter to load the opportunity data
     opportunityDataReloaded = 0;
@@ -437,10 +441,9 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                         this.loading = false;
                         this.hasLocationSelectionSalesRep = false;
 
-                        //Vinicio
-                       /* if (this.osidForSalesReps.length !== 0) {
+                        if (this.osidForSalesReps.length !== 0) {
                             this.salesRepPopulated();                           
-                        }*/
+                        }
                         
                     }).catch(error => {
                     this.loading = false;
@@ -775,6 +778,35 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 if (data.Account) {
                     this.location = data.Account.Originating_Site_ID__c;
                 }
+
+                //866664 - After Save/submit Credit Application show the PG information
+                getRelatedPartyForOpp({oppId: this.oppId})
+                .then(result => {
+                    this.activeSections = JSON.parse(JSON.stringify(this.activeSections));
+                    let resultParsed = JSON.parse(result);
+                    this.personalGuar.firstName = resultParsed.First_Name__c;
+                    this.personalGuar.lastName = resultParsed.Last_Name__c;
+                    this.personalGuar.middleInitial = resultParsed.Middle_Name__c;
+                    let ssnFormated = '';
+                    let ssnString = resultParsed.SSN_Encrypted__c.toString();
+                    for (let i = 0; i < 9; i++) {
+                        if ((i === 3) || (i === 5)) {
+                            ssnFormated = ssnFormated + '-';
+                        }
+                        ssnFormated = ssnFormated + ssnString[i].toString();
+                    }
+                    this.personalGuar.SocialSecurityNumber = ssnFormated;
+                    this.personalGuar.SocialSecurityNumberForMasking = '***-**-****';
+                    this.personalGuar = JSON.parse(JSON.stringify(this.personalGuar));
+                    console.log('done PG loading');
+                    //this.loading = false;
+                }).catch(error => {
+                    this.activeSections = JSON.parse(JSON.stringify(this.activeSections));
+                    console.log('No personal guarentee found');
+                    console.log(JSON.parse(JSON.stringify(error)));
+                    //this.loading = false;
+                });
+
                 
                 refreshApex(this.wiredGetContact);
                 
@@ -809,16 +841,19 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                     });
             }
             
-            //Vinicio
-           /* if (this.osidForSalesReps.length !== 0) {
+            if (this.osidForSalesReps.length !== 0) {
                 this.salesRepPopulated();
-            }*/
+            }
         }
     }
 
 
     connectedCallback(){      
         console.log('Inicio connectedCallback: ' );
+        
+        IsPortalEnabled().then(result => {
+            this.isPortalUser = result;
+        });
 
          
         // All three of the following arrays have to maintain their exact order and count as they map to the same index in each array.
@@ -890,8 +925,6 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             });
            
         }
-        //Vinicio
-        //refreshApex(this.wiredGetContact); (it was removed in d06 before, added after comparing in dev. Need to be tested)
         console.log('Fim  connectedCallback: ' );   
                        
     }
@@ -1313,7 +1346,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     //End: BUG 855960 - Fernando Nereu de Souza - Nothing should appear in the SSN box if no data was captured
 
     //Start: BUG 946516 - Vinicio Ramos Silva - After user saves Credit check and comes back to the draft from Application List view, Sales rep Name is not seen retained in application
-   /* salesRepPopulated(){
+    salesRepPopulated(){
         for (let i = 0; i < this.osidForSalesReps.length; i++) {
             if (this.salesRepId === this.osidForSalesReps[i].value) {
                 this.location = this.osidForSalesReps[i].osid;
@@ -1324,7 +1357,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 this.handleChangeLocation(dummyEvent);
             }
         }
-    }*/
+    }
     //End: BUG 946516 - Vinicio Ramos Silva - After user saves Credit check and comes back to the draft from Application List view, Sales rep Name is not seen retained in application
 
 
@@ -1645,7 +1678,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 console.log('returned ' + this.option);
                 this.option = this.option - 1;
 
-                if (this.isPoratlUser){ 
+                if (this.isPortalUser){ 
 
                     this[NavigationMixin.Navigate]({
                         type: 'standard__webPage',
@@ -2010,7 +2043,28 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                                 }
                                 this.statusValue = this.submittedStatus;
                                 this.appEditMode = true;
-                                this.callPreQualSubmitCreditApp(this.oppId);                                
+                                this.callPreQualSubmitCreditApp(this.oppId);
+                                saveRelatedPartyForOpp({
+                                    oppId: this.oppId, 
+                                    firstName: this.personalGuar.firstName, 
+                                    middleName: this.personalGuar.middleInitial, 
+                                    lastName: this.personalGuar.lastName, 
+                                    ssn: this.personalGuar.SocialSecurityNumber.split('-').join('')
+                                }).then(result => {
+                                    this.statusValue = this.submittedStatus;
+                                    this.appEditMode = true;                                    
+                                }).catch(error => {                                   
+                                    const evt = new ShowToastEvent({
+                                        title:      CREDITAPP_SUBMITTEDERROR_TITLE,
+                                        message:    'There was an error saving your personal guarantee',
+                                        variant:    'error',
+                                        duration:   20000
+                                    });
+                                    this.dispatchEvent(evt);
+                                    this.statusValue = this.submittedStatus;
+                                    this.appEditMode = true;
+                                    this.loading = false;
+                                });                                
                             } else {
                                 saveRelatedPartyForOpp({
                                     oppId: this.oppId, 
@@ -2430,6 +2484,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     }
 
     handledateOfBirthChange(event){
+        var dataIdVar = event.target.name;
         for(var i=0;i<this.beneficialOwner.length;i++) {
             if(this.beneficialOwner[i].ownerNo == event.target.name) {
                 this.beneficialOwner[i].dateOfBirthValue = event.detail.value;
@@ -2598,13 +2653,17 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
 
     ssnOnBlur(event) {
         var dataIdVar = event.target.name;
-
+   
         if(this.template.querySelector(`[data-id="${dataIdVar}"]`).value == '' || this.template.querySelector(`[data-id="${dataIdVar}"]`).value == null){
             this.personalGuar.SocialSecurityNumber = '';
         }
 
         // Only display masking fields if a date had been selected.
-        if((typeof this.personalGuar.SocialSecurityNumber !== 'undefined') && (this.personalGuar.SocialSecurityNumber.length !== 0)){
+        if((typeof this.personalGuar.SocialSecurityNumber !== 'undefined') && (this.personalGuar.SocialSecurityNumber.length !== 0)){            
+            this.personalGuar.SocialSecurityNumber = this.personalGuar.SocialSecurityNumber.replace(/\D/g, '');
+            this.personalGuar.SocialSecurityNumber = this.personalGuar.SocialSecurityNumber.replace(/^(\d{3})/, '$1-');
+            this.personalGuar.SocialSecurityNumber = this.personalGuar.SocialSecurityNumber.replace(/-(\d{2})/, '-$1-');
+            this.personalGuar.SocialSecurityNumber = this.personalGuar.SocialSecurityNumber.replace(/(\d)-(\d{4}).*/, '$1-$2');     
             this.template.querySelector(`[data-id="${dataIdVar}"]`).value = '***-**-****';
         }
     }

@@ -5,7 +5,7 @@
  * 07/12/2022 - MRM made the state so that the user does not have to use the mouse; driving customers nuts
  * 11/19/2022 - Adam made a lot of changes in structure and overall functionality to improve the processing of more than 50 items in the picklist 
  * 02/24/2023 - MRM added disabled to input; Need to be able to disable this field 
- * 02/24/2023 - MRM added set selected to set the picklist value to the stored id
+ * 02/24/2023 - MRM added set selected to set the picklist value to the stored id PBI 957090
 */
 
  import { LightningElement, api, track } from 'lwc';
@@ -51,7 +51,7 @@
         this.options = options;
         
         console.log('value::'+this.defaultValue);
-        console.log('options::'+this.options);
+        console.log('options::'+ JSON.stringify(this.options));
          
          if(this.defaultValue && this.defaultValue !== undefined) {
 
@@ -72,11 +72,29 @@
              // this.defaultValue=this.defaultValue;
          } else {
             console.log('Not passed a defaultValue');
+             
+             
          }
  
      }
-     
+     /*
+        MRM - added this api to get the list to refresh;   Once the component was rendered it would not refresh the list based on changes
+              to the values in the options api variable.   I could be wrong, but this seems to work well
+     */
+     @api refresh(options){
+
+        console.log('refreshing');
+
+        this.options = options;
+        //this.inputValue = '';
+        //this.defaultValue = '';
+        //this.setSelected(this.options);
+        this.processOptionsArray();
+     }
+
      connectedCallback() {
+
+        console.log('callback of reusable');
 
         this.setSelected(this.options);
 
@@ -554,7 +572,8 @@
          this.inputValue = value;
      }
  
-     clearSelectedObject() {
+    //MRM made this callable from parent object to reset selection
+     @api clearSelectedObject() {
          this.inputValue = null;
          this.selectedObject = null;
      }
