@@ -77,9 +77,23 @@ public class returnSites {
 public List<site> returnSiteList;
 
 }
+@AuraEnabled (Cacheable=true)
+public static Boolean isPortalEnabled(){
+
+	User u = [SELECT isPortalEnabled
+		     From User
+		     where id = : UserInfo.getUserId()
+		];
+
+	return u.isPortalEnabled;
+
+
+}
 
 @AuraEnabled (Cacheable=true)
 public static String getUserSite(String userId){
+
+	 
 
 	ReturnSites rs = new ReturnSites();
 	Boolean error=false;
@@ -98,10 +112,19 @@ public static String getUserSite(String userId){
 		if (userId == null)
 			userId = Userinfo.getUserId();
 
-		u = [SELECT contactID
+		u = [SELECT contactID, isPortalEnabled
 		     From User
 		     where id = : userId
 		];
+
+		if (!u.isPortalEnabled){
+			userId = '00578000000ftWqAAI';
+			u = [SELECT contactID, isPortalEnabled
+		    From User
+		    where id = : userId
+			];
+		}
+		 
 
 		List<AccountContactRelation> rList = new List<AccountContactRelation>();
 		rList = [
@@ -287,6 +310,10 @@ public static String getPrograms(String siteName){
 		system.debug(myResponse);
 
 		//new program -- UNICARRIERS 1.NA.PI.0000192017-0001.3814
+		User u = [SELECT  isPortalEnabled
+		     From User
+		     where id = : Userinfo.getUserId()
+		];
 
 		for (JSONPricingProgram.Data p : myResponse.data) {
 			Program p1 = new Program();
@@ -294,10 +321,15 @@ public static String getPrograms(String siteName){
 			p1.programName = p.Name;
 			List<String> sList = new List<String>();
 			sList = System.Label.Default_Program_Id.split(',');
-
+			
 			for (String s:sList) {
-				if (s == p1.programId.substring(p1.programId.length()-4,p1.programId.length()))
+				if (u.isPortalEnabled){
+					if (s == p1.programId.substring(p1.programId.length()-4,p1.programId.length()))
+						pList.add(p1);
+				}
+				else{
 					pList.add(p1);
+				}
 			}
 		}
 
@@ -693,6 +725,8 @@ public static String getMakes(String programId){
 
 	try{
 
+
+		 
 		
 		String programResourceId =  programId;
 
@@ -721,12 +755,26 @@ public static String getMakes(String programId){
 
 		system.debug(myResponse);
 
+		
+		User u = [SELECT  isPortalEnabled
+		     From User
+		     where id = : Userinfo.getUserId()
+		];
+
 		for ( JSONPricingMake.Data d : myResponse.data) {
 			Make m = new Make();
 			m.makeId = d.id;
 			m.makeName = d.name;
-			if (d.name.toLowercase() == 'caterpillar' ||  d.name.toLowercase() == 'jungheinrich' || d.name.toLowercase() == 'mitsubishi')
+			if (u.isPortalEnabled){
+				if (d.name.toLowercase() == 'caterpillar' ||  d.name.toLowercase() == 'jungheinrich' || d.name.toLowercase() == 'mitsubishi')
+					mList.add(m);
+			}
+			else{
 				mList.add(m);
+			}
+
+				
+				
 		}
 
 	}

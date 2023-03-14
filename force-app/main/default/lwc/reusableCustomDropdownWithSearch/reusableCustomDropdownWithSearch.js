@@ -4,7 +4,9 @@
  * Change Log:
  * 07/12/2022 - MRM made the state so that the user does not have to use the mouse; driving customers nuts
  * 11/19/2022 - Adam made a lot of changes in structure and overall functionality to improve the processing of more than 50 items in the picklist 
- */
+ * 02/24/2023 - MRM added disabled to input; Need to be able to disable this field 
+ * 02/24/2023 - MRM added set selected to set the picklist value to the stored id
+*/
 
  import { LightningElement, api, track } from 'lwc';
  import {ShowToastEvent} from 'lightning/platformShowToastEvent';
@@ -42,10 +44,14 @@
      @track displayOptionsAreBeingTrimmed = false;
      numberOfNodesToRender = 50;
  
- 
- 
-     connectedCallback() {
-         console.log('value::'+this.defaultValue);
+     /* Added by MRM */
+     @api 
+     setSelected(options) {
+        
+        this.options = options;
+        
+        console.log('value::'+this.defaultValue);
+        console.log('options::'+this.options);
          
          if(this.defaultValue && this.defaultValue !== undefined) {
 
@@ -60,7 +66,7 @@
                      console.log(selectedObj);
                  }
              } else {
-                console.log('Passed a defaultvalue of ' + this.defaultValue + ' but no options');
+                console.log('Passed a defaultValue of ' + this.defaultValue + ' but no options');
              }
              // this.inputValue=this.defaultValue;
              // this.defaultValue=this.defaultValue;
@@ -68,7 +74,13 @@
             console.log('Not passed a defaultValue');
          }
  
-         if(this.boldLabel === 'false') {
+     }
+     
+     connectedCallback() {
+
+        this.setSelected(this.options);
+
+        if(this.boldLabel === 'false') {
              this.boldLabel=false;
          } else if(this.boldLabel === 'true') {
              this.boldLabel=true;

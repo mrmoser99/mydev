@@ -14,21 +14,36 @@
             <lightning-layout-item size=6 class="slds-p-right_small">
                 <lightning-combobox name="make" label="Make" value={asset.makeId} options={makePicklist}
                     onchange={handleDependentChange} field-level-help="Make of the desired asset"
-                    disabled={isMakeDisabled}>
+                    disabled={isMakeDisabled} placeholder="Select Make">
                 </lightning-combobox>
             </lightning-layout-item>
             <lightning-layout-item size=6>
                 <lightning-combobox name="assetType" label="Asset Type / ITA Class" value={asset.assetTypeId}
                     options={assetTypePicklist} onchange={handleDependentModelChange}
-                    field-level-help="Select the correct Asset Class" disabled={isAssetTypeDisabled}>
+                    field-level-help="Select the correct Asset Class" disabled={isAssetTypeDisabled}
+                    placeholder="Select Asset Type">
                 </lightning-combobox>
             </lightning-layout-item>
+
+            <!--
             <lightning-layout-item size=6 class="slds-p-right_small">
-                <lightning-combobox name="model" label="Model" value={asset.modelId} options={modelPicklist}
+                <lightning-combobox name="model2" label="Model" value={asset.modelId} options={modelPicklist}
                     onchange={handleDependentFieldsChange} field-level-help="Model of desired asset"
-                    disabled={isModelDisabled}>
+                    disabled={isModelDisabled} placeholder="Select Model">
                 </lightning-combobox>
             </lightning-layout-item>
+            -->
+
+
+            <lightning-layout-item size=6 class="slds-p-right_small">
+                <c-reusable-custom-dropdown-with-search bold-label="true" name="model" error-message="Enter a Model"
+                    auto-complete-off="off" options={modelPicklist} field-label="Model" default-value={asset.modelId}
+                    value={asset.modelId} placeholder="Search/Select Model" disabled={isModelDisabled}
+                    onchange={handleModelChange}>
+                </c-reusable-custom-dropdown-with-search>
+            </lightning-layout-item>
+
+
             <lightning-layout-item size=6>
                 <lightning-combobox name="mastType" label="Mast Type" value={asset.mastType} options={mastList}
                     onchange={handleChange} field-level-help="Mast type of desired asset" disabled={isRestDisabled}>

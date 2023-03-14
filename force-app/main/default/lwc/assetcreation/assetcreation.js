@@ -1,9 +1,10 @@
-/**
+/**s
  * Created by ShiqiSun on 11/18/2021.
  * 
  * Change Log:
  * 
  * 02/03/2023 MRM -Changed the error message for subsidy
+ * 02/24/2023 MRM -Changed to use search select model component
  */
 
 import {LightningElement, wire, api, track} from 'lwc';
@@ -41,12 +42,13 @@ export default class assetcreation extends LightningElement {
     annualHours;
     batteryIncluded;
     numberOfUnits;
-    unitSalesPrice;
+    unitSalesPrice;i
     subsidy;
     subsidyName;
     make = {};
     assetType = {};
     model = {};
+    defaultModelId;
 
     @api quoteObject;
 
@@ -111,7 +113,7 @@ export default class assetcreation extends LightningElement {
 
     /***********************************************************************************************************
      * getMakes
-     *****************************************************************wiredgetMakes*******************************************/
+     ************************************************************************************************************/
     @wire(getMakes, {programId: '$programId'})
     wiredgetMakes({error, data}) {
         console.log('he hit here');
@@ -124,7 +126,6 @@ export default class assetcreation extends LightningElement {
 
         if (this.data) {
 
-            console.log('data 100 is: ' + JSON.stringify(data));
             //Code to fetch subsidy on edit - Geetha :
             let labelValue = (this.asset.subsidy) == "No" ? 'No' : 'Yes'; 
             this.subsidyList = [
@@ -238,7 +239,6 @@ export default class assetcreation extends LightningElement {
         getModels({programId: this.programId, make: this.make.value, assetType: this.assetType.value})
             .then(results => {
 
-
                 let res = JSON.parse(results);
 
                 console.log('getModels');
@@ -251,11 +251,19 @@ export default class assetcreation extends LightningElement {
                 });
 
                 this.modelPicklist = mlist;
+
+                //MRM added to set the selection once the modelPicklist is available/accessorycreation
+
+                this.template.querySelector('c-reusable-custom-dropdown-with-search').setSelected(this.modelPicklist);
+
                 if(typeof this.asset.modelId !== 'undefined'){
                     this.getOtherInformation(this.asset.modelId);
                     return;
                 }
+                
                 this.loading = false;
+                
+
             }).catch(error => {
                 this.showToast('Error getting models for an Asset', 'No Models available for this Class.', 'warning');
                 console.log(error);
@@ -278,16 +286,7 @@ export default class assetcreation extends LightningElement {
 
         let loadsToGo = 1;
 
-        /*if ((typeof this.quoteObject.programId === 'undefined') ||
-            (typeof this.quoteObject.financeType === 'undefined') ||
-            (typeof this.quoteObject.financeTerm === 'undefined') ||
-            (typeof this.asset.make === 'undefined') ||
-            (typeof this.quoteObject.paymentFrequency === 'undefined') ||
-            (typeof this.asset.model === 'undefined') ||
-            (typeof this.asset.unitSalesPrice === 'undefined')) {
-            loadsToGo--;
-        }*/
-
+        
         getAsset({  programId: this.programId, assetId: modelId})
             .then(result => {
 
@@ -401,50 +400,6 @@ export default class assetcreation extends LightningElement {
                 this.loading = false;
             }
         });
-
-        /*if ((typeof this.quoteObject.programId === 'undefined') ||
-            (typeof this.quoteObject.financeType === 'undefined') ||
-            (typeof this.quoteObject.financeTerm === 'undefined') ||
-            (typeof this.asset.make === 'undefined') ||
-            (typeof this.quoteObject.paymentFrequency === 'undefined') ||
-            (typeof this.asset.model === 'undefined') ||
-            (typeof this.asset.unitSalesPrice === 'undefined')) {
-            return;
-        }
-
-        getSubsidies({ programId: this.quoteObject.programId, productId: this.quoteObject.financeType, numberOfMonths: this.quoteObject.financeTerm,
-            make : this.makePicklist.find(opt => opt.value === this.asset.make).label,
-            paymentFrequency: this.quoteObject.paymentFrequency, financeAmount : this.asset.unitSalesPrice,
-            assetCondition: 'new', paymentTiming : 'in-arrears'})
-            .then(result => {
-                console.log('Apex has finished with getSubsidies');
-                let data = JSON.parse(result);
-                console.log(JSON.parse(JSON.stringify(data)));
-                console.log('there is data' + data);
-                let sList = [];
-
-                data.forEach(function(element){
-
-                    sList.push({label: element.name, value: element.id});
-
-                });
-
-                this.subsidyList = sList;
-                loadsToGo--;
-                if (loadsToGo === 0) {
-                    this.loading = false;
-                }
-
-
-            })
-            .catch(error => {
-                console.log(JSON.parse(JSON.stringify(error)));
-                loadsToGo--;
-                if (loadsToGo === 0) {
-                    this.loading = false;
-                }
-                this.showToast('Something went wrong', error.body.message, 'error');
-            });*/
     }
 
     formatCurrency(str) {
@@ -555,15 +510,15 @@ export default class assetcreation extends LightningElement {
                 //console.log(result);
                 let data = JSON.parse(result);
                 console.log(JSON.parse(JSON.stringify(data)));
-                let subsidyFound = false;
+                let subsidyFound = 'false';
             
                 if (data.data.subsidies.manufacturer[0].interest.nominalRate.percentages.length > 0)
-                    subsidyFound = true;
+                    subsidyFound = 'true';
                 
                 console.log('subsidy: ' + subsidyFound);
 
 
-                if (subsidyFound == true) { //remember to add subsidy name (this.subsidyName)
+                if (subsidyFound === 'true') { //remember to add subsidy name (this.subsidyName)
                     this.subsidyList = [
                         {label: 'Yes', value: data.data.subsidies.manufacturer[0].id},
                         {label: 'No', value: ''}];
@@ -677,17 +632,12 @@ export default class assetcreation extends LightningElement {
 
     handleChangeSubsidy(event) {
         let tempAsset = JSON.parse(JSON.stringify(this.asset));
-        
-        console.log('subsidy' + event.target.value);
-        console.log('subsidy' + event.target.name);
         tempAsset[event.target.name] = event.target.value;
         if (event.target.value !== '') {
             tempAsset.subsidyName = this.subsidyName;
         } else {
             tempAsset.subsidyName = '';
         }
-
-        console.log('tempasset = ' + JSON.stringify(tempAsset));
         const assetEvent = new CustomEvent("updateasset", {
             detail: tempAsset
         })
@@ -697,7 +647,7 @@ export default class assetcreation extends LightningElement {
 
 
     handleDependentChange(event) {
-       
+        console.log('in handleDependentchagne');
         this.loading = true;
         //this.asset.assetHeading = 'Asset Details - ' + event.target.options.find(opt => opt.value === event.detail.value).label;
         //console.log('Made it past new changes');
@@ -728,9 +678,13 @@ export default class assetcreation extends LightningElement {
         this.subsidyList = [];
         this.loading = true;
         this.getAssetTypes(this.programId, this.make.value);
+         
+
         if(typeof tempAsset.assetType !== 'undefined') {
+            
             this.getModels();
         }
+        console.log('here man');
         const assetEvent = new CustomEvent("updateasset", {
             detail: tempAsset
         })
@@ -775,7 +729,46 @@ export default class assetcreation extends LightningElement {
 
     }
 
+    handleModelChange(event){
+        console.log('model change' + JSON.stringify(event));
+        console.log('asset model is' + this.asset.modelId);
+        this.loading = true;
+
+        this[event.target.name].value = event.detail.value;
+        this[event.target.name].label = event.detail.label;
+        let tempAsset = JSON.parse(JSON.stringify(this.asset));
+        tempAsset[event.target.name] = event.detail.label; 
+        tempAsset[event.target.name + 'Id'] = event.detail.value;
+        
+        console.log('tempasset:' + tempAsset);
+
+        let selectedModel = event.detail.label;
+        if (selectedModel) {
+            tempAsset.assetHeading = 'Asset ' + (tempAsset.assetNo + 1) + ' | ' + tempAsset.make + ' ' + selectedModel;
+        }
+        console.log('here');
+        tempAsset.mastType = undefined;
+        tempAsset.assetOperating = undefined;
+        tempAsset.annualHours = undefined;
+        tempAsset.batteryIncluded = undefined;
+        tempAsset.numberOfUnits = undefined;
+        tempAsset.unitSalesPrice = undefined;
+        tempAsset.subsidy = undefined;
+        tempAsset.subsidyName = undefined;
+        this.subsidyList = [];
+        this.loading = true;
+        console.log('got here');
+        this.getOtherInformation(event.detail.value);
+        const assetEvent = new CustomEvent("updateasset", {
+            detail: tempAsset
+        })
+
+        this.dispatchEvent(assetEvent);
+    }
+
     handleDependentFieldsChange(event) { 
+         
+
         this.loading = true;
         this[event.target.name].value = event.target.value;
         this[event.target.name].label = event.target.options.find(opt => opt.value === event.detail.value).label;

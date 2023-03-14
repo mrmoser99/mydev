@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 02-08-2023
+ * @last modified on  : 02-21-2023
  * @last modified by  : Mark Moser
 **/
 @isTest
@@ -100,17 +100,27 @@ Static testmethod void test2(){
 	system.debug('o is: ' + o);
 	insert o;
 
+	List<Account_Account_Relationship__c> aarList = new List<Account_Account_Relationship__c>();
+
 	Account_Account_Relationship__c aar = new Account_Account_Relationship__c(account_2__c = a2.id, account_1__c = a1.Id, role__c = 'End User');
-	insert aar;
+	aarList.add(aar);
+	 
 
 	Account_Account_Relationship__c aar2 = new Account_Account_Relationship__c(account_2__c = a2.id, account_1__c = a1a.Id, role__c = 'End User');
-	insert aar2;
+	aarList.add(aar2);
+	
+	insert aarList;
+
+	List<Contact> cList = new List<Contact>();
 
 	Contact c = new Contact(firstName = 'Test', lastName = 'Dog', accountId = a1.id, role__c='Partner Sales Rep');
-	insert c;
+	cList.add(c);
+	 
 
 	Contact c1 = new Contact(firstName = 'Test', lastName = 'Cat', accountId = a1.id, role__c='Partner Sales Rep');
-	insert c1;
+	cList.add(c1);
+	 
+	insert cList;
 
 	AccountContactRelation acr = [select id from AccountContactRelation where ContactId = : c.id];
 	acr.roles = 'Partner Admin';

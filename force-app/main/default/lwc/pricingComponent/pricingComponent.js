@@ -319,7 +319,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
     ***************************************************************************************************************/
     connectedCallback() {
         
-        //console.log('this opp id is ' + this.oppid);
+        console.log('this opp id is ' + this.oppid);
         if (this.oppid) {
             this.loading = true;
             this.isLoadedQuote = true;
@@ -539,13 +539,13 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
         //this.loading = true;
 
-        console.log('loading rates: ' + this.assetTypeQuote);
+        console.log('loading rates d: ' + this.assetTypeQuote + this.program + '-' + this.financeType + '-' + this.assetTypeQuote);
 
         getFinancialProducts({programId: this.program, financetype: this.financeType, newused: this.assetTypeQuote})
             .then(result => {
                 let plist = [];
                 let tempData = JSON.parse(result);
-             
+                console.log('result is:' + JSON.stringify(result));
                 let onlyoneid = null;
                 let onlyonelabel = null;
                 if (tempData.length > 0) {
@@ -554,7 +554,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                         onlyoneid = element.id;
                         onlyonelabel = element.name;
                     });
-
+                     
                     if (tempData.length == 1) {
                         this.financialproduct = onlyoneid;
                         this.rateType = onlyoneid;
@@ -567,6 +567,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
                 }
                 this.rateTypePicklist = plist;
+                console.log('made it here');
                 
             })
             .catch(error => {
@@ -744,7 +745,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.displayModal = true;
     }
 
-    /***************************************************************************************************************
+    /****************************************************************loadRates***********************************************
     *  
     ***************************************************************************************************************/
     handleDependentRatesPicklistChange2(event) {
@@ -2143,7 +2144,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.loadRates();
 
         
-    }
+    } 
 
     processAssets(assets) {
         this.assets = [];
@@ -2187,6 +2188,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             }
             this.assets.push(tempAsset);
             currentAssetNum++;
+            console.log('here');
         }
         if (this.assets.length !== 0) {
             this.updateAssetPicklist();

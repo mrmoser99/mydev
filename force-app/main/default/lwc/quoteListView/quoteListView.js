@@ -2,7 +2,7 @@
 *
 *  Change Log:
 *   01/25/2023 - MRM - added mode as an api;
-*
+*   02/20/2023 - MRM -added isPortalUser for navigation
 *************************************************************************************************************/
 import {LightningElement,track, wire,api} from 'lwc';
 
@@ -17,6 +17,9 @@ import STATUS_FIELD from "@salesforce/schema/Opportunity.Sub_Stage__c";
 import {NavigationMixin} from 'lightning/navigation';
 import {ShowToastEvent} from "lightning/platformShowToastEvent";
 import {getPicklistValuesByRecordType} from 'lightning/uiObjectInfoApi';
+import LightningConfirm from "lightning/confirm";
+import LightningAlert from "lightning/alert";
+import IsPortalEnabled from "@salesforce/apex/PricingUtils.isPortalEnabled";
 
 //Declare constants
 const actions = [{
@@ -127,7 +130,7 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
 
     //Button/Link Permissions
     NQ01 = false;
-
+    isPortalUser = false;
     //Declare properties
     error;
     columns = columns;
@@ -280,6 +283,11 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
             value: lastFourYear
         });
 
+        IsPortalEnabled().then(result => {
+            console.log('result is : ' + result);
+            this.isPortalUser = result;
+        });
+
         //load data
         this.getInitialOpportunities();
     }
@@ -316,8 +324,16 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
                             tempOpportunity.QuoteNumberURL = '#';
                             tempOpportunity.Qnumber = '#';
                         } else {
-                            tempOpportunity.QuoteNumberURL = window.location.origin + '/dllondemand/s/new-quote?oppid=' + tempOpportunity.Opportunity.Id;
-                            tempOpportunity.Qnumber = tempOpportunity.Opportunity.Opportunity_Number__c;
+                            
+                            console.log('this is portal user = ' + this.isPortalUser);
+                            if (!this.isPortalUser){
+                                tempOpportunity.QuoteNumberURL = window.location.origin + '/lightning/n/Quote2?c__oppid=' + tempOpportunity.Opportunity.Id;
+                                tempOpportunity.Qnumber = tempOpportunity.Opportunity.Opportunity_Number__c;
+                            }
+                            else{
+                                tempOpportunity.QuoteNumberURL = window.location.origin + '/dllondemand/s/new-quote?oppid=' + tempOpportunity.Opportunity.Id;
+                                tempOpportunity.Qnumber = tempOpportunity.Opportunity.Opportunity_Number__c;
+                            }
                         }
                         //create temp variable endUserName
                         if (tempOpportunity.Opportunity.End_User__r) {
@@ -645,7 +661,7 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
                 //call new quote page
                 url: window.location.origin + '/dllondemand/s/new-quote'
             }
-        })
+        });
     }
 
 
@@ -655,8 +671,39 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
         const actionName = event.detail.action.name;
         const row = event.detail.row;
 
-        if (actionName === 'delete') {
+        console.log('what is the action man:' + actionName);
 
+
+        if (actionName === 'delete') {
+            this.handleConfirmClick(row);
+        }
+
+        
+        if (actionName === 'edit') {
+            this.loader = false;
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + row.OpportunityId
+                }
+            });
+        }
+
+        console.log('what is the action man:' + actionName);
+
+    }
+
+    handleConfirmClick(oppId) {
+        const result = LightningConfirm.open({
+            message: "Are you sure you want to delete this?",
+            variant: "default", // headerless
+            label: "Delete a record"
+        });
+
+        //Confirm has been closed
+
+        //result is true if OK was clicked
+        if (result) {
             deleteOpp({
                 oppId: row.OpportunityId
             }).then(result => {
@@ -669,19 +716,28 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
                 console.log('error' + JSON.stringify(error));
                 this.loader = false;
             })
-
+            //this.handleSuccessAlertClick();
+        } else {
+            //and false if cancel was clicked
+            //this.handleErrorAlertClick();
         }
-        if (actionName === 'edit') {
-            this.loader = false;
-            this[NavigationMixin.Navigate]({
-                type: 'standard__webPage',
-                attributes: {
-                    url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + row.OpportunityId
-                }
-            })
-        }
-
     }
+
+    /*async handleSuccessAlertClick() {
+        await LightningAlert.open({
+            message: `You clicked "Ok"`,
+            theme: "success",
+            label: "Success!"
+        });
+    }
+
+    async handleErrorAlertClick() {
+        await LightningAlert.open({
+            message: `You clicked "Cancel"`,
+            theme: "error",
+            label: "Error!"
+        });
+    }*/
 
     handleSelectQuote(event){
 

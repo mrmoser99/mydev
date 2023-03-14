@@ -1,3 +1,13 @@
+/**
+ * @description       : 
+ * @author            : Mark Moser
+ * @group             : 
+ * @last modified on  : 02-21-2023
+ * @last modified by  : Mark Moser
+ * Modifications Log
+ * Ver   Date         Author       Modification
+ * 1.0   02-21-2023   Mark Moser   Initial Version
+**/
 @isTest
 private class CreateQuoteOpportunityTest {
 
@@ -60,7 +70,7 @@ private class CreateQuoteOpportunityTest {
         CreateQuoteOpportunity.quoteOpportunityLineItem testVar = new CreateQuoteOpportunity.quoteOpportunityLineItem();
 
         System.runAs(partnerUser) {
-            String jsonInput = '{"financeType":"Fair Market Value ( FMV )","program":"1.NA.PI.0000105570-0001.1590","nickname":"testQuoteOpportunityPortal","financeTerm":"24,36,48","rateType": "Promo","paymentFrequency": "Monthly","advPayments": "2",\n' +
+            String jsonInput = '{"isappeal":false,"financeType":"Fair Market Value ( FMV )","program":"1.NA.PI.0000105570-0001.1590","nickname":"testQuoteOpportunityPortal","financeTerm":"24,36,48","rateType": "Promo","paymentFrequency": "Monthly","advPayments": "2",\n' +
                     '"assets":[{"assetNo":"0","make":"Caterpillar","assetType":"Class-5","model":"GP25N5","mastType":"Triplex","baseUnitSalesPrice":"30000.00","numberOfUnits":"1","annualHour":"1500","operatingEnvironment":"Normal/Clean","batteryIncluded":"NO"}],\n' +
                     '"accessories":[{"noOfUnits":"1", "unitSalesPrice":"15000", "model":"RNMSTR", "modelId":"123456.34.345.146.242.$1BO.1234","relatedAsset":"0"}]}';
             CreateQuoteOpportunity.quoteOpportunityWrapper quoteOpportunityWrapper = new CreateQuoteOpportunity.quoteOpportunityWrapper();
@@ -68,7 +78,7 @@ private class CreateQuoteOpportunityTest {
             system.assertEquals('Quoting', quoteOpportunityWrapper.newOpp.StageName);
             system.assertEquals(1,quoteOpportunityWrapper.quoteOpportunityLineItems.size());
             system.assertEquals(2,quoteOpportunityWrapper.quoteOpportunityLineItems[0].quoteLines.size());
-            String jsonInput2 = '{"financeType":"Fair Market Value ( FMV )","program":"1.NA.PI.0000105570-0001.1590","financeTerm":"24,36,48","rateType": "Promo","paymentFrequency": "Monthly","advPayments": "0",\n' +
+            String jsonInput2 = '{"isappeal":false,"financeType":"Fair Market Value ( FMV )","program":"1.NA.PI.0000105570-0001.1590","financeTerm":"24,36,48","rateType": "Promo","paymentFrequency": "Monthly","advPayments": "0",\n' +
                     '"assets":[{"assetNo":"0","make":"Caterpillar","assetType":"Class-5","model":"GP25N5","mastType":"Triplex","baseUnitSalesPrice":"30000.00","numberOfUnits":"1","annualHour":"1500","operatingEnvironment":"Normal/Clean","batteryIncluded":"NO"}],\n' +
                     '"accessories":[{"noOfUnits":"1", "unitSalesPrice":"15000", "model":"RNMSTR", "modelId":"123456.34.345.146.242.$1BO.1234","relatedAsset":"0"}]}';
             CreateQuoteOpportunity.quoteOpportunityWrapper quoteOpportunityWrapper2 = new CreateQuoteOpportunity.quoteOpportunityWrapper();
@@ -87,7 +97,7 @@ private class CreateQuoteOpportunityTest {
 
         System.runAs(partnerUser) {
 
-            String jsonInput1 = '{"financeType":"Fair Market Value ( FMV )","program":"1.NA.PI.0000105570-0001.1590","nickname":"testQuoteOpportunityPortal","financeTerm":"24","rateType": "Promo","paymentFrequency": "Monthly","advPayments": "0",\n' +
+            String jsonInput1 = '{"isappeal":false,"includeinapp": "true","financeType":"Fair Market Value ( FMV )","program":"1.NA.PI.0000105570-0001.1590","nickname":"testQuoteOpportunityPortal","financeTerm":"24","rateType": "Promo","paymentFrequency": "Monthly","advPayments": "0",\n' +
                     '"assets":[{"assetNo":"0","make":"Caterpillar","assetType":"Class-5","model":"GP25N5","mastType":"Triplex","baseUnitSalesPrice":"30000.00","numberOfUnits":"1","annualHour":"1500","operatingEnvironment":"Normal/Clean","batteryIncluded":"NO"}]}';
             CreateQuoteOpportunity.quoteOpportunityWrapper quoteOpportunityWrapper = new CreateQuoteOpportunity.quoteOpportunityWrapper();
             quoteOpportunityWrapper = CreateQuoteOpportunity.CreateQuoteOpportunity(jsonInput1);
@@ -97,7 +107,7 @@ private class CreateQuoteOpportunityTest {
 
             Test.startTest();
 
-            String jsonInput2 = '{"oppId":"'+ quoteOpportunityWrapper.newOpp.Id + '","financeType":"Fair Market Value ( FMV )","program":"1.NA.PI.0000105570-0001.1590","nickname":"testQuoteOpportunityPortal","financeTerm":"36","rateType": "Promo","paymentFrequency": "Monthly","advPayments": "0",\n' +
+            String jsonInput2 = '{"isappeal":false,"oppId":"'+ quoteOpportunityWrapper.newOpp.Id + '","includeinapp": true,"financeType":"Fair Market Value ( FMV )","program":"1.NA.PI.0000105570-0001.1590","nickname":"testQuoteOpportunityPortal","financeTerm":"36","rateType": "Promo","paymentFrequency": "Monthly","advPayments": "0",\n' +
                     '"assets":[{"assetNo":"0","make":"Caterpillar","assetType":"Class-5","model":"GP25N5","mastType":"Triplex","baseUnitSalesPrice":"30000.00","numberOfUnits":"1","annualHour":"1500","operatingEnvironment":"Normal/Clean","batteryIncluded":"NO"}],\n' +
                     '"accessories":[{"noOfUnits":"1", "unitSalesPrice":"15000", "model":"RNMSTR", "modelId":"123456.34.345.146.242.$1BO.1234","relatedAsset":"0"}]}';
             CreateQuoteOpportunity.quoteOpportunityWrapper cloneQuoteOpportunityWrapper = new CreateQuoteOpportunity.quoteOpportunityWrapper();
@@ -114,7 +124,7 @@ private class CreateQuoteOpportunityTest {
 
         System.runAs(partnerUser) {
 
-            String jsonInput1 = '{"financeType":"Fair Market Value ( FMV )","program":"1.NA.PI.0000105570-0001.1590","nickname":"testQuoteOpportunityPortal","financeTerm":"24","rateType": "Promo","paymentFrequency": "Monthly","advPayments": "0",\n' +
+            String jsonInput1 = '{"isappeal":false,"includeinapp": "true","financeType":"Fair Market Value ( FMV )","program":"1.NA.PI.0000105570-0001.1590","nickname":"testQuoteOpportunityPortal","financeTerm":"24","rateType": "Promo","paymentFrequency": "Monthly","advPayments": "0",\n' +
                     '"assets":[{"assetNo":"0","make":"Caterpillar","assetType":"Class-5","model":"GP25N5","mastType":"Triplex","baseUnitSalesPrice":"30000.00","numberOfUnits":"1","annualHour":"1500","operatingEnvironment":"Normal/Clean","batteryIncluded":"NO"}]}';
             CreateQuoteOpportunity.quoteOpportunityWrapper quoteOpportunityWrapper = new CreateQuoteOpportunity.quoteOpportunityWrapper();
             quoteOpportunityWrapper = CreateQuoteOpportunity.CreateQuoteOpportunity(jsonInput1);
@@ -124,7 +134,7 @@ private class CreateQuoteOpportunityTest {
 
             Test.startTest();
 
-            String jsonInput2 = '{"oppId":"'+ quoteOpportunityWrapper.newOpp.Id + '","financeType":"Fair Market Value ( FMV )","program":"1.NA.PI.0000105570-0001.1590","nickname":"testQuoteOpportunityPortal","financeTerm":"36","rateType": "Promo","paymentFrequency": "Monthly","advPayments": "2",\n' +
+            String jsonInput2 = '{"isappeal":false,"oppId":"'+ quoteOpportunityWrapper.newOpp.Id + '","includeinapp": true,"financeType":"Fair Market Value ( FMV )","program":"1.NA.PI.0000105570-0001.1590","nickname":"testQuoteOpportunityPortal","financeTerm":"36","rateType": "Promo","paymentFrequency": "Monthly","advPayments": "2",\n' +
                     '"assets":[{"assetNo":"0","make":"Caterpillar","assetType":"Class-5","model":"GP25N5","mastType":"Triplex","baseUnitSalesPrice":"30000.00","numberOfUnits":"1","annualHour":"1500","operatingEnvironment":"Normal/Clean","batteryIncluded":"NO"}],\n' +
                     '"accessories":[{"noOfUnits":"1", "unitSalesPrice":"15000", "model":"RNMSTR", "modelId":"123456.34.345.146.242.$1BO.1234","relatedAsset":"0"}]}';
             CreateQuoteOpportunity.quoteOpportunityWrapper cloneQuoteOpportunityWrapper = new CreateQuoteOpportunity.quoteOpportunityWrapper();
@@ -352,7 +362,7 @@ private class CreateQuoteOpportunityTest {
 
         System.runAs(partnerUser) {
 
-            String jsonInput1 = '{"financeType":"Fair Market Value ( FMV )","program":"1.NA.PI.0000105570-0001.1590","nickname":"testQuoteOpportunityPortal","financeTerm":"24","rateType": "Promo","paymentFrequency": "Monthly","advPayments": "0",\n' +
+            String jsonInput1 = '{"includeinapp": "true","financeType":"Fair Market Value ( FMV )","program":"1.NA.PI.0000105570-0001.1590","nickname":"testQuoteOpportunityPortal","financeTerm":"24","rateType": "Promo","paymentFrequency": "Monthly","advPayments": "0",\n' +
                     '"assets":[{"assetNo":"0","make":"Caterpillar","assetType":"Class-5","model":"GP25N5","mastType":"Triplex","baseUnitSalesPrice":"30000.00","numberOfUnits":"1","annualHour":"1500","operatingEnvironment":"Normal/Clean","batteryIncluded":"NO"}],"accessories":[{"noOfUnits":"1", "unitSalesPrice":"15000", "model":"RNMSTR", "modelId":"123456.34.345.146.242.$1BO.1234","relatedAsset":"0"}]}';
             CreateQuoteOpportunity.quoteOpportunityWrapper quoteOpportunityWrapper = new CreateQuoteOpportunity.quoteOpportunityWrapper();
             quoteOpportunityWrapper = CreateQuoteOpportunity.CreateQuoteOpportunity(jsonInput1);

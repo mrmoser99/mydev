@@ -7,6 +7,8 @@
  * 14/12/2022 - Dibyendu - Bug 893493 Selecting an application from the application list view should always land to the same page layout
  * 01/25/2023 - MRM - Sent credit checks to same page as others.
  * 02/06/2023 - Lucas Lucena - BUG 942673 - TST ACC | On Application Listview - "Sales Rep" field not filtering correctly 
+ * 02/20/2023 - MRM added isPortalUser; and some non portal navigation stuff
+ * 
  */
 
 import {LightningElement, track, wire, api} from 'lwc';
@@ -18,6 +20,7 @@ import OPPORTUNITY_OBJECT from '@salesforce/schema/Opportunity';
 import STATUS_FIELD from "@salesforce/schema/Opportunity.Sub_Stage__c";
 import {NavigationMixin} from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import IsPortalEnabled from "@salesforce/apex/PricingUtils.isPortalEnabled";
 
 // Custom Labels
 import CREDITCHECK_ENABLED from '@salesforce/label/c.CREDITCHECK_ENABLED';
@@ -76,7 +79,7 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
 
     // Credit Check
     creditCheckEnabled = false;
-
+    isPortalUser = false;
     opportunities = [];
     totalNumberOfRows;
     error;
@@ -151,6 +154,12 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
 
         this.sortBy='Application_Date__c';
         this.sortDirection='desc';
+
+        IsPortalEnabled().then(result => {
+            console.log('result is : ' + result);
+            this.isPortalUser = result;
+        });
+
         this.getInitialOpportunities();
     }
 
@@ -206,12 +215,24 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                     else if(tempOpportunity.Nickname__c == 'Credit Check' && tempOpportunity.Sub_Stage__c != 'Application Draft')
                     {
                         //mrm fixed this to go to the one page...
-                        tempOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/opportunity/' + tempOpportunity.Id;
-                        //tempOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/opportunity/' + tempOpportunity.Id;
+                         
+                        if (this.isPortalUser){
+                            tempOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/opportunity/' + tempOpportunity.Id;
+                        }
+                        else{
+                            tempOpportunity.ApplicationNumberUrl = window.location.origin + '/lightning/n/Credit_Info_Internal?c__oppid=' + tempOpportunity.Id;
+                        }
+                    
                     }
                     //Changed the condition for the defect - 893493
                     else{
-                        tempOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/opportunity/' + tempOpportunity.Id;
+                        if (this.isPortalUser){
+                            tempOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/opportunity/' + tempOpportunity.Id;
+                        }
+                        else{
+                            tempOpportunity.ApplicationNumberUrl = window.location.origin + '/lightning/n/Credit_Info_Internal?c__oppid=' + tempOpportunity.Id;
+                        }
+                        
                     }
                     if ((tempOpportunity.Application_Number__c == undefined) || (tempOpportunity.Application_Number__c == '')) {
                        // tempOpportunity.ApplicationNumberUrl.typeAttributes.label.fieldName = name;
@@ -455,9 +476,10 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
             || substages === 'Funding Team Accepted')) {
             this.loader = false;
             this[NavigationMixin.Navigate]({type: 'standard__webPage',attributes: {
-                    url: window.location.origin + '/dllondemand/s/enroll-screen?oppId=' + row.Id
+                url: window.location.origin + '/dllondemand/s/enroll-screen?oppId=' + row.Id
                 }
             })
+            
         } else {
             this.loader = false;
             const evt = new ShowToastEvent({
@@ -602,7 +624,8 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
         
         /*added header columns for excel- Download Application*/
         let columnHeader = [
-            'Application Number', 
+            'Application Number',
+            'Quote Number', 
             'Nickname', 
             'Application Type', 
             'Application Status', 
@@ -614,20 +637,16 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
             'Application Amount', 
             'Booked Amount'];
         // Prepare a html table
-        //let doc = '<style>'; 
+        let doc = '<style>'; 
         // Add styles for the table
+        doc += 'table, th, td {';
+        doc += '    border: 1px solid black;';
+        doc += '    border-collapse: collapse;';
+        doc += '    text-align: left';        
+        doc += '}';          
+        doc += '</style>';
         
-        //doc +='#customers {font-family: Arial, Helvetica, sans-serif; border-collapse: collapse; width: 100%;}';
-        //doc +='#customers td, #customers th {border: 1px solid #ddd; padding: 8px;}';
-        //doc +='#customers tr:nth-child(even){background-color: #f2f2f2;}';
-        //doc +='#customers th {padding-top: 12px; padding-bottom: 12px; text-align: left; background-color: #4682B4; color: white;}'
-        //doc += 'table, th, td {';
-        //doc += '    border: 1px solid black;';
-        //doc += '    border-collapse: collapse;';
-        //doc += '}';          
-        //doc += '</style>';
-        
-        let doc = '<table>';
+        doc += '<table>';
         
         // Add all the Table Headers
         doc += '<tr>';
@@ -640,7 +659,8 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
 
         data.forEach(record => {
             doc += '<tr>';
-            doc += '<th>'+record.Application_Number__c+'</th>'; 
+            doc += '<th>'+record.Application_Number__c+'</th>';
+            doc += '<th>'+record.Display_Quote_Number__c+'</th>'; 
             doc += '<th>'+record.Nickname__c+'</th>'; 
             doc += '<th>'+record.Type+'</th>';
             doc += '<th>'+record.Sub_Stage__c+'</th>';

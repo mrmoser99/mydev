@@ -2150,6 +2150,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
             tempAsset.batteryIncluded = assets[i].Battery_Included__c;
             tempAsset.subsidyName = assets[i].Subsidy__c;
             if (typeof assets[i].Subsidy_ID__c === 'undefined') {
+                console.log('undefined');
                 tempAsset.subsidy = 'No';
             } else {
                 tempAsset.subsidy = assets[i].Subsidy_ID__c;

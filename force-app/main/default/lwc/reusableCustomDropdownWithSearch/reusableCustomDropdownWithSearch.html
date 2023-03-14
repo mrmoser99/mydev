@@ -1,3 +1,13 @@
+<!--
+  @description       : 
+  @author            : Mark Moser
+  @group             : 
+  @last modified on  : 02-24-2023
+  @last modified by  : Mark Moser
+  Modifications Log
+  Ver   Date         Author       Modification
+  1.0   02-24-2023   Mark Moser   Initial Version
+-->
 <template>
     <div class="slds-form-element">
         <!-- Field Label -->
@@ -34,7 +44,7 @@
                                 id="select-sobject-id" data-id="select-sobject-id" role="textbox"
                                 autocomplete={autoCompleteOff} placeholder={placeholder} title={label}
                                 onfocus={handleInputClick} value={inputValue} onkeyup={handleKeyPress}
-                                onblur={closeDropdown}></input>
+                                onblur={closeDropdown} disabled={disabled}></input>
                             <!--/ Readonly Input to display selected value -->
 
                             <!-- Edit icon div to indicate to the user that they have selected an option -->
@@ -45,7 +55,7 @@
                                 </span>
                             </div>
                             <!--/ Edit icon div to indicate to the user that they have selected an option -->
-                            
+
                             <div if:false={selectedValueExists}>
                                 <!-- Up Arrow icon div if dropdown open -->
                                 <div if:true={isDropdownOpen}>
@@ -100,22 +110,24 @@
                                 <!--/ li to display each option in the list -->
                             </template>
                             <div if:true={displayMoreOptionsAvailableMessage}>
-                                <li role="presentation" class="slds-listbox__item"
-                                data-label="Additional Values Hidden" data-value={moreOptionsAvailableId}
-                                onmousedown={displayMoreOptionsClickHandler} title="Additional Values Hidden">
-                                <div id={moreOptionsAvailableId}
-                                    class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
-                                    role="option" style="display: flex;justify-content: space-between;">
-                                    <span class="slds-media__figure slds-listbox__option-icon">
-                                        <lightning-icon icon-name="utility:jump_to_bottom" size="x-small"></lightning-icon>
-                                    </span>
-                                    <span class="slds-truncate">
-                                        <span>See More...</span>
-                                    </span>
-                                    <span class="slds-media__figure slds-listbox__option-icon">
-                                        <lightning-icon icon-name="utility:jump_to_bottom" size="x-small"></lightning-icon>
-                                    </span>
-                                </div>
+                                <li role="presentation" class="slds-listbox__item" data-label="Additional Values Hidden"
+                                    data-value={moreOptionsAvailableId} onmousedown={displayMoreOptionsClickHandler}
+                                    title="Additional Values Hidden">
+                                    <div id={moreOptionsAvailableId}
+                                        class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                        role="option" style="display: flex;justify-content: space-between;">
+                                        <span class="slds-media__figure slds-listbox__option-icon">
+                                            <lightning-icon icon-name="utility:jump_to_bottom"
+                                                size="x-small"></lightning-icon>
+                                        </span>
+                                        <span class="slds-truncate">
+                                            <span>See More...</span>
+                                        </span>
+                                        <span class="slds-media__figure slds-listbox__option-icon">
+                                            <lightning-icon icon-name="utility:jump_to_bottom"
+                                                size="x-small"></lightning-icon>
+                                        </span>
+                                    </div>
 
                                 </li>
                             </div>
@@ -126,7 +138,7 @@
                 </div>
 
 
-            
+
             </div>
             <!--/ Combobox Container -->
         </div>

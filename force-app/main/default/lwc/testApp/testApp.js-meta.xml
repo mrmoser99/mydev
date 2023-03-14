@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>55.0</apiVersion>
-    <description>Price Quote Page Container</description>
+    <description>Price Quote Internal</description>
     <isExposed>true</isExposed>
-    <masterLabel>Price Quote Page Container</masterLabel>
+    <masterLabel>Price Quote Internal</masterLabel>
     <targets>
-    <target>lightning__AppPage</target>
+        <target>lightning__AppPage</target>
         <target>lightning__RecordPage</target>
-        <target>lightningCommunity__Page</target>
-        <target>lightningCommunity__Default</target>
+    
     </targets>
     <targetConfigs>
-        <targetConfig targets="lightningCommunity__Default,lightning__AppPage">
+        <targetConfig targets="lightning__AppPage,lightning__RecordPage">
             <property label="Section Title" name="sectionTitle" type="String" default="New Quote" />
             <property label="Section Sub Title" name="sectionSubTitle" type="String" default="Details &amp; Add Ons" />
             <property label="opp id" name="oppid" type="String" default="No Input Provided" />

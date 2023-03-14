@@ -2,11 +2,14 @@
  * @description       : 
  * @author            : Mark Moser
  * @group             : 
- * @last modified on  : 02-08-2023
+ * @last modified on  : 02-21-2023
  * @last modified by  : Mark Moser
  * Modifications Log
  * Ver   Date         Author       Modification
  * 1.0   01-23-2023   Mark Moser   Initial Version Modified
+ * Change Log:
+ * 
+ * 02/21/2023 - MRM Fixed Accessory Issue
 **/
 public without sharing class AppUtility{
 
@@ -739,6 +742,7 @@ public without sharing class AppUtility{
                                         where quote__c = :q.id
                                         ] ;
 
+        
         system.debug('quote id is: ' + q.id);
         q.id = null;
         Quote qClone = q;
@@ -752,10 +756,15 @@ public without sharing class AppUtility{
 
         insert qClone;
 
+        Map<String,ID> lineNameMap = new Map<String,ID>();
+
         for (Quote_Line__c ql:qLineList){
             ql.id = null;
             ql.quote__c = qClone.id;
+            
         }
+
+        
         List<Quote_Line__c> qLineListClone = qLineList;
     
             
@@ -763,6 +772,36 @@ public without sharing class AppUtility{
             insert qLineListClone;
         }
 
+        Map<String,ID> newLineNameMap = new Map<String,ID>();
+
+        for (Quote_Line__c ql:qLineListClone){
+            if (ql.related_asset__c == null){
+                newLineNameMap.put(ql.name,ql.id);
+            }
+        }
+
+        //now i have a map with 
+        //   Catepillar 2EP10000, new line id
+        //   Catepillar 2EP10001, new line id
+
+        List<Quote_Line__c> qLineListNew = [SELECT
+                            Related_Asset__r.name
+                            FROM
+                            Quote_Line__c
+                            where quote__c = :q.id
+                            and related_asset__c != null
+                            ] ;
+
+        for (Quote_Line__c qlc:qLineListNew){
+            qlc.related_asset__c = newLineNameMap.get(qlc.Related_Asset__r.name);
+        }
+
+        system.debug('map is: ' + newLineNameMap);
+
+        if (!qLineListNew.isEmpty())
+            update qLineListNew;
+
+                                        
         Opportunity o = [select id from Opportunity where id = :destinationOppId];
         o.Originating_Quote_No__c = q.quote_number__c;
         update o;

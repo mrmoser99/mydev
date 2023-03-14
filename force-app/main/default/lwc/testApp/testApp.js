@@ -1,8 +1,12 @@
 /**
-
+ * Created by ShiqiSun on 11/17/2021.  then tod could not add one more comment in 1 year.
 *
 *  Change Log:
-*  01/19/2023 - MRM Created
+*  07/22/2022 - MRM - made leasetype picklist dynamic based on asset condition.
+*  10/6/2022 - Geetha - Fixed Bugs 870385, 868811
+*  10/20/2022 - Geetha - PBI 882069 - As a portal user I want to edit/copy the asset condition of an existing quote option
+*  11/17/2022 -0 MRM - Pricing 2.0; now reusable component for pricing
+*  02/01/2023 - MRM - Changed include in credit app label to be dynamic, changed save to do callback and changed button for appeal
 */
 
 import {api, track, LightningElement, wire} from 'lwc';
@@ -16,20 +20,27 @@ import getFinancialProducts from "@salesforce/apex/PricingUtils.getFinancialProd
 import getFinancialProduct from "@salesforce/apex/PricingUtils.getFinancialProduct";
 import getSalesReps from "@salesforce/apex/PricingUtils.getSalesReps";
 import getSalesRepsFromReturnedOSID from "@salesforce/apex/CreateQuoteOpportunity.getSalesRepsFromReturnedOSID";
-import IsPortalEnabled from "@salesforce/apex/PricingUtils.isPortalEnabled";
 
 //data manipulation items
-
-  
+import deleteQuoteOption from "@salesforce/apex/CreateQuoteOpportunity.DeleteQuoteOption";
+import markQuoteOptionAsPrimary from "@salesforce/apex/CreateQuoteOpportunity.markQuoteOptionAsPrimary";
+import markQuoteOptionAsCreditAppSelection from "@salesforce/apex/CreateQuoteOpportunity.markQuoteOptionAsCreditAppSelection";
 import queryQuoteOpportunity from "@salesforce/apex/CreateQuoteOpportunity.QueryQuoteOpportunity";
+import setProposalForQuote from "@salesforce/apex/CreateQuoteOpportunity.setProposalForQuote";
+import saveCustomerCommentsToOpp from "@salesforce/apex/CreateQuoteOpportunity.saveCustomerCommentsToOpp";
+import getSmartCommDoc from "@salesforce/apex/SmartCommUtils.getSmartCommDoc";
+import IsPortalEnabled from "@salesforce/apex/PricingUtils.isPortalEnabled";
 
-export default class PriceQuotePageContainerAppeal extends NavigationMixin(LightningElement) {
+
+
+export default class PriceQuotePageContainer extends NavigationMixin(LightningElement){
 
     // public property
     @api sectionTitle;
     @api sectionSubTitle;
     @api oppid;
     @api option;
+    @api mode;  //cc means it is part of credit check appeal
 
     //Object model
     assets = [{
@@ -45,14 +56,12 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
     }];
     relatedAssets = [];
     newOption;
-    quoteNumber;
-    appNumber;
     options = [];
     show = false;
     opportunityId;
     optionFirstTime = true;
-    newOption = false;
-    showQuoteNumber = false;
+    isCCMode = false;
+    isPortalUser=false;
 
     @track quoteObject = {
         deleteAssets: [],
@@ -71,23 +80,19 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
         optionNum: null
     };
 
-    displayModal = false;
-
-
-
     quoteObjectSummary = [];
 
     //trackers
     @track currentPosition = 0;
     @track currentAccPosition = 0;
-    @api loading = false;
+    @track loading = false;
     @track hasQuotes = false;
     @track specificationTabActive = true;
     @track currentTab = 'proposal';
     @track optionsPicklistVal = '0';
 
     //Values to be used by input fields
-    nickname = 'Appeal';
+    nickname = '';
     location;
     salesRep;
     program = '';
@@ -115,7 +120,6 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
      
 
     financeTerm;
-    quoteCount;
     
     financeType = 'BO';
     paymentFrequency = 'Monthly';
@@ -245,7 +249,7 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
 
     get newPageReferenceUrlParams() {
         return {
-            oppid: this.opportunityId,
+            oppid: this.opportunityId
         };
     }
 
@@ -255,21 +259,19 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
     ***************************************************************************************************************/
     setCurrentPageIdBasedOnUrl() {
 
-        this.oppid = this.currentPageReference.state.oppid;
-        if (typeof this.oppid === 'undefined'){
-            this.oppid = this.currentPageReference.state.c__oppid;
-            console.log('c__oppid=' + this.oppid);
+        console.log('this current page ref state oppid' + this.currentPageReference.state.c__oppid);
+        console.log('this current page ref state oppid' + this.currentPageReference.state.oppid);
+        console.log('this current page ref state oppid' + this.oppid);
+
+        if (this.oppid == null){
+            this.oppid = this.currentPageReference.state.oppid;
+            if (this.oppid == null){
+                this.oppid = this.currentPageReference.state.c__oppid;
+            }
         }
 
-        
-        this.option = this.currentPageReference.state.option;
-        if (typeof this.option === 'undefined'){
-            
-            this.option = this.currentPageReference.state.c__option;
-            console.log('c__option=' + this.option);
-        }
-         
-    
+        if (this.mode == null)
+            this.mode = this.currentPageReference.state.mode;
     }
 
     
@@ -277,43 +279,24 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
     *  
     ***************************************************************************************************************/
     connectedCallback() {
-
-        IsPortalEnabled().then(result => {
-            console.log('result is : ' + result);
-            this.isPortalUser = result;
-        });
         
-        //console.log(this.oppid);
+        console.log(this.oppid);
         this.loading = false;
 
-        if (this.option == 'New Option'){
+        //cc mode is used for the appeal process to make the page act differently
 
-            this.newOption = true;
-            this.quoteObject.isClone = false;
-            this.quoteObject.isEdit = false;
+        if (this.mode == 'cc')
+            this.isCCMode = true;
+        else
+            this.isCCMode = false;
 
-        }
-            
         if (this.oppid) {
             this.loading = true;
             this.isLoadedQuote = true;
             queryQuoteOpportunity({'oppId' : this.oppid})
                 .then(result => {
-                    console.log('dqn:' + result.newOpp.Display_Quote_Number__c);
-                    console.log('dqn:' + result.newOpp.Quote_Count__c);
-                    this.quoteNumber = result.newOpp.Display_Quote_Number__c;
-                    this.appNumber = result.newOpp.Application_Number__c;
-                    this.quoteCount = result.newOpp.Quote_Count__c;
-
-                    if (this.quoteCount != 0)
-                        this.showQuoteNumber = true;
-                    else
-                        this.showQuoteNumber = false;
-                     
                     this.parseData(result);
-        
                     this.addPricingDataToLoadedQuotes();
-        
                     if (this.options.length !== 0) {
                         this.hasQuotes = true;
                         this.hasLocationSelection = true;
@@ -342,14 +325,16 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
                         for (let i = 0; i < this.options.length; i++) {
                             if (this.options[i].quote.Is_Primary__c) {
                                 this.creditAppId = this.options[i].quote.Id;
+                                console.log('set id to' + this.creditAppId);
                                 break;
                             }
                         }
                         if (!this.creditAppId) {
                             this.creditAppId = this.options[0].quote.Id;
                         }
+                        console.log('set id to 2' + this.creditAppId);
                         let loadsToGo = 2;
-
+                        console.log('this credit app id is:' + this.creditAppId);
                         if (this.location) {
                             this.loading = true;
                             getPrograms({siteName: this.location})
@@ -418,13 +403,13 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
                             
                         }
                     }
-                    
-                    this.loading = false;
+                    //this.loading = false;
                 }).catch(error => {
                     this.showToast('Invalid Opportunity Id', this.oppid, 'error');
+                    ////console.log('Opportunity Import Error:' + error);
+                    ////console.log(JSON.parse(JSON.stringify(error)));
                     this.loading = false;
                 });
-            
         }
         /**
          * This callback is called before navigating to the new record form
@@ -518,8 +503,11 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
             this.showToast('Something went wrong', error.body.message, 'error');
             this.location = undefined;
         }
-        this.loading = false;
-        
+        //setTimeout(() => {
+            //this.loading = false;
+
+            ////console.log('wiredGetUserSite done');
+        //}, 1500);
     }
 
     
@@ -540,9 +528,10 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
         }
         this.hasLocationSelectionSalesRep = false;
 
-    
+        
+
         let loadsToGo = 2;
-        this.loading = true;
+
         getPrograms({siteName: event.target.value})
             .then(result => {
                 let plist = [];
@@ -553,7 +542,6 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
                     plist.push({label: element.programName, value: element.programId});
 
                 });
-                this.loading = false;
                 for (let i = 0; i < plist.length; i++) {
                     if (this.program === plist[i].value) {
                         hasProgramId = true;
@@ -584,7 +572,6 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
                 //this.loading = false;
             }
             this.programPicklist = undefined;
-         
             return;
         });
 
@@ -627,8 +614,6 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
 
                     ////console.log('handleChangeLocation done');
                 }
-
-                this.loading = false;
 
 
             })
@@ -783,7 +768,48 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
     }
 
     
-    
+    /***************************************************************************************************************
+    *  
+    ***************************************************************************************************************/
+    handleQuoteSelectForCreditApp(event) {
+
+        console.log('in handle seelct for credit app');
+        this.creditAppId = event.detail;
+        this.hasNoActiveQuoteForCredApp = false;
+         
+        this.loading = true;
+        console.log('event detail:' + event.detail);
+
+        markQuoteOptionAsCreditAppSelection({quoteId : this.creditAppId, oppId : this.opportunityId})
+            .then(result => {
+                console.log('result is' + JSON.stringify(result));
+                if (result == 'NoPayment'){
+                    this.creditAppId = null;
+                    this.hasNoActiveQuoteForCredApp = true;
+                    this.showToast('This option cannot be selected because there is no valid payment!', 'Error', 'error');
+                    this.loading = false;
+                    return;
+                }
+                this.showToast('Success saving selection', 'Success', 'success');
+                this.loading = false;
+                if (this.isCCMode == true){
+                    this.connectedCallback();
+                }
+            }).catch(error => {
+            this.showToast('Error in saving selection','Error', 'error');
+            this.loading = false;
+        });
+
+        
+        if (this.isCCMode == false){
+          this[NavigationMixin.Navigate]({
+              type: 'standard__webPage',
+              attributes: {
+                  url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + this.oppid
+              }
+          });
+        }
+    }
 
     
     /***************************************************************************************************************
@@ -1073,14 +1099,14 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
     ***************************************************************************************************************/
     //Option picklist handler
     handleOptionPicklist(event) {
-        console.log('this loading2 is: ' + this.loading);
-        console.log('ehllo');
+
+        
         this.loading = true;
-        console.log('*** in replacement calling option *** ' + event);
+        //console.log('*** in replacement calling option *** ' + this.loading);
         this.optionsPicklistVal = event.target.value.toString();
-        console.log('this op pick val' + this.optionsPicklistVal);
+        //console.log('this op pick val' + this.optionsPicklistVal);
         if(this.optionsPicklistVal === 'New Option'){
-             
+            
             this.leaseTypeSummary = '-';
             this.rateTypeSummary = '-';
             this.advancedPaymentsSummary = '-';
@@ -1145,14 +1171,9 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
 
             this.comments = '';
          
-            console.log('about to change option' + this.currentTab);
-            //if (this.currentTab == 'spec'){
+            if (this.currentTab == 'spec'){
                 this.template.querySelector('c-pricing-component').childOption(this.optionsPicklistVal);
-            //}
-            console.log('made it here');
-            this.loading = false;
-                console.log('made it here2');
-             console.log('this loading3 is: ' + this.loading);
+            }
         }else {
             //Values to be used by input fields
             this.quoteObject.isEdit = true;
@@ -1167,7 +1188,6 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
                 this.template.querySelector('c-pricing-component').childOption(this.optionsPicklistVal);
             }
         }
-
         if (event.skipLoadToFalse) {
             return;
         }
@@ -1414,7 +1434,24 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
     
     
     
+    /***************************************************************************************************************
+    *  
+    ***************************************************************************************************************/
     
+    saveCustomerComments() {
+        this.loading = true;
+        //console.log('Start of customerCommentsSave');
+        ////console.log(this.customerComments);
+        ////console.log(this.opportunityId);
+        saveCustomerCommentsToOpp({comments : this.customerComments, oppId : this.opportunityId})
+            .then(result => {
+                this.showToast('Customer comments saved!', 'Success!','success');
+                this.loading = false;
+            }).catch(error => {
+            this.showToast('An error occurred trying to save customer comments.', JSON.stringify(error), 'error');
+            this.loading = false;
+        });
+    }
 
     
     /***************************************************************************************************************
@@ -1531,10 +1568,8 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
             this.optionsPicklistVal = 'New Option';
             this.handleCancel();
         }
-
-        console.log('turn ing off here3');
         this.loading = false;
-        setTimeout( () => { 
+        setTimeout( () => {createQuote
             if (this.optionsPicklistVal === 0) {
                 this.optionsPicklistVal = this.optionsPicklistVal.toString();
             }
@@ -1548,46 +1583,60 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
     *  
     ***************************************************************************************************************/
     handleChildSave(event){
-
-        console.log('in handle child save');
          
-        console.log('this quoteobject: ' + JSON.stringify(this.quoteObject));
+        //console.log('**********parent got the word' + JSON.stringify(event.detail)  + this.loading);
         
-        console.log('this opp id is: ' + this.quoteObject.oppId);
+        //this.currentTab = 'proposal';
         
-        console.log('url option is: ' + this.option);
+        //this.template.querySelector('lightning-tabset').activeTabValue = 'proposal';
+        /*
+        this.quoteObject = event.detail.quote;
+        this.hasQuotes = true;
+        this.oppid = event.detail.quote.oppId;
+        this.optionNum = this.quoteObject.optionNum;
+        this.option = this.quoteObject.optionNum;
+        this.opportunityId = this.oppid;
+        this.assets = this.quoteObject.assests;
 
-        
-        let id = this.quoteObject.oppId;
+        //this.connectedCallback();
+        */
+        //console.log ('transferring now');
+         
+        //console.log('received ' + event.detail.oppid);
 
-        let opt = null;
-        if (this.quoteObject.optionNum == this.option) {
-            opt = this.option;
-        }
-        else{
-            opt = this.quoteObject.optionNum - 1;
-        }
-        
-        console.log('is portal:' + this.isPortalUser);
+        this.oppid = event.detail.oppid;
+        this.loading = false;
+        // override for internal
+        IsPortalEnabled().then(result => {
+            this.isPortalUser = result;
+        });
         if (this.isPortalUser){
-            this[NavigationMixin.Navigate]({
-                type: 'standard__webPage',
-                attributes: {
-                        url: window.location.origin + '/dllondemand/s/appeal?oppid=' + id + '&option=' + opt
-                }
-            });
+
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__webPage',
+                    attributes: {
+                        url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + event.detail.oppid
+                    }
+                }); 
         }
         else{
+            
             this[NavigationMixin.Navigate]({
                 type: 'standard__webPage',
                 attributes: {
-                        url: window.location.origin + '/lightning/n/Appeal?c__oppid=' + id + '&c__option=' + opt
+                //call new quote page
+                url: window.location.origin + '/lightning/n/Quote2?c__oppid=' + this.oppid
                 }
             });
+        
+            this.connectedCallback();
 
         }
 
-          
+        
+        
+
+
         
     }
 
@@ -1598,15 +1647,12 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
 
         //console.log('in parent handle child cancel');
 
-            let id = this.quoteObject.oppId;
-    
         this[NavigationMixin.Navigate]({
             type: 'standard__webPage',
             attributes: {
-                url: window.location.origin + '/dllondemand/s/opportunity/' + id
+                url: window.location.origin + '/dllondemand/s/new-quote?oppid=' +this.oppid
             }
         });
-
 
     }
 
@@ -1616,7 +1662,22 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
     
     
     
-    
+    /***************************************************************************************************************
+    *  
+    ***************************************************************************************************************/
+    deleteQuote(passingParam) {
+        deleteQuoteOption({quoteOptionId: passingParam})
+            .then(result => {
+                this.showToast('Quote has been deleted!', 'Quote was deleted successfully', 'success');
+                this.parseData(result);
+                this.addOptionSummaries(false);
+            })
+            .catch(error => {
+                //console.log(JSON.stringify(error));
+                this.showToast('An error has occurred trying to delete an option.', error, 'error');
+                this.loading = false;
+            });
+    }
 
     
     /***************************************************************************************************************
@@ -1685,8 +1746,8 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
 
         //this.loading = true;
 
-        console.log('start parseData');
-        console.log(JSON.parse(JSON.stringify(result)));
+        ////console.log('start parseData');
+        ////console.log(JSON.parse(JSON.stringify(result)));
 
         this.opportunityId = result.newOpp.Id;
 
@@ -1740,20 +1801,16 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
             this.options[i].quoteLines = this.sortQuoteLinesByAccessories(this.options[i]);
         }
         this.optionsPicklist.push({value:'New Option', label:'New Option'});
-        //console.log('this is the options picklist:');
-        console.log(this.optionsPicklist);
-        if (this.optionsPicklist.length === 1) {
-            console.log('only 1 option');
-            let wrapperEvent3 = {value: 'New Option'};
-            let wrapperEvent1 = {target: wrapperEvent3, skipLoadToFalse: false};
-            this.handleOptionPicklist(wrapperEvent1);
-            console.log('this loading1 is: ' + this.loading);
-        }
+        ////console.log('this is the options picklist:');
+        ////console.log(this.optionsPicklist);
         if (this.optionsPicklist.length === 2) {
             let wrapperEvent2 = {value: 0};
             let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: false};
+            //console.log('calling handle options 1');
+            
             this.handleOptionPicklist(wrapperEvent);
             this.optionsPicklistVal = '0';
+            ////console.log('Done adding first selection');
         }
         if (this.onlyValidateHeader) {
             this.hasQuotes = true;
@@ -1761,7 +1818,6 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
             this.loading = false;
             this.showToast('Quote has been saved!', 'Quote was saved successfully', 'success');
         }
-        console.log('this loading4 is: ' + this.loading);
     }
 
     
@@ -1792,8 +1848,67 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
         }
     }
 
+    /***************************************************************************************************************
+    *  Send message to appeal page with the chosen option.  this is related to selecting the include in appplicatio
+    * /appeal radio button
+    ***************************************************************************************************************/
+    sendSelectOptionBackToAppeal(event) {
+
+        console.log('send message to appeal' + this.creditAppId);
+
+         
+        const eventForAppeal = new CustomEvent("optionselected", {
+            detail: {quoteId :this.creditAppId,
+                    oppId : this.oppid }
+        });
+
+        this.dispatchEvent(eventForAppeal);
     
+    }
     
+    /***************************************************************************************************************
+    *  
+    ***************************************************************************************************************/
+    stampIsPrimaryOnSelectedOption(event) {
+
+     
+        if(this.customerInfoShow == false){
+            // Immediate feedback
+            const evt = new ShowToastEvent({
+                title:      'Customer Authorization',
+                message:    'In order to submit your credit application, you must confirm that at least one customer information should be there.',
+                variant:    'error',
+                duration:   20000
+            });
+            this.dispatchEvent(evt);
+        } else {
+            markQuoteOptionAsPrimary({'quoteId' : this.creditAppId, 'oppId': this.opportunityId})
+                .then(result => {
+                    // Display message  //this is retarted
+                    //this.showToast('Saving', 'Continuing to credit application', 'success');
+
+                    // Redirect to the credit application page
+                    if (this.isCCMode == false){
+                        this[NavigationMixin.Navigate]({
+                            type: 'standard__webPage',                    
+                            attributes: {
+                                url: '/dllondemand/s/opportunity/' + this.opportunityId  
+                            }
+                        });
+                    }
+                    else{
+                        this.connectedCallback();
+                    }
+                    
+                    
+                }).catch(error => {
+                ////console.log('Error stamping Is_Primary__c');
+                ////console.log(JSON.parse(JSON.stringify(error)));
+                this.showToast('Quote Stamp Failure.', 'Error stamping Is_Primary__c', 'error');
+            });
+        }
+    }
+
     
     /***************************************************************************************************************
     *  
@@ -2127,7 +2242,48 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
     }
 
     
-    
+    /***************************************************************************************************************
+    *  
+    ***************************************************************************************************************/
+    handleProposalToggleForQuote(event) {
+
+
+        //console.log('set propostal for quote' + event.detail);
+
+        this.loading = true;
+        if (this.proposalIdsIncluded.includes(event.detail)) {
+            this.proposalIdsIncluded.splice(this.proposalIdsIncluded.indexOf(event.detail), 1);
+            setProposalForQuote({'quoteId':event.detail, 'trueOrFalse':'false'})
+                .then(result => {
+                    this.showToast('Success!', 'Quote removed from proposal.', 'success');
+                    this.loading = false;
+                })
+                .catch(error => {
+                    this.loading = false;
+                    ////console.log(JSON.parse(JSON.stringify(error)));
+                    this.showToast( 'An error has occurred removing this Quote from the proposal', JSON.stringify(error), 'error');
+                });
+        } else {
+            this.proposalIdsIncluded.push(event.detail);
+            setProposalForQuote({'quoteId':event.detail, 'trueOrFalse':'true'})
+                .then(result => {
+                    this.showToast('Success!', 'Quote added to proposal.', 'success');
+                    this.loading = false;
+                })
+                .catch(error => {
+                    this.loading = false;
+                    ////console.log(JSON.parse(JSON.stringify(error)));
+                    this.showToast( 'An error has occurred adding this Quote to the proposal', JSON.stringify(error), 'error');
+                });
+        }
+
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + this.oppid
+            }
+        });
+    }
 
     
     /***************************************************************************************************************
@@ -2148,7 +2304,77 @@ export default class PriceQuotePageContainerAppeal extends NavigationMixin(Light
     }
 
     
+    /***************************************************************************************************************
+    *  
+    ***************************************************************************************************************/
+    handleDealerProposal(event) {
+        this.CustomerProposal = event.target.value;
+        //console.log('inside cust this.oppid=>' + this.opportunityId);
+        let baseUrl = this.getBaseUrl();
+        getSmartCommDoc({
+            batchConfigResId: 990380852,
+            opportunityId: this.opportunityId,
+            proposalType: 'DealerProposal'
+        }).then(result => {
+            if (result) {
+                //console.log('success' + JSON.stringify(result));
+                this.docID = result;
+                this.finalurl = baseUrl + 'sfc/servlet.shepherd/document/download/' + this.docID + '?operationContext=S1';
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__webPage',
+                    attributes: {
+                        url: this.finalurl
+                    }
+                }, false);
+            }
+            else{
+                 this.showToast( 'An error has occurred generating document!', '', 'error');
+            }
+
+        }).catch(error => {
+            this.error = error;
+            this.showToast( 'An error has occurred generating document!', JSON.stringify(error), 'error');
+            ////console.log(this.error);
+            // this.loader = false;
+        })
+    }
+
     
+    /***************************************************************************************************************
+    *  
+    ***************************************************************************************************************/
+    handleCustomerProposal(event) {
+        this.CustomerProposal = event.target.value;
+        ////console.log('inside cust this.oppid=>' + this.opportunityId);
+        let baseUrl = this.getBaseUrl();
+        getSmartCommDoc({
+            batchConfigResId: 990380852,
+            opportunityId: this.opportunityId,
+            proposalType: 'CustomerProposal'
+        }).then(result => {
+            if (result) {
+                ////console.log('success' + JSON.stringify(result));
+                this.docID = result;
+                this.finalurl = baseUrl + 'sfc/servlet.shepherd/document/download/' + this.docID + '?operationContext=S1';
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__webPage',
+                    attributes: {
+                        url: this.finalurl
+                    }
+                }, false);
+            }
+            else{
+                 this.showToast( 'An error has occurred generating document!', JSON.stringify(result), 'error');
+            }
+
+        }).catch(error => {
+            this.error = error;
+            this.showToast( 'An error has occurred generating document!','', 'error');
+            ////console.log(this.error);
+            // this.loader = false;
+        })
+    }
+    //Proposal Document -Geetha - end
     
  
     /***************************************************************************************************************

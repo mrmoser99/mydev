@@ -2,7 +2,7 @@
  * @description       : LWC component to Credit Application Page container. 
  * @author            : Kritika Sharma : Traction on Demand
  * @group             : Kritika Sharma & Surbhi Goyal :  Traction on Demand
- * @last modified on  : 02-21-2023
+ * @last modified on  : 02-17-2023
  * @last modified by  : Mark Moser
  * @Changes Log        :
  * Date       - BUG/PBI    - Author                   - Description
@@ -14,7 +14,6 @@
  * 12/15/2022 - PBI 886371 - Fernando Nereu de Souza  - when I select a location I want to be presented with a list of sales rep for that specific location
  * 12/11/2022 - PBI 768016 - Fernando Nereu de Souza  - Delete BO from credit Application
  * 02/02/2023 - MRM  Added logic for appeals
- * 02/17/2023 - Geetha commented edit-Appeal as per Mark's suggestion
  * 
 **/
 
@@ -83,7 +82,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         CREDITAPP_CUSTOMERAPPROVAL_MESSAGE,
         CREDITAPP_CUSTOMERAPPROVAL_TITLE,
         CREDITAPP_CUSTOMERINFO_MESSAGE,
-        CREDITAPP_CUSTOMERINFO_TITLE, 
+        CREDITAPP_CUSTOMERINFO_TITLE,
         CREDITAPP_INTERVAL,
         CREDITAPP_SAVED_MESSAGE,
         CREDITAPP_SAVED_TITLE,
@@ -137,9 +136,8 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     // A counter to load contact roles
     contactRolesReloaded = 0;
     
-    
     //A Counter to load get Users Wired
-   // userSitesReloaded = 0;
+    userSitesReloaded = 0;
 
     // Beneficial owner type
     individualCheck;
@@ -156,15 +154,8 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         if (currentPageReference) {
             console.log('currentPageReference::'+JSON.stringify(currentPageReference.attributes.recordId));
             console.log('currentPageReference.state::'+JSON.stringify(currentPageReference.state));
-            console.log('currentPageReference.state::'+JSON.stringify(currentPageReference.state.c__oppid));
             // Only the standard opportunity page is being used now.
             this.oppId = currentPageReference.attributes.recordId;
-            console.log(typeof this.oppId);
-            if (typeof this.oppId === 'undefined'){
-                console.log('currentPageReference.state::'+JSON.stringify(currentPageReference.state.c__oppid));
-                this.oppId = currentPageReference.state.c__oppid;
-                console.log('this opp id is: ' + this.oppId);
-            }
             
             // The read/write page layouts are hidden by default, but then modified based on the opportunity status.
             this.appEditMode = 'hide';
@@ -437,10 +428,9 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                         this.loading = false;
                         this.hasLocationSelectionSalesRep = false;
 
-                        //Vinicio
-                       /* if (this.osidForSalesReps.length !== 0) {
+                        if (this.osidForSalesReps.length !== 0) {
                             this.salesRepPopulated();                           
-                        }*/
+                        }
                         
                     }).catch(error => {
                     this.loading = false;
@@ -809,18 +799,15 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                     });
             }
             
-            //Vinicio
-           /* if (this.osidForSalesReps.length !== 0) {
+            if (this.osidForSalesReps.length !== 0) {
                 this.salesRepPopulated();
-            }*/
+            }
         }
     }
 
 
     connectedCallback(){      
         console.log('Inicio connectedCallback: ' );
-
-         
         // All three of the following arrays have to maintain their exact order and count as they map to the same index in each array.
         var fieldOptions=['Rate_Type__c','Finance_Term_Month__c','Lease_Type__c','Payment_Frequency__c','Advance_Payments__c',
             'Make__c','Asset_Type_ITA_Class__c','Model__c','Mast_Type__c','Operating_Environment__c','Battery_Included__c','Number_of_Units__c','Subsidy__c',
@@ -890,8 +877,6 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             });
            
         }
-        //Vinicio
-        //refreshApex(this.wiredGetContact); (it was removed in d06 before, added after comparing in dev. Need to be tested)
         console.log('Fim  connectedCallback: ' );   
                        
     }
@@ -1313,7 +1298,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     //End: BUG 855960 - Fernando Nereu de Souza - Nothing should appear in the SSN box if no data was captured
 
     //Start: BUG 946516 - Vinicio Ramos Silva - After user saves Credit check and comes back to the draft from Application List view, Sales rep Name is not seen retained in application
-   /* salesRepPopulated(){
+    salesRepPopulated(){
         for (let i = 0; i < this.osidForSalesReps.length; i++) {
             if (this.salesRepId === this.osidForSalesReps[i].value) {
                 this.location = this.osidForSalesReps[i].osid;
@@ -1324,7 +1309,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 this.handleChangeLocation(dummyEvent);
             }
         }
-    }*/
+    }
     //End: BUG 946516 - Vinicio Ramos Silva - After user saves Credit check and comes back to the draft from Application List view, Sales rep Name is not seen retained in application
 
 
@@ -1617,8 +1602,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
 
         console.log(currentUserId);
 
-    //Below code is commented by Geetha - edit appeal : Mark
-       /* if (this.oppOwnerId != currentUserId){
+        if (this.oppOwnerId != currentUserId){
 
             const evt = new ShowToastEvent({
                             title:      'Error',
@@ -1628,7 +1612,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                             });
             this.dispatchEvent(evt);
             return
-        }*/
+        }
 
         if (this.quoteCount == 0){
             this.mode = 'cc';
@@ -1644,26 +1628,12 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 this.option = result;
                 console.log('returned ' + this.option);
                 this.option = this.option - 1;
-
-                if (this.isPoratlUser){ 
-
-                    this[NavigationMixin.Navigate]({
-                        type: 'standard__webPage',
-                        attributes: {
-                            url: window.location.origin + '/dllondemand/s/appeal?oppid=' + this.oppId + '&option=' + this.option
-                        }
-                    })  
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__webPage',
+                    attributes: {
+                    url: window.location.origin + '/dllondemand/s/appeal?oppid=' + this.oppId + '&option=' + this.option
                 }
-                else{
-
-                    this[NavigationMixin.Navigate]({
-                        type: 'standard__webPage',
-                        attributes: {
-                            url: window.location.origin + '/lightning/n/Appeal?c__oppid=' + this.oppId + '&option=' + this.option
-                        }
-                    })  
-
-                }
+                })  
             } else {
                 const evt = new ShowToastEvent({
                             title:      'Fatal Error',
@@ -1748,24 +1718,12 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                 if (result) {
                     this.option = result;
                     this.option = this.option - 1;
-                    if (this.isPortalUser){
-                        this[NavigationMixin.Navigate]({
+                    this[NavigationMixin.Navigate]({
                         type: 'standard__webPage',
                             attributes: {
                                 url: window.location.origin + '/dllondemand/s/appeal?oppid=' + this.oppId + '&option=' + this.option
                                 }
-                        })
-                    }
-                    else{
-                        this[NavigationMixin.Navigate]({
-                        type: 'standard__webPage',
-                            attributes: {
-                                url: window.location.origin + '/lightning/n/Appeal?c__oppid=' + this.oppId + '&c__option=' + this.option
-                                }
-                        })
-
-                    }
-
+                })  
                 this.loading = false;
             } else {
                 const evt = new ShowToastEvent({
