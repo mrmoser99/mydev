@@ -1,5 +1,5 @@
 /*********************************************************************************************
-*	This batch program adds new portal users to account team of end users for specified dealer
+*   This batch program adds new portal users to account team of end users for specified dealer
 *
 * ChangeLog:
 *
@@ -19,12 +19,12 @@ global class BatchShareEndUserAccounts implements Database.Batchable<sObject>,Da
 
     String mode;
 
-	/*********************************************************************************************
-  	*	CONSTRUCTOR
-  	*
-  	*
-  	************************************************************************************************/
-	global BatchShareEndUserAccounts(String lastDealerId, String mode){   
+    /*********************************************************************************************
+    *   CONSTRUCTOR
+    *
+    *
+    ************************************************************************************************/
+    global BatchShareEndUserAccounts(String lastDealerId, String mode){   
 
         if (lastDealerId == null)
             lastDealerId = '';   //this works better with > in soql
@@ -45,7 +45,7 @@ global class BatchShareEndUserAccounts implements Database.Batchable<sObject>,Da
         this.mode = mode;
 
         if (mode == null){
-            mode = 'report';  //default is report mode
+            mode = System.Label.DOD_Batch_Share_Mode;  // 'report' or 'update';  //default is report mode
         }
 
         Set<ID> dealerSet = new Set<ID>();
@@ -67,17 +67,17 @@ global class BatchShareEndUserAccounts implements Database.Batchable<sObject>,Da
     
     }
     /*********************************************************************************************
-  	*	START
-  	*
-  	************************************************************************************************/				
+    *   START
+    *
+    ************************************************************************************************/               
     global Database.QueryLocator start(Database.BatchableContext c) {    
         return Database.getQueryLocator(QUERY);        
     }
-  	/*********************************************************************************************
-  	*	EXECUTE
-  	*
-  	*
-  	************************************************************************************************/
+    /*********************************************************************************************
+    *   EXECUTE
+    *
+    *
+    ************************************************************************************************/
     global void execute(Database.BatchableContext c, List<Account_Account_Relationship__c> scope) {
         
         try{
@@ -98,7 +98,7 @@ global class BatchShareEndUserAccounts implements Database.Batchable<sObject>,Da
             AccountId,
             ContactId,  
             Roles
-	        FROM
+            FROM
             AccountContactRelation
             where AccountId  in :siteSet
    
@@ -157,8 +157,13 @@ global class BatchShareEndUserAccounts implements Database.Batchable<sObject>,Da
 
         List<AccountTeamMember> amList = [select id, accountId, userId from AccountTeamMember where AccountId in :endUserAccountSet];
         for(AccountTeamMember am:amList){
+            System.debug('Storing: ' + string.valueOf(am.AccountId) + '-' +  string.valueOf(am.UserId));    
             existingMap.put(string.valueOf(am.accountId) + '-' + string.valueOf(am.userId), am);
         }
+        
+        List<DOD_End_User_Share_Result__c> rList = new List<DOD_End_User_Share_Result__c>();
+
+
 
 
         Map<ID,ID> newTeamMembers = new Map<ID,ID>();
@@ -171,22 +176,31 @@ global class BatchShareEndUserAccounts implements Database.Batchable<sObject>,Da
                         continue;
                     }
                     else{
-              		    AccountTeamMember a = new AccountTeamMember();
-				        a.AccountId = r.account_1__c;
-            	        a.UserId =  contactUserMap.get(ct);
-				        a.accountAccessLevel = 'Read';
-				        a.TeamMemberRole =contactRole.get(ct);
+                        AccountTeamMember a = new AccountTeamMember();
+                        a.AccountId = r.account_1__c;
+                        a.UserId =  contactUserMap.get(ct);
+                        a.accountAccessLevel = 'Read';
+                        a.TeamMemberRole =contactRole.get(ct);
                         if (a.TeamMemberRole == null){
                             a.TeamMemberRole = 'Partner Admin';
                         }
-                    
-                        //if (existingMap.get(string.valueOf(a.AccountId) + '-' +  string.valueOf(a.UserId)) != null)   //don't update if already existing
-                        //    deleteAccountTeam.add(existingMap.get(string.valueOf(a.AccountId) + '-' +  string.valueOf(a.UserId)) );
-                        //else{
+                        
+                        System.debug('Looking for: ' + string.valueOf(a.AccountId) + '-' +  string.valueOf(a.UserId));
+                        
+                        if (existingMap.get(string.valueOf(a.AccountId) + '-' +  string.valueOf(a.UserId)) != null)   //don't update if already existing
+                             System.debug('Found: ' + string.valueOf(a.AccountId) + '-' +  string.valueOf(a.UserId));
+                        else{
+                            if (mode == 'report'){
+                                DOD_End_User_Share_Result__c sr = new DOD_End_User_Share_Result__c();
+                                sr.account__c = a.AccountId;
+                                sr.contact__c = ct;
+                                rList.add(sr);
+                            }
+                            system.debug('Adding: ' + ' Account: ' + a.accountId + ' User: ' + a.userId);
                             newTeamMembers.put(a.accountId, a.userId);
                             newTeamMembersContactId.put(a.accountId, ct);
                             insertAccountTeam.add(a);  
-                        //}
+                        }
                     }
                 }
             }
@@ -205,38 +219,6 @@ global class BatchShareEndUserAccounts implements Database.Batchable<sObject>,Da
         //system.debug('Account contact pairs: ' + newTeamMembers);
         //system.debug('UPSAccountTeam #inserts: ' + insertAccountTeam.size());
 
-        Map<ID,Account> aMap = new MAP<ID,Account>( [select name from Account where id in :newTeamMembers.keySet()]);
-        Map<ID,Contact> cMap = new Map<ID,Contact>([select name from Contact where id in :contactSiteMap.keySet()]);
-
-    
-        Map<ID,List<ID>> accountContactMap = new Map<ID,List<ID>>();
-        for (ID id : newTeamMembersContactId.keySet()){
-            List<ID> tempList = new List<ID>();
-
-            if (accountContactMap.get(id) == null){
-                tempList.add(newTeamMembersContactId.get(id));
-            }
-            else{
-                tempList = accountContactMap.get(id);
-                tempList.add(newTeamMembersContactId.get(id));
-            }
-            accountContactMap.put(id, tempList);
-        }
-
-        List<DOD_End_User_Share_Result__c> rList = new List<DOD_End_User_Share_Result__c>();
-
-
-        for (ID id: accountContactMap.keySet()){
-            
-            for (ID id2: accountContactMap.get(id)){
-                //system.debug ('End User: ' + aMap.get(id).name + '--->Contact:' + cMap.get(id2).name);
-                DOD_End_User_Share_Result__c r = new DOD_End_User_Share_Result__c();
-                r.account__c = id;
-                r.contact__c = id2;
-                rList.add(r);
-            }
-        }
-
         if (mode == 'report')
             insert rList;
         
@@ -244,22 +226,22 @@ global class BatchShareEndUserAccounts implements Database.Batchable<sObject>,Da
         catch (Exception e) {
 
             Error_Log__c el = new Error_Log__c();
-		    el.callout_name__c = 'BatchShareEndUserAccounts dealerId= ' + this.dealerId;
-		    el.recordTypeId = Schema.getGlobalDescribe().get('Error_Log__c').getDescribe().getRecordTypeInfosByName().get('Integration Error Log').getRecordTypeId();
-		    el.Class_name__c = 'BatchShareEndUserAccounts';
-		    el.Method_Name__c = 'BatchShareEndUserAccounts';
-		    el.status_code__c = 900;
-		    el.stack_trace__c = e.getStackTraceString();
-		    el.exception_message__c = string.valueOf(e) + '-' + e.getMessage();
-		    insert el;
+            el.callout_name__c = 'BatchShareEndUserAccounts dealerId= ' + this.dealerId;
+            el.recordTypeId = Schema.getGlobalDescribe().get('Error_Log__c').getDescribe().getRecordTypeInfosByName().get('Integration Error Log').getRecordTypeId();
+            el.Class_name__c = 'BatchShareEndUserAccounts';
+            el.Method_Name__c = 'BatchShareEndUserAccounts';
+            el.status_code__c = 900;
+            el.stack_trace__c = e.getStackTraceString();
+            el.exception_message__c = string.valueOf(e) + '-' + e.getMessage();
+            insert el;
         }
 
     }
     /*********************************************************************************************
-  	*	FINISH
-  	*
-  	*
-  	************************************************************************************************/
+    *   FINISH
+    *
+    *
+    ************************************************************************************************/
     global void finish(Database.BatchableContext c) {
 
         system.debug('this.nextDealerId = ' + this.nextDealerId);

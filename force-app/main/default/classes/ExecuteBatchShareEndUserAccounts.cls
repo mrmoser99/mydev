@@ -10,8 +10,9 @@ global class ExecuteBatchShareEndUserAccounts implements Schedulable{
 
 	global void execute(SchedulableContext SC){
 
+        //	DOD_Batch_Share_Mode report - report only update - update account newTeamMembers
 
-        id batchinstanceid = database.executeBatch(new BatchShareEndUserAccounts(null,'report'),100); 
+        id batchinstanceid = database.executeBatch(new BatchShareEndUserAccounts(null, System.Label.DOD_Batch_Share_Mode),1000); 
 
     }
 }
