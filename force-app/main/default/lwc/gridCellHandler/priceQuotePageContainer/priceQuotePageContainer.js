@@ -66,6 +66,8 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
 
     opportunityId;
 
+    initUser = null;
+
 
     @track quoteObject = {
         deleteAssets: [],
@@ -454,72 +456,15 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
 
     //Wire methods
     /***********************************************************************************************************
-     * getUserSIte
-     ************************************************************************************************************/
-    @wire(getUserSite, {userId: null})
-    wiredgetUserSite({error, data}) {
-        this.loading = true;
-        this.advance = '0';
-        this.frequency = 'monthly';
-        console.log('in getUserSite');
+    * getUserSIte
+    ************************************************************************************************************/
 
-        if (data) {
-            let parsedData = JSON.parse(data);
-            console.log(JSON.parse(JSON.stringify(data)));
-            let osidObj = {osidArray: []};
-            //this.location = parsedData.returnSiteList[0].originatingSiteId;
-            //this.userSite = parsedData.returnSiteList[0].originatingSiteId;
-            for (let i = 0; i < parsedData.returnSiteList.length; i++) {
-                this.siteList.push({label: parsedData.returnSiteList[i].name, value: parsedData.returnSiteList[i].originatingSiteId});
-                osidObj.osidArray.push(parsedData.returnSiteList[i].originatingSiteId);
-            }
-            this.siteList = JSON.parse(JSON.stringify(this.siteList));
-            if ((this.salesRepList.length === 0) && !this.isLoadedQuote) {
-                getSalesRepsFromReturnedOSID({osidJSON:  JSON.stringify(osidObj)})
-                    .then(result => {
-
-                        let data = JSON.parse(result);
-                        let sList = [];
-                        let osidList = [];
-
-                        data.forEach(function (element) {
-
-                            sList.push({label: element.name, value: element.id});
-                            osidList.push({osid: element.osid, value: element.id});
-
-                        });
-
-                        sList.push({label: 'None', value: ''});
-
-                        this.salesRepList = sList;
-                        console.log('getSalesRepsOSID Done');
-                        console.log(JSON.parse(JSON.stringify(sList)));
-                        this.osidForSalesReps = osidList;
-                        this.loading = false;
-                        this.hasLocationSelectionSalesRep = false;
-                    }).catch(error => {
-                        this.loading = false;
-                        this.showToast('Something went wrong', error.body.message, 'error');
-                });
-                return;
-            }
-            //this.quoteObject.userSite = parsedData.returnSiteList[0].originatingSiteId;
-
-        } else if (error) {
-            this.showToast('Something went wrong', error.body.message, 'error');
-            this.location = undefined;
-        }
-        setTimeout(() => {
-            this.loading = false;
-
-            console.log('wiredGetUserSite done');
-        }, 1500);
-    }
 
     /***********************************************************************************************************
      * getPrograms
      ************************************************************************************************************/
-    /*@wire(getPrograms, {siteName: '$location'})
+    
+    @wire(getPrograms, {siteName: '$location'})
     wiredgetPrograms({error, data}) {
         this.loading = true;
         let plist = [];
@@ -540,7 +485,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
         setTimeout(() => {
             this.loading = false;
         }, 1500);
-    }*/
+    }
 
     handleChangeLocation(event) {
         this[event.target.name] = event.target.value;

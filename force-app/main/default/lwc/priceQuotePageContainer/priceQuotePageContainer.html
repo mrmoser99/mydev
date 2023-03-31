@@ -5,6 +5,7 @@
  Change Log:
 
     11/10/22 - MRM Resturctured pricing to be reusable for appeals
+    03/28/2023 - MRM added wideauto class to program
 
  -->
 
@@ -145,7 +146,7 @@
                     <lightning-layout-item padding="around-small" flexibility="auto">
                         <lightning-combobox name="program" label="Program" required=true value={program}
                             disabled={hasLocationSelection} options={programPicklist}
-                            onchange={handleDependentRatesPicklistChange}>
+                            onchange={handleDependentRatesPicklistChange} class="wideAuto">
                         </lightning-combobox>
                     </lightning-layout-item>
                     <lightning-layout-item padding="around-small" flexibility="auto">

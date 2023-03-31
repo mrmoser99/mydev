@@ -2,6 +2,10 @@
  * Created by ShiqiSun on 11/17/2021.
  * Modified by Kritika Sharma : Traction on Demand 
  * Date : 03-03-2022
+
+ Change Log:
+
+  03/28/2023 - MRM added wide auto to expand combo box to 250 wide
  */
 
 .Header{
@@ -13,7 +17,9 @@
     padding:      20px 20px 20px 0px;
     width:        200px;
 }
-
+.wideAuto {
+  width: 250px;
+}
 .body-top{
   background:white!important;
   border:1px solid #D4D4D4;

@@ -50,13 +50,13 @@
         
         this.options = options;
         
-        console.log('value::'+this.defaultValue);
-        console.log('options::'+ JSON.stringify(this.options));
+        //console.log('value::'+this.defaultValue);
+        //console.log('options::'+ JSON.stringify(this.options));
          
          if(this.defaultValue && this.defaultValue !== undefined) {
 
              if(this.options && this.options.length) {
-                 console.log('Looking for a value of ' + this.defaultValue + ' in the list of ' + this.options.length + ' different available makes');
+                console.log('Looking for a value of ' + this.defaultValue + ' in the list of ' + this.options.length + ' different available makes');
                  let tempArray = [...this.options];
                  let searchVal = this.defaultValue;
                  let selectedObj = tempArray.find(opt => opt.value === searchVal);

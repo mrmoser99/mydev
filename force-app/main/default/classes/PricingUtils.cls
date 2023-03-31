@@ -19,6 +19,7 @@
  *  9/15/2022 - Temp fix removed
  *  9/26/2022 - If no related accounts; the sales rep is running in private mode; return assigned dealer locaitons
  *  10/4/2022 - Pricing changes impacted annual hours.  Changed to integer; Deploy before pricing
+ *  3/28/2023 - Added a non cache get user site for internal portal application
  *******************************************************************************************************************/
 public with sharing class PricingUtils {
 
@@ -80,20 +81,23 @@ public List<site> returnSiteList;
 @AuraEnabled (Cacheable=true)
 public static Boolean isPortalEnabled(){
 
-	User u = [SELECT isPortalEnabled
-		     From User
-		     where id = : UserInfo.getUserId()
-		];
+    User u = [SELECT isPortalEnabled
+             From User
+             where id = : UserInfo.getUserId()
+        ];
 
-	return u.isPortalEnabled;
+    return u.isPortalEnabled;
 
 
 }
 
-@AuraEnabled (Cacheable=true)
-public static String getUserSite(String userId){
+@AuraEnabled   
+public static String getUserSiteNonCache(String userId){
+	return getUserSite(userId);
+}
 
-	 
+@AuraEnabled  (cacheable=true)
+public static String getUserSite(String userId){
 
 	ReturnSites rs = new ReturnSites();
 	Boolean error=false;
@@ -105,8 +109,6 @@ public static String getUserSite(String userId){
 	system.debug('user is: ' + Userinfo.getUserId());
 
 	try{
-
-
 		//if in testharness use 00504000001MXOo
 
 		if (userId == null)
@@ -117,15 +119,27 @@ public static String getUserSite(String userId){
 		     where id = : userId
 		];
 
-		if (!u.isPortalEnabled){
-			userId = '00578000000ftWqAAI';
-			u = [SELECT contactID, isPortalEnabled
-		    From User
-		    where id = : userId
-			];
+		if (!Test.isRunningTest()){
+			if (!u.isPortalEnabled){
+				List<Recent_Partner_User__c> rList = new List<Recent_Partner_User__c>();
+				rList = [select partner_user__c 
+						 from Recent_Partner_User__c
+						 where internal_user__c = :Userinfo.getUserId()
+						 and current_user__c = true
+						 limit 1
+				];
+				if (!rlist.isEmpty()){
+					userId  = rList[0].partner_user__c;
+				}
+				
+				//have to switch contactid for site list
+				u = [SELECT contactID, isPortalEnabled
+		     		From User
+		     		where id = : userId
+					];
+			}
 		}
-		 
-
+		
 		List<AccountContactRelation> rList = new List<AccountContactRelation>();
 		rList = [
 			SELECT AccountId

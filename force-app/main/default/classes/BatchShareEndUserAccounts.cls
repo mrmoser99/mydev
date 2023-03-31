@@ -4,6 +4,7 @@
 * ChangeLog:
 *
 *   03/14/2023 - MRM - Created Class PBI 978641
+*   03/27/2023 - MRM - added logic to submit for next dealer automatcially.
 *
 ************************************************************************************************/
 global class BatchShareEndUserAccounts implements Database.Batchable<sObject>,Database.Stateful{
@@ -26,18 +27,31 @@ global class BatchShareEndUserAccounts implements Database.Batchable<sObject>,Da
     ************************************************************************************************/
     global BatchShareEndUserAccounts(String lastDealerId, String mode){   
 
-        if (lastDealerId == null)
-            lastDealerId = '';   //this works better with > in soql
+         
+        List<Account> aList;
+        List<Account> a2List = new List<Account>();
 
-        List<Account> aList = [Select id from Account where isDealer__c = true and id > :lastDealerId order by id limit 2];
+        if (lastDealerId == null){
+             aList = [Select id,name from Account where isDealer__c = true  order by id limit 2];
+             a2List = [Select id,name from Account where isDealer__c = true and id > :aList[0].id order by id limit 1]; 
+        }
+        else {
+            aList = [Select id,name from Account where isDealer__c = true and id = :lastDealerId ]; 
+            a2List = [Select id,name from Account where isDealer__c = true and id > :lastDealerId order by id limit 1]; 
+        }
+
+         
 
         if (aList.isEmpty())  //we should always have at lease one dealer in the system.
             return;
         
         this.dealerId = aList[0].id;   //set running dealer to the first one in the list
 
-        if (aList.size() > 1){
-            this.nextDealerId = aList[1].id;  //set next dealer to the second in the list; this will be used to create next batch
+        if (a2List.size() > 0){
+            this.nextDealerId = a2List[0].id;  //set next dealer to the second in the list; this will be used to create next batch
+        }
+        else{
+            this.nextDealerId = null;
         }
     
         //mode = update or report       update will add account team members;
@@ -51,6 +65,8 @@ global class BatchShareEndUserAccounts implements Database.Batchable<sObject>,Da
         Set<ID> dealerSet = new Set<ID>();
         dealerSet.add(this.dealerId);  //get all sites for dealer
         sites = new GetDealerSites(dealerSet);
+
+        system.debug('sites list is:' + sites);
 
         Integer i = 0;
         for (ID s : sites.finalParentSet){
@@ -70,7 +86,9 @@ global class BatchShareEndUserAccounts implements Database.Batchable<sObject>,Da
     *   START
     *
     ************************************************************************************************/               
-    global Database.QueryLocator start(Database.BatchableContext c) {    
+    global Database.QueryLocator start(Database.BatchableContext c) {  
+        
+        system.debug('Query is: ' + QUERY);
         return Database.getQueryLocator(QUERY);        
     }
     /*********************************************************************************************
@@ -79,8 +97,12 @@ global class BatchShareEndUserAccounts implements Database.Batchable<sObject>,Da
     *
     ************************************************************************************************/
     global void execute(Database.BatchableContext c, List<Account_Account_Relationship__c> scope) {
+
+    
         
         try{
+
+        
 
         Set<ID> siteSet = new Set<ID>();
 
@@ -244,9 +266,11 @@ global class BatchShareEndUserAccounts implements Database.Batchable<sObject>,Da
     ************************************************************************************************/
     global void finish(Database.BatchableContext c) {
 
-        system.debug('this.nextDealerId = ' + this.nextDealerId);
+
+
+        system.debug('********************* this.nextDealerId = ' + this.nextDealerId);
         if (this.nextDealerId != null){
-           id batchinstanceid = database.executeBatch(new BatchShareEndUserAccounts('','report'),100); 
+           id batchinstanceid = database.executeBatch(new BatchShareEndUserAccounts(this.nextDealerId,this.mode),1000); 
         }
         
     }

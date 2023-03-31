@@ -14,7 +14,7 @@ import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import {ShowToastEvent} from "lightning/platformShowToastEvent";
 
 //pricing stuff
-import getUserSite from "@salesforce/apex/PricingUtils.getUserSite"; 
+import getUserSiteNonCache from "@salesforce/apex/PricingUtils.getUserSiteNonCache"; 
 import getPrograms from "@salesforce/apex/PricingUtils.getPrograms";
 import getFinancialProducts from "@salesforce/apex/PricingUtils.getFinancialProducts";
 import getFinancialProduct from "@salesforce/apex/PricingUtils.getFinancialProduct";
@@ -29,6 +29,7 @@ import queryQuoteOpportunity from "@salesforce/apex/CreateQuoteOpportunity.Query
 import setProposalForQuote from "@salesforce/apex/CreateQuoteOpportunity.setProposalForQuote";
 import saveCustomerCommentsToOpp from "@salesforce/apex/CreateQuoteOpportunity.saveCustomerCommentsToOpp";
 import getSmartCommDoc from "@salesforce/apex/SmartCommUtils.getSmartCommDoc";
+import IsPortalEnabled from "@salesforce/apex/PricingUtils.isPortalEnabled";
 
 
 
@@ -60,6 +61,8 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
     opportunityId;
     optionFirstTime = true;
     isCCMode = false;
+
+    isPortalUser = false;
 
     @track quoteObject = {
         deleteAssets: [],
@@ -270,7 +273,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
     ***************************************************************************************************************/
     connectedCallback() {
         
-        console.log(this.oppid);
+         
         this.loading = false;
 
         //cc mode is used for the appeal process to make the page act differently
@@ -279,6 +282,16 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
             this.isCCMode = true;
         else
             this.isCCMode = false;
+
+        IsPortalEnabled().then(result => {
+            console.log('result is : ' + result);
+            this.isPortalUser = result;
+        });
+        console.log('calling get  user site no cache');
+
+        this.getUserSiteNoCache();
+
+        console.log('after calling get  user site no cache');
 
         if (this.oppid) {
             this.loading = true;
@@ -435,71 +448,55 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
         });
         this.dispatchEvent(event);
     }
-
-    //Wire methods
+ 
     /***********************************************************************************************************
-     * getUserSIte
-     ************************************************************************************************************/
-    @wire(getUserSite, {userId: null})
-    wiredgetUserSite({error, data}) {
-        this.loading = true;
-        this.advance = '0';
-        this.frequency = 'monthly';
-        ////console.log('in getUserSite');
-
-        if (data) {
-            let parsedData = JSON.parse(data);
-            ////console.log(JSON.parse(JSON.stringify(data)));
+    * getUserSiteNonCache - no attribute for caching
+    ************************************************************************************************************/
+    getUserSiteNoCache () {
+        
+        getUserSiteNonCache({ userId: null})
+        .then(result => {
+            this.loading = true;
+            this.advance = '0';
+            this.frequency = 'monthly';
+            
+            let parsedData = JSON.parse(result);
             let osidObj = {osidArray: []};
-            //this.location = parsedData.returnSiteList[0].originatingSiteId;
-            //this.userSite = parsedData.returnSiteList[0].originatingSiteId;
+            
             for (let i = 0; i < parsedData.returnSiteList.length; i++) {
                 this.siteList.push({label: parsedData.returnSiteList[i].name, value: parsedData.returnSiteList[i].originatingSiteId});
                 osidObj.osidArray.push(parsedData.returnSiteList[i].originatingSiteId);
             }
-            this.siteList = JSON.parse(JSON.stringify(this.siteList));
+            
+    	    this.siteList = JSON.parse(JSON.stringify(this.siteList));
             if ((this.salesRepList.length === 0) && !this.isLoadedQuote) {
                 getSalesRepsFromReturnedOSID({osidJSON:  JSON.stringify(osidObj)})
-                    .then(result => {
-
-                        let data = JSON.parse(result);
-                        let sList = [];
-                        let osidList = [];
-
-                        data.forEach(function (element) {
-
-                            sList.push({label: element.name, value: element.id});
-                            osidList.push({osid: element.osid, value: element.id});
-
-                        });
-
-                        sList.push({label: 'None', value: ''});
-
-                        this.salesRepList = sList;
-                        ////console.log('getSalesRepsOSID Done');
-                        ////console.log(JSON.parse(JSON.stringify(sList)));
-                        this.osidForSalesReps = osidList;
-                        //this.loading = false;
-                        this.hasLocationSelectionSalesRep = false;
-                    }).catch(error => {
-                        this.loading = false;
-                        this.showToast('Something went wrong', error.body.message, 'error');
-                    });
-                    return;
+                .then(result => {
+                    let data = JSON.parse(result);
+                    let sList = [];
+                    let osidList = [];
+                    data.forEach(function (element) {
+                        sList.push({label: element.name, value: element.id});
+                        osidList.push({osid: element.osid, value: element.id});
+                });
+                sList.push({label: 'None', value: ''});
+                this.salesRepList = sList;
+            
+                this.osidForSalesReps = osidList;
+                this.loading = false;
+                this.hasLocationSelectionSalesRep = false;
+                }).catch(error => {
+                    this.loading = false;
+                    this.showToast('Something went wrong', error.body.message, 'error');
+                });
+                return;
             }
-            //this.quoteObject.userSite = parsedData.returnSiteList[0].originatingSiteId;
-
-        } else if (error) {
-            this.showToast('Something went wrong', error.body.message, 'error');
+        })
+        .catch(error => {
+        	this.showToast('Something went wrong', error.body.message, 'error');
             this.location = undefined;
-        }
-        //setTimeout(() => {
-            //this.loading = false;
-
-            ////console.log('wiredGetUserSite done');
-        //}, 1500);
+        });
     }
-
     
     /***************************************************************************************************************
     *  
@@ -842,7 +839,12 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
 
         //////console.log(this.salesRepList);
         //////console.log(event.target.value);
-        this.salesRep = this.salesRepList.find(element => element.value === event.target.value).label;
+        try{
+            this.salesRep = this.salesRepList.find(element => element.value === event.target.value).label;
+        }
+        catch{
+
+        }
         this.quoteObject.salesRep = event.target.value;
         ////console.log('In change function');
         ////console.log(JSON.parse(JSON.stringify(this.quoteObject)));
@@ -1596,21 +1598,28 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
 
         this.oppid = event.detail.oppid;
 
-        this[NavigationMixin.Navigate]({
-            type: 'standard__webPage',
-            attributes: {
-                url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + event.detail.oppid
-            }
-        });
-        /*
-        this[NavigationMixin.Navigate]({
-            type: 'standard__namedPage',
-            attributes: {
-                pageName: 'new-quote',
-                oppid:  'dog1'
-            }
-        });
-        */
+        if (this.isPortalUser){
+
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__webPage',
+                    attributes: {
+                        url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + event.detail.oppid
+                    }
+                }); 
+        }
+        else{
+            
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                //call new quote page
+                url: window.location.origin + '/lightning/n/Quote2?c__oppid=' + this.oppid
+                }
+            });
+        
+            this.connectedCallback();
+
+        }
         
 
 

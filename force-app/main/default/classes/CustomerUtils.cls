@@ -12,6 +12,7 @@
  *  10/11/2022 - MRM removed enduser!= null for performance improvements
  *  10/31/2022 - MRM - Added fillBuffer; This is run async at login to get the customer buffers loaded up; 
  *  12/6/2022 - MRM - Changed contract search to first find customers; performance improvement test
+ *  03/28/2023 - MRM - Defaulted USA to US
  *******************************************************************************************************************/
 public inherited sharing class CustomerUtils {
 
@@ -599,7 +600,8 @@ public static String createExternalCustomer(String accountId, String opportunity
 		address.region = a.BillingState;
 		address.county = a.BillingCounty__c;
 		address.postCode = a.BillingPostalCode;
-		address.countryOfResidence = a.BillingCountry;
+
+		address.countryOfResidence = 'US'; //a.BillingCountry;
 
 		JSONCreateCustomer.Contact contact = new JSONCreateCustomer.contact();
 		contact.ContactType = 'Phone';

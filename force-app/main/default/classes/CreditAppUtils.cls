@@ -358,7 +358,7 @@ public static void submitCreditAppFuture(String quoteId){
 			ubo.title = c.Title;
 			ubo.dateOfBirth = string.valueOf(c.Birthdate_Encrypted__c);
 			ubo.countryOfResidence = c.UBO_Country_of_Residence__c;
-			if (c.UBO_Country_of_Residence__c == 'US')
+			if (c.UBO_Country_of_Residence__c == 'US' || c.UBO_Country_of_Residence__c == 'USA'  )
 				ubo.countryOfResidence = 'United States';
 			ubo.ownershipPercentage = integer.valueOf(c.account_ownership_percentage__c);
 			uboList.add(ubo);
@@ -819,7 +819,7 @@ public static void submitPreQualCreditAppFuture(String opportunityId){
       ubo.title = c.Title;
       ubo.dateOfBirth = string.valueOf(c.Birthdate_Encrypted__c);
       ubo.countryOfResidence = c.UBO_Country_of_Residence__c;
-      if (c.UBO_Country_of_Residence__c == 'US')
+      if (c.UBO_Country_of_Residence__c == 'US' || c.UBO_Country_of_Residence__c == 'USA' )
         ubo.countryOfResidence = 'United States';
       ubo.ownershipPercentage = integer.valueOf(c.account_ownership_percentage__c);
       uboList.add(ubo);
