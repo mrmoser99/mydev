@@ -91,13 +91,90 @@ public static Boolean isPortalEnabled(){
 
 }
 
-@AuraEnabled   
-public static String getUserSiteNonCache(String userId){
-	return getUserSite(userId);
+
+
+@AuraEnabled (Cacheable=true)
+public static String getUserSite(String userId){
+
+
+    ReturnSites rs = new ReturnSites();
+    Boolean error=false;
+    Contact c;
+    User u;
+
+    List<site> siteList = new List<Site>();
+
+    system.debug('user is: ' + Userinfo.getUserId());
+
+    try{
+
+        //if in testharness use 00504000001MXOo
+
+        if (userId == null)
+            userId = Userinfo.getUserId();
+
+        u = [SELECT contactID, isPortalEnabled
+             From User
+             where id = : userId
+        ];
+
+        List<AccountContactRelation> rList = new List<AccountContactRelation>();
+        rList = [
+            SELECT AccountId
+            FROM AccountContactRelation
+            where contactId = : u.contactId
+                              and accountId in
+                                      (select id
+                                      from account
+                                      where originating_site_id__c <> null)
+        ];
+
+        Set<ID> aIdSet = new Set<ID>();
+        for (AccountContactRelation r:rList)
+            aIdSet.add(r.AccountId);
+
+        List<Account> aList = [Select name, originating_site_id__c
+                               From Account
+                               where id in : aIdSet
+                               order by name
+        ];
+
+        for (Account a:aList) {
+            site s = new site();
+            s.originatingSiteId = a.originating_site_id__c;
+            s.name = a.name;
+            siteList.add(s);
+        }
+        rs.returnSiteList = siteList;
+    }
+    catch (Exception e) {
+        String ErrorMsg = 'Exception in getUser sitesId:' + string.valueOf(e) + '-' + e.getMessage() + '-' + e.getStackTraceString() + '-' + e.getLineNumber();
+        error=true;
+        throw new AuraHandledException(ErrorMsg);
+    }
+    if (error)
+        return null;
+
+    return JSON.serialize(rs);
+
+
 }
 
-@AuraEnabled  (cacheable=true)
-public static String getUserSite(String userId){
+/*********************************************************************************************************************************
+ * getUserSiteDOD
+ * 
+ * Change Log: 
+ * 
+ * 03/28/2023 - MRM - created this so dod can get sites from various places (account contact relationship or assigned sites)
+ * 					  I kept the original getUserSite method for backward compatability.
+ * 
+ * 
+ * @author Mark R. Moser
+ * @return   return description
+ *********************************************************************************************************************************/ 
+
+@AuraEnabled   
+public static String getUserSiteNonCache(String userId){
 
 	ReturnSites rs = new ReturnSites();
 	Boolean error=false;
@@ -109,15 +186,15 @@ public static String getUserSite(String userId){
 	system.debug('user is: ' + Userinfo.getUserId());
 
 	try{
-		//if in testharness use 00504000001MXOo
-
-		if (userId == null)
+		if (userId == null){
 			userId = Userinfo.getUserId();
+		}
 
-		u = [SELECT contactID, isPortalEnabled
+		u = [SELECT contactID, contact.account.originating_site_id__c, isPortalEnabled
 		     From User
 		     where id = : userId
 		];
+
 
 		if (!Test.isRunningTest()){
 			if (!u.isPortalEnabled){
@@ -133,40 +210,74 @@ public static String getUserSite(String userId){
 				}
 				
 				//have to switch contactid for site list
-				u = [SELECT contactID, isPortalEnabled
+				u = [SELECT contactID, contact.account.originating_site_id__c, isPortalEnabled
 		     		From User
 		     		where id = : userId
 					];
 			}
 		}
 		
-		List<AccountContactRelation> rList = new List<AccountContactRelation>();
-		rList = [
-			SELECT AccountId
-			FROM AccountContactRelation
-			where contactId = : u.contactId
+		/* check to see if there are any related accounts */
+		Set<ID> aIdSet = new Set<ID>();
+		List<Account> aList = new List<Account>();
+
+		//if the contact is sitting at a site that is not originating, then this is a private user; get the locations from there
+		//instead
+		if (u.contact.account.originating_site_id__c == null){
+			List<Assigned_Dealer_Location__c> dList = new List<Assigned_Dealer_Location__c>();
+			dList = [select account__c
+					 from Assigned_Dealer_Location__c 
+					 where contact__c = :u.contactId
+					 ];
+			for (Assigned_Dealer_Location__c p:dList){
+				aIdSet.add(p.account__c);
+			}
+			aList = [Select name, originating_site_id__c
+		                       From Account
+		                       where id in : aIdSet
+		                       order by name
+			];
+
+			for (Account a:aList) {
+				site s = new site();
+				s.originatingSiteId = a.originating_site_id__c;
+				s.name = a.name;
+				siteList.add(s);
+			}
+
+		}
+		else{
+			List<AccountContactRelation> rList = new List<AccountContactRelation>();
+			rList = [
+				SELECT AccountId
+				FROM AccountContactRelation
+				where contactId = : u.contactId
 			                  and accountId in
 			                          (select id
 			                          from account
 			                          where originating_site_id__c <> null)
-		];
+			];
 
-		Set<ID> aIdSet = new Set<ID>();
-		for (AccountContactRelation r:rList)
-			aIdSet.add(r.AccountId);
+			
+			for (AccountContactRelation r:rList)
+				aIdSet.add(r.AccountId);
 
-		List<Account> aList = [Select name, originating_site_id__c
+			aList = [Select name, originating_site_id__c
 		                       From Account
 		                       where id in : aIdSet
 		                       order by name
-		];
+			];
 
-		for (Account a:aList) {
-			site s = new site();
-			s.originatingSiteId = a.originating_site_id__c;
-			s.name = a.name;
-			siteList.add(s);
+			for (Account a:aList) {
+				site s = new site();
+				s.originatingSiteId = a.originating_site_id__c;
+				s.name = a.name;
+				siteList.add(s);
+			}
+
 		}
+		
+		
 		rs.returnSiteList = siteList;
 	}
 	catch (Exception e) {
@@ -176,25 +287,6 @@ public static String getUserSite(String userId){
 	}
 	if (error)
 		return null;
-
-	/*
-	   if (rs.returnSiteList.isEmpty()) {
-	        List<Assigned_Dealer_Location__c> dlist = new List<Assigned_Dealer_Location__c>();
-	        dlist = [select account__c
-	                 , originating_site_id__c
-	                 , account__r.name
-	                 from Assigned_Dealer_Location__c
-	                 where contact__c = : u.contactId];
-
-	        for (Assigned_Dealer_Location__c l:dlist) {
-	                site s = new site();
-	                s.originatingSiteId = l.originating_site_id__c;
-	                s.name = l.account__r.name;
-	                siteList.add(s);
-	        }
-	        rs.returnSiteList = siteList;
-	   }
-	 */
 
 	return JSON.serialize(rs);
 
