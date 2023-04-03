@@ -6,57 +6,45 @@
 *   10/18/2021 - MRM created
 *   04/28/2022 - Geetha added logic for Download Portfolio and ability to filter records based on 
 *                filter criteria
-* 
+*   03/27/2023 - PBI 943211 - Vinicio Ramos Silva - Application Listview Download functionality for Quote & Portfolio
 **********************************************************************************************************/
 import { LightningElement, wire, track , api} from 'lwc';
 import getRecords from "@salesforce/apex/PortfolioViewController.getRecords";
 import getTotalRecords from "@salesforce/apex/PortfolioViewController.getTotalRecords";
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import getdownloadRecords from "@salesforce/apex/PortfolioViewController.getdownloadRecords";
-
-import {checkPermission} from 'c/dodJSUtility';//PBI-810432 - Dibyendu
+import {NavigationMixin} from 'lightning/navigation';
 
 const columns = [
-    { label: 'Contract', fieldName: 'contractUrl', wrapText:false, sortable: true,
-        type: 'url',
-        typeAttributes: {label: { fieldName: 'contractNumber' },
-            target: '_self'}
+    { label: 'Contract', fieldName: 'contractUrl', wrapText:false, sortable: true, fixedWidth: 160,        type: 'url',
+        typeAttributes: {label: { fieldName: 'contractNumber' }, target: '_self'}
     },
-    { label: 'Customer Name', initialWidth: 340, fieldName: 'endUserURL', sortable: true,
-        type: 'url',
-        typeAttributes: {label: { fieldName: 'customerName' },
-            target: '_self'}
+    { label: 'Customer Name', fieldName: 'endUserURL', sortable: true, fixedWidth: 250, type: 'url',
+        typeAttributes: {label: { fieldName: 'customerName' }, target: '_self'}
     },
-    { label: 'Sales Rep', initialWidth: 100, fieldName: 'salesRep'},
-    { label: 'Finance Type', initialWidth: 80, fieldName: 'financeType', sortable: true},
-//    { label: 'Serial(s)', fieldName: 'serials'},
-//    { label: 'Make(s)', fieldName: 'makes' },
-    { label: 'Term', initialWidth: 80, fieldName: 'term', sortable: true},
-    { label: 'Payments Remaining', initialWidth: 80, fieldName: 'remainPay', sortable: true },
-    { label: 'Health', initialWidth: 100, fieldName: 'health', sortable: true },
-    { label: 'Status', fieldName: 'status', sortable: true, fixedWidth: 120  }
+    { label: 'Sales Rep', fieldName: 'salesRep', fixedWidth: 180},
+    { label: 'Finance Type', fieldName: 'financeType', sortable: true, fixedWidth: 100},
+    { label: 'Term', fieldName: 'term', sortable: true, fixedWidth: 100},
+    { label: 'Payments Remaining', fieldName: 'remainPay', sortable: true, fixedWidth: 100 },
+    { label: 'Health', fieldName: 'health', sortable: true, fixedWidth: 100 },
+    { label: 'Status', fieldName: 'status', sortable: true,fixedWidth: 100  }
     
 ];
 
-const columns2 = [
-    { label: 'Contract', fieldName: 'contractNumber', wrapText:false,  sortable: true},
-    { label: 'Customer Name', fieldName: 'customerName', sortable: true },
-    { label: 'Sales Rep', fieldName: 'salesRep', sortable: true },
-    { label: 'Finance Type', fieldName: 'financeType', sortable: true},
-//    { label: 'Serial(s)', fieldName: 'serials', /*initialWidth: 150,*/ sortable: true},
-//    { label: 'Make(s)', fieldName: 'makes',  /*initialWidth: 150,*/ sortable: true  },
-    { label: 'Term', fieldName: 'term', sortable: true},
-    { label: 'Payments Remaining', fieldName: 'remainPay', sortable: true  },
-    { label: 'Health', fieldName: 'health', sortable: true },
-    { label: 'Status', fieldName: 'status', sortable: true }
-    
-];
+//const columns2 = [
+    //{ label: 'Contract', fieldName: 'contractNumber', wrapText:false, /*initialWidth: 200,*/ sortable: true},
+    //{ label: 'Customer Name', fieldName: 'customerName', /*initialWidth: 200,*/ sortable: true },
+    //{ label: 'Sales Rep', fieldName: 'salesRep', /*initialWidth: 200,*/ sortable: true },
+    //{ label: 'Finance Type', fieldName: 'financeType',  /*initialWidth: 110,*/ sortable: true},
+    //    { label: 'Serial(s)', fieldName: 'serials', /*initialWidth: 150,*/ sortable: true},
+    // { label: 'Make(s)', fieldName: 'makes',  /*initialWidth: 150,*/ sortable: true  },
+    // { label: 'Term', fieldName: 'term', /*initialWidth: 100,*/ sortable: true},
+    //{ label: 'Payments Remaining', fieldName: 'remainPay', /*initialWidth: 100,*/ sortable: true  },
+    //{ label: 'Health', fieldName: 'health', /*initialWidth: 100,*/ sortable: true },
+    //{ label: 'Status', fieldName: 'status', /*initialWidth: 120,*/ sortable: true }
+//];
 
 
-export default class PortfolioView extends LightningElement {
-
-    //Button/Link Permissions//PBI-810432 - Dibyendu
-    DP03 = false;
+export default class PortfolioView extends NavigationMixin(LightningElement) {
 
     refreshExecute = true;
     portfoliolist = [];
@@ -68,7 +56,6 @@ export default class PortfolioView extends LightningElement {
     loadMoreStatus;
     targetDataTable;
     searchDate=0;
-    searchStatus='';
     isLoading=true;
     filter;
     savelist;
@@ -76,8 +63,11 @@ export default class PortfolioView extends LightningElement {
     itemCount;
     orderByField;
     orderByDirection;
-    downloaddata =[];
-        
+    downloaddata =[];    
+    @track salesRepFilter = '';
+    @track allValues = [];
+    @track status='';
+      
     datelist = [
         {value: '0', label: 'All Time'},
         {value: 'LAST_N_DAYS:30', label: 'Last 30 Days'},
@@ -91,81 +81,17 @@ export default class PortfolioView extends LightningElement {
     ];
 
     statuslist = [
-        {value: 'ALL', label: 'ALL'},
+        {value: '', label: 'ALL'},
         {value: 'BOOKED', label: 'BOOKED'},
         {value: 'EVERGREEN', label: 'EVERGREEN'},
         {value: 'TERMINATED', label: 'TERMINATED'}
     ];
 
-    /*added header columns for excel- Download Portfolio*/
-    headers = {
-        customerLegalName : 'Customer Legal Name',
-        contractNumber: 'Contract Number',
-        assetNumber: 'Asset Number',
-        assetOriginalCost: 'Asset Original Cost',
-        assetEquipmentPayment: 'Asset Equipment Payment',
-        contractOriginalCost: 'Contract Original Cost',
-        totalEquipmentPayment: 'Contract Equipment Payment',
-        servicePayment:'Contract Service Payment',
-        assetBrand: 'Asset Brand',
-        assetModel: 'Asset Model',
-        assetSerialNumber: 'Asset Serial Number',
-        assetDescription: 'Asset Description',
-        contractStartDate: 'Contract Start date',
-        contractTerm: 'Contract Term',
-        contractMaturityDate: 'Projected Initial Expire Date',
-        numofPaymentRemaining: 'Number of Payments Remaining',
-        conPurchaseOpt: 'Contract Purchase Option',
-        conPaymentfreq: 'Contract Payment Frequency',
-        conType: 'Contract Type',
-        conSignerName: 'Contract Signer Name',
-        daysPastdue:'Number of Days Past Due',
-        lastpayRcdDate: 'Last Payment Received Date',
-       // custAccNum:'Customer Account Number',
-        custAddressline1:'Customer Address Line 1',
-        custCity:'Customer City',
-        custState:'Customer State',
-        custPostalcode:'Customer Postal Code',
-        custPhnum:'Customer Phone Number',
-        astAddress1: 'Asset Address Line 1',
-        astAddress2: 'Asset Address Line 2',
-        astCity: 'Asset City',
-        astState: 'Asset State',
-        astPostalCode: 'Asset Postal Code',
-        astBillingAdd1: 'Asset Billing Address Line 1',
-        astBillingAdd2: 'Asset Billing Address Line 2',
-        astBillingCity: 'Asset Billing City',
-        astBillingState: 'Asset Billing State',
-        astBillingPstCode: 'Asset Billing Postal',
-        salesRep:'Sales Rep'
-
-       };
-    
-
-    
     connectedCallback() {
         //Get initial chunk of data with offset set at 0
         this.getRecords();
-        //Commenting the below callback method - this will improve the performance
-       // this.getDownloadRecords();
-    }
-
-    //method to check if the permission is true or false; this drives display of the button or link//PBI-810432 - Dibyendu
-    async setPermissions() {    
-        this.DP03 = await checkPermission('DP03'); 
-        //this.CQ01 =  checkPermission('CQ01'); 
-       // alert('CQ01:'+this.CQ01.value);
-
-   }
-
-   renderedCallback() {
-    console.log('render Value1',this.DP03);
-    this.setPermissions();
-    setTimeout(() => {
-        //this.loading = false;
-        console.log('render Value2',this.DP03);
+        //Commenting the below callback method - this will improve the performance      
         
-    }, 2000);
     }
      
     getRecords() { 
@@ -184,7 +110,7 @@ export default class PortfolioView extends LightningElement {
                             this.itemCount = result;
                         if (this.filter != null){
                             this.itemCount = this.portfoliolist.length;
-                            console.log('checking search length');
+                           
                         }
                     }
                 }) 
@@ -197,35 +123,55 @@ export default class PortfolioView extends LightningElement {
                 });
         }
 
-         
-        getRecords({offSetCount : this.offSet, months: this.searchDate, status: this.searchStatus, orderByField: this.orderByField, orderByDirection : this.orderByDirection, filter :this.filter })
+        getRecords({
+            offSetCount : this.offSet,
+            months: this.searchDate,
+            status: this.allValues,
+            orderByField: this.orderByField,
+            orderByDirection : this.orderByDirection,
+            filter :this.filter,
+            isDownload : false,
+            salesRepFilter: this.salesRepFilter }) 
             .then(result => {
-                console.log('inside get records ' +this.offSet);
                 let preparedLeases = [];
+                
                 result = JSON.parse(result);
-                console.log(result);
                 if (result) {
                     result.forEach(contract => {     
                        
                         let preparedLease = {}; 
                         preparedLease.Id = contract.contract.Id;
                         preparedLease.contractNumber = contract.contract.Name;
-                        if (contract.contract.End_User__r) {
-                            if (contract.contract.End_User__r.Name) {
+                        if (contract.contract.End_User__r != undefined) {
+                            if (contract.contract.End_User__r.Name != undefined) {
                                 preparedLease.customerName = contract.contract.End_User__r.Name;
                                 preparedLease.endUserURL = window.location.origin + '/dllondemand/s/account/' + contract.contract.End_User__c;
                             }
-                        }
-                        
+                        } else if (contract.contract.Opportunity__r == undefined) {
+                            preparedLease.customerName = '';
+                            preparedLease.endUserURL = '';     
+                        } else if (contract.contract.Opportunity__r.End_User__r != undefined) {
+                            preparedLease.customerName = contract.contract.Opportunity__r.End_User__r.Name;                                
+                            preparedLease.endUserURL = window.location.origin + '/dllondemand/s/account/' + contract.contract.Opportunity__r.End_User__r.Id;
+                        } else {
+                            preparedLease.customerName = '';
+                            preparedLease.endUserURL = '';
+                        } 
+
                         if(contract.contract.Opportunity__r) {
+                            console.log('have Opp');
                             if(contract.contract.Opportunity__r.Partner_Sales_Rep__r) {
+                                console.log('have partner Sales Rep');
                                 preparedLease.salesRep =  contract.contract.Opportunity__r.Partner_Sales_Rep__r.Name;
                             } else {
                                 preparedLease.salesRep = '';
                             }
+                        }else{
+                            console.log('no have Opp');
+                            preparedLease.salesRep = '';
                         }
 
-                        //if ( contract.contract.Sales_Rep_Name__c)
+                        
                         //preparedLease.salesRep = contract.contract.Sales_Rep_Name__c;
                         preparedLease.financeType = contract.contract.Purchase_Option__c;   
                         preparedLease.term = contract.contract.Contract_Term_months__c;
@@ -236,7 +182,6 @@ export default class PortfolioView extends LightningElement {
                         preparedLease.status = contract.contract.Status_Text__c;
                         preparedLease.contractUrl = window.location.origin + '/dllondemand/s/contract/' +  contract.contract.Id;
 
-                        //console.log('prepared lease : ' + JSON.stringify(preparedLease));
                         preparedLeases.push(preparedLease);
                     });
                     this.portfoliolist = [...this.portfoliolist, ...preparedLeases];
@@ -291,8 +236,7 @@ export default class PortfolioView extends LightningElement {
     }
 
         
-    /*to get All records for - Download Portfolio*/
-    /*code to download Portfolio */
+    //Start PBI 943211 - Vinicio Ramos Silva - Application Listview Download functionality for Quote & Portfolio
     handleDownload(event) {
        
         let date = new Date()
@@ -300,72 +244,153 @@ export default class PortfolioView extends LightningElement {
         let month = date.getMonth()+1;
         let year = date.getFullYear();
         let fullDate = month + "-" + day + "-" + year;
-        getdownloadRecords({months:this.searchDate, status:this.searchStatus, filter:this.filter})
-        .then(res => {
-           this.downloaddata= res;     
-           console.log('downloaddata => '+this.downloaddata);
 
-       
-        if(!this.downloaddata || !this.downloaddata.length){
-            
+        if (this.offSet == 0){
+            getTotalRecords()
+                .then(result => {                     
+                    result = JSON.stringify(result);
+                    if(result){                          
+                        this.totalRecords=result;
+                        if (this.totalRecords > 20)
+                            this.itemCount = 20 + '+';
+                        else   
+                            this.itemCount = result;
+                        if (this.filter != null){
+                            this.itemCount = this.portfoliolist.length;                           
+                        }
+                    }
+                }) 
+                .catch(error => {
+                    this.error = error;
+                    this.data = undefined;
+                    console.log('error : ' + JSON.stringify(this.error));
+                    this.showToast('Something went wrong', JSON.stringify(this.error), 'error');
+                    return;
+                });
+        }
+
+        getRecords({
+            offSetCount : this.offSet,
+            months: this.searchDate,
+            status: this.allValues,
+            orderByField: this.orderByField,
+            orderByDirection : this.orderByDirection,
+            filter : this.filter,
+            isDownload : true })
+            .then(res => {
+                const evt = new ShowToastEvent({
+                    // title: 'Download Portfolio',
+                     message: 'Downloading....',
+                     variant: 'success',
+                     duration:10000,
+                 });
+                 this.dispatchEvent(evt);
+                 
+                let downloaddata = [];
+                res = JSON.parse(res);                
+                if (res) {                    
+                    res.forEach(contract => { 
+                        let preparedLease = {}; 
+                        preparedLease.contractNumber = contract.contract.Name;
+                        if (contract.contract.End_User__r != undefined) {
+                            if (contract.contract.End_User__r.Name != undefined) {
+                                preparedLease.customerName = contract.contract.End_User__r.Name;
+                            }
+                        } else if (contract.contract.Opportunity__r == undefined) {
+                            preparedLease.customerName = '';
+                        } else if (contract.contract.Opportunity__r.End_User__r != undefined) {
+                            preparedLease.customerName = contract.contract.Opportunity__r.End_User__r.Name;                                
+                        } else {
+                            preparedLease.customerName = '';
+                        } 
+                        preparedLease.salesRep = contract.contract.Sales_Rep_Name__c;
+                        preparedLease.financeType = contract.contract.Purchase_Option__c;   
+                        preparedLease.term = contract.contract.Contract_Term_months__c;
+                        preparedLease.remainPay = contract.contract.Payments_Remaining__c;
+                        preparedLease.health = contract.contract.Delinquency_Status__c;
+                        preparedLease.status = contract.contract.Status_Text__c;
+
+                        downloaddata.push(preparedLease);
+                    })
+                }          
+      
+        if(!downloaddata.length){
             return null
         }
-        const jsonObject = JSON.stringify(this.downloaddata);
-        const result = this.convertToCSV(jsonObject, this.headers);
+        
+        const jsonObject = JSON.stringify(downloaddata);        
+        const result = this.convertToXLS(downloaddata, this.headers);
         if(result === null) return
-        const blob = new Blob([result])
-        const exportedFilename = 'Portfolio' + fullDate +'.csv';
-        if(navigator.msSaveBlob){
-            navigator.msSaveBlob(blob, exportedFilename)
-        } else if (navigator.userAgent.match(/iPhone|iPad|iPod/i)){
-            const link = window.document.createElement('a')
-            link.href='data:text/csv;charset=utf-8,' + encodeURI(result);
-            link.target="_blank"
-            link.download=exportedFilename
-            link.click()
-        } else {
-            const link = document.createElement("a")
-            if(link.download !== undefined){
-                const url = URL.createObjectURL(blob)
-                link.setAttribute("href", url)
-                link.setAttribute("download", exportedFilename)
-                link.style.visibility='hidden'
-                document.body.appendChild(link)
-                link.click()
-                document.body.removeChild(link)
-            }
-        }
-
+        const blob = new Blob([result])      
     }) 
     }
 
-
-     convertToCSV(objArray, headers){
+    convertToXLS(objArray, headers){
         
-        const columnDelimiter = ','
-        const lineDelimiter = '\r\n'
-        const actualHeaderKey = Object.keys(headers)
-        const headerToShow = Object.values(headers) 
-        let str = ''
-        str+=headerToShow.join(columnDelimiter) 
-        str+=lineDelimiter
+        let date = new Date()
+        let day = date.getDate();
+        let month = date.getMonth()+1;
+        let year = date.getFullYear();
+        let fullDate = month + "-" + day + "-" + year;
+        
+        /*added header columns for excel- Download Application*/
+        let columnHeader = [
+            'Contract',
+            'Customer Name',
+            'Sales Rep',
+            'Finance Type',
+            'Term',
+            'Payments Remaining', 
+            'Health',            
+            'Status'
+        ];
+
+        // Prepare a html table
+        let doc = '<style>'; 
+        // Add styles for the table
+        doc += 'table, th, td {';
+        doc += '    border: 1px solid black;';
+        doc += '    border-collapse: collapse;';
+        doc += '    text-align: left';        
+        doc += '}';          
+        doc += '</style>';        
+        doc += '<table>';
+        
+        // Add all the Table Headers
+        doc += '<tr>';
+        columnHeader.forEach(element => {            
+            doc += '<th>'+ element +'</th>'           
+        });
+        doc += '</tr>';
+        // Add the data rows
         const data = typeof objArray !=='object' ? JSON.parse(objArray):objArray
-    
-        data.forEach(obj=>{
-            let line = ''
-            actualHeaderKey.forEach(key=>{
-                if(line !=''){
-                    line+=columnDelimiter
-                }
-                let strItem = obj[key]+''
-                line+=strItem? strItem.replace(/,/g, ''):strItem
-            })
-            str+=line+lineDelimiter
-        })
-        console.log("str", str)
-        return str
+        
+        data.forEach(record => {
+            
+            doc += '<tr>';
+            doc += '<th>'+record.contractNumber+'</th>';
+            doc += '<th>'+record.customerName+'</th>';
+            doc += '<th>'+record.salesRep+'</th>';
+            doc += '<th>'+record.financeType+'</th>'; 
+            doc += '<th>'+record.term+'</th>'; 
+            doc += '<th>'+record.remainPay+'</th>'; 
+            doc += '<th>'+record.health+'</th>'; 
+            doc += '<th>'+record.status+'</th>';
+            doc += '</tr>';
+
+        });
+        doc += '</table>';
+        var element = 'data:application/vnd.ms-excel,' + encodeURIComponent(doc);
+        let downloadElement = document.createElement('a');
+        downloadElement.href = element;
+        downloadElement.target = '_self';
+        // use .csv as extension on below line if you want to export data as csv
+        downloadElement.download = 'Portfolios ' + fullDate +'.xls';
+        document.body.appendChild(downloadElement);
+        downloadElement.click();
+
     } 
-    /* end of Download Portfolio */
+    //End PBI 943211 - Vinicio Ramos Silva - Application Listview Download functionality for Quote & Portfolio
 
     loadMoreData(event) {
          
@@ -405,20 +430,70 @@ export default class PortfolioView extends LightningElement {
         this.searchDate = event.detail.value;
         this.portfoliolist = [];
         this.offSet = 0;
-        this.searchStatus = 'ALL';
+        this.allValues = '';
         this.getRecords();
         
     }
 
     handleChangeStatus(event) {
-
-        this.isLoading=true;
-        this.searchStatus = event.detail.value;
+        console.log('entrou status');
+        console.log('entrou event.target.value   '+ event.target.value);
+        if(event.target.value == ''){
+            this.allValues = [];
+            this.status=''; 
+        }
+        else{
+            if(!this.allValues.includes(event.target.value)){           
+                this.allValues.push(event.target.value); 
+            }                
+        }
+        
+        this.isLoading=true;        
         this.portfoliolist = [];
         this.offSet = 0;
-        this.getRecords();
+        this.getRecords();        
+    }
+    //Start PBI 943211 - Vinicio Ramos Silva - Application Listview Download functionality for Quote & Portfolio
+    handleChangeSalesRep(event) {
+        this.salesRepFilter = event.target.value;
+        clearTimeout(this.debounceTimeout);
+        this.debounceTimeout = setTimeout(() => {
+            this.enableInfiniteLoading = true;
+            this.isLoading =true;
+            this.portfoliolist = [];
+            this.offSet = 0;
+            this.getRecords();
+         }, 2000);
         
     }
+
+    handleRemove(event){
+        
+        const valueRemoved = event.target.name;
+        this.allValues.splice(this.allValues.indexOf(valueRemoved),1);
+        this.isLoading=true;        
+        this.portfoliolist = [];
+        this.offSet = 0;
+        this.getRecords();        
+    }
+
+    handleClearFilters(event){
+ 
+        this.allValues = [];
+        this.searchDate = '0';        
+        this.status='ALL';
+        this.salesRepFilter='';        
+        this.offSet = '0';        
+        this.sortDirection='desc';
+        this.loadMoreStatus = '';
+        this.initialDataLoaded = false;        
+        this.enableInfiniteLoading = true;
+        this.isLoading =true;
+        this.portfoliolist = [];
+               
+        this.getRecords();
+    }
+    //End PBI 943211 - Vinicio Ramos Silva - Application Listview Download functionality for Quote & Portfolio
 
     /*Commenting this method as its a duplicate*/
     /*handleChange(event) {
@@ -429,17 +504,13 @@ export default class PortfolioView extends LightningElement {
         
     }*/
 
-    resetList(event) {
+    resetList(event) {       
 
-        console.log('value:' + event.detail.value);
-
-        if(event.detail.value){
-            console.log('returnning');
-            
+        if(event.detail.value){ 
             return;
         }
         else{
-            console.log('reset list'); 
+           
             this.filter = '';
             this.portfoliolist = [];
             this.portfoliolist = this.savelist;
@@ -447,7 +518,6 @@ export default class PortfolioView extends LightningElement {
             this.getRecords();
         }
     }
-
     
     handleFilter(event){
      
@@ -464,8 +534,6 @@ export default class PortfolioView extends LightningElement {
         //new code Geetha - to fix the column sorting issue 
         this.orderByField = event.detail.fieldName;
         this.orderByDirection = event.detail.sortDirection;
-        console.log('this.sortBy ' +this.orderByField);
-        console.log('this.sortDirection ' +this.orderByDirection);
         this.enableInfiniteLoading = true;
         this.isLoading =true;
         this.portfoliolist = [];

@@ -17,16 +17,12 @@
 
                 <div class="slds-grid" slot="actions">
                     <div class="slds-col">
-                        <template if:true={DP03}>
-                        <lightning-button variant="brand" title="Download Portfolio" label="Download Portfolio"
-                            sandbox="allow-downloads" onclick={handleDownload}>
-                        </lightning-button>
-                        </template>
+                        <lightning-button variant="brand-outline" label="Download Portfolio" title="Download Portfolio" onclick={handleDownload}></lightning-button>
                     </div>
                 </div>
 
 
-                <div class="slds-grid slds-gutters">
+                <div class="slds-grid slds-gutters slds-wrap">
                     <div class="slds-col slds-size_9-of-12 ">
                         <lightning-layout>
                             <lightning-layout-item padding="around-small size=3">
@@ -36,20 +32,32 @@
                                     </lightning-combobox>
                                 </div>
                             </lightning-layout-item>
-                            <lightning-layout-item padding="around-small size=3">
+                            <lightning-layout-item padding="around-small size=3">                                
                                 <div class="slds-var-p-around_small ">
-                                    <lightning-combobox name="status" label="Status" value={searchStatus}
-                                        placeholder=" Select Status" options={statuslist} onchange={handleChangeStatus}>
+                                    <lightning-combobox name="status" label="Status" value={status}
+                                                        placeholder="Select Status"
+                                                        options={statuslist}
+                                                        onchange={handleChangeStatus}>
                                     </lightning-combobox>
-                                </div>
+                                </div>                                
                             </lightning-layout-item>
                             <lightning-layout-item padding="around-small size=3">
                                 <div class="slds-var-p-around_small ">
-                                    <lightning-input type="text" name="customerName" label="Sales Rep"
-                                        autocomplete="nope" class="input"></lightning-input>
+                                    <lightning-input type="text" name="salesRep" label="Sales Rep"
+                                        autocomplete="off" value={salesRepFilter} onchange={handleChangeSalesRep} class="input"></lightning-input>
+                                </div>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small size=6">
+                                <div class="slds-var-p-around_small" style="top: 50%; transform: translateY(40%);">
+                                    <lightning-button variant="brand-outline" label="Clear Filters" title="Clear Filters" onclick={handleClearFilters}></lightning-button>
                                 </div>
                             </lightning-layout-item>
                         </lightning-layout>
+                        <div class="slds-p-around_xx-small">
+                            <template for:each={allValues} for:item="val">
+                                <lightning-pill key={val} label={val} name={val} onremove={handleRemove}></lightning-pill>
+                            </template>
+                        </div>
                     </div>
                     <div class="slds-col slds-size_3-of-12">
                         <lightning-layout>
@@ -70,12 +78,12 @@
                 <div class="slds-box" style="height: 500px;">
                     <lightning-datatable key-field="Id" data={portfoliolist} columns={columns}
                         hide-checkbox-column="true" enable-infinite-loading={isLoading} onloadmore={loadMoreData}
-                        sorted-by={orderByField}  sorted-direction={orderByDirection} onsort={updateColumnSorting}
-                        load-more-offest="20" min-column-width="90">
+                        sorted-by={orderByField} column-widths-mode="auto" sorted-direction={orderByDirection} onsort={updateColumnSorting}
+                        load-more-offest="20">
                     </lightning-datatable>
                     {loadMoreStatus}
                 </div>
             </lightning-card>
         </div>
-    </div>
+    </div>  
 </template>
