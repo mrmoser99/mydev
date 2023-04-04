@@ -2,7 +2,7 @@
  * @description       : LWC component to Credit Application Page container. 
  * @author            : Kritika Sharma : Traction on Demand
  * @group             : Kritika Sharma & Surbhi Goyal :  Traction on Demand
- * @last modified on  : 03-10-2023
+ * @last modified on  : 04-04-2023
  * @last modified by  : Mark Moser
  * @Changes Log        :
  * Date       - BUG/PBI    - Author                   - Description
@@ -37,6 +37,7 @@ import submitPreQualCreditApp from '@salesforce/apex/CreditAppUtils.submitPreQua
 import UpdateBenefitOwnerData from '@salesforce/apex/CreditApplicationHeaderController.UpdateBenefitOwnerData';
 import DeleteBenefitOwnerData from '@salesforce/apex/CreditApplicationHeaderController.DeleteBenefitOwnerData';
 import UpdateQuoteData from '@salesforce/apex/CreditApplicationHeaderController.UpdateQuoteData';
+import IsPortalEnabled from "@salesforce/apex/PricingUtils.isPortalEnabled";
 
 import generateAppealQuoteOption from '@salesforce/apex/AppUtility.generateAppealQuoteOption';
 import getQuoteOpportunityAndCount from '@salesforce/apex/AppUtility.getQuoteOpportunityAndCount';
@@ -79,7 +80,7 @@ import { loadScript } from 'lightning/platformResourceLoader';
 import cometd from '@salesforce/resourceUrl/cometd';
 import getSessionId from '@salesforce/apex/GenericUtilityClass.getSessionId';
 import getUserInfoById from '@salesforce/apex/GenericUtilityClass.getUserInfoById';
-import IsPortalEnabled from "@salesforce/apex/PricingUtils.isPortalEnabled";
+
 
 export default class CreditApplicationPageContainer extends NavigationMixin(LightningElement){
     label = {
@@ -119,6 +120,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     displayModal = false;
     displayModal2 = false;
     oppOwnerId;
+    dateOfBirthValueForMasking = '********';
 
     //active section
     //activeSections = ['Financing Structure','Beneficial Owner 1','asset 1','Customer Information','Customer Story (Optional)','qwnershipInformation','Personal Guarantee (Optional)']; 
@@ -157,6 +159,8 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
+
+        console.log('in get state');
         if (currentPageReference) {
             console.log('currentPageReference::'+JSON.stringify(currentPageReference.attributes.recordId));
             console.log('currentPageReference.state::'+JSON.stringify(currentPageReference.state));
@@ -1264,12 +1268,26 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     }
 
     openProposal() {
-        this[NavigationMixin.Navigate]({
+
+        if (this.isPortalUser){
+            this[NavigationMixin.Navigate]({
             type: 'standard__webPage',
             attributes: {
                 url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + this.oppId
             }
         })
+        }
+        else{
+
+            this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: window.location.origin + '/lightning/n/Quote?c__oppid=' + this.oppId
+            }
+        })
+
+        }
+        
     }
 
     addBeneficalOwner() {
@@ -2488,7 +2506,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
         for(var i=0;i<this.beneficialOwner.length;i++) {
             if(this.beneficialOwner[i].ownerNo == event.target.name) {
                 this.beneficialOwner[i].dateOfBirthValue = event.detail.value;
-                this.beneficialOwner[i].dateOfBirthValueForMasking = event.detail.value;
+                //this.beneficialOwner[i].dateOfBirthValueForMasking = event.detail.value;
             }
         }
     }
@@ -2644,6 +2662,22 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     handleCustomerInfoShow(event) {
         this.customerInfoShow=event.detail;
 
+    }
+
+    dobOnFocus(event){
+        for(var i=0;i<this.beneficialOwner.length;i++) {
+            if(this.beneficialOwner[i].ownerNo == event.target.name) {
+                event.target.value = this.beneficialOwner[i].dateOfBirthValue;
+            }
+        }
+    }
+
+    dobOnBlur(event) {
+        for(var i=0;i<this.beneficialOwner.length;i++) {
+            if(this.beneficialOwner[i].ownerNo == event.target.name) {
+                event.target.value = this.dateOfBirthValueForMasking;
+            }
+        }
     }
 
     ssnOnFocus(event) {

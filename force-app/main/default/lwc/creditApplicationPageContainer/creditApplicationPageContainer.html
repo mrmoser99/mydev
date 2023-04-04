@@ -550,62 +550,59 @@
                                             </lightning-accordion-section>
 
                                             <!--<template if:false={isCreditCheck}>-->
-                                                <lightning-accordion-section name="Personal Guarantee (Optional)"
-                                                    label="Personal Guarantee (Optional)">
-                                                    <div>
-                                                        <lightning-layout multiple-rows=true>
-                                                            <lightning-layout-item size=12>
-                                                                <p class="marginBottom">Please provide personal
-                                                                    information for a Principle of your customer's
-                                                                    company. </p>
-                                                            </lightning-layout-item>
-                                                            <lightning-layout-item size=6
-                                                                class="marginBottom slds-p-right_small">
-                                                                <label class="labelColor"><b>First Name</b></label>
-                                                                <lightning-input name='personalGuaranteeFirstName'
-                                                                    variant="label-hidden"
-                                                                    placeholder=" Enter First Name"
-                                                                    value={personalGuar.firstName} autocomplete="off"
-                                                                    onchange={handlePersonalGuaranteeFirstNameChange}>
-                                                                </lightning-input>
-                                                            </lightning-layout-item>
-                                                            <lightning-layout-item size=6
-                                                                class="marginBottom slds-p-right_small">
-                                                                <label class="labelColor"><b>Middle Initial</b></label>
-                                                                <lightning-input name='personalGuaranteeMiddleInitial'
-                                                                    variant="label-hidden" maxlength="1"
-                                                                    placeholder=" Enter Middle Initial"
-                                                                    value={personalGuar.middleInitial}
-                                                                    onchange={handlePersonalGuaranteeMiddleInitialChange}>
-                                                                </lightning-input>
-                                                            </lightning-layout-item>
-                                                            <lightning-layout-item size=6
-                                                                class="marginBottom slds-p-right_small">
-                                                                <label class="labelColor"><b>Last Name</b></label>
-                                                                <lightning-input name='personalGuaranteeLastName'
-                                                                    variant="label-hidden"
-                                                                    placeholder=" Enter Last Name"
-                                                                    value={personalGuar.lastName} autocomplete="off"
-                                                                    onchange={handlePersonalGuaranteeLastNameChange}>
-                                                                </lightning-input>
-                                                            </lightning-layout-item>
-                                                            <lightning-layout-item size=6
-                                                                class="marginBottom slds-p-right_small">
-                                                                <label class="labelColor"><b>Social Security Number
-                                                                        (SSN)</b></label>
-                                                                <lightning-input name='personalGuaranteeSSNEncrypted'
-                                                                    data-id='personalGuaranteeSSNEncrypted'
-                                                                    variant="label-hidden" placeholder=" Enter SSN"
-                                                                    maxlength="11" onfocus={ssnOnFocus}
-                                                                    onblur={ssnOnBlur}
-                                                                    value={personalGuar.SocialSecurityNumberForMasking}
-                                                                    autocomplete="off"
-                                                                    onchange={handlePersonalGuaranteeSSNEncryptedChange}>
-                                                                </lightning-input>
-                                                            </lightning-layout-item>
-                                                        </lightning-layout>
-                                                    </div>
-                                                </lightning-accordion-section>
+                                            <lightning-accordion-section name="Personal Guarantee (Optional)"
+                                                label="Personal Guarantee (Optional)">
+                                                <div>
+                                                    <lightning-layout multiple-rows=true>
+                                                        <lightning-layout-item size=12>
+                                                            <p class="marginBottom">Please provide personal
+                                                                information for a Principle of your customer's
+                                                                company. </p>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item size=6
+                                                            class="marginBottom slds-p-right_small">
+                                                            <label class="labelColor"><b>First Name</b></label>
+                                                            <lightning-input name='personalGuaranteeFirstName'
+                                                                variant="label-hidden" placeholder=" Enter First Name"
+                                                                value={personalGuar.firstName} autocomplete="off"
+                                                                onchange={handlePersonalGuaranteeFirstNameChange}>
+                                                            </lightning-input>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item size=6
+                                                            class="marginBottom slds-p-right_small">
+                                                            <label class="labelColor"><b>Middle Initial</b></label>
+                                                            <lightning-input name='personalGuaranteeMiddleInitial'
+                                                                variant="label-hidden" maxlength="1"
+                                                                placeholder=" Enter Middle Initial"
+                                                                value={personalGuar.middleInitial}
+                                                                onchange={handlePersonalGuaranteeMiddleInitialChange}>
+                                                            </lightning-input>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item size=6
+                                                            class="marginBottom slds-p-right_small">
+                                                            <label class="labelColor"><b>Last Name</b></label>
+                                                            <lightning-input name='personalGuaranteeLastName'
+                                                                variant="label-hidden" placeholder=" Enter Last Name"
+                                                                value={personalGuar.lastName} autocomplete="off"
+                                                                onchange={handlePersonalGuaranteeLastNameChange}>
+                                                            </lightning-input>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item size=6
+                                                            class="marginBottom slds-p-right_small">
+                                                            <label class="labelColor"><b>Social Security Number
+                                                                    (SSN)</b></label>
+                                                            <lightning-input name='personalGuaranteeSSNEncrypted'
+                                                                data-id='personalGuaranteeSSNEncrypted'
+                                                                variant="label-hidden" placeholder=" Enter SSN"
+                                                                maxlength="11" onfocus={ssnOnFocus} onblur={ssnOnBlur}
+                                                                value={personalGuar.SocialSecurityNumberForMasking}
+                                                                autocomplete="off"
+                                                                onchange={handlePersonalGuaranteeSSNEncryptedChange}>
+                                                            </lightning-input>
+                                                        </lightning-layout-item>
+                                                    </lightning-layout>
+                                                </div>
+                                            </lightning-accordion-section>
                                             <!--</template>-->
 
                                             <!--ownership info-->
@@ -711,8 +708,9 @@
                                                                         label="Date of Birth"
                                                                         data-id={ownerItem.ownerNo}
                                                                         placeholder="Select Date Of Birth"
-                                                                        value={ownerItem.dateOfBirthValue} type="date"
-                                                                        date-style="short"                                                                        
+                                                                        value={ownerItem.dateOfBirthValueForMasking}
+                                                                        type="date" date-style="short"
+                                                                        onfocus={dobOnFocus} onblur={dobOnBlur}
                                                                         onchange={handledateOfBirthChange}>
                                                                     </lightning-input>
                                                                 </lightning-layout-item>
@@ -805,77 +803,77 @@
                             </div>
                         </lightning-layout-item>
 
-                        <!--Summary section-->
-                        <template if:false={isCreditCheck}>
-                            <lightning-layout-item size="4" class="summarySection">
-                                <div class="summary slds-p-around_medium">
-                                    <lightning-layout multiple-rows=true>
-                                        <lightning-layout-item class="labelpadding" size=12>
-                                            <h1 class="slds-text-heading_large">
-                                                Summary
-                                            </h1>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Lease Type</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{summary.leaseTypeSummary}</span>
-                                        </lightning-layout-item>
+                        <!--Summary section
+                        <template if:false={isCreditCheck}>-->
+                        <lightning-layout-item size="4" class="summarySection">
+                            <div class="summary slds-p-around_medium">
+                                <lightning-layout multiple-rows=true>
+                                    <lightning-layout-item class="labelpadding" size=12>
+                                        <h1 class="slds-text-heading_large">
+                                            Summary
+                                        </h1>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Lease Type</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{summary.leaseTypeSummary}</span>
+                                    </lightning-layout-item>
 
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Rate Type</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{summary.rateTypeSummary}</span>
-                                        </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Rate Type</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{summary.rateTypeSummary}</span>
+                                    </lightning-layout-item>
 
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Advanced Payments</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{summary.advancedPaymentsSummary}</span>
-                                        </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Advanced Payments</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{summary.advancedPaymentsSummary}</span>
+                                    </lightning-layout-item>
 
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Total Price</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{summary.totalPriceSummary}</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size=12>
-                                            <h1 class="slds-text-heading_large">
-                                                Payment
-                                            </h1>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Term</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{payment.term}</span>
-                                        </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Total Price</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{summary.totalPriceSummary}</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size=12>
+                                        <h1 class="slds-text-heading_large">
+                                            Payment
+                                        </h1>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Term</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{payment.term}</span>
+                                    </lightning-layout-item>
 
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Interest Rate</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{payment.interestRate}%</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Residual</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{payment.residual}</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Total Payment</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{payment.totalPayment}</span>
-                                        </lightning-layout-item>
-                                    </lightning-layout>
-                                </div>
-                            </lightning-layout-item>
-                        </template>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Interest Rate</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{payment.interestRate}%</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Residual</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{payment.residual}</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Total Payment</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{payment.totalPayment}</span>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </div>
+                        </lightning-layout-item>
+                        <!--</template>-->
                     </lightning-layout>
                 </div>
             </lightning-layout-item>
@@ -1156,40 +1154,40 @@
                                             </lightning-accordion-section>
 
                                             <!--<template if:false={isCreditCheck}>-->
-                                                <lightning-accordion-section name="personalGuarantee"
-                                                    label="Personal Guarantee (Optional)">
-                                                    <div>
-                                                        <lightning-layout multiple-rows=true>
-                                                            <lightning-layout-item size=6
-                                                                class="marginBottom slds-p-right_small">
-                                                                <label class="labelColor"><b>First Name</b></label>
-                                                                <div>{personalGuar.firstName}</div>
-                                                            </lightning-layout-item>
-                                                            <lightning-layout-item size=6
-                                                                class="marginBottom slds-p-right_small">
-                                                                <label class="labelColor"><b>Middle Initial</b></label>
-                                                                <div>{personalGuar.middleInitial}</div>
-                                                            </lightning-layout-item>
-                                                            <lightning-layout-item size=6
-                                                                class="marginBottom slds-p-right_small">
-                                                                <label class="labelColor"><b>Last Name</b></label>
-                                                                <div>{personalGuar.lastName}</div>
-                                                            </lightning-layout-item>
-                                                            <lightning-layout-item size=6
-                                                                class="marginBottom slds-p-right_small">
-                                                                <label class="labelColor"><b>Social Security Number
-                                                                        (SSN)</b></label>
-                                                                <template if:true={isSSN}>
-                                                                    <div>{personalGuar.SocialSecurityNumberForMasking}
-                                                                    </div>
-                                                                </template>
-                                                                <template if:false={isSSN}>
-                                                                    <div>{pesonalGuar.SocialSecurityNumber}</div>
-                                                                </template>
-                                                            </lightning-layout-item>
-                                                        </lightning-layout>
-                                                    </div>
-                                                </lightning-accordion-section>
+                                            <lightning-accordion-section name="personalGuarantee"
+                                                label="Personal Guarantee (Optional)">
+                                                <div>
+                                                    <lightning-layout multiple-rows=true>
+                                                        <lightning-layout-item size=6
+                                                            class="marginBottom slds-p-right_small">
+                                                            <label class="labelColor"><b>First Name</b></label>
+                                                            <div>{personalGuar.firstName}</div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item size=6
+                                                            class="marginBottom slds-p-right_small">
+                                                            <label class="labelColor"><b>Middle Initial</b></label>
+                                                            <div>{personalGuar.middleInitial}</div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item size=6
+                                                            class="marginBottom slds-p-right_small">
+                                                            <label class="labelColor"><b>Last Name</b></label>
+                                                            <div>{personalGuar.lastName}</div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item size=6
+                                                            class="marginBottom slds-p-right_small">
+                                                            <label class="labelColor"><b>Social Security Number
+                                                                    (SSN)</b></label>
+                                                            <template if:true={isSSN}>
+                                                                <div>{personalGuar.SocialSecurityNumberForMasking}
+                                                                </div>
+                                                            </template>
+                                                            <template if:false={isSSN}>
+                                                                <div>{pesonalGuar.SocialSecurityNumber}</div>
+                                                            </template>
+                                                        </lightning-layout-item>
+                                                    </lightning-layout>
+                                                </div>
+                                            </lightning-accordion-section>
                                             <!--</template>-->
 
                                             <!--ownership info-->
@@ -1317,79 +1315,79 @@
                             </div>
                         </lightning-layout-item>
 
-                        <!--Summary section-->
-                        <template if:false={isCreditCheck}>
-                            <lightning-layout-item size="4" style="border-top: 4px solid #0099FF;">
-                                <div class="summary slds-p-around_medium">
-                                    <lightning-layout multiple-rows=true>
-                                        <lightning-layout-item class="labelpadding" size=12>
-                                            <h1 class="slds-text-heading_large">
-                                                Summary
-                                            </h1>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Lease Type</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{summary.leaseTypeSummary}</span>
-                                        </lightning-layout-item>
+                        <!--Summary section
+                        <template if:false={isCreditCheck}>-->
+                        <lightning-layout-item size="4" style="border-top: 4px solid #0099FF;">
+                            <div class="summary slds-p-around_medium">
+                                <lightning-layout multiple-rows=true>
+                                    <lightning-layout-item class="labelpadding" size=12>
+                                        <h1 class="slds-text-heading_large">
+                                            Summary
+                                        </h1>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Lease Type</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{summary.leaseTypeSummary}</span>
+                                    </lightning-layout-item>
 
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Rate Type</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{summary.rateTypeSummary}</span>
-                                        </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Rate Type</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{summary.rateTypeSummary}</span>
+                                    </lightning-layout-item>
 
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Advanced Payments</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{summary.advancedPaymentsSummary}</span>
-                                        </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Advanced Payments</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{summary.advancedPaymentsSummary}</span>
+                                    </lightning-layout-item>
 
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Total Price</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{summary.totalPriceSummary}</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size=12>
-                                            <h1 class="slds-text-heading_large">
-                                                Payment
-                                            </h1>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Term</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{payment.term}</span>
-                                        </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Total Price</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{summary.totalPriceSummary}</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size=12>
+                                        <h1 class="slds-text-heading_large">
+                                            Payment
+                                        </h1>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Term</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{payment.term}</span>
+                                    </lightning-layout-item>
 
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Interest Rate</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{payment.interestRate}%</span>
-                                        </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Interest Rate</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{payment.interestRate}%</span>
+                                    </lightning-layout-item>
 
 
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Residual</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{payment.residual}</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>Total Payment</span>
-                                        </lightning-layout-item>
-                                        <lightning-layout-item class="labelpadding" size="6">
-                                            <span>{payment.totalPayment}</span>
-                                        </lightning-layout-item>
-                                    </lightning-layout>
-                                </div>
-                            </lightning-layout-item>
-                        </template>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Residual</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{payment.residual}</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>Total Payment</span>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item class="labelpadding" size="6">
+                                        <span>{payment.totalPayment}</span>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </div>
+                        </lightning-layout-item>
+                        <!--</template>-->
                     </lightning-layout>
                 </div>
             </lightning-layout-item>

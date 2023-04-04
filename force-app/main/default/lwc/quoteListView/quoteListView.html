@@ -27,16 +27,17 @@
                     Create a new Quote or search for an existing Quote to view, submit for credit approval.
                 </div>
             </div>
-
-
             <div class="slds-grid" slot="actions">
                 <template if:true={regularMode}>
                     <template if:true={NQ01}>
                         <div class="slds-col">
+                            <lightning-button variant="brand-outline" label="Download Quote" title="Download Quote" onclick={handleDownload}></lightning-button>
+                        </div>
+                        <div class="slds-col">
                             <lightning-button variant="brand" title="Create New Quote" label="Create New Quote"
                                 onclick={createQuoteButton}>
                             </lightning-button>
-                        </div>
+                        </div>                        
                     </template>
                 </template>
                 <template if:true={ccMode}>
@@ -45,10 +46,15 @@
                             onclick={handleSelectQuote}>
                         </lightning-button>
                     </div>
+                    <div>
+                        <lightning-button variant="brand-outline" label="Export List to Excel" title="Export List to Excel" onclick={handleDownload}></lightning-button>
+                    </div>
                     <div class="slds-col slds-p-around_x-small">
-                        <lightning-button variant="brand-outline" title="Create New Quote" label="Create New Quote"
-                            onclick={handleCreateQuote}>
+                        <lightning-button variant="brand-outline" title="Create New Quote" label="Create New Quote" onclick={handleCreateQuote}>
                         </lightning-button>
+                    </div>
+                    <div>
+                        <lightning-button variant="brand-outline" label="Export List to Excel" title="Export List to Excel" onclick={handleDownload}></lightning-button>
                     </div>
                     <div class="slds-col slds-p-around_x-small">
                         <lightning-button variant="brand-outline" title="Cancel" label="Cancel" onclick={handleCancel}>
@@ -56,13 +62,10 @@
                     </div>
                 </template>
             </div>
-
-
-
-            <div class="slds-grid slds-gutters">
+            <div class="slds-grid slds-gutters slds-wrap">
                 <div class="slds-col slds-size_9-of-12 ">
                     <lightning-layout>
-                        <lightning-layout-item padding="around-small" size=3>
+                        <lightning-layout-item padding="around-small size=3">
                             <div class="slds-var-p-around_small ">
                                 <lightning-combobox class="slds-var-m-right_small" name="applicationDate"
                                     label="Created Date" value={applicationDate} placeholder="All Time"
@@ -71,35 +74,44 @@
                             </div>
                         </lightning-layout-item>
                         <template if:false={ccMode}>
-                            <lightning-layout-item padding="around-small" size=3>
+                            <lightning-layout-item padding="around-small size=3">
                                 <div class="slds-var-p-around_small ">
                                     <lightning-combobox name="partnerStatus" label="Status" value={partnerStatus}
-                                        options={partnerStatusPickListValues} onchange={handleChangeStatus}>
+                                                        placeholder="Search partner Status"
+                                                        options={partnerStatusPickListValues}
+                                                        onchange={handleChangeStatus}>
                                     </lightning-combobox>
                                 </div>
-                            </lightning-layout-item>
+                            </lightning-layout-item>                            
                         </template>
                         <template if:true={ccMode}>
-                            <lightning-layout-item padding="around-small" size=3>
+                            <lightning-layout-item padding="around-small size=3">
                                 <div class="slds-var-p-around_small ">
                                     <lightning-combobox name="partnerStatus" label="Status" value={partnerStatus}
-                                        options={partnerStatusPickListValuesCCMode} onchange={handleChangeStatus}>
+                                                        placeholder="Search partner Status"
+                                                        options={partnerStatusPickListValuesCCMode}
+                                                        onchange={handleChangeStatus}>
                                     </lightning-combobox>
                                 </div>
                             </lightning-layout-item>
                         </template>
-                        <lightning-layout-item padding="around-small" size=3>
+                        <lightning-layout-item padding="around-small size=3">
                             <div class="slds-var-p-around_small ">
-                                <lightning-input type="text" name="salesRep" label="Sales Rep" autocomplete="nope"
-                                    class="input"></lightning-input>
-                                <!-- <c-reusable-custom-dropdown-with-search-lwc field-required-off="true"  bold-label="false" auto-complete-off="nope" options={saleRapOptions} error-message="Enter a valid sales rep" value={saleRapValue} field-label="Sales Rep" placeholder="Enter Sales Rep" onchange={onSalesRepChange} >
-                            </c-reusable-custom-dropdown-with-search-lwc>
-                            <div style="color:rgb(234, 0, 30)">
-                                {errorMsg}
-                            </div>-->
+                                <lightning-input type="text" name="salesRep" label="Sales Rep"
+                                    autocomplete="off" value={salesRepFilter} onchange={handleChangeSalesRep} class="input"></lightning-input>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small size=6">
+                            <div class="slds-var-p-around_small" style="top: 50%; transform: translateY(40%);">
+                                <lightning-button variant="brand-outline" label="Clear Filters" title="Clear Filters" onclick={handleClearFilters}></lightning-button>
                             </div>
                         </lightning-layout-item>
                     </lightning-layout>
+                    <div class="slds-p-around_xx-small">
+                        <template for:each={allValues} for:item="val">
+                            <lightning-pill key={val} label={val} name={val} onremove={handleRemove}></lightning-pill>
+                        </template>
+                    </div>
                 </div>
                 <div class="slds-col slds-size_3-of-12">
                     <lightning-layout>

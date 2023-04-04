@@ -85,7 +85,9 @@ public static Boolean isPortalEnabled(){
              From User
              where id = : UserInfo.getUserId()
         ];
-
+	if (u.isPortalEnabled == null){
+		return false;
+	}
     return u.isPortalEnabled;
 
 

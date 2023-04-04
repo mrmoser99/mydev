@@ -14,7 +14,7 @@
         <targetConfig targets="lightningCommunity__Default,lightning__AppPage">
             <property label="Section Title" name="sectionTitle" type="String" default="New Quote" />
             <property label="Section Sub Title" name="sectionSubTitle" type="String" default="Details &amp; Add Ons" />
-            <property label="opp id" name="oppid" type="String" default="No Input Provided" />
+            <property label="opp id" name="oppid" type="String" default="{!oppid}" />
         </targetConfig>
         
     </targetConfigs>

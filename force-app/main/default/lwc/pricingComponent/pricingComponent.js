@@ -409,6 +409,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                                     }, 1500);
                                 })
                                 .catch(error => {
+                                    console.log(JSON.stringify(error));
                                     this.showToast('Something went wrong', error.body.message, 'error');
                                     loadsToGo--;
                                     if (loadsToGo === 0) {
@@ -443,6 +444,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                                     if (loadsToGo === 0) {
                                         this.loading = false;
                                     }
+                                    console.log(JSON.stringify(error));
                                     this.showToast('Something went wrong', error.body.message, 'error');
                                 });
                              
@@ -572,6 +574,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
             })
             .catch(error => {
                 //console.log('error' + error);
+                console.log(JSON.stringify(error));
                 this.showToast('Something went wrong', error.body.message, 'error');
                 this.loading = false;
                 this.rateTypePicklist = undefined;
@@ -643,6 +646,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                 }
             })
             .catch(error => {
+                console.log(JSON.stringify(error));
                 this.showToast('Something went wrong', error.body.message, 'error');
                 this.loading = false;
                 this.rateTypePicklist = undefined;

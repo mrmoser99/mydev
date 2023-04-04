@@ -8,6 +8,7 @@
  * 01/25/2023 - MRM - Sent credit checks to same page as others.
  * 02/06/2023 - Lucas Lucena - BUG 942673 - TST ACC | On Application Listview - "Sales Rep" field not filtering correctly 
  * 02/20/2023 - MRM added isPortalUser; and some non portal navigation stuff
+ * 16/03/2023 - Vinicio Ramos Silva - BUG 975326 - In app list view, after the Sales Rep filter selection, the filter is refreshed but not sorted.
  * 
  */
 
@@ -38,7 +39,8 @@ const columns = [
         label: 'Application #',
         fieldName: 'ApplicationNumberUrl',
         type: 'url',
-        sortable: true,        
+        sortable: true, 
+        fixedWidth: 130,        
         typeAttributes: {
             label: {
                 fieldName: 'Application_Number__c'
@@ -46,25 +48,25 @@ const columns = [
             target: '_self'
         }
     },
-    {label: 'Quote No.', fieldName: 'quoteNumberURL', type: 'url', sortable: true,  //mrm changed to this for appeals
+    {label: 'Quote No.', fieldName: 'quoteNumberURL', type: 'url', sortable: true, fixedWidth: 120,  //mrm changed to this for appeals
      typeAttributes: {label: {fieldName: 'Display_Quote_Number__c'}, target:'_self'}
     },
-    {label: 'Customer Name', fieldName: 'EndUserURL', type: 'url', sortable: true, 
+    {label: 'Customer Name', fieldName: 'EndUserURL', type: 'url', sortable: true, fixedWidth: 160, 
      typeAttributes: {label: {fieldName: 'End_User_Company_Name__c'}, target: '_self'}
     },
-    {label: 'Sales Rep', fieldName: 'SalesRepValue', type: 'text'},
-    {label: 'Amount', fieldName: 'Amount', type: 'currency', typeAttributes: { currencyCode: 'USD' }, sortable: true,
+    {label: 'Sales Rep', fieldName: 'SalesRepValue', type: 'text', fixedWidth: 150},
+    {label: 'Amount', fieldName: 'Amount', type: 'currency', typeAttributes: { currencyCode: 'USD' }, sortable: true, fixedWidth: 120,
         cellAttributes: { alignment: 'right' }},   
-    {label: 'Submitted', fieldName: 'Application_Date__c', type: 'date-local', typeAttributes:{
+    {label: 'Submitted', fieldName: 'Application_Date__c', type: 'date-local', fixedWidth: 100, typeAttributes:{
         month: "2-digit",
         day: "2-digit"
     }, sortable: true},
-    {label: 'Expires', fieldName: 'Approval_Letter_Expiration_Date__c', type: 'date-local', typeAttributes:{
+    {label: 'Expires', fieldName: 'Approval_Letter_Expiration_Date__c', type: 'date-local', fixedWidth: 100, typeAttributes:{
         month: "2-digit",
         day: "2-digit"
     }, sortable: true},
     {label: 'Status', fieldName: 'Sub_Stage__c', type: 'text', sortable: true, fixedWidth: 150},
-    {label: '',type: 'action',typeAttributes: {
+    {label: '',type: 'action', typeAttributes: {
             rowActions: actions
         }
     }
@@ -155,6 +157,8 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
         this.sortBy='Application_Date__c';
         this.sortDirection='desc';
 
+        console.log('checking if portal user');
+
         IsPortalEnabled().then(result => {
             console.log('result is : ' + result);
             this.isPortalUser = result;
@@ -165,6 +169,7 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
 
     getInitialOpportunities() {
         //FNS TEST
+
         getOpportunities({
             rowLimit: this.rowLimit,
             rowOffset: this.rowOffset,
@@ -191,8 +196,14 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
 
                     //if(tempOpportunity.Nickname__c != 'Credit Check') {
                     if(tempOpportunity.Quote_Count__c > 0) {
+                        if (this.isPortalUser){
+                            tempOpportunity.quoteNumberURL = window.location.origin + '/dllondemand/s/new-quote?oppid=' + tempOpportunity.Id;
+                        }
+                        else{
+                            tempOpportunity.quoteNumberURL = window.location.origin + '/lightning/n/Quote?c__oppid=' + tempOpportunity.Id;
+                        }
                         tempOpportunity.Display_Quote_Number__c = tempOpportunity.Display_Quote_Number__c;
-                        tempOpportunity.quoteNumberURL = window.location.origin + '/dllondemand/s/new-quote?oppid=' + tempOpportunity.Id;
+                        
                     } else {
                         tempOpportunity.Display_Quote_Number__c = '';
                         tempOpportunity.quoteNumberURL = '';
@@ -220,7 +231,7 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                             tempOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/opportunity/' + tempOpportunity.Id;
                         }
                         else{
-                            tempOpportunity.ApplicationNumberUrl = window.location.origin + '/lightning/n/Credit_Info_Internal?c__oppid=' + tempOpportunity.Id;
+                            tempOpportunity.ApplicationNumberUrl = window.location.origin + '/lightning/n/Credit_Application?c__oppid=' + tempOpportunity.Id;
                         }
                     
                     }
@@ -230,7 +241,7 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                             tempOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/opportunity/' + tempOpportunity.Id;
                         }
                         else{
-                            tempOpportunity.ApplicationNumberUrl = window.location.origin + '/lightning/n/Credit_Info_Internal?c__oppid=' + tempOpportunity.Id;
+                            tempOpportunity.ApplicationNumberUrl = window.location.origin + '/lightning/n/Credit_Application?c__oppid=' + tempOpportunity.Id;
                         }
                         
                     }
@@ -250,15 +261,22 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                         tempOpportunity.EndUserURL ='#';
                     }
                     else{
-                        tempOpportunity.EndUserURL = window.location.origin + '/dllondemand/s/account/' + tempOpportunity.End_User__c;
+                        if (this.isPortalUser){
+                            tempOpportunity.EndUserURL = window.location.origin + '/dllondemand/s/account/' + tempOpportunity.End_User__c;
+                        }
+                        else{
+                            tempOpportunity.EndUserURL = window.location.origin +'/lightning/r/Account/' + tempOpportunity.End_User__c + '/view';
+                        }
+                        
                     }                          
-                    console.log('EndUserURL: '+ tempOpportunity.End_User__c);
+                    //console.log('EndUserURL: '+ tempOpportunity.End_User__c);
                     tempOpportunitiesList.push(tempOpportunity);
-                    console.log('oppList:' + tempOpportunitiesList);
+                    //console.log('oppList:' + tempOpportunitiesList);
                 });
 
                 this.opportunities = tempOpportunitiesList;
                 //FNS TEST
+                
                 getOpportunitiesNum({
                     rowLimit: this.rowLimit,
                     rowOffset: this.rowOffset,
@@ -269,7 +287,7 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                 }).then(result => {
                     console.log(result);
                     if (result) {
-                        console.log(result + 'Newt');
+                        
                         this.totalNumberOfRows = result;
                         this.initialDataLoaded = true;
                         if(this.totalNumberOfRows > this.rowLimit){
@@ -279,7 +297,7 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                             this.itemCount = this.totalNumberOfRows;
                         }
                     }
-
+                       
                 })
             } else if (result.error) {
                 this.initialDataLoaded = true;
@@ -321,8 +339,15 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                             console.log('tempMoreOpportunity: '+ tempMoreOpportunity);
                             console.log('tempMoreOpportunity.Sub_Stage__c: '+ tempMoreOpportunity.Sub_Stage__c);
                             console.log('tempMoreOpportunity.ApplicationNumberUrl: '+ tempMoreOpportunity.ApplicationNumberUrl);
-                            tempMoreOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/opportunity/' + record.Id;
-                            tempMoreOpportunity.EndUserURL = window.location.origin + '/dllondemand/s/account/' + tempMoreOpportunity.End_User__c;
+                            if (this.isPortalUser){
+                                tempMoreOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/opportunity/' + record.Id;
+                                tempMoreOpportunity.EndUserURL = window.location.origin + '/dllondemand/s/account/' + tempMoreOpportunity.End_User__c;
+                            }
+                            else{
+                                tempMoreOpportunity.ApplicationNumberUrl = window.location.origin + '/lightning/n/Credit_Applicaiton?c__oppid=' + record.Id;
+                                tempMoreOpportunity.EndUserURL = window.location.origin + '/r/Account/' + tempMoreOpportunity.End_User__c + '/view';
+                            }
+                            
                             
                             //Start: Lucas Lucena - PBI 942673
                             if (tempMoreOpportunity.Partner_Sales_Rep__r) {
@@ -403,9 +428,20 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
     // End: Lucas Lucena - PBI 942673
 
     handleRemove(event){
+        
         const valueRemoved = event.target.name;
         this.allValues.splice(this.allValues.indexOf(valueRemoved),1);
-        this.getInitialOpportunities()
+        // Start: Vinício Ramos Silva - Bug 975326
+        this.sortBy='Application_Date__c';
+        this.sortDirection='desc';
+        this.loadMoreStatus = '';
+        this.initialDataLoaded = false;
+        this.rowOffset = 0;
+        this.enableInfiniteLoading = true;
+        this.isLoading =true;
+        this.opportunities = [];
+        // End: Vinício Ramos Silva - Bug 975326
+        this.getInitialOpportunities();
     }
 
     handleClearFilters(event){
@@ -413,6 +449,18 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
         this.partnerStatus='';
         this.applicationDate='';
         this.salesRepFilter='';
+        
+        // Start: Vinício Ramos Silva - Bug 975326
+        this.sortBy='Application_Date__c';
+        this.sortDirection='desc';
+        this.loadMoreStatus = '';
+        this.initialDataLoaded = false;
+        this.rowOffset = 0;
+        this.enableInfiniteLoading = true;
+        this.isLoading =true;
+        this.opportunities = [];
+        // End: Vinício Ramos Silva - Bug 975326
+
         this.getInitialOpportunities();
     }
 

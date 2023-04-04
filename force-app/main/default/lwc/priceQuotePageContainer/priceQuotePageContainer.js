@@ -259,12 +259,25 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
     *  
     ***************************************************************************************************************/
     setCurrentPageIdBasedOnUrl() {
-
+        console.log('hello');
         if (this.oppid == null)
             this.oppid = this.currentPageReference.state.oppid;
 
         if (this.mode == null)
             this.mode = this.currentPageReference.state.mode;
+
+        if (typeof this.oppid === 'undefined'){
+            this.oppid = this.currentPageReference.state.c__oppid;
+            console.log('c__oppid=' + this.oppid);
+        }
+
+        this.option = this.currentPageReference.state.option;
+        if (typeof this.option === 'undefined'){
+            
+            this.option = this.currentPageReference.state.c__option;
+            console.log('c__option=' + this.option);
+        }
+         
     }
 
     
@@ -272,7 +285,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
     *  
     ***************************************************************************************************************/
     connectedCallback() {
-        
+        console.log('***************** entering');
          
         this.loading = false;
 
@@ -400,6 +413,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                                     //if (loadsToGo === 0) {
                                     //    this.loading = false;
                                     //}
+                                    console.log(error);
                                     this.showToast('Something went wrong', error.body.message, 'error');
                                 });
                              
@@ -493,6 +507,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
             }
         })
         .catch(error => {
+            console.log(error);
         	this.showToast('Something went wrong', error.body.message, 'error');
             this.location = undefined;
         });
@@ -553,6 +568,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                 }, 1500);
             }).catch(error => {
             ////console.log(JSON.parse(JSON.stringify(error)));
+            console.log(error);
             this.showToast('Something went wrong', error.body.message, 'error');
             loadsToGo--;
             if (loadsToGo === 0) {
@@ -609,6 +625,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                 if (loadsToGo === 0) {
                     this.loading = false;
                 }
+                console.log(error);
                 this.showToast('Something went wrong', error.body.message, 'error');
             });
 
@@ -659,6 +676,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
 
             })
             .catch(error => {
+                console.log(error);
                 this.showToast('Something went wrong', error.body.message, 'error');
                 this.loading = false;
                 this.rateTypePicklist = undefined;
@@ -734,6 +752,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
 
             })
             .catch(error => {
+                console.log(error);
                 this.showToast('Something went wrong', error.body.message, 'error');
                 this.loading = false;
                 this.rateTypePicklist = undefined;
@@ -789,12 +808,18 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
 
         
         if (this.isCCMode == false){
-          this[NavigationMixin.Navigate]({
-              type: 'standard__webPage',
-              attributes: {
-                  url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + this.oppid
-              }
-          });
+            if (this.IsPortalEnabled){
+                this[NavigationMixin.Navigate]({
+                     type: 'standard__webPage',
+                    attributes: {
+                        url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + this.oppid
+                 }
+                });
+            }
+            else{
+
+            }
+          
         }
     }
 
@@ -1633,12 +1658,23 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
 
         //console.log('in parent handle child cancel');
 
-        this[NavigationMixin.Navigate]({
-            type: 'standard__webPage',
-            attributes: {
-                url: window.location.origin + '/dllondemand/s/new-quote?oppid=' +this.oppid
-            }
-        });
+        if (this.isPortalUser){
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: window.location.origin + '/dllondemand/s/new-quote?oppid=' +this.oppid
+                }
+            });
+        }
+        else{
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: window.location.origin + '/lightning/n/Quote?oppid=' +this.oppid
+                }
+            });
+        }
+        
 
     }
 
@@ -1875,12 +1911,24 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
 
                     // Redirect to the credit application page
                     if (this.isCCMode == false){
-                        this[NavigationMixin.Navigate]({
-                            type: 'standard__webPage',                    
-                            attributes: {
-                                url: '/dllondemand/s/opportunity/' + this.opportunityId  
-                            }
-                        });
+                        if (this.isPortalUser){
+                            this[NavigationMixin.Navigate]({
+                                type: 'standard__webPage',                    
+                                attributes: {
+                                    url: '/dllondemand/s/opportunity/' + this.opportunityId  
+                                }
+                            });
+                        }
+                        else{
+                            this[NavigationMixin.Navigate]({
+                                type: 'standard__webPage',                    
+                                attributes: {
+                                    url: '/lightning/r/Opportunity/' + this.opportunityId + '/view'
+                                }
+                            });
+                            
+                        }
+                        
                     }
                     else{
                         this.connectedCallback();
@@ -2264,12 +2312,23 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                 });
         }
 
-        this[NavigationMixin.Navigate]({
-            type: 'standard__webPage',
-            attributes: {
-                url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + this.oppid
-            }
-        });
+        if (this.isPortaluser){
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + this.oppid
+                }
+            });
+        }
+        else{
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: window.location.origin + '/lightning/n/Quote?c__oppid=' + this.oppid
+                }
+            });
+        }
+        
     }
 
     

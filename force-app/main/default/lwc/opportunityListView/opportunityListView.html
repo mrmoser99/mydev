@@ -3,7 +3,7 @@
     <lightning-card>
         <div class="slds-grid slds-gutters slds-float_right">
             <div>
-                <lightning-button variant="brand-outline" label="Export List to Excel" title="Export List to Excel" onclick={handleDownload}></lightning-button>
+                <lightning-button variant="brand-outline" label="Download Application" title="Download Application" onclick={handleDownload}></lightning-button>
             </div>
             <template if:true={creditCheckEnabled}>
                 <div class="slds-float_right">
@@ -104,10 +104,8 @@
                     sorted-by={sortBy}
                     sorted-direction={sortDirection}
                     onsort={updateColumnSorting}
-                    hide-checkbox-column="true"
-                    column-widths-mode="auto"                    
-                    onrowaction={handleRowAction}
-                    min-column-width="80">
+                    hide-checkbox-column="true"                                       
+                    onrowaction={handleRowAction}>
             </lightning-datatable>
             {loadMoreStatus}
         </div>

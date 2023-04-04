@@ -3,6 +3,9 @@
 *  Change Log:
 *   01/25/2023 - MRM - added mode as an api;
 *   02/20/2023 - MRM -added isPortalUser for navigation
+    02/24/2023 - PBI 902314 - Vinicio Ramos Silva - As a portal user I should get a confirmation message when I try to delete a quote from the quote list view
+    03/07/2023 - PBI 902314 - Vinicio Ramos Silva - change in confirmation text to delete record
+    03/22/2023 - PBI 943211 - Vinicio Ramos Silva - Application Listview Download functionality for Quote & Portfolio
 *************************************************************************************************************/
 import {LightningElement,track, wire,api} from 'lwc';
 
@@ -21,15 +24,6 @@ import LightningConfirm from "lightning/confirm";
 import LightningAlert from "lightning/alert";
 import IsPortalEnabled from "@salesforce/apex/PricingUtils.isPortalEnabled";
 
-//Declare constants
-const actions = [{
-    label: 'Delete',
-    name: 'delete'
-}, {
-    label: 'Edit',
-    name: 'edit'
-}];
-
 
 const columns = [{
         label: 'Quote Number',
@@ -43,6 +37,14 @@ const columns = [{
             target: '_self'
         }
     },
+    // Start PBI - 902314
+    {
+        label: 'Application Number',
+        fieldName: 'applicationNumber',
+        type: 'text',
+        sortable: true
+    }, 
+    // End PBI - 902314   
     {
         label: 'Customer',
         fieldName: 'EndUserURL',
@@ -70,7 +72,8 @@ const columns = [{
         label: 'Nickname',
         fieldName: 'nickName',
         type: 'text',
-        sortable: true
+        sortable: true,
+        fixedWidth: 110
     },
     {
         label: 'Sales Rep',
@@ -86,7 +89,8 @@ const columns = [{
             month: "2-digit",
             day: "2-digit"
         },
-        sortable: true
+        sortable: true,
+        fixedWidth: 110
     },
     {
         label: 'Last Modified',
@@ -96,7 +100,8 @@ const columns = [{
             month: "2-digit",
             day: "2-digit"
         },
-        sortable: true
+        sortable: true,
+        fixedWidth: 110
     },
     {
         label: 'Status',
@@ -104,17 +109,12 @@ const columns = [{
         type: 'text',
         sortable: true,
         fixedWidth: 150
-    },
-    {
-        label: '',
-        type: 'action',
-        typeAttributes: {
-            rowActions: actions
-        }
     }
+    
 ];
 
 export default class quoteListView extends NavigationMixin(LightningElement) {
+
 
     //API
     @api mode;
@@ -140,56 +140,22 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
     rowOffset = 0;
     loadMoreStatus;
     applicationDate = '';
-    applicationDatePickListValues = [];
-    partnerStatus = '';
-    partnerStatusPickListValues = [{
-            label: 'All',
-            value: ''
-        },
-
-        {
-            label: 'Application Draft',
-            value: 'Application Draft'
-        },
-
-        {
-            label: 'Application Submitted',
-            value: 'Application Submitted'
-        },
-
-        {
-            label: 'Quote Draft',
-            value: 'Quote Draft'
-        },
-
-        {
-            label: 'Quoting & Proposal',
-            value: 'Quoting & Proposal'
-        }
-       
+    applicationDatePickListValues = [];    
+    @track partnerStatus='';
+    @track salesRepFilter = '';
+    @track allValues = [];
+    partnerStatusPickListValues = [
+        {   label: 'All', value: ''},
+        {   label: 'Application Draft', value: 'Application Draft'},
+        {   label: 'Application Submitted', value: 'Application Submitted'},
+        {   label: 'Quote Draft', value: 'Quote Draft'},
+        {   label: 'Quoting & Proposal', value: 'Quoting & Proposal'}
     ];
     partnerStatusPickListValuesCCMode = [
-        {
-            label: 'All',
-            value: ''
-        },
-
-        {
-            label: 'Application Draft',
-            value: 'Application Draft'
-        },
-
-        
-        {
-            label: 'Quote Draft',
-            value: 'Quote Draft'
-        },
-
-        {
-            label: 'Quoting & Proposal',
-            value: 'Quoting & Proposal'
-        }
-       
+        {   label: 'All', value: ''},
+        {   label: 'Application Draft', value: 'Application Draft'},
+        {   label: 'Quote Draft', value: 'Quote Draft'},
+        {   label: 'Quoting & Proposal', value: 'Quoting & Proposal'}
     ];
     searchAllValue = '';
     enableInfiniteLoading = true;
@@ -201,7 +167,14 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
     saleRapValue = '';
     errorMsg = '';
     tempOpportunitiesList = [];
-
+    
+    constructor() {
+        super();
+        this.columns = this.columns.concat( [
+            { type: 'action', typeAttributes: { rowActions: this.getRowActions } }
+        ] );
+    }
+    
     //wire Opportunity Object
     @wire(getObjectInfo, {
         objectApiName: OPPORTUNITY_OBJECT
@@ -295,23 +268,21 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
     //method to load data
     getInitialOpportunities() {
         //apex call to get Quotes
-        console.log('ccmode is : ' +this.ccMode);
-        console.log('mode is: ' + this.mode);
-        console.log('status: ' + this.partnerStatus);
+        
         getQuotes({
                 rowLimit: this.rowLimit,
                 rowOffset: this.rowOffset,
                 submittedDate: this.applicationDate,
-                partnerStatus: this.partnerStatus,
+                partnerStatus: this.allValues,
                 searchAllValue: this.searchAllValue,
                 sortBy: this.sortBy,
                 sortDirection: this.sortDirection,
-                ccMode : this.ccMode
+                ccMode : this.ccMode,
+                salesRepFilter: this.salesRepFilter
             }).then(result => {
                 //on success 
-                if (result) {
+                if (result) {                    
                     let tempOpportunitiesList = [];
-
                     result.forEach((record) => {
                         let tempOpportunity = Object.assign({}, record);
 
@@ -319,6 +290,12 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
                         if (tempOpportunity.Opportunity.CreatedBy.Name != null) {
                             tempOpportunity.createdbyname = tempOpportunity.Opportunity.CreatedBy.FirstName + ' ' + tempOpportunity.Opportunity.CreatedBy.LastName;
                         }
+                        // Start PBI - 902314    
+                        //create temp variable Application Number
+                        if (tempOpportunity.Opportunity.Application_Number__c != undefined) {
+                            tempOpportunity.applicationNumber = tempOpportunity.Opportunity.Application_Number__c;
+                        }
+                        // End PBI - 902314        
                         //create temp variable QuoteNumberURL
                         if (tempOpportunity.Opportunity.Opportunity_Number__c == undefined) {
                             tempOpportunity.QuoteNumberURL = '#';
@@ -327,7 +304,7 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
                             
                             console.log('this is portal user = ' + this.isPortalUser);
                             if (!this.isPortalUser){
-                                tempOpportunity.QuoteNumberURL = window.location.origin + '/lightning/n/Quote2?c__oppid=' + tempOpportunity.Opportunity.Id;
+                                tempOpportunity.QuoteNumberURL = window.location.origin + '/lightning/n/Quote?c__oppid=' + tempOpportunity.Opportunity.Id;
                                 tempOpportunity.Qnumber = tempOpportunity.Opportunity.Opportunity_Number__c;
                             }
                             else{
@@ -386,7 +363,11 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
                         if (tempOpportunity.Opportunity.End_User__c == undefined) {
                             tempOpportunity.EndUserURL = '#';
                         } else {
-                            tempOpportunity.EndUserURL = window.location.origin + '/dllondemand/s/account/' + tempOpportunity.Opportunity.End_User__c;
+                            if (this.isPortalUser){
+                                tempOpportunity.EndUserURL = window.location.origin + '/dllondemand/s/account/' + tempOpportunity.Opportunity.End_User__c;
+                            }
+                            else
+                                tempOpportunity.EndUserURL = window.location.origin + '/lightning/r/Account/' + tempOpportunity.Opportunity.End_User__c + '/view';
                         }
 
                         tempOpportunitiesList.push(tempOpportunity);
@@ -400,9 +381,10 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
                             rowLimit: this.rowLimit,
                             rowOffset: this.rowOffset,
                             submittedDate: this.applicationDate,
-                            partnerStatus: this.partnerStatus,
+                            partnerStatus: this.allValues,
                             searchAllValue: this.searchAllValue,
-                            ccMode : this.ccMode
+                            ccMode : this.ccMode,
+                            salesRepFilter: this.salesRepFilter
                         }).then(result => {
                             //On success
                             if (result) {
@@ -432,6 +414,33 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
             })
     }
 
+    getRowActions(row, doneCallback) {
+    const actions = [];
+        if (row.applicationNumber == undefined) {
+            actions.push(
+                {
+                    label: 'Delete',
+                    name: 'delete'
+                }, {
+                    label: 'Edit',
+                    name: 'edit'
+                }
+            );
+        } else {
+            actions.push(
+                {
+                    label: 'Edit',
+                    name: 'edit'
+                }
+            );
+        }
+        // simulate a trip to the server
+        setTimeout(() => {
+            doneCallback(actions);
+        }, 200);           
+    }
+    
+
     // Event to handle onloadmore on lightning datatable 
     loadMoreData(event) {
         event.preventDefault();
@@ -450,10 +459,11 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
                         rowLimit: this.rowLimit,
                         rowOffset: this.rowOffset,
                         submittedDate: this.applicationDate,
-                        partnerStatus: this.partnerStatus,
+                        partnerStatus: this.allValues,
                         searchAllValue: this.searchAllValue,
                         sortBy: this.sortBy,
-                        sortDirection: this.sortDirection
+                        sortDirection: this.sortDirection,
+                        salesRepFilter: this.salesRepFilter
                     }).then(result => {
                         //On success
                         let tempMoreOpportunitiesList = [];
@@ -479,6 +489,12 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
                         if (tempMoreOpportunity.Opportunity.CreatedBy.Name != null) {
                             tempMoreOpportunity.createdbyname = tempMoreOpportunity.Opportunity.CreatedBy.FirstName + ' ' + tempMoreOpportunity.Opportunity.CreatedBy.LastName;
                         }
+                        // Start PBI - 902314    
+                        //create temp variable Application Number
+                        if (tempMoreOpportunity.Opportunity.Application_Number__c != undefined) {
+                            tempMoreOpportunity.applicationNumber = tempMoreOpportunity.Opportunity.Application_Number__c;
+                        }
+                        // End PBI - 902314 
                         //create temp variable QuoteNumberURL
                         if (tempMoreOpportunity.Opportunity.Opportunity_Number__c == undefined) {
                             tempMoreOpportunity.QuoteNumberURL = '#';
@@ -592,15 +608,73 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
 
     //Method to handle status change
     handleChangeStatus(event) {
-        //get selected status
+        
+        console.log('entrou status');
+        console.log('entrou event.target.value   '+ event.target.value);
+        if(event.target.value == ''){
+            this.allValues = [];
+            this.partnerStatus=''; 
+        }
+        else{
+            if(!this.allValues.includes(event.target.value)){           
+                this.allValues.push(event.target.value); 
+            }                
+        }       
         this.partnerStatus = event.target.value;
         this.enableInfiniteLoading = true;
-        this.isLoading = true;
-        this.quotes = [];
+        this.isLoading =true;
+        this.opportunities = [];
         this.rowOffset = 0;
-        //load data
         this.getInitialOpportunities();
     }
+
+    handleChangeSalesRep(event) {
+        this.salesRepFilter = event.target.value;
+        clearTimeout(this.debounceTimeout);
+        this.debounceTimeout = setTimeout(() => {
+            this.enableInfiniteLoading = true;
+            this.isLoading =true;
+            this.opportunities = [];
+            this.rowOffset = 0;
+            this.getInitialOpportunities();
+         }, 2000);
+        
+    }
+
+    handleRemove(event){
+        
+        const valueRemoved = event.target.name;
+        this.allValues.splice(this.allValues.indexOf(valueRemoved),1);
+        //this.sortBy='Application_Date__c';
+        this.sortDirection='desc';
+        this.loadMoreStatus = '';
+        this.initialDataLoaded = false;
+        this.rowOffset = 0;
+        this.enableInfiniteLoading = true;
+        this.isLoading =true;
+        this.opportunities = [];
+        this.getInitialOpportunities();
+    }
+
+    handleClearFilters(event){
+        this.allValues = [];
+        this.partnerStatus='';
+        this.applicationDate='';
+        this.salesRepFilter='';
+        //this.sortBy='Application_Date__c';
+        this.sortDirection='desc';
+        this.loadMoreStatus = '';
+        this.initialDataLoaded = false;
+        this.rowOffset = 0;
+        this.enableInfiniteLoading = true;
+        this.isLoading =true;
+        this.opportunities = [];
+        
+        this.getInitialOpportunities();
+    }
+
+
+
 
     //Method to handle KeyPress on search
     handleKeyUp(event) {
@@ -664,20 +738,20 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
         });
     }
 
-
     //Method to handle Row action event - edit and delete
     handleRowAction(event) {
+
         this.loader = true;
         const actionName = event.detail.action.name;
         const row = event.detail.row;
 
         console.log('what is the action man:' + actionName);
 
-
         if (actionName === 'delete') {
-            this.handleConfirmClick(row);
+            console.log('delete row.OpportunityId:' + row.OpportunityId);
+            console.log('delete row applicationNumber:' + row.applicationNumber);
+            this.handleConfirmClick(row);            
         }
-
         
         if (actionName === 'edit') {
             this.loader = false;
@@ -688,20 +762,16 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
                 }
             });
         }
-
-        console.log('what is the action man:' + actionName);
-
+        console.log('what is the action man:' + actionName);        
     }
-
-    handleConfirmClick(oppId) {
-        const result = LightningConfirm.open({
-            message: "Are you sure you want to delete this?",
+        
+    async handleConfirmClick(row) {
+        const result = await LightningConfirm.open({
+            message: "You are about to delete the record. If you clicked \"Delete\" by accident, select Cancel.",
             variant: "default", // headerless
-            label: "Delete a record"
+            label: "Are you sure, you want to delete the record?"
         });
-
-        //Confirm has been closed
-
+        //Confirm has been closed        
         //result is true if OK was clicked
         if (result) {
             deleteOpp({
@@ -716,29 +786,12 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
                 console.log('error' + JSON.stringify(error));
                 this.loader = false;
             })
-            //this.handleSuccessAlertClick();
+            
         } else {
-            //and false if cancel was clicked
-            //this.handleErrorAlertClick();
+            this.loader = false;
         }
     }
-
-    /*async handleSuccessAlertClick() {
-        await LightningAlert.open({
-            message: `You clicked "Ok"`,
-            theme: "success",
-            label: "Success!"
-        });
-    }
-
-    async handleErrorAlertClick() {
-        await LightningAlert.open({
-            message: `You clicked "Cancel"`,
-            theme: "error",
-            label: "Error!"
-        });
-    }*/
-
+    
     handleSelectQuote(event){
 
         console.log('dispatching childselect event');
@@ -787,5 +840,137 @@ export default class quoteListView extends NavigationMixin(LightningElement) {
 
     }
 
+
+    //Start PBI 943211 - Vinicio Ramos Silva - Application Listview Download functionality for Quote & Portfolio
+    handleDownload(event) {
+        
+        getQuotes({
+
+            rowLimit: 9999,
+            rowOffset: 0,
+            submittedDate: this.applicationDate,
+            partnerStatus: this.allValues,
+            searchAllValue: this.searchAllValue,
+            sortBy: this.sortBy,
+            sortDirection: this.sortDirection,
+            ccMode : this.ccMode,
+            salesRepFilter: this.salesRepFilter,
+            
+        }).then(res => {
+            const evt = new ShowToastEvent({
+               // title: 'Download Quote',
+                message: 'Downloading....',
+                variant: 'success',
+                duration:10000,
+            });
+            this.dispatchEvent(evt);
+            
+            
+            this.downloaddata= res.map(dt=>{
+                let tmp = {...dt};                
+                if(!tmp.Opportunity.Opportunity_Number__c) {tmp.Opportunity.Opportunity_Number__c = ' ';}
+                if(!tmp.Opportunity.Name) {tmp.Opportunity.Name = ' ';}
+                if(!tmp.Opportunity.Application_Number__c) {tmp.Opportunity.Application_Number__c = ' ';}
+                if (tmp.Opportunity.End_User__r) {tmp.endUserName = tmp.Opportunity.End_User__r.Name;} 
+                else {tmp.endUserName = ' ';} 
+                if (tmp.Opportunity.CreatedBy.Name) {tmp.createdbyname = tmp.Opportunity.CreatedBy.FirstName + ' ' + tmp.Opportunity.CreatedBy.LastName;} 
+                else {tmp.createdbyname = ' ';} 
+                if(!tmp.Nickname__c) {tmp.Nickname__c = ' ';}
+                if (tmp.Partner_Sales_Rep__r) {tmp.SalesRepValue = tmp.Partner_Sales_Rep__r.Name;} 
+                else {tmp.SalesRepValue = ' ';}
+                if(!tmp.Amount__c) {tmp.Amount__c = ' ';}
+                if(!tmp.Rate_Type__c) {tmp.Rate_Type__c = ' ';}
+                if(!tmp.Total_Payment__c) {tmp.Total_Payment__c = ' ';}
+                if(!tmp.Payment_Frequency__c) {tmp.Payment_Frequency__c = ' ';}
+                return tmp;
+           });     
+        
+        if(!this.downloaddata || !this.downloaddata.length){
+            
+            return null
+        }
+        const jsonObject = JSON.stringify(this.downloaddata);
+        const result = this.convertToXLS(jsonObject, this.headers);
+        if(result === null) return
+        const blob = new Blob([result])
+    }) 
+    }
+    
+    convertToXLS(objArray, headers){
+        let date = new Date()
+        let day = date.getDate();
+        let month = date.getMonth()+1;
+        let year = date.getFullYear();
+        let fullDate = month + "-" + day + "-" + year;
+        
+        /*added header columns for excel- Download Application*/
+        let columnHeader = [
+            'Quote Number',
+            'Quote Name',
+            'Application Number',
+            'Customer Name',
+            'Creator',
+            'Nickname', 
+            'Sales Rep',
+            'Date Created',
+            'Last Modified',
+            'Status',
+            'Amount',
+            'Rate Type',
+            'Total Payment',
+            'Payment Frequency'
+        
+        ];
+        // Prepare a html table
+        let doc = '<style>'; 
+        // Add styles for the table
+        doc += 'table, th, td {';
+        doc += '    border: 1px solid black;';
+        doc += '    border-collapse: collapse;';
+        doc += '    text-align: left';        
+        doc += '}';          
+        doc += '</style>';
+        
+        doc += '<table>';
+        
+        // Add all the Table Headers
+        doc += '<tr>';
+        columnHeader.forEach(element => {            
+            doc += '<th>'+ element +'</th>'           
+        });
+        doc += '</tr>';
+        // Add the data rows
+        const data = typeof objArray !=='object' ? JSON.parse(objArray):objArray
+        
+        data.forEach(record => {
+            doc += '<tr>';
+            doc += '<th>'+record.Opportunity.Opportunity_Number__c+'</th>';
+            doc += '<th>'+record.Opportunity.Name+'</th>';
+            doc += '<th>'+record.Opportunity.Application_Number__c+'</th>';
+            doc += '<th>'+record.endUserName+'</th>'; 
+            doc += '<th>'+record.createdbyname+'</th>'; 
+            doc += '<th>'+record.Opportunity.Nickname__c+'</th>'; 
+            doc += '<th>'+record.SalesRepValue+'</th>';  
+            doc += '<th>'+new Date(record.Opportunity.CreatedDate).toLocaleDateString()+'</th>';   
+            doc += '<th>'+new Date(record.Opportunity.LastModifiedDate).toLocaleDateString()+'</th>';
+            doc += '<th>'+record.Opportunity.Sub_Stage__c+'</th>';    
+            doc += '<th>'+record.Amount__c+'</th>';   
+            doc += '<th>'+record.Rate_Type__c+'</th>';   
+            doc += '<th>'+record.Total_Payment__c+'</th>';   
+            doc += '<th>'+record.Payment_Frequency__c+'</th>';           
+            doc += '</tr>';
+
+        });
+        doc += '</table>';
+        var element = 'data:application/vnd.ms-excel,' + encodeURIComponent(doc);
+        let downloadElement = document.createElement('a');
+        downloadElement.href = element;
+        downloadElement.target = '_self';
+        // use .csv as extension on below line if you want to export data as csv
+        downloadElement.download = 'Quotes ' + fullDate +'.xls';
+        document.body.appendChild(downloadElement);
+        downloadElement.click();
+    }    
+    //End PBI 943211 - Vinicio Ramos Silva - Application Listview Download functionality for Quote & Portfolio   
 
 }

@@ -7,12 +7,15 @@
 *   04/28/2022 - Geetha added logic for Download Portfolio and ability to filter records based on 
 *                filter criteria
 *   03/27/2023 - PBI 943211 - Vinicio Ramos Silva - Application Listview Download functionality for Quote & Portfolio
+    04/04/2023 - PBI 1000801 - MRM Added portal vs non portal navigation
+
 **********************************************************************************************************/
 import { LightningElement, wire, track , api} from 'lwc';
 import getRecords from "@salesforce/apex/PortfolioViewController.getRecords";
 import getTotalRecords from "@salesforce/apex/PortfolioViewController.getTotalRecords";
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import {NavigationMixin} from 'lightning/navigation';
+import IsPortalEnabled from "@salesforce/apex/PricingUtils.isPortalEnabled";
 
 const columns = [
     { label: 'Contract', fieldName: 'contractUrl', wrapText:false, sortable: true, fixedWidth: 160,        type: 'url',
@@ -67,6 +70,8 @@ export default class PortfolioView extends NavigationMixin(LightningElement) {
     @track salesRepFilter = '';
     @track allValues = [];
     @track status='';
+
+    IsPortalUser= false;
       
     datelist = [
         {value: '0', label: 'All Time'},
@@ -88,9 +93,17 @@ export default class PortfolioView extends NavigationMixin(LightningElement) {
     ];
 
     connectedCallback() {
+
+        IsPortalEnabled().then(result => {
+            console.log('result is : ' + result);
+            this.isPortalUser = result;
+        });
+
         //Get initial chunk of data with offset set at 0
         this.getRecords();
-        //Commenting the below callback method - this will improve the performance      
+        //Commenting the below callback method - this will improve the performance    
+        
+        
         
     }
      
@@ -117,7 +130,7 @@ export default class PortfolioView extends NavigationMixin(LightningElement) {
                 .catch(error => {
                     this.error = error;
                     this.data = undefined;
-                    console.log('error : ' + JSON.stringify(this.error));
+                    console.log('error 1 : ' + JSON.stringify(this.error));
                     this.showToast('Something went wrong', JSON.stringify(this.error), 'error');
                     return;
                 });
@@ -137,42 +150,45 @@ export default class PortfolioView extends NavigationMixin(LightningElement) {
                 
                 result = JSON.parse(result);
                 if (result) {
-                    result.forEach(contract => {     
-                       
+                    result.forEach(contract => {
                         let preparedLease = {}; 
                         preparedLease.Id = contract.contract.Id;
                         preparedLease.contractNumber = contract.contract.Name;
                         if (contract.contract.End_User__r != undefined) {
                             if (contract.contract.End_User__r.Name != undefined) {
                                 preparedLease.customerName = contract.contract.End_User__r.Name;
-                                preparedLease.endUserURL = window.location.origin + '/dllondemand/s/account/' + contract.contract.End_User__c;
+                                if (this.isPortalUser){
+                                    preparedLease.endUserURL = window.location.origin + '/dllondemand/s/account/' + contract.contract.End_User__c;
+                                }
+                                else{
+                                    preparedLease.endUserURL = window.location.origin + '/lightning/r/Account/' + contract.contract.End_User__c + '/view';
+                                }
                             }
                         } else if (contract.contract.Opportunity__r == undefined) {
                             preparedLease.customerName = '';
                             preparedLease.endUserURL = '';     
                         } else if (contract.contract.Opportunity__r.End_User__r != undefined) {
-                            preparedLease.customerName = contract.contract.Opportunity__r.End_User__r.Name;                                
-                            preparedLease.endUserURL = window.location.origin + '/dllondemand/s/account/' + contract.contract.Opportunity__r.End_User__r.Id;
+                            preparedLease.customerName = contract.contract.Opportunity__r.End_User__r.Name; 
+                            if (this.isPortalUser){                               
+                                preparedLease.endUserURL = window.location.origin + '/dllondemand/s/account/' + contract.contract.Opportunity__r.End_User__r.Id;
+                            }
+                            else{
+                                preparedLease.endUserURL = window.location.origin + '/lightning/r/Account/' + contract.contract.Opportunity__r.End_User__r.Id + '/view';
+                            }
                         } else {
                             preparedLease.customerName = '';
                             preparedLease.endUserURL = '';
-                        } 
-
+                        }                        
                         if(contract.contract.Opportunity__r) {
-                            console.log('have Opp');
                             if(contract.contract.Opportunity__r.Partner_Sales_Rep__r) {
-                                console.log('have partner Sales Rep');
                                 preparedLease.salesRep =  contract.contract.Opportunity__r.Partner_Sales_Rep__r.Name;
                             } else {
                                 preparedLease.salesRep = '';
                             }
                         }else{
-                            console.log('no have Opp');
                             preparedLease.salesRep = '';
                         }
-
                         
-                        //preparedLease.salesRep = contract.contract.Sales_Rep_Name__c;
                         preparedLease.financeType = contract.contract.Purchase_Option__c;   
                         preparedLease.term = contract.contract.Contract_Term_months__c;
                         preparedLease.remainPay = contract.contract.Payments_Remaining__c;
@@ -180,8 +196,13 @@ export default class PortfolioView extends NavigationMixin(LightningElement) {
                         preparedLease.makes = contract.make;
                         preparedLease.health = contract.contract.Delinquency_Status__c;
                         preparedLease.status = contract.contract.Status_Text__c;
-                        preparedLease.contractUrl = window.location.origin + '/dllondemand/s/contract/' +  contract.contract.Id;
-
+                        if (this.isPortalUser){
+                            preparedLease.contractUrl = window.location.origin + '/dllondemand/s/contract/' +  contract.contract.Id;
+                        }
+                        else{
+                            preparedLease.contractUrl = window.location.origin + '/lightning/r/Contract__c/' +  contract.contract.Id + '/view';
+                        }
+                    
                         preparedLeases.push(preparedLease);
                     });
                     this.portfoliolist = [...this.portfoliolist, ...preparedLeases];
@@ -219,7 +240,7 @@ export default class PortfolioView extends NavigationMixin(LightningElement) {
             .catch(error => {
                 this.error = error;
                 this.data = undefined;
-                console.log('error : ' + JSON.stringify(this.error));
+                console.log('error 2  : ' + JSON.stringify(this.error));
                 this.showToast('Something went wrong', JSON.stringify(this.error), 'error');
                 return;
             });
@@ -263,7 +284,7 @@ export default class PortfolioView extends NavigationMixin(LightningElement) {
                 .catch(error => {
                     this.error = error;
                     this.data = undefined;
-                    console.log('error : ' + JSON.stringify(this.error));
+                    console.log('error : 1' + JSON.stringify(this.error));
                     this.showToast('Something went wrong', JSON.stringify(this.error), 'error');
                     return;
                 });
@@ -435,9 +456,7 @@ export default class PortfolioView extends NavigationMixin(LightningElement) {
         
     }
 
-    handleChangeStatus(event) {
-        console.log('entrou status');
-        console.log('entrou event.target.value   '+ event.target.value);
+    handleChangeStatus(event) {        
         if(event.target.value == ''){
             this.allValues = [];
             this.status=''; 
@@ -483,7 +502,7 @@ export default class PortfolioView extends NavigationMixin(LightningElement) {
         this.searchDate = '0';        
         this.status='ALL';
         this.salesRepFilter='';        
-        this.offSet = '0';        
+        this.offSet = 0;        
         this.sortDirection='desc';
         this.loadMoreStatus = '';
         this.initialDataLoaded = false;        
