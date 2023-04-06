@@ -2,7 +2,7 @@
  * @description       : LWC component to Credit Application Page container. 
  * @author            : Kritika Sharma : Traction on Demand
  * @group             : Kritika Sharma & Surbhi Goyal :  Traction on Demand
- * @last modified on  : 04-04-2023
+ * @last modified on  : 04-05-2023
  * @last modified by  : Mark Moser
  * @Changes Log        :
  * Date       - BUG/PBI    - Author                   - Description
@@ -31,7 +31,9 @@ import getQuoteLineField from '@salesforce/apex/CreditApplicationHeaderControlle
 import getQuoteLineForAccessoryField from '@salesforce/apex/CreditApplicationHeaderController.getQuoteLineAccessoryData';
 import getSalesReps from "@salesforce/apex/PricingUtils.getSalesReps";
 import getSalesRepsFromReturnedOSID from "@salesforce/apex/CreateQuoteOpportunity.getSalesRepsFromReturnedOSID";
-import getUserSite from "@salesforce/apex/PricingUtils.getUserSite";
+ 
+import getUserSiteNonCache from "@salesforce/apex/PricingUtils.getUserSiteNonCache"; 
+
 import submitCreditApp from '@salesforce/apex/CreditAppUtils.submitCreditApp';
 import submitPreQualCreditApp from '@salesforce/apex/CreditAppUtils.submitPreQualCreditApp';
 import UpdateBenefitOwnerData from '@salesforce/apex/CreditApplicationHeaderController.UpdateBenefitOwnerData';
@@ -397,24 +399,23 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     salesRepList = [];
     osidForSalesReps = [];
 
-    @wire(getUserSite, {userId: null })
-    wiredgetUserSite({error, data}) {
-        this.loading = true;
-        console.log('hasBeneficialOwner::'+ this.hasBeneficialOwner);
+    /***********************************************************************************************************
+    * getUserSiteNonCache - no attribute for caching
+    ************************************************************************************************************/
+    getUserSiteNoCache () {
         
-        if(this.hasBeneficialOwner == 0) {
-            this.beneficialOwner = [];
-        }
-        this.beneficialOwnerType = null;
-        //this.advance = '0';
-        //this.frequency = 'monthly';
-        console.log('wiredgetUserSite data: '+data);
-        if (data) {
-            let parsedData = JSON.parse(data);
-            console.log(JSON.parse(JSON.stringify(data)));
+        getUserSiteNonCache({ userId: null})
+        .then(result => {
+            this.loading = true;
+            console.log('hasBeneficialOwner::'+ this.hasBeneficialOwner);
+        
+            if(this.hasBeneficialOwner == 0) {
+                this.beneficialOwner = [];
+            }
+            this.beneficialOwnerType = null;
+            let parsedData = JSON.parse(result);
             let osidObj = {osidArray: []};
-            //this.location = parsedData.returnSiteList[0].originatingSiteId;
-            //this.userSite = parsedData.returnSiteList[0].originatingSiteId;
+             
             for (let i = 0; i < parsedData.returnSiteList.length; i++) {
                 this.siteList.push({label: parsedData.returnSiteList[i].name, value: parsedData.returnSiteList[i].originatingSiteId});
                 osidObj.osidArray.push(parsedData.returnSiteList[i].originatingSiteId);
@@ -423,50 +424,37 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             
             if ((this.salesRepList.length === 0) && !this.isLoadedQuote) {
                 getSalesRepsFromReturnedOSID({osidJSON:  JSON.stringify(osidObj)})
-                    .then(result => {
-
-                        let data = JSON.parse(result);
-                        let sList = [];
-                        let osidList = [];
-
-                        data.forEach(function (element) {
-
-                            sList.push({label: element.name, value: element.id});
-                            osidList.push({osid: element.osid, value: element.id});
-
-                        });
-
-                        sList.push({label: 'None', value: ''});
-                        this.salesRepList = sList;
-                        //this.salesRepListBackup = sList;
-                        console.log('getSalesRepsOSID Done');
-                        console.log(JSON.parse(JSON.stringify(sList)));
-                        this.osidForSalesReps = osidList;
-                        this.loading = false;
-                        this.hasLocationSelectionSalesRep = false;
-
-                        if (this.osidForSalesReps.length !== 0) {
-                            this.salesRepPopulated();                           
-                        }
-                        
-                    }).catch(error => {
+                .then(result => {
+                    let data = JSON.parse(result);
+                    let sList = [];
+                    let osidList = [];
+                    data.forEach(function (element) {
+                        sList.push({label: element.name, value: element.id});
+                        osidList.push({osid: element.osid, value: element.id});
+                    });
+                    sList.push({label: 'None', value: ''});
+                    this.salesRepList = sList;
+                    this.osidForSalesReps = osidList;
+                    this.loading = false;
+                    this.hasLocationSelectionSalesRep = false;
+                    if (this.osidForSalesReps.length !== 0) {
+                        this.salesRepPopulated();                           
+                    }
+            
+                }).catch(error => {
                     this.loading = false;
                     this.showToast('Something went wrong', error.body.message, 'error');
                 });
                 return;
             }
-            //this.quoteObject.userSite = parsedData.returnSiteList[0].originatingSiteId;
-        } else if (error) {
+        })
+        .catch(error => {
             this.showToast('Something went wrong', error.body.message, 'error');
             this.location = undefined;
-        }
-        setTimeout(() => {
-            this.loading = false;
-            
-            console.log('wiredGetUserSite done');
-        }, 1500);
-    
+        });
     }
+
+    
 
     @wire(getContactField, {opportunityId: '$oppId', loadCount: '$contactRolesReloaded'})
     wiredGetContact({ error, data }){      
@@ -853,12 +841,13 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
 
 
     connectedCallback(){      
-        console.log('Inicio connectedCallback: ' );
+         
         
         IsPortalEnabled().then(result => {
             this.isPortalUser = result;
         });
 
+        this.getUserSiteNoCache();
          
         // All three of the following arrays have to maintain their exact order and count as they map to the same index in each array.
         var fieldOptions=['Rate_Type__c','Finance_Term_Month__c','Lease_Type__c','Payment_Frequency__c','Advance_Payments__c',

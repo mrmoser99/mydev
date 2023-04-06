@@ -15,6 +15,7 @@
 import {LightningElement, track, wire, api} from 'lwc';
 import getOpportunities from '@salesforce/apex/OpportunityListView.getOpportunities';
 import getOpportunitiesNum from '@salesforce/apex/OpportunityListView.getOpportunitiesNum';
+
 //import getSalesRapMap from '@salesforce/apex/OpportunityListView.getOptionsByFieldObject';
 import {getObjectInfo, getPicklistValues} from "lightning/uiObjectInfoApi";
 import OPPORTUNITY_OBJECT from '@salesforce/schema/Opportunity';
@@ -550,12 +551,23 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
 
    //added for button to navigate to the credit check page
    navigateToCreditCheck(event) {
-       this[NavigationMixin.Navigate]({
-           type: 'standard__webPage',
-           attributes: {
-               url: '/dllondemand/s/credit-check/'
-           }
-       });
+        if (this.isPortalUser){
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: '/dllondemand/s/credit-check/'
+                }
+            });
+        }
+        else{this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {
+                    url: '/lightning/n/Credit_Application'
+                }
+            });
+        }
+        
+       
    }
 
     /*Download ListView*/

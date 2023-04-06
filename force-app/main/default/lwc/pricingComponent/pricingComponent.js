@@ -410,7 +410,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
                                 })
                                 .catch(error => {
                                     console.log(JSON.stringify(error));
-                                    this.showToast('Something went wrong', error.body.message, 'error');
+                                    this.showToast('Something went wrong', JSON.stringify(error), 'error');
                                     loadsToGo--;
                                     if (loadsToGo === 0) {
                                         this.loading = false;
@@ -1235,7 +1235,7 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
 
         if ((typeof this.quoteObject.program === 'undefined') ||
             (typeof this.quoteObject.programId === 'undefined') ||
-            (typeof this.quoteObject.nickname === 'undefined') ||
+            (typeof this.quoteObject.nickname === 'undefined') || (this.quoteObject.nickname == null) ||
             (typeof this.quoteObject.location === 'undefined') ||
             (typeof this.quoteObject.assetTypeQuote === 'undefined')) {
             this.showToast('Error in fields in the quote header', 'Please fill out the entire quote header to be able to save.', 'error');
@@ -1311,8 +1311,9 @@ export default class PricingComponent extends NavigationMixin(LightningElement) 
         this.quoteObject.assets = this.assets;
         this.quoteObject.accessories = this.validateAccessories(this.accessories);
         this.quoteObject.oppId = this.opportunityId;
-        console.log('this nickname is: ' + this.nickname);
-        this.quoteObject.nickname = this.nickname;
+        console.log('this nickname is: ' + this.quoteObject.nickname);
+        this.nickname =this.quoteObject.nickname;
+     
         
         console.log('this appearl is: ' + this.isappeal);
         if (this.isappeal == 'true'){

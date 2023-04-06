@@ -1,4 +1,4 @@
-/**
+/**e
  * Created by ShiqiSun on 11/17/2021.  then tod could not add one more comment in 1 year.
 *
 *  Change Log:
@@ -72,7 +72,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
         financeType:'BO',
         paymentFrequency: 'Monthly',
         advPayments: '0',
-        program: null,
+        program: null, 
         programId: null,
         location: null,
         locationId: null,
@@ -285,7 +285,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
     *  
     ***************************************************************************************************************/
     connectedCallback() {
-        console.log('***************** entering');
+         
          
         this.loading = false;
 
@@ -300,12 +300,9 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
             console.log('result is : ' + result);
             this.isPortalUser = result;
         });
-        console.log('calling get  user site no cache');
-
+         
         this.getUserSiteNoCache();
-
-        console.log('after calling get  user site no cache');
-
+     
         if (this.oppid) {
             this.loading = true;
             this.isLoadedQuote = true;
@@ -319,6 +316,18 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                         this.hasLocationSelectionSalesRep = false;
                         this.specificationTabActive = false;
                         this.program = this.options[0].quote.Program__c;
+                        
+                        if (this.program === undefined){
+                            const event = new ShowToastEvent({
+                                title: 'Fatal Error',
+                                message: 'This is an internal quote. It is missing critical data to display on this page. Select another quote to continue!',
+                                variant: 'error',
+                                mode: 'sticky'
+                            });
+                            this.dispatchEvent(event);
+                            return;
+                        }
+
                         if (this.optionsPicklist.length > 1) {
                             let wrapperEvent2 = {value: 0};
                             let wrapperEvent = {target: wrapperEvent2, skipLoadToFalse: false};
@@ -348,37 +357,34 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                         if (!this.creditAppId) {
                             this.creditAppId = this.options[0].quote.Id;
                         }
-                        console.log('set id to 2' + this.creditAppId);
+                     
                         let loadsToGo = 2;
-                        console.log('this credit app id is:' + this.creditAppId);
+                         
                         if (this.location) {
                             this.loading = true;
                             getPrograms({siteName: this.location})
-                                .then(result => {
+                            .then(result => {
                                     let plist = [];
                                     let data = JSON.parse(result);
                                     data.forEach(function (element) {
-                                        ////console.log(element.programName + ' ' + element.programId);
+                                         
                                         plist.push({label: element.programName, value: element.programId});
 
                                     });
                                     this.programPicklist = plist;
                                     setTimeout(() => {
                                         loadsToGo--;
-                                        //if (loadsToGo === 0) {
-                                        //    this.loading = false;
-                                        //}
+                                     
                                     }, 1500);
-                                }).catch(error => {
-                                ////console.log(JSON.parse(JSON.stringify(error)));
-                                this.showToast('Something went wrong', error.body.message, 'error');
-                                loadsToGo--;
-                                //if (loadsToGo === 0) {
-                                //    this.loading = false;
-                                //}
-                                this.programPicklist = undefined;
-                                return;
+                            }).catch(error => {
+                                    console.log('error is: ' + JSON.stringify(error));
+                                    this.showToast('Something went wrong', JSON.stringify(error), 'error');
+                                    loadsToGo--;
+                                 
+                                    this.programPicklist = undefined;
+                                    return;
                             });
+
                             this.loading = true;
                              
                             getSalesReps({ originatingSiteId: this.location })
@@ -398,22 +404,14 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
 
                                     this.salesRepList = sList;
                                     this.salesRepListBackup = sList;
-                                    ////console.log('getSalesReps1 Done');
-                                    ////console.log(JSON.parse(JSON.stringify(sList)));
-                                    //this.salesRep = this.options[0].quote.Partner_Sales_Rep__c;
+                                    
                                     loadsToGo--;
-                                    // if (loadsToGo === 0) {
-                                    //    this.loading = false;
-                                    //}
-
+                                    
 
                                 })
                                 .catch(error => {
                                     loadsToGo--;
-                                    //if (loadsToGo === 0) {
-                                    //    this.loading = false;
-                                    //}
-                                    console.log(error);
+                                    console.log('error:' + JSON.stringify(error));
                                     this.showToast('Something went wrong', error.body.message, 'error');
                                 });
                              
@@ -449,6 +447,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
         ];
     }
 
+     
     
     /***************************************************************************************************************
     *  
@@ -507,7 +506,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
             }
         })
         .catch(error => {
-            console.log(error);
+            console.log(' error is: ' + JSON.stringify(error));
         	this.showToast('Something went wrong', error.body.message, 'error');
             this.location = undefined;
         });
@@ -808,7 +807,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
 
         
         if (this.isCCMode == false){
-            if (this.IsPortalEnabled){
+            if (this.IsPortalUser){
                 this[NavigationMixin.Navigate]({
                      type: 'standard__webPage',
                     attributes: {
@@ -817,6 +816,12 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                 });
             }
             else{
+                this[NavigationMixin.Navigate]({
+                     type: 'standard__webPage',
+                    attributes: {
+                        url: window.location.origin + '/lightning/n/Quote?c__oppid=' + this.oppid
+                 }
+                });
 
             }
           
@@ -1215,45 +1220,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
 
 
     
-    /***************************************************************************************************************
-    *  
-    ***************************************************************************************************************/
-    validateInputBeforeSave() {
-         
-
-        if ((typeof this.quoteObject.program === 'undefined') ||
-            (typeof this.quoteObject.programId === 'undefined') ||
-            (typeof this.quoteObject.nickname === 'undefined') ||
-            (typeof this.quoteObject.location === 'undefined') ||
-            (typeof this.quoteObject.assetTypeQuote === 'undefined')) {
-            this.showToast('Error in fields in the quote header', 'Please fill out the entire quote header to be able to save.', 'error');
-            return false;
-        }
-
-        if (!this.onlyValidateHeader) {
-            if ((typeof this.quoteObject.rateType === 'undefined') ||
-                (typeof this.quoteObject.rateTypeId === 'undefined') ||
-                (typeof this.quoteObject.financeTerm === 'undefined')) {
-                this.showToast('Error in fields in the Financial Details', 'Please fill out the remaining financial details to be able to save.', 'error');
-                return false;
-            }
-
-            for (let i = 0; i < this.assets.length; i++) {
-                if ((typeof this.assets[i].unitSalesPrice === 'undefined') ||
-                    (typeof this.assets[i].numberOfUnits === 'undefined')) {
-                    this.showToast('Error in fields in at least one Asset', 'Please fill out the required fields in Asset ' + (i + 1) + ' to be able to save.', 'error');
-                    return false;
-                }
-                if ((typeof this.assets[i].subsidy === 'undefined')) {
-                    this.showToast('Error in fields in at least one Asset', 'Please wait for subsidy to load in Asset ' + (i + 1) + ' to be able to save.', 'error');
-                    
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
+    
 
     /***************************************************************************************************************
     *  
@@ -1638,7 +1605,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                 type: 'standard__webPage',
                 attributes: {
                 //call new quote page
-                url: window.location.origin + '/lightning/n/Quote2?c__oppid=' + this.oppid
+                url: window.location.origin + '/lightning/n/Quote?c__oppid=' + this.oppid
                 }
             });
         

@@ -340,7 +340,7 @@
                                                                 <lightning-input name="Amount" label="Amount"
                                                                     required="true" formatter="currency"
                                                                     data-id="Amount" step=".01" type="text"
-                                                                    value={totalPrice} onblur={formatCurrencyForInput}
+                                                                    value={totalPrice}
                                                                     onchange={handleChangeFinanceAmount}
                                                                     autocomplete="off" disabled={isAmountDisabled}>
                                                                 </lightning-input>
@@ -950,7 +950,12 @@
                                                         <lightning-layout multiple-rows>
                                                             <lightning-layout-item size=6>
                                                                 <label>Amount</label>
-                                                                <div>${totalPrice}</div>
+                                                                <div>
+                                                                    <lightning-formatted-number value={totalPrice}
+                                                                        format-style="currency" currency-code="USD">
+                                                                    </lightning-formatted-number>
+                                                                </div>
+
                                                             </lightning-layout-item>
                                                         </lightning-layout>
                                                     </div>
