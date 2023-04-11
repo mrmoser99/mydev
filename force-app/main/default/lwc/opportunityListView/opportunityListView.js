@@ -221,7 +221,12 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                     //if(this.partnerStatus == 'Application Pending'){
                     //Changed the condition for the defect - 893493
                     if(tempOpportunity.Sub_Stage__c == 'Application Pending' || tempOpportunity.Sub_Stage__c == 'Additional Information requested'){
-                        tempOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/creditappadditionalinfo?opptid=' + tempOpportunity.Id;
+                        if (this.isPortalUser){
+                            tempOpportunity.ApplicationNumberUrl = window.location.origin + '/dllondemand/s/creditappadditionalinfo?opptid=' + tempOpportunity.Id;
+                        }
+                        else{
+                            tempOpportunity.ApplicationNumberUrl = window.location.origin + '/lightning/n/Credit_Application?c__oppid=' + tempOpportunity.Id;
+                        }
                     }
                     //Changed the condition for the defect - 893493
                     else if(tempOpportunity.Nickname__c == 'Credit Check' && tempOpportunity.Sub_Stage__c != 'Application Draft')
@@ -345,7 +350,7 @@ export default class opportunityListView extends NavigationMixin(LightningElemen
                                 tempMoreOpportunity.EndUserURL = window.location.origin + '/dllondemand/s/account/' + tempMoreOpportunity.End_User__c;
                             }
                             else{
-                                tempMoreOpportunity.ApplicationNumberUrl = window.location.origin + '/lightning/n/Credit_Applicaiton?c__oppid=' + record.Id;
+                                tempMoreOpportunity.ApplicationNumberUrl = window.location.origin + '/lightning/n/Credit_Application?c__oppid=' + record.Id;
                                 tempMoreOpportunity.EndUserURL = window.location.origin + '/r/Account/' + tempMoreOpportunity.End_User__c + '/view';
                             }
                             
