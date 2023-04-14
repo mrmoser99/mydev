@@ -12,11 +12,13 @@
    PI-22-Q4-22		845477 - Solution design for holistic authorization model (Dibyendu  11/16/2022)
    PI-22-Q4-25		920446 - Rollback Translation Logic for Des Moines
    PI-23-Q1-02		922613 - Modify Opp Trigger and Develop async process(Dibyendu)
+   PI-23-Q1-02		987052 - Opportunity Location Logic Cleanup
+					811750 - MRM added share with account for non interface profiles also
  ***********************************************************************************************************/
 public class OpportunityTriggerHelper {
 public static Boolean flagForProgram = true;
 
-public static String BUSINESSDESC_CTI = 'Construction, Transportation & Infrastructure (CTI)';//Added as a part of change for PBI 845477
+public static String BUSINESSDESC_CTI = 'Construction,Transportation & Industrial (CTI)';//Added as a part of change for PBI 845477
 
 public static void helpBeforeInsert(List<Opportunity> newOpps) {
 	Id profileId = UserInfo.getProfileId();
@@ -44,7 +46,8 @@ public static void helpBeforeInsert(List<Opportunity> newOpps) {
 		setShareWithAccountValue(newOpps);	//Added as a part of change for PBI 845477
 		
 	} else {
-		setNonAPILocationInfo(newOpps);
+		setShareWithAccountValue(newOpps);	//Added as a part of change for PBI 811750
+		setSourceSystemValue(newOpps);
 	}
 	updateAccountBusinessFlags(newOpps);
 	createAccountRelationships(newOpps);
@@ -133,98 +136,81 @@ public static void helpBeforeUpdate(Map<Id, Opportunity> oldOppMap, Map<Id, Oppo
 		updateStage(oldOppFilterMap,newOppFilterMap); //PBI920446 //updateStage(oldOppMap,newOppMap);
 		setSystemUpdateFlag(newOppMap.values());
         updateShareWithAccountValue(oldOppMap,newOppMap);//Added as a part of change for PBI 845477
+        addToWorkTable(oldOppMap,newOppMap);//Added as a part of change for PBI 922613
         
 	}
-    addToWorkTable(oldOppMap,newOppMap);//Added as a part of change for PBI 922613
+    
     
 	updateRelatedAccounts(vendorMap, endUserMap);
 }
 
 // Start of Code for change PBI-922613  
-// 
-	@TestVisible
+    @TestVisible
    private static void addToWorkTable(Map<Id, Opportunity> oldOppMap, Map<Id, Opportunity> newOppMap){
-        for (Opportunity oldOpp : oldOppMap.values()) {
-		Opportunity newOpp = newOppMap.get(oldOpp.Id);
-            if (newOpp.Business_Unit_Description__c == BUSINESSDESC_CTI){
-               //addtoWorkTableCalloutAsset(newOpp.Application_Number__c,newOpp.id);
-               addtoWorkTableCalloutAsset(newOpp.Application_Number__c,newOpp.id);
+       system.debug('DDT1');
+       List<DOD_API_Worktable__c> oppListToUpdate = new List<DOD_API_Worktable__c>();
+       Map<String,DateTime> appLastDate = new Map<String,DateTime>();
+       Map<String,Boolean> appLastBool = new Map<String,Boolean>();
+       List<String> appNumberIds = new List<String>();
+       
+       for (Opportunity newOpp1 : newOppMap.values()){
+           appNumberIds.add(newOpp1.Application_Number__c);
+       }
+       system.debug('withDate'+appNumberIds);
+       
+       
+       List<DOD_API_Worktable__c> getLastUpdate1 = [select id,name,Application_Number__c,lastmodifieddate from DOD_API_Worktable__c where Application_Number__c In :appNumberIds and Processed__c=true order by lastmodifieddate desc ];
+       
+       List<DOD_API_Worktable__c> getLastUpdateBool = [select id,name,Application_Number__c,lastmodifieddate,Processed__c from DOD_API_Worktable__c where Application_Number__c In :appNumberIds and Processed__c=false order by lastmodifieddate,Application_Number__c desc ];
+      
+        for (DOD_API_Worktable__c workTab : getLastUpdate1){
+            if(appLastDate.get(workTab.Application_Number__c)==null){
+            appLastDate.put(workTab.Application_Number__c,workTab.lastmodifieddate);
+            }
+       }
+	  system.debug('withDate'+appLastDate.size());
+       
+       for (DOD_API_Worktable__c workTab1 : getLastUpdateBool){
+            if(appLastBool.get(workTab1.Application_Number__c)==null){
+            appLastBool.put(workTab1.Application_Number__c,workTab1.Processed__c);
+            }
+       }
+      
+        for (Opportunity newOpp : newOppMap.values()) {
+              if (newOpp.Business_Unit_Description__c == BUSINESSDESC_CTI){
+                Boolean addWorktable = false;                    
+                  if(appLastDate.get(newOpp.Application_Number__c)!=null && appLastBool.get(newOpp.Application_Number__c)==null){
+                    Long dt1 = appLastDate.get(newOpp.Application_Number__c).getTime();
+                    Long dt2 = DateTime.now().getTime();
+                    Long min = (dt2-dt1)/6000;
+                      if(min>50){
+                          addWorktable = true;
+                      }
+                  }
+                  else if(appLastDate.get(newOpp.Application_Number__c)==null && appLastBool.get(newOpp.Application_Number__c)==null){
+                          addWorktable = true;
+                  }
+                
+                  if (addWorktable==true){
+                    DOD_API_Worktable__c updateOpp = new DOD_API_Worktable__c();
+                                updateOpp.Processed__c     = false;  
+                                updateOpp.OpportunityID__c = newOpp.Id;
+                                updateOpp.Application_Number__c  = newOpp.Application_Number__c;
+                                oppListToUpdate.add(updateOpp);
+                }
             }
         }
-    }
-    
-    @future(callout=true)
-    private static void addtoWorkTableCalloutApplication(string applicationNumber, string opportunityId){
-               // string applicationResponse = AppealsUtility.getApplication('500-60001329');
-        		//system.debug('JSONDODGetApplicationUpdate'+applicationResponse);
-        	//string assetResponse = AppealsUtility.getAssets(applicationNumber);
-       //system.debug('JSONDODGetApplicationUpdate'+assetResponse);
-    }
-    
-    @future(callout=true)
-    private static void addtoWorkTableCalloutAsset(string applicationNumber, string opportunityId){ 
-    List<DOD_API_Worktable__c> getApptoUpdate = [select id,name,Application_Number__c from DOD_API_Worktable__c where Application_Number__c=:applicationNumber and Updated__c=false limit 1];
-     system.debug('DDT Call Response'+applicationNumber);
-    if(getApptoUpdate.size()<=0){
-    JSONDODGetAssetsUpdate assestUpdate = new JSONDODGetAssetsUpdate(); 
-    //string assetResponse = AppealsUtility.getAssets(applicationNumber.trim());
-    string assetResponse = AppealsUtility.getAssets(applicationNumber);
-    system.debug('DDT Call Response'+assetResponse);
-    assestUpdate = (JSONDODGetAssetsUpdate) System.JSON.deserialize(assetResponse,JSONDODGetAssetsUpdate.class);
-    JSONDODGetAssetsUpdate.Data assetResponseList = new JSONDODGetAssetsUpdate.Data();
-    system.debug('DDT Call Response'+assestUpdate);
-    //List<Opportunity_Line_Item__c> oppLineList = [select id,Model__c,Asset_Type_ITA_Class__c,Base_Unit_Sales_Price__c, Number_of_Units__c,Opportunity__c,Opportunity__r.Application_Number__c from Opportunity_Line_Item__c where Opportunity__c=:opportunityId];
-        /*Map<String, JSONDODGetAssetsUpdate.Data> assestResMap = new Map<String, JSONDODGetAssetsUpdate.Data>();
-        for(JSONDODGetAssetsUpdate.Data assetres : assestUpdate.data){
-            assestResMap.put(assetres.catalog.identifiers.structure.type+assetres.catalog.identifiers.structure.model,assetres);
-        }*/
-        
-        List<DOD_API_Worktable__c> updateAssetList = new List<DOD_API_Worktable__c>();
-        
-        system.debug('DDT Response'+assetResponse);
-        system.debug('DDT Size'+assestUpdate.data.size());
-       
-        for(JSONDODGetAssetsUpdate.Data assetres : assestUpdate.data){
-            system.debug('DDT assetres'+assetres);
-                    if(assetres.id1.indexOf(applicationNumber)!=-1){
-                        //if(assetres.catalog.identifiers.structure.type==oppl.Asset_Type_ITA_Class__c && assetres.catalog.identifiers.structure.model==oppl.Model__c && (assetres.finance.salePrice != oppl.Base_Unit_Sales_Price__c || assetres.finance.quantity != oppl.Number_of_Units__c)){
-                            DOD_API_Worktable__c updateAsset = new DOD_API_Worktable__c();
-                        	updateAsset.Asset_Base_Unit_Sales_Price__c = assetres.finance.salePrice;
-                            updateAsset.Asset_Model__c = assetres.catalog.identifiers.structure.model;
-                            updateAsset.Asset_Number_of_Units__c = assetres.finance.quantity;
-                            updateAsset.Asset_Brand__c = assetres.catalog.identifiers.structure.brand;
-                            updateAsset.Update_Type__c = 'Asset';
-							updateAsset.Updated__c     = false;  
-                        	updateAsset.OpportunityID__c = opportunityId;
-                        	updateAsset.Application_Number__c = applicationNumber;
-                            updateAssetList.add(updateAsset);
-                        //}
-                    }
-                }
-        if(updateAssetList.size()>0){
-            insert updateAssetList;
+       if(oppListToUpdate.size()>0){ 
+           system.debug('DDT2'+oppListToUpdate.size());
+            insert oppListToUpdate; 
+         List<AsyncApexJob> aJob= [ SELECT Id, Status, ApexClassID FROM AsyncApexJob WHERE Status ='Processing' and ApexClass.Name = 'DODAsyncUpdate' Limit 1]; 
+        if(aJob.size()==0){ 
+            ID jobID = System.enqueueJob(new DODAsyncUpdate());
         }
-        
-        /*if(oppLineList!=null && assestUpdate.data.size()>0){
-            for (Opportunity_Line_Item__c oppl : oppLineList){
-                for(JSONDODGetAssetsUpdate.Data assetres : assestUpdate.data){
-                    if(assetres.id.indexOf(oppl.Opportunity__r.Application_Number__c)!=-1){
-                        //if(assetres.catalog.identifiers.structure.type==oppl.Asset_Type_ITA_Class__c && assetres.catalog.identifiers.structure.model==oppl.Model__c && (assetres.finance.salePrice != oppl.Base_Unit_Sales_Price__c || assetres.finance.quantity != oppl.Number_of_Units__c)){
-                            
-                        //}
-                    }
-                }
-        }
-        }*/
-   
-    system.debug('JSONDODGetAssetsUpdate'+assestUpdate.data[0].catalog.identifiers.structure.type);
-    system.debug('JSONDODGetAssetsUpdate'+assestUpdate.data[0].catalog.identifiers.structure.model);
-        
-        
-        //system.debug('JSONDODGetAssetsUpdate'+myResponse);
-        }
+           
+        } 
     }
-    
+        
 // End of Code for change PBI-922613
     
 // Start of Code for change PBI-845477  
@@ -232,7 +218,9 @@ public static void helpBeforeUpdate(Map<Id, Opportunity> oldOppMap, Map<Id, Oppo
 @TestVisible
 private static void setShareWithAccountValue(List<Opportunity> opps) {
     for (Opportunity opp : opps){
+		system.debug('setting share account');
         if(opp.Business_Unit_Description__c == BUSINESSDESC_CTI && opp.RecordType.DeveloperName=='Retail')
+			system.debug('setting share account');
             opp.Share_With_Account__c = opp.AccountId;
     }
 }
@@ -502,20 +490,9 @@ private static void setInitialValues(List<Opportunity> opps) {
     }
    }*/
 
-@TestVisible
-private static void setNonAPILocationInfo(List<Opportunity> opps) {
-	Id canadaManagerId = [SELECT Id FROM UserRole WHERE Name = 'Canada Sales'].Id;
-	Set<Id> subIds = RoleUtility.getAllSubRoleIds(new Set<Id> {
-			canadaManagerId
-		});
-	subIds.add(canadaManagerId);
 
+private static void setSourceSystemValue(List<Opportunity> opps) {
 	for (Opportunity opp : opps) {
-		if (subIds.contains(UserInfo.getUserRoleId())) {
-			opp.Location__c = 'Canada';
-		} else {
-			opp.Location__c = 'United States';
-		}
 		opp.Source_System__c = 'User Created';
 	}
 }
@@ -538,6 +515,7 @@ private static void setProgram(List<Opportunity> opps) {
 
 	Id profileId = UserInfo.getProfileId();
 	Profile apiProfile = [SELECT Id FROM Profile WHERE Name = 'API Integration' LIMIT 1];
+	
 
 	for (Opportunity opp : opps) {
 		if (String.isNotBlank(opp.UNQ_Program__c)) {
@@ -545,7 +523,7 @@ private static void setProgram(List<Opportunity> opps) {
 			oppsWhereUNQProgramExists.add(opp);
 		}else if(opp.Program__c != null ) {
 			oppsWhereProgramNotNull.add(opp);
-		}else{
+		}else {
 			leftOpps.add(opp);
 		}
 	}
@@ -1248,7 +1226,7 @@ private static void updateAccountBusinessFlags(List<Opportunity> opps) {
 		Map<Id, Account> accById = new Map<Id, Account>([
 									//PBI:446085:Account Business Unit Mapping: Golf and Turf:Added Golf_and_Turf__c in Query:Geetha
 									SELECT Id, Technology_Solutions__c, Commercial_Finance__c, CleanTech__c, CT_and_I__c,
-									Healthcare__c, Digital_Imaging__c, Food_and_Ag__c, Golf_and_Turf__c
+									Healthcare__c, Digital_Imaging__c, Food_and_Ag__c, Golf_and_Turf__c, Remarketing__c
 									FROM Account
 									WHERE Id IN: accIds
 		                                                ]);
@@ -1336,6 +1314,9 @@ private static Account_Business_Unit_Mapping__c setAccountBusinessUnitFlags(Stri
 		//PBI:446085:Account Business Unit Mapping: Golf and Turf:Added Golf_and_Turf__c to set true:Geetha
 	} else if (buString == 'Golf_and_Turf__c' && !acc.Golf_and_Turf__c) {
 		accBU.Golf_and_Turf__c = true;
+		//PBI:900008:Account Business Unit Mapping: added Remarketing__c : Adam  
+	} else if (buString == 'Remarketing__c' && !acc.Remarketing__c) {
+		accBU.Remarketing__c = true;
 	}
 	return accBU;
 }
@@ -1542,7 +1523,6 @@ private static void revertBusinessUnit(Map<Id, Opportunity> oldOppMap, Map<Id, O
 //Update Opportunity Relationship records
 @TestVisible
 private static void updateOpportunityRelationships(List<Opportunity> opps) {
-
 	//Create list of all existing Opp Relationships
 	List<Opportunity_Relationship__c> opprel = [
 		SELECT Id, Opportunity__c, Account__c, Opportunity_Role__c
@@ -1669,5 +1649,6 @@ private static void updateOpportunityRelationships(List<Opportunity> opps) {
 	if (opprelDelete.size() > 0) {
 		delete opprelDelete;
 	}
+    
 }
 }

@@ -2,7 +2,7 @@
  * @description       : LWC component to Credit Application Page container. 
  * @author            : Kritika Sharma : Traction on Demand
  * @group             : Kritika Sharma & Surbhi Goyal :  Traction on Demand
- * @last modified on  : 04-05-2023
+ * @last modified on  : 04-13-2023
  * @last modified by  : Mark Moser
  * @Changes Log        :
  * Date       - BUG/PBI    - Author                   - Description
@@ -17,7 +17,7 @@
  * 02/10/2023 - BUG 946516 - Vinicio Ramos Silva      - After user saves Credit check and comes back to the draft from Application List view, Sales rep Name is not seen retained in application
  * 02/17/2023 - Geetha commented edit-Appeal as per Mark's suggestion
  * 03/03/2023 - PBI 866664 - Fernando Nereu de Souza  - Add PG object to Credit Check page - consistency with credit application page
- * 
+ * 04/13/2023 - MRM - Fixed the amount from showing up as $0.00 when page first display.  this makes the user think they need to clear out the value first
 **/
 
 import currentUserId from '@salesforce/user/Id';
@@ -1039,8 +1039,9 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
     }
 
     //Start: BUG 809443 - Lucas Silva - Systematically drop anything other than numbers comma and decimal from the Dollar amount input
+    //MRM - used lwc to format the currency;;;this type of currrency formatting is not required;
     handleChangeFinanceAmount(event) {
-        let trimmedPrice = this.removeInvalidPriceCharacters(event.target.value); 
+        /* let trimmedPrice = this.removeInvalidPriceCharacters(event.target.value); 
         let noCentsValue = false;
         trimmedPrice = trimmedPrice.split('.');
         if (trimmedPrice.length === 0) {          
@@ -1056,16 +1057,16 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             } else {
                 trimmedPrice = trimmedPrice[0] + '.';
             }
-        }
-        this.customerStory.amount = parseFloat(trimmedPrice).toFixed(2).toString(); 
+        } */
+        this.customerStory.amount = event.target.value;
         console.log('this.customerStory.amount: '+this.customerStory.amount);
     }
 
     formatCurrencyForInput(event) {
         if (event.target.value.length !== 0) {
-            this.template.querySelector(`[data-id="${event.target.name}"]`).value = '$' + this.formatCurrency(event.target.value);
+            //this.template.querySelector(`[data-id="${event.target.name}"]`).value = '$' + this.formatCurrency(event.target.value);
             this.accordionSection +=1;
-            console.log('accordionSection::'+ this.accordionSection);
+            //console.log('accordionSection::'+ this.accordionSection);
             this.handleSectionToggle(); 
         }
     }
@@ -2018,6 +2019,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                             if (this.isCreditCheck) {
                                  if (typeof this.totalPrice != 'undefined') {
                                     this.customerStory.amount = this.totalPrice;
+                                    
                                 }
                                 if ((typeof this.customerStory.amount === 'undefined') || (this.customerStory.amount === '0') || (this.customerStory.amount === 0) || (this.customerStory.amount === '')) {
                                     const evt = new ShowToastEvent({
@@ -2051,6 +2053,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
                                 this.statusValue = this.submittedStatus;
                                 this.appEditMode = true;
                                 this.callPreQualSubmitCreditApp(this.oppId);
+                                console.log('here');
                                 saveRelatedPartyForOpp({
                                     oppId: this.oppId, 
                                     firstName: this.personalGuar.firstName, 
@@ -2597,7 +2600,7 @@ export default class CreditApplicationPageContainer extends NavigationMixin(Ligh
             this.pageReference.type = 'standard__recordPage';
             if(typeof this.oppId === 'undefined'){
                 this.statusValue = 'Application Draft';
-                this.totalPrice = 0;
+                //this.totalPrice = 0;
             }
             console.log('page reference');
             console.log(JSON.parse(JSON.stringify(this.pageReference)));

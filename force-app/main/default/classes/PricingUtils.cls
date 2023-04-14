@@ -227,10 +227,12 @@ public static String getUserSiteNonCache(String userId){
 		//instead
 		if (u.contact.account.originating_site_id__c == null){
 			List<Assigned_Dealer_Location__c> dList = new List<Assigned_Dealer_Location__c>();
-			dList = [select account__c
+			dList = [select account__c, Account_Name__c, Originating_Site_Id__c
 					 from Assigned_Dealer_Location__c 
 					 where contact__c = :u.contactId
 					 ];
+			
+			/*
 			for (Assigned_Dealer_Location__c p:dList){
 				aIdSet.add(p.account__c);
 			}
@@ -239,11 +241,12 @@ public static String getUserSiteNonCache(String userId){
 		                       where id in : aIdSet
 		                       order by name
 			];
+			*/
 
-			for (Account a:aList) {
+			for (Assigned_Dealer_Location__c a:dList) {
 				site s = new site();
 				s.originatingSiteId = a.originating_site_id__c;
-				s.name = a.name;
+				s.name = a.account_name__c;
 				siteList.add(s);
 			}
 
@@ -316,48 +319,8 @@ public String name;
 @AuraEnabled (Cacheable=true)
 public static String getSalesReps(String originatingSiteId){         //site selected on portal
 
-	if (originatingSiteId == null)
-		return null;
-
-	List<SalesRep> sList = new List<SalesRep>();
-	Boolean error=false;
-	String ErrorMsg = null;
-
-
-	try{
-
-
-		system.debug(originatingSiteId);
-
-		Account a = [select id from Account
-		             where originating_site_id__c = : originatingSiteId
-		                                            and originating_site_id__c <> null];
-
-		List<Contact> cList = new List<Contact>();
-		cList = [select name
-		         from Contact
-		         where accountId = : a.id
-		                           and role__c = 'Partner Sales Rep'
-		];
-
-		for (Contact c : cList) {
-			SalesRep r = new SalesRep();
-			r.id = c.id;
-			r.name = c.name;
-			sList.add(r);
-		}
-
-	}
-	catch (Exception e) {
-		if(ErrorMsg == null)
-			ErrorMsg = 'Exception in getSalesReps:' + string.valueOf(e) + '-' + e.getMessage() + '-' + e.getStackTraceString() + '-' + e.getLineNumber();
-		error=true;
-		throw new AuraHandledException(ErrorMsg);
-	}
-	if (error)
-		return null;
-	else
-		return JSON.serialize(sList);
+	return PricingUtilsWoSharing.getSalesReps(originatingSiteId); 
+	
 }
 
 /************************************************************************************************************************************************

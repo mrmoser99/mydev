@@ -291,43 +291,35 @@
                                                         <lightning-layout multiple-rows>
                                                             <lightning-layout-item size=6
                                                                 class="marginBottom slds-p-right_small">
-                                                                <lightning-input class="validate" name="financeType"
-                                                                    label="Lease Type" value={financeType}
-                                                                    field-level-help="" disabled="true">
-                                                                </lightning-input>
+                                                                <label>Lease Type </label>
+                                                                <div>{financeType}</div>
                                                             </lightning-layout-item>
                                                             <lightning-layout-item size=6>
-                                                                <lightning-input class="validate" name="financeTerm"
-                                                                    label="Finance Term" value={financeTerm}
-                                                                    field-level-help="" disabled="true">
-                                                                </lightning-input>
+                                                                <label>Finance Term</label>
+                                                                <div>{financeTerm}</div>
                                                             </lightning-layout-item>
                                                             <lightning-layout-item size=6
                                                                 class="marginBottom slds-p-right_small">
-                                                                <lightning-input class="validate" name="rateType"
-                                                                    label="Rate Type" value={rateType}
-                                                                    field-level-help="" disabled="true">
-                                                                </lightning-input>
+                                                                <label>Rate Type </label>
+                                                                <div>{rateType}</div>
                                                             </lightning-layout-item>
                                                             <lightning-layout-item size=6>
-                                                                <lightning-input class="validate"
-                                                                    name="paymentFrequency" label="Payment Frequency"
-                                                                    value={paymentFrequency} field-level-help=""
-                                                                    disabled="true">
-                                                                </lightning-input>
+                                                                <label>Payment Frequency</label>
+                                                                <div>{paymentFrequency}</div>
                                                             </lightning-layout-item>
                                                             <lightning-layout-item size=6
                                                                 class="marginBottom slds-p-right_small">
-                                                                <lightning-input name="advPayments"
-                                                                    label="Advanced Payments" value={advPayments}
-                                                                    field-level-help="" disabled="true">
-                                                                </lightning-input>
+                                                                <label>Advanced Payments</label>
+                                                                <div>{advPayments}</div>
                                                             </lightning-layout-item>
                                                             <lightning-layout-item size=6>
-                                                                <lightning-input name="totalPrice" label="Total Price"
-                                                                    type="string" value={totalPrice} disabled="false">
-                                                                </lightning-input>
-
+                                                                <label>Total Price</label>
+                                                                <!--<div>{totalPrice}</div>-->
+                                                                <div>
+                                                                    <lightning-formatted-number value={totalPrice}
+                                                                        format-style="currency" currency-code="USD">
+                                                                    </lightning-formatted-number>
+                                                                </div>
 
                                                             </lightning-layout-item>
                                                         </lightning-layout>
@@ -339,10 +331,11 @@
                                                             <lightning-layout-item size=6>
                                                                 <lightning-input name="Amount" label="Amount"
                                                                     required="true" formatter="currency"
-                                                                    data-id="Amount" step=".01" type="text"
-                                                                    value={totalPrice}
+                                                                    data-id="Amount" step=".01" type="number"
+                                                                    value={totalPrice} autocomplete="off"
+                                                                    onblur={formatCurrencyForInput}
                                                                     onchange={handleChangeFinanceAmount}
-                                                                    autocomplete="off" disabled={isAmountDisabled}>
+                                                                    disabled={isAmountDisabled}>
                                                                 </lightning-input>
                                                             </lightning-layout-item>
                                                         </lightning-layout>
@@ -361,77 +354,50 @@
                                                                 <lightning-layout multiple-rows>
                                                                     <lightning-layout-item size=6
                                                                         class="marginBottom slds-p-right_small">
-                                                                        <lightning-input name={assetItem.assetNo}
-                                                                            label="Make" value={assetItem.makeValue}
-                                                                            field-level-help="" disabled="true">
-                                                                        </lightning-input>
+                                                                        <label>Make</label>
+                                                                        <div>{assetItem.makeValue}</div>
                                                                     </lightning-layout-item>
                                                                     <lightning-layout-item size=6>
-                                                                        <lightning-input name={assetItem.assetNo}
-                                                                            label="Asset Type / ITA Class"
-                                                                            value={assetItem.assetTypeValue}
-                                                                            field-level-help="" disabled="true">
-                                                                        </lightning-input>
+                                                                        <label>Asset Type / ITA Class</label>
+                                                                        <div>{assetItem.assetTypeValue}</div>
                                                                     </lightning-layout-item>
                                                                     <lightning-layout-item size=6
                                                                         class="marginBottom slds-p-right_small">
-                                                                        <lightning-input name={assetItem.assetNo}
-                                                                            label="Model" value={assetItem.modelValue}
-                                                                            field-level-help="" disabled="true">
-                                                                        </lightning-input>
+                                                                        <label>Model </label>
+                                                                        <div>{assetItem.modelValue}</div>
                                                                     </lightning-layout-item>
                                                                     <lightning-layout-item size=6>
-                                                                        <lightning-input name={assetItem.assetNo}
-                                                                            label="Mast Type"
-                                                                            value={assetItem.mastTypeValue}
-                                                                            field-level-help="" disabled="true">
-                                                                        </lightning-input>
+                                                                        <label>Mast Type</label>
+                                                                        <div>{assetItem.mastTypeValue}</div>
                                                                     </lightning-layout-item>
                                                                     <lightning-layout-item size=6
                                                                         class="marginBottom slds-p-right_small">
-                                                                        <lightning-input name={assetItem.assetNo}
-                                                                            label="Asset Operating Environment"
-                                                                            value={assetItem.assetOperatingEnvironmentValue}
-                                                                            field-level-help="" disabled="true">
-                                                                        </lightning-input>
+                                                                        <label>Asset Operating Environment</label>
+                                                                        <div>{assetItem.assetOperatingEnvironmentValue}
+                                                                        </div>
                                                                     </lightning-layout-item>
                                                                     <lightning-layout-item size=6>
-                                                                        <lightning-input name={assetItem.assetNo}
-                                                                            label="Annual Hours"
-                                                                            value={assetItem.annualHoursValue}
-                                                                            field-level-help="" disabled="true">
-                                                                        </lightning-input>
+                                                                        <label>Annual Hours</label>
+                                                                        <div>{assetItem.annualHoursValue}</div>
                                                                     </lightning-layout-item>
                                                                     <lightning-layout-item size=6
                                                                         class="marginBottom slds-p-right_small">
-                                                                        <lightning-input name={assetItem.assetNo}
-                                                                            label="Battery Included"
-                                                                            value={assetItem.batteryIncludedValue}
-                                                                            field-level-help="" disabled="true">
-                                                                        </lightning-input>
+                                                                        <label>Battery Included </label>
+                                                                        <div>{assetItem.batteryIncludedValue}</div>
                                                                     </lightning-layout-item>
                                                                     <lightning-layout-item size=6>
-                                                                        <lightning-input name={assetItem.assetNo}
-                                                                            label="Number of Units"
-                                                                            value={assetItem.numberOfUnitsValue}
-                                                                            field-level-help="" disabled="true">
-                                                                        </lightning-input>
+                                                                        <label>Number of Units</label>
+                                                                        <div>{assetItem.numberOfUnitsValue}</div>
                                                                     </lightning-layout-item>
                                                                     <lightning-layout-item size=6
                                                                         class="marginBottom slds-p-right_small">
-                                                                        <lightning-input name={assetItem.assetNo}
-                                                                            label="Unit Sales Price"
-                                                                            value={assetItem.unitSalesPriceValue}
-                                                                            type="string" disabled="true">
-                                                                        </lightning-input>
+                                                                        <label>Unit Sales Price</label>
+                                                                        <div>{assetItem.unitSalesPriceValue}</div>
 
                                                                     </lightning-layout-item>
                                                                     <lightning-layout-item size=6>
-                                                                        <lightning-input name={assetItem.assetNo}
-                                                                            label="Subsidy"
-                                                                            value={assetItem.subsidyValue}
-                                                                            field-level-help="" disabled="true">
-                                                                        </lightning-input>
+                                                                        <label>Subsidy</label>
+                                                                        <div>{assetItem.subsidyValue}</div>
                                                                     </lightning-layout-item>
                                                                 </lightning-layout>
                                                             </div>
@@ -452,38 +418,22 @@
                                                                 <lightning-layout multiple-rows>
                                                                     <lightning-layout-item size=6
                                                                         class="marginBottom slds-p-right_small">
-                                                                        <lightning-input
-                                                                            name={accessoryItem.accessoryNo}
-                                                                            label="Related Asset"
-                                                                            value={accessoryItem.relatedAssetValue}
-                                                                            field-level-help="" disabled="true">
-                                                                        </lightning-input>
+                                                                        <label>Related Asset </label>
+                                                                        <div>{accessoryItem.relatedAssetValue}</div>
                                                                     </lightning-layout-item>
                                                                     <lightning-layout-item size=6>
-                                                                        <lightning-input
-                                                                            name={accessoryItem.accessoryNo}
-                                                                            label="Accessory"
-                                                                            value={accessoryItem.accessoryValue}
-                                                                            field-level-help="" disabled="true">
-                                                                        </lightning-input>
+                                                                        <label>Accessory</label>
+                                                                        <div>{accessoryItem.accessoryValue}</div>
                                                                     </lightning-layout-item>
                                                                     <lightning-layout-item size=6
                                                                         class="marginBottom slds-p-right_small">
-                                                                        <lightning-input
-                                                                            name={accessoryItem.accessoryNo}
-                                                                            label="Unit Sales Price" type="string"
-                                                                            value={accessoryItem.unitSalesPriceValue}
-                                                                            field-level-help="" disabled="true">
-                                                                        </lightning-input>
+                                                                        <label>Unit Sales Price</label>
+                                                                        <div>{accessoryItem.unitSalesPriceValue}</div>
 
                                                                     </lightning-layout-item>
                                                                     <lightning-layout-item size=6>
-                                                                        <lightning-input
-                                                                            name={accessoryItem.accessoryNo}
-                                                                            label="Number of Units"
-                                                                            value={accessoryItem.numberofUnitsValue}
-                                                                            field-level-help="" disabled="true">
-                                                                        </lightning-input>
+                                                                        <label>Number of Units </label>
+                                                                        <div>{accessoryItem.numberofUnitsValue}</div>
                                                                     </lightning-layout-item>
                                                                 </lightning-layout>
                                                             </div>
@@ -909,41 +859,46 @@
                                             <!-- Finance section -->
                                             <lightning-accordion-section name="Financing Structure"
                                                 label="Financing Structure">
-                                                <template if:false={isCreditCheck}>
-                                                    <div class="financeBody">
-                                                        <lightning-layout multiple-rows>
-                                                            <lightning-layout-item size=6
-                                                                class="marginBottom slds-p-right_small">
-                                                                <label>Lease Type </label>
-                                                                <div>{financeType}</div>
+                                                <!--<template if:false={isCreditCheck}>-->
+                                                <div class="financeBody">
+                                                    <lightning-layout multiple-rows>
+                                                        <lightning-layout-item size=6
+                                                            class="marginBottom slds-p-right_small">
+                                                            <label>Lease Type </label>
+                                                            <div>{financeType}</div>
 
-                                                            </lightning-layout-item>
-                                                            <lightning-layout-item size=6>
-                                                                <label>Finance Term</label>
-                                                                <div>{financeTerm}</div>
-                                                            </lightning-layout-item>
-                                                            <lightning-layout-item size=6
-                                                                class="marginBottom slds-p-right_small">
-                                                                <label>Rate Type </label>
-                                                                <div>{rateType}</div>
-                                                            </lightning-layout-item>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item size=6>
+                                                            <label>Finance Term</label>
+                                                            <div>{financeTerm}</div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item size=6
+                                                            class="marginBottom slds-p-right_small">
+                                                            <label>Rate Type </label>
+                                                            <div>{rateType}</div>
+                                                        </lightning-layout-item>
 
-                                                            <lightning-layout-item size=6>
-                                                                <label>Payment Frequency</label>
-                                                                <div>{paymentFrequency}</div>
-                                                            </lightning-layout-item>
-                                                            <lightning-layout-item size=6
-                                                                class="marginBottom slds-p-right_small">
-                                                                <label>Advanced Payments</label>
-                                                                <div>{advPayments}</div>
-                                                            </lightning-layout-item>
-                                                            <lightning-layout-item size=6>
-                                                                <label>Total Price</label>
-                                                                <div>{totalPrice}</div>
-                                                            </lightning-layout-item>
-                                                        </lightning-layout>
-                                                    </div>
-                                                </template>
+                                                        <lightning-layout-item size=6>
+                                                            <label>Payment Frequency</label>
+                                                            <div>{paymentFrequency}</div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item size=6
+                                                            class="marginBottom slds-p-right_small">
+                                                            <label>Advanced Payments</label>
+                                                            <div>{advPayments}</div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item size=6>
+                                                            <label>Total Price</label>
+                                                            <!--<div>{totalPrice}</div>-->
+                                                            <div>
+                                                                <lightning-formatted-number value={totalPrice}
+                                                                    format-style="currency" currency-code="USD">
+                                                                </lightning-formatted-number>
+                                                            </div>
+                                                        </lightning-layout-item>
+                                                    </lightning-layout>
+                                                </div>
+                                                <!--</template>
 
                                                 <template if:true={isCreditCheck}>
                                                     <div class="financeBody">
@@ -959,7 +914,7 @@
                                                             </lightning-layout-item>
                                                         </lightning-layout>
                                                     </div>
-                                                </template>
+                                                </template>-->
 
                                             </lightning-accordion-section>
 

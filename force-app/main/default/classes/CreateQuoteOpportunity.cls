@@ -10,10 +10,11 @@
  * 01/19/2023 : MRM add application number to return values
  * 01/27/2023 : MRM Added isAppeal and include in credit app in save logic 
  * 02/06/2023 - MRM Added display quote number to appeals page
+ * 04/21/2023 - MRM Made without sharing to support private users
  *********************************************************************************************************/
 
 
-public with sharing class CreateQuoteOpportunity {
+public without sharing class CreateQuoteOpportunity {
 
 public class quoteOpportunityWrapper {
 @AuraEnabled
@@ -997,7 +998,7 @@ public static void markQuoteOptionAsPrimary(String quoteId, String oppId) {
 }
 
 @AuraEnabled
-public static String markQuoteOptionAsCreditAppSelection(String quoteId, String oppId) {
+public static String markQuoteOptionAsCreditAppSelection(String quoteId, String oppId, Boolean primaryValue) {
 	Id oppIdQuotes = (Id) oppId;
 	Id quoteIdToMakeTrue = (Id) quoteId;
 	List<Quote> quotesFound;
@@ -1031,7 +1032,7 @@ public static String markQuoteOptionAsCreditAppSelection(String quoteId, String 
 		}
 	}
 	Quote quotePrimary = new Quote();
-	quotePrimary.Current_Credit_App_Selection__c = true;
+	quotePrimary.Current_Credit_App_Selection__c = primaryValue;
 	quotePrimary.Id = quoteIdToMakeTrue;
 	quotesToUpdate.add(quotePrimary);
 	update quotesToUpdate;

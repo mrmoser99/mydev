@@ -58,7 +58,7 @@ export default class QuoteLineDatatable extends LightningElement {
     inCCMode = false;
     onlyCallbackOnce = false;
     isProposalChecked = false;
-    isCreditAppChecked = false;
+    isCreditAppChecked;
         /*[ {
         'totalPrice' : 20000,
         'interestRate' : 0.1000026,
@@ -79,13 +79,22 @@ export default class QuoteLineDatatable extends LightningElement {
             return;
         }
         this.onlyCallbackOnce = true;
-
+        
         if (this.option.quote.Include_In_Proposal__c) {
             this.isProposalChecked = true;
         }
 
-        if (this.option.quote.Current_Credit_App_Selection__c) {
+     
+        
+        if (typeof this.option.quote.Current_Credit_App_Selection__c === 'undefined') {
+            this.option.quote.Current_Credit_App_Selection__c = false;
+        }
+
+        if (this.option.quote.Current_Credit_App_Selection__c == true) {
             this.isCreditAppChecked = true;
+        }
+        else{
+            this.isCreditAppChecked = false;
         }
 
         /*if (this.option.quoteLines && this.option.quoteLines.forEach) {
@@ -97,9 +106,28 @@ export default class QuoteLineDatatable extends LightningElement {
 
     handleCreditAppRadio(event) {
 
+        const eventForAppeal = new CustomEvent("optionselected", {
+            detail: {quoteId :this.creditAppId,
+                    oppId : this.oppid }
+        });
+
+        console.log('is credit app checked b1 : ' + this.isCreditAppChecked);
+
+        if (this.isCreditAppChecked){
+            this.isCreditAppChecked = false;
+//            this.option.quote.Current_Credit_App_Selection__c = false;
+        }
+        else{
+            this.isCreditAppChecked = true;
+            //this.option.quote.Current_Credit_App_Selection__c = true;
+        }
+
         console.log('clicked radio quote is:' + event.target.value);
+        console.log('is credit app checked a: ' + this.isCreditAppChecked);
         const assetEvent = new CustomEvent("selectquote", {
-            detail: event.target.value
+            detail: {creditAppId: event.target.value, 
+                    newValue: this.isCreditAppChecked
+            }
         });
 
         this.dispatchEvent(assetEvent);

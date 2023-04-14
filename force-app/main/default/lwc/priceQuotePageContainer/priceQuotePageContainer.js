@@ -778,16 +778,20 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
     ***************************************************************************************************************/
     handleQuoteSelectForCreditApp(event) {
 
-        console.log('in handle seelct for credit app');
-        this.creditAppId = event.detail;
+     
+        this.creditAppId = event.detail.creditAppId;
         this.hasNoActiveQuoteForCredApp = false;
+
+        let newValue = event.detail.newValue;
+
+
          
         this.loading = true;
-        console.log('event detail:' + event.detail);
+     
 
-        markQuoteOptionAsCreditAppSelection({quoteId : this.creditAppId, oppId : this.opportunityId})
+        markQuoteOptionAsCreditAppSelection({quoteId : this.creditAppId, oppId : this.opportunityId, primaryValue: newValue})
             .then(result => {
-                console.log('result is' + JSON.stringify(result));
+             
                 if (result == 'NoPayment'){
                     this.creditAppId = null;
                     this.hasNoActiveQuoteForCredApp = true;
@@ -800,32 +804,35 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                 if (this.isCCMode == true){
                     this.connectedCallback();
                 }
+                 
+                if (this.isCCMode == false){
+                    
+                    if (this.isPortalUser){
+                        this[NavigationMixin.Navigate]({
+                            type: 'standard__webPage',
+                        attributes: {
+                            url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + this.oppid
+                        }
+                        });
+                    }
+                    else{
+                        this[NavigationMixin.Navigate]({
+                            type: 'standard__webPage',
+                            attributes: {
+                                url: window.location.origin + '/lightning/n/Quote?c__oppid=' + this.oppid
+                        }
+                        });
+                    }
+          
+                }
             }).catch(error => {
-            this.showToast('Error in saving selection','Error', 'error');
-            this.loading = false;
+                this.showToast('Error in saving selection','Error', 'error');
+                this.loading = false;
         });
 
-        
-        if (this.isCCMode == false){
-            if (this.IsPortalUser){
-                this[NavigationMixin.Navigate]({
-                     type: 'standard__webPage',
-                    attributes: {
-                        url: window.location.origin + '/dllondemand/s/new-quote?oppid=' + this.oppid
-                 }
-                });
-            }
-            else{
-                this[NavigationMixin.Navigate]({
-                     type: 'standard__webPage',
-                    attributes: {
-                        url: window.location.origin + '/lightning/n/Quote?c__oppid=' + this.oppid
-                 }
-                });
+         
 
-            }
-          
-        }
+        
     }
 
     
@@ -844,9 +851,8 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
     ***************************************************************************************************************/
     handleChange(event) {
 
-        console.log('calling' + event.target.value);
+        console.log('calling: ' + event.target.value);
 
-        
         this.template.querySelector('c-pricing-component').childCondition(event.target.value);
         
         console.log('in handle change' + event.targe.value);
@@ -867,8 +873,8 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
             event.target.inputValue = '';    
         }
 
-        //////console.log(this.salesRepList);
-        //////console.log(event.target.value);
+        console.log(' mrm is' + this.salesRepList);
+        console.log(event.target.value);
         try{
             this.salesRep = this.salesRepList.find(element => element.value === event.target.value).label;
         }
@@ -2279,7 +2285,7 @@ export default class PriceQuotePageContainer extends NavigationMixin(LightningEl
                 });
         }
 
-        if (this.isPortaluser){
+        if (this.isPortalUser){
             this[NavigationMixin.Navigate]({
                 type: 'standard__webPage',
                 attributes: {
